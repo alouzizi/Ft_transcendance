@@ -10,6 +10,6 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: nest
     networks:
-      - 42 network
+      - 42_network
 networks:
   42_network:
