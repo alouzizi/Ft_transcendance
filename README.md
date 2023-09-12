@@ -33,3 +33,53 @@ An important note is that the [![documentation of NestJS](https://docs.nestjs.co
 > processes and multithreading with worker threads. Also, knowing how to create an 
 > API without any frameworks such as Express and NestJS makes us apprieciate them 
 > even more.
+
+## Getting started with NestJS
+
+The most straightforward way of getting started is to clone the official TypeScript starter repository. Nest is built with TypeScript and fully supports it. You could use JavaScript instead, but here we focus on TypeScript.
+
+```sh
+git clone git@github.com:nestjs/typescript-starter.git
+```
+
+A thing worth looking into in the above repository is the  ```sh tsconfig.jso ``` file. I highly recommend adding the  alwaysStrict and  noImplicitAny options
+
+The above repository contains the most basic packages. We also get the fundamental types of files to get us started, so let’s review them.
+
+> All of the code from this series can be found in [this repository](https://github.com/. 
+> mwanago/nestjs-typescript). Hopefully, it can later serve as a NestJS boilerplate with some
+> built-in features.It is a fork of an official [typescript-starter](https://github.com/ 
+> nestjs/typescript-starter). Feel free to give both of them a star.
+
+# Controllers
+
+Controllers handle incoming requests and return responses to the client. The  ```sh typescript-starter ``` repository contains our first controller. Let’s create a more robust one:
+
+```sh
+
+import { Controller, Get, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
+import { AuthService } from './auth.service';
+
+@Controller('auth')
+export class AuthController {
+    constructor(private authService: AuthService) {
+
+    @Post('signup')
+    signup(@Req() req:Request) {
+        console.log(req);
+        return this.authService.signup();
+    }
+
+    @Post('signin')
+    signin() {
+        return this.authService.signin();
+    }
+}
+
+```
+
+The first thing that we can notice is that NestJS uses decorators a lot. To mark a class to be a controller, we use the  @Controller() decorator. We pass an optional argument to it. It acts as a path prefix to all of the routes within the controller.
+
+# Routing
+
