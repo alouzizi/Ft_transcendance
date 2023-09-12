@@ -24,7 +24,6 @@ Authentication is a crucial part of almost every web application. There are many
 
 NestJS is a framework for building Node.js applications. It is somewhat opinionated and forces us to follow its vision of how an application should look like to some extent. That might be viewed as a good thing that helps us to keep consistency across our application and forces us to follow good practices.
 
-NestJS uses Express.js under the hood by default. If you’re familiar with my s [![](https://wanago.io/2018/12/03typescript-express-tutorial-routing-controllers-middleware/)]series and you’ve enjoyed it, there is a great chance you will like NestJS too. Also, knowledge of the Express framework will come in handy.
+NestJS uses Express.js under the hood by default. If you’re familiar with my [![TypeScript Expres series](https://wanago.io/2018/12/03/typescript-express-tutorial-routing-controllers-middleware/)](https://wanago.io/2018/12/03/typescript-express-tutorial-routing-controllers-middleware/) and you’ve enjoyed it, there is a great chance you will like NestJS too. Also, knowledge of the Express framework will come in handy.
 
-
-[![TypeScript Expres](https://wanago.io/2018/12/03/typescript-express-tutorial-routing-controllers-middleware/)](https://wanago.io/2018/12/03/typescript-express-tutorial-routing-controllers-middleware/)
+An important note is that the [![documentation of NestJS] (https://docs.nestjs.com)]is comprehensive, and you would benefit from looking it up. Here, we attempt to put the knowledge in order, but we also sometimes link to the official docs. We also refer to the Express framework to highlight the advantages of using NestJS. To benefit from this article more, some experience with Express might be useful, but not necessary.
