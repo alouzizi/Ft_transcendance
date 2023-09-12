@@ -12,6 +12,3 @@ export class AuthService {
         return {msg: 'I have signed in' };
     }
 }
-
-
-/./.
