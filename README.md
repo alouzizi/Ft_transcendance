@@ -83,3 +83,17 @@ The first thing that we can notice is that NestJS uses decorators a lot. To mark
 
 # Routing
 
+The next set of decorators connected to routing in the above controller are  @Get(),  @Post(),  Delete(),  and  @Put(). They tell Nest to create a handler for a specific endpoint for HTTP requests. The above controller creates a following set of endpoints:
+
+```sh 
+GET /posts 
+```
+> Returns all posts
+
+```sh 
+GET /posts/{id}
+```
+
+```sh
+POST /posts
+```
