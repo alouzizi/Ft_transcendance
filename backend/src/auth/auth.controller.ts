@@ -8,7 +8,7 @@ export class AuthController {
 
     @Post('signup')
     signup(@Req() req:Request) {
-        console.log(req);
+        // console.log(req);
         return this.authService.signup();
     }
 
@@ -17,3 +17,9 @@ export class AuthController {
         return this.authService.signin();
     }
 }
+
+
+///prisma
+//dto
+// jwt
+// guardes

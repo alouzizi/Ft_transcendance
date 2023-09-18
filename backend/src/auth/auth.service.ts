@@ -4,8 +4,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class AuthService {
     constructor(private prisma: PrismaService){}
-    signup() {
-        return {msg: 'I have signed up' };
+   async signup() {
+       return  await this.prisma.user.create(
+            {
+                data:{
+                    email:"hhhhhh",
+                    hash:"11234235$$$#23^&^&^"
+                }
+            }
+        )
     }
 
     signin() {
