@@ -1,15 +1,15 @@
 version: '3.8'
 
 services:
-  dev-db:
+  db:
     image: postgres:13
     ports:
-      - 5434:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: db
-    networks:
-      - 42_network
-networks:
-  42_network:
+      POSTGRES_DB: postgres
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
