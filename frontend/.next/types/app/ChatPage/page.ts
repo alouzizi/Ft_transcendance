@@ -1,4 +1,4 @@
-// File: /Users/hboumahd/Desktop/Ft_transcendance/frontend/src/app/ChatPage/page.tsx
+// File: C:\Users\Hamza\Desktop\web\Ft_transcendance\frontend\src\app\ChatPage\page.tsx
 import * as entry from '../../../../src/app/ChatPage/page.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

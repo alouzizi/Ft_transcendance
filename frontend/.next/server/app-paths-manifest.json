@@ -1,8 +1,8 @@
 {
   "/page": "app/page.js",
-  "/ChatPage/page": "app/ChatPage/page.js",
-  "/FriendsPage/page": "app/FriendsPage/page.js",
-  "/GamePage/page": "app/GamePage/page.js",
+  "/LeaderboardPage/page": "app/LeaderboardPage/page.js",
   "/HomePage/page": "app/HomePage/page.js",
-  "/LeaderboardPage/page": "app/LeaderboardPage/page.js"
+  "/ChatPage/page": "app/ChatPage/page.js",
+  "/GamePage/page": "app/GamePage/page.js",
+  "/FriendsPage/page": "app/FriendsPage/page.js"
 }
