@@ -3,7 +3,7 @@ export default function SBSection(prompt: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col w-full ">
+    <div className="flex flex-col w-full my-8">
       <p className="text-gray-400 mb-8 text-center text-md font-bold">
         {prompt.sectionName}
       </p>
