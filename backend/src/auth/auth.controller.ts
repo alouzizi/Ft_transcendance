@@ -19,7 +19,9 @@ export class AuthController {
 }
 
 
-///prisma
+//todo hj
+//prisma
 //dto
 // jwt
 // guardes
+// pipes
