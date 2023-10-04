@@ -18,7 +18,7 @@ export default function CardInfo(prompt: {
           {prompt.cardName}
         </p>
       </div>
-      <p className="my-auto  text-color-main-whith p-1 font-bold text-xl mr-2 ">
+      <p className="my-auto  text-color-main-whith2 p-1 font-bold text-xl mr-2 ">
         {prompt.value}
       </p>
     </div>
