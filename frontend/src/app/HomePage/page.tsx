@@ -1,3 +1,4 @@
+import AchievementItem from "@/components/homePage/AchievementItem";
 import CardInfo from "@/components/homePage/CardInfo";
 import HistoryItem from "@/components/homePage/HistoryItem";
 import HomeSection from "@/components/homePage/HomeSection";
@@ -5,7 +6,7 @@ import LevelBar from "@/components/homePage/LevelBar";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col bg-color-main h-screen w-screen pl-32 justify-start pt-8">
+    <div className="flex flex-col bg-color-main h-screen justify-start pt-8">
       {/* this is the CardInfo */}
 
       <div
@@ -48,7 +49,11 @@ export default function HomePage() {
         <HomeSection
           sectionName="Last Achievements"
           btnName="See All Achievements"
-        />
+        >
+          <AchievementItem image="achiev1.png" title="Novice" mission="Win 10 matches" type="selver"/>
+          <AchievementItem image="achiev1.png" title="Novice" mission="Win 10 matches" type="bronz"/>
+          <AchievementItem image="achiev1.png" title="Novice" mission="Win 10 matches" type="gold"/>
+        </HomeSection>
       </div>
     </div>
   );

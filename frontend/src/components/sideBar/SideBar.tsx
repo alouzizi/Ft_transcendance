@@ -78,8 +78,10 @@ export default function SideBar() {
   };
 
   return (
-    <div className="fixed flex flex-col py-8 bg-color-main-dark w-32 h-screen ">
-      <img className="w-8/12 mx-auto mb-16" src="logo.png" alt="" />
+    <div 
+    id="SideBar"
+    className="fixed flex flex-col py-8 bg-color-main-dark w-28 h-screen">
+     
 
       <div className=" flex flex-col justify-between h-5/6">
         <SBSection sectionName="Home">
