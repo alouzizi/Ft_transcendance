@@ -27,9 +27,14 @@ export default function RootLayout({
           }}/>
         </div>
         <div className="flex flex-row w-screen bg-color-main relative">
-        <div className={`absolute  top-0 z-20
+        <div className={`
+        absolute  top-0 z-20
         transition-all duration-300 ease-in-out overflow-hidden
-        ${show ? "left-0" : "-left-full"}`}
+        ${show ? "left-0" : "-left-full"} 
+        
+        2xl:left-0
+        
+        `}
         
         >
         <SideBar />

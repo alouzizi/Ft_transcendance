@@ -53,7 +53,7 @@ export default function HomePage() {
         >
           <div className="
           // small screen
-        mt-12
+          mt-12
           // Big screen
           2xl:ml-6 2xl:mt-12 2xl:w-1/3
           ">
