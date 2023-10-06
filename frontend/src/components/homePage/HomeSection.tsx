@@ -5,7 +5,13 @@ export default function HomeSection(prompt:{
 
 }){
     return(
-        <div className="flex flex-col w-2/5 p-2 h-fit ">
+        <div className="flex flex-col 
+        
+        // small screen
+        w-full p-2 h-fit mb-12
+        // Big screen
+        2xl:w-2/5 2xl:p-2 2xl:h-fit 2xl:mb-0
+        ">
             <div className="flex flex-row justify-between mb-4">
                 <h1 className="font-bold text-2xl text-gray-400 text-center  h-fit my-auto">{prompt.sectionName ?? "Section Name"}</h1>
                 <p className="border-2 border-white p-2 px-4 ml-2 rounded-full text-xs cursor-pointer

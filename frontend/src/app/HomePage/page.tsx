@@ -6,32 +6,67 @@ import LevelBar from "@/components/homePage/LevelBar";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col bg-color-main h-screen justify-start pt-8">
+    <div className="flex flex-col h-fit 2xl:h-screen max-w-8xl bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
 
       <div
-        className="bg-slate-100 h-96 w-5/6 max-w-8xl bg-cover bg-center rounded-3xl mx-auto relative"
+        className="bg-slate-100  bg-cover bg-center rounded-3xl  relative
+        transition-all duration-100 ease-in-out overflow-hidden
+       
+        // small screen
+        h-[26rem] w-5/6 mx-auto
+        // big screen 
+        2xl:h-96 2xl:w-5/6 2xl:mx-auto
+        "
         style={{ backgroundImage: "url('/bg-info.png')" }}
       >
         <LevelBar level={6} completed={75} />
         <img
-          className="w-28 h-28 object-cover mx-auto mb-[-2rem] rounded-full border-2
+          className="
          border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] 
-          hover:shadow-transparent 
-          z-10 absolute bottom-1/3 left-6"
+          hover:shadow-transparent rounded-full object-cover absolute
+        transition-all duration-700 ease-in-out overflow-hidden
+          
+          // small screen
+          w-20 h-20  mx-auto mb-[-2rem]  border-2
+          z-10 left-[50%] bottom-[45%] -ml-12
+
+          // big screen 
+          2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
+          2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
           src="profile-img.png"
           alt=""
         />
+        
         <div
-          className="flex flex-row justify-between w-full h-1/3 bg-color-main-dark  rounded-bl-2xl rounded-br-2xl
-          absolute bottom-0"
+          className="
+           bg-color-main-dark  rounded-bl-2xl rounded-br-2xl
+          absolute 
+        transition-all duration-700 ease-in-out overflow-hidden
+          
+          // small screen
+          flex flex-col  w-full h-[47%] bottom-0 justify-end items-center
+
+          // big screen 
+          2xl:flex 2xl:flex-row 2xl:justify-between 2xl:w-full 2xl:h-1/3 2xl:bottom-0
+          "
         >
-          <div className="ml-6 mt-12 w-1/3">
+          <div className="
+          // small screen
+        mt-12
+          // Big screen
+          2xl:ml-6 2xl:mt-12 2xl:w-1/3
+          ">
             <h1>Player Full Name</h1>
             <p className="text-gray-400 text-sm">@userName</p>
           </div>
 
-          <div className="flex flex-row mt-4  w-2/3 justify-end mr-4">
+          <div className="
+           // small screen
+           flex flex-row  w-fit justify-center  mt-4 mb-6
+           // Big screen
+           2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
+          ">
             <CardInfo cardImg="ranking.png" cardName="Ranking" value="15" />
             <CardInfo cardImg="matches.png" cardName="Matches" value="152" />
             <CardInfo cardImg="win-rate.png" cardName="Win Rate" value="80%" />
@@ -40,7 +75,14 @@ export default function HomePage() {
       </div>
 
       {/* this is the HomePage Sections */}
-      <div className="flex flex-row w-5/6 max-w-8xl  h-96 mx-auto mt-16 justify-between">
+      <div className=" flex mx-auto
+      
+      // small screen
+      flex-col  h-fit mt-16 w-5/6 justify-center
+      // Big screen
+      2xl:flex-row 2xl:justify-between 2xl:max-w-8xl 2xl:h-96  2xl:mt-16 2xl:w-5/6  
+
+      ">
         <HomeSection sectionName="Game History" btnName="See All History" >
         <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>
         <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>

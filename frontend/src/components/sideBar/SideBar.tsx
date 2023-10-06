@@ -80,7 +80,7 @@ export default function SideBar() {
   return (
     <div 
     id="SideBar"
-    className="fixed flex flex-col py-8 bg-color-main-dark w-28 h-screen">
+    className=" flex flex-col py-8 bg-color-main-dark w-28 h-screen">
      
 
       <div className=" flex flex-col justify-between h-5/6">

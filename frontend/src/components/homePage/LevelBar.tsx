@@ -7,13 +7,22 @@ export default function LevelBar(prompt: {
     const completedWidth = `${prompt.completed}%`;
   
     return (
-      <div className="h-16 w-1/2 bg-color-main-transparent rounded-xl 
-        flex flex-col justify-center items-center absolute bottom-1/3 mb-4 left-[25%] ">
+      <div className="
+      flex flex-col justify-center items-center absolute
+      bg-color-main-transparent rounded-xl 
+
+        // small screen
+        h-14 w-1/2 bottom-1/3 mb-4 left-[25%]  top-1/4
+        
+        // Big screen
+        2xl:h-16 2xl:w-1/2  2xl:top-auto 2xl:bottom-1/3 2xl:mb-8 2xl:left-[25%] 
+        ">
         <div
           style={{ width: completedWidth }} // Set the width as a style
           className="h-full bg-color-main-whith rounded-xl absolute left-0"
         ></div>
-        <p className="text-white font-bold text-md w-fit absolute">
+        <p className="text-white font-bold  w-fit absolute  min-[0px]:text-xs 2xl:text-lg 
+        ">
           {`LEVEL ${prompt.level} - ${prompt.completed}%`}
         </p>
       </div>
