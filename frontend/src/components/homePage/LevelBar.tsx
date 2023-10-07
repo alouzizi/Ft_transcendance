@@ -1,3 +1,4 @@
+"use client";
 export default function LevelBar(prompt: {
     level: number,
     completed: number
@@ -12,7 +13,7 @@ export default function LevelBar(prompt: {
       bg-color-main-transparent rounded-xl 
 
         // small screen
-        h-14 w-1/2 bottom-1/3 mb-4 left-[25%]  top-1/4
+        h-14 w-2/3 bottom-1/3 mb-4 left-[18%]  top-1/4
         
         // Big screen
         2xl:h-16 2xl:w-1/2  2xl:top-auto 2xl:bottom-1/3 2xl:mb-8 2xl:left-[25%] 
@@ -28,4 +29,4 @@ export default function LevelBar(prompt: {
       </div>
     );
   }
-  
+   

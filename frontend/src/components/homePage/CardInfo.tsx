@@ -1,3 +1,4 @@
+"use client";
 export default function CardInfo(prompt: {
   cardImg: string;
   cardName: string;

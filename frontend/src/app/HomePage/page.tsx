@@ -1,10 +1,16 @@
+"use client";
+
 import AchievementItem from "@/components/homePage/AchievementItem";
 import CardInfo from "@/components/homePage/CardInfo";
 import HistoryItem from "@/components/homePage/HistoryItem";
 import HomeSection from "@/components/homePage/HomeSection";
 import LevelBar from "@/components/homePage/LevelBar";
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
+  const router = useRouter();
+
+
   return (
     <div className="flex flex-col h-fit 2xl:h-screen max-w-8xl bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
@@ -83,7 +89,12 @@ export default function HomePage() {
       2xl:flex-row 2xl:justify-between 2xl:max-w-8xl 2xl:h-96  2xl:mt-16 2xl:w-5/6  
 
       ">
-        <HomeSection sectionName="Game History" btnName="See All History" >
+        <HomeSection sectionName="Game History" btnName="See All History" 
+        btnClicked={()=>{
+          router.push('HomePage/HistoryPage');
+        }}
+        
+        >
         <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>
         <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>
         <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>

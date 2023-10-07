@@ -28,7 +28,7 @@ export default function RootLayout({
         </div>
         <div className="flex flex-row w-screen bg-color-main relative">
         <div className={`
-        absolute  top-0 z-20
+        absolute  top-0 z-20 
         transition-all duration-300 ease-in-out overflow-hidden
         ${show ? "left-0" : "-left-full"} 
         
@@ -41,7 +41,10 @@ export default function RootLayout({
         </div>
         <div className={` w-screen  m-0 bg-color-main
         transition-all duration-300 ease-in-out overflow-hidden
-         ${show ? "pl-32" : "pl-0"} `}>{children}</div>
+          min-[0px]:pl-0
+         ${show ? "md:pl-32" : "md:pl-0"} 
+         2xl:pl-20
+         `}>{children}</div>
         </div>
       </body>
     </html>

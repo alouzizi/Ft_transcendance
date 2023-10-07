@@ -13,7 +13,7 @@ import { useState } from "react";
 export default function SideBar() {
   // Create an array to store the isSelected state for each item
   const [isSelectedList, setIsSelectedList] = useState([
-    false,
+    true,
     false,
     false,
     false,
@@ -23,11 +23,19 @@ export default function SideBar() {
   ]);
 
   function getIconStyle(index: number) {
-    const iconStyle = `w-6 h-6 mx-auto transition ease-in-out delay-100 ${
+    const iconStyle = ` mx-auto transition ease-in-out delay-100 ${
       isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
-    }`;
+    }
+    
+    // small screen
+    w-5 h-5
+    // Big screen
+    md:w-6 md:h-6
+    
+    `;
     return iconStyle;
   }
+
   let sBItemsList = [
     {
       pageName: "HomePage",
@@ -80,10 +88,10 @@ export default function SideBar() {
   return (
     <div 
     id="SideBar"
-    className=" flex flex-col py-8 bg-color-main-dark w-28 h-screen">
+    className=" flex flex-col  pb-8 pt-20 bg-color-main-dark w-28 h-screen fixed top-0 ">
      
 
-      <div className=" flex flex-col justify-between h-5/6">
+      <div className=" flex flex-col justify-between h-5/6 ">
         <SBSection sectionName="Home">
           {sBItemsList.slice(0, 5).map((item) => (
             <SBItems
@@ -110,9 +118,16 @@ export default function SideBar() {
       </div>
 
       <img
-        className="w-16 h-16 object-cover mx-auto mb-16 rounded-full border-2
+        className=" object-cover mx-auto mb-16 rounded-full border-2
          border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] shadow-color-main-whith 
-         hover:shadow-transparent hover:border-color-main-whith"
+         hover:shadow-transparent hover:border-color-main-whith
+         
+         // small screen
+         w-14 h-14
+         // Big screen
+         md:w-16 md:h-16
+         
+         "
         src="profile-img.png"
         alt=""
       />

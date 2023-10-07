@@ -1,3 +1,4 @@
+"use client";
 export default function HistoryItem(prompt:{
     firstPlayerName: string,
     firstPlayerPoints: number,

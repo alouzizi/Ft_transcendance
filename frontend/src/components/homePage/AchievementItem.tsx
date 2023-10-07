@@ -1,3 +1,4 @@
+"use client";
 export default function AchievementItem(prompt:{
     image: string,
     title: string,

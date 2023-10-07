@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
     "next": "^13.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -24,5 +25,9 @@
     "postcss": "latest",
     "tailwindcss": "latest",
     "typescript": "latest"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
+  "main": "next.config.js",
+  "author": "",
+  "license": "ISC"
 }
