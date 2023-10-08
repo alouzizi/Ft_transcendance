@@ -5,11 +5,10 @@ import CardInfo from "@/components/homePage/CardInfo";
 import HistoryItem from "@/components/homePage/HistoryItem";
 import HomeSection from "@/components/homePage/HomeSection";
 import LevelBar from "@/components/homePage/LevelBar";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const router = useRouter();
-
 
   return (
     <div className="flex flex-col h-fit 2xl:h-screen max-w-8xl bg-color-main  justify-start pt-8">
@@ -43,7 +42,7 @@ export default function HomePage() {
           src="profile-img.png"
           alt=""
         />
-        
+
         <div
           className="
            bg-color-main-dark  rounded-bl-2xl rounded-br-2xl
@@ -57,22 +56,26 @@ export default function HomePage() {
           2xl:flex 2xl:flex-row 2xl:justify-between 2xl:w-full 2xl:h-1/3 2xl:bottom-0
           "
         >
-          <div className="
+          <div
+            className="
           // small screen
           mt-12
           // Big screen
           2xl:ml-6 2xl:mt-12 2xl:w-1/3
-          ">
+          "
+          >
             <h1>Player Full Name</h1>
             <p className="text-gray-400 text-sm">@userName</p>
           </div>
 
-          <div className="
+          <div
+            className="
            // small screen
            flex flex-row  w-fit justify-center  mt-4 mb-6
            // Big screen
            2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
-          ">
+          "
+          >
             <CardInfo cardImg="ranking.png" cardName="Ranking" value="15" />
             <CardInfo cardImg="matches.png" cardName="Matches" value="152" />
             <CardInfo cardImg="win-rate.png" cardName="Win Rate" value="80%" />
@@ -81,31 +84,73 @@ export default function HomePage() {
       </div>
 
       {/* this is the HomePage Sections */}
-      <div className=" flex mx-auto
+      <div
+        className=" flex mx-auto
       
       // small screen
       flex-col  h-fit mt-16 w-5/6 justify-center
       // Big screen
       2xl:flex-row 2xl:justify-between 2xl:max-w-8xl 2xl:h-96  2xl:mt-16 2xl:w-5/6  
 
-      ">
-        <HomeSection sectionName="Game History" btnName="See All History" 
-        btnClicked={()=>{
-          router.push('HomePage/HistoryPage');
-        }}
-        
+      "
+      >
+        <HomeSection
+          sectionName="Game History"
+          btnName="See All History"
+          btnClicked={() => {
+            router.push("/HistoryPage");
+          }}
         >
-        <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>
-        <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>
-        <HistoryItem firstPlayerName="hamza boumahdi" firstPlayerPoints={12} secondPlayerName="jalal motaya" secondPlayerPoints={5}/>
+          <HistoryItem
+            firstPlayerName="hamza boumahdi"
+            firstPlayerPoints={12}
+            secondPlayerName="jalal motaya"
+            secondPlayerPoints={5}
+            firstPlayerImg="profile-img.png"
+            secondPlayerImg="profile-img.png"
+          />
+          <HistoryItem
+            firstPlayerName="hamza boumahdi"
+            firstPlayerPoints={12}
+            secondPlayerName="jalal motaya"
+            secondPlayerPoints={5}
+            firstPlayerImg="profile-img.png"
+            secondPlayerImg="profile-img.png"
+          />
+          <HistoryItem
+            firstPlayerName="hamza boumahdi"
+            firstPlayerPoints={12}
+            secondPlayerName="jalal motaya"
+            secondPlayerPoints={5}
+            firstPlayerImg="profile-img.png"
+            secondPlayerImg="profile-img.png"
+          />
         </HomeSection>
         <HomeSection
           sectionName="Last Achievements"
           btnName="See All Achievements"
+          btnClicked={() => {
+            router.push("/AchievementsPage");
+          }}
         >
-          <AchievementItem image="achiev1.png" title="Novice" mission="Win 10 matches" type="selver"/>
-          <AchievementItem image="achiev1.png" title="Novice" mission="Win 10 matches" type="bronz"/>
-          <AchievementItem image="achiev1.png" title="Novice" mission="Win 10 matches" type="gold"/>
+          <AchievementItem
+            image="achiev1.png"
+            title="Novice"
+            mission="Win 10 matches"
+            type="selver"
+          />
+          <AchievementItem
+            image="achiev1.png"
+            title="Novice"
+            mission="Win 10 matches"
+            type="bronz"
+          />
+          <AchievementItem
+            image="achiev1.png"
+            title="Novice"
+            mission="Win 10 matches"
+            type="gold"
+          />
         </HomeSection>
       </div>
     </div>

@@ -11,7 +11,7 @@ return(
          </div>
          <div className="flex flex-row justify-center p-2">
 
-        <div onClick={prompt.onClick} className="my-auto">
+        <div onClick={prompt.onClick} className="my-auto ">
         <FiMenu className="my-auto w-8 h-8 text-gray-400 cursor-pointer
         hover:text-white 
         
