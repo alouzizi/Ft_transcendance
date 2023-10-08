@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 
 export default function MyDropDown(prompt: { items: string[] }) {
