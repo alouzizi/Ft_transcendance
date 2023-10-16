@@ -18,7 +18,9 @@ import {
       const { email, password } = dto;
   
       const userExists = await this.prisma.user.findUnique({
-        where: { email },
+        where: { 
+          email: dto.email,
+        },
       });
   
       if (userExists) {
