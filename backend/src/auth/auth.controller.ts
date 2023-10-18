@@ -1,24 +1,37 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { FortyTwoStrategy } from './42.strategy';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { CreateUserDto } from 'src/user/dto/dto/user.dto';
+import { UserService } from 'src/user/UserService';
+import { LoginDto } from './dto/auth.dto';
+import { AuthService } from './auth.service';
+import { RefreshJwtGuard } from './guards/refresh.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private fortyTwoStrategy: FortyTwoStrategy) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
-  @Get('42')
-  @UseGuards(AuthGuard('42'))
-  async fortyTwoAuth() {}
+  @Post('register')
+  async registerUser(@Body() dto: CreateUserDto) {
+    return await this.userService.create(dto);
+  }
 
-  @Get('42/callback')
-  @UseGuards(AuthGuard('42'))
-  async fortyTwoAuthCallback(@Req() req, @Res() res) {
-    // Handle the authenticated user here
-    res.send(req.user);
+  @Post('login')
+  async login(@Body() dto: LoginDto) {
+    return await this.authService.login(dto);
+  }
+
+  @UseGuards(RefreshJwtGuard)
+  @Post('refresh')
+  async refreshToken(@Request() req) {
+    console.log('refreshed');
+
+    return await this.authService.refreshToken(req.user);
   }
 }
 
-//todo hj
+
 //prisma
 //dto
 // jwt

@@ -1,21 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from './dto/auth.dto';
+import { UserService } from 'src/user/UserService';
+import { compare } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+
+const EXPIRE_TIME = 20 * 1000;
 
 @Injectable()
 export class AuthService {
-  constructor() {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
-  async register(user: { username: string; email: string; password: string }) {
-    const createdUser = await this.prisma.user.create({
-      data: user,
-    });
-    return createdUser;
+  async login(dto: LoginDto) {
+    const user = await this.validateUser(dto);
+    const payload = {
+      username: user.email,
+      sub: {
+        name: user.name,
+      },
+    };
+
+    return {
+      user,
+      backendTokens: {
+        accessToken: await this.jwtService.signAsync(payload, {
+          expiresIn: '20s',
+          secret: process.env.jwtSecretKey,
+        }),
+        refreshToken: await this.jwtService.signAsync(payload, {
+          expiresIn: '7d',
+          secret: process.env.jwtRefreshTokenKey,
+        }),
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+      },
+    };
   }
 
-  async validateUser(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
-    if (user && user.password === password) {
-      return user;
+  async validateUser(dto: LoginDto) {
+    const user = await this.userService.findByEmail(dto.username);
+
+    if (user && (await compare(dto.password, user.password))) {
+      const { password, ...result } = user;
+      return result;
     }
-    return null;
+    throw new UnauthorizedException();
+  }
+
+  async refreshToken(user: any) {
+    const payload = {
+      username: user.username,
+      sub: user.sub,
+    };
+
+    return {
+      accessToken: await this.jwtService.signAsync(payload, {
+        expiresIn: '20s',
+        secret: process.env.jwtSecretKey,
+      }),
+      refreshToken: await this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+        secret: process.env.jwtRefreshTokenKey,
+      }),
+      expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+    };
   }
 }
