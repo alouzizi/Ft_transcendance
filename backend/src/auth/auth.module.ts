@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+import { FortyTwoStrategy } from './42.strategy';
 
 @Module({
-  imports: [JwtModule, PassportModule],
-  controllers: [AuthController],
-  providers: [AuthService],
+  providers: [FortyTwoStrategy],
+  exports: [FortyTwoStrategy],
 })
 export class AuthModule {}

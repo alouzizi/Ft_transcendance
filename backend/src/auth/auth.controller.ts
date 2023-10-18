@@ -1,27 +1,22 @@
-import { Body, Controller, Get, Post, Request, Response } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { FortyTwoStrategy } from './42.strategy';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private fortyTwoStrategy: FortyTwoStrategy) {}
 
-  @Post('signup')
-  signup(@Body() dto: AuthDto) {
-    return this.authService.signup(dto);
-  }
+  @Get('42')
+  @UseGuards(AuthGuard('42'))
+  async fortyTwoAuth() {}
 
-  @Post('signin')
-  async signin(@Request() req, @Response() res, @Body() dto: AuthDto) {
-    return this.authService.signin(dto, req, res);
-  }
-
-  @Get('signout')
-  signout(@Request() req, @Response() res) {
-    return this.authService.signout(req, res);
+  @Get('42/callback')
+  @UseGuards(AuthGuard('42'))
+  async fortyTwoAuthCallback(@Req() req, @Res() res) {
+    // Handle the authenticated user here
+    res.send(req.user);
   }
 }
-
 
 //todo hj
 //prisma
