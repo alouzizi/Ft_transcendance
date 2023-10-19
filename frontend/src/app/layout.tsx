@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/StartComps/Navbar";
 import "../styles/globals.css";
 import { Inter } from "next/font/google";
 
@@ -12,6 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Navbar />
         <div className="bg-color-main w-screen h-screen">{children}</div>
       </body>
     </html>
