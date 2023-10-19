@@ -6,15 +6,12 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prisma:dev:deploy": "npx prisma migrate deploy",
     "db:dev:rm": "docker compose rm -s -f -v",
     "db:dev:up": "docker compose up dev-db -d",
     "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up",
-    "start:dev": "npm run db:dev:restart && npm run prisma:dev:deploy && npx nest start --watch",
-    
-    "start:test": "npm run prisma:dev:deploy && nest start --watch",
-    "pretest:e2e": "npm run db:test:restart",
-    "test:e2e": "node -r dotenv/config ./node_modules/.bin/jest --watch --no-cache --config ./test/jest-e2e.json",
+    "start:dev": "npx nest start --watch",
+    "s": "npm run db:dev:restart && npm run start:dev",
+    "deploy": "npx prisma migrate deploy && npx prisma studio",
    
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
