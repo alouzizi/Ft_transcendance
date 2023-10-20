@@ -1,10 +1,10 @@
 "use client";
 
-import AchievementItem from "@/components/AchievementsComp/AchievementItem";
-import CardInfo from "@/components/homeComp/CardInfo";
-import HistoryItem from "@/components/historyComp/HistoryItem";
-import HomeSection from "@/components/homeComp/HomeSection";
-import LevelBar from "@/components/homeComp/LevelBar";
+import AchievementItem from "@/components/ ProjectComp/AchievementsComp/AchievementItem";
+import CardInfo from "@/components/ ProjectComp/homeComp/CardInfo";
+import HistoryItem from "@/components/ ProjectComp/historyComp/HistoryItem";
+import HomeSection from "@/components/ ProjectComp/homeComp/HomeSection";
+import LevelBar from "@/components/ ProjectComp/homeComp/LevelBar";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {

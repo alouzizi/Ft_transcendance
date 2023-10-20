@@ -2,8 +2,8 @@
 import "../styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import SideBar from "../../components/sideBar/SideBar";
-import NavBar from "@/components/navBar/NavBar";
+import SideBar from "../../components/ ProjectComp/sideBar/SideBar";
+import NavBar from "@/components/ ProjectComp/navBar/NavBar";
 import { useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
