@@ -1,5 +1,5 @@
 "use client";
-import "../styles/globals.css";
+import "../../styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import SideBar from "../../components/ ProjectComp/sideBar/SideBar";
