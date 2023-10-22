@@ -22,6 +22,7 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
                     refreshToken: string,
                     profile: Profile,
           ){
+            
                   const { username } = profile
 		              const user = {
 			                  username: username,

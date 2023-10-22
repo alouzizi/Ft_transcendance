@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 model User {
@@ -14,5 +14,4 @@ model User {
   email     String  @unique
   name      String?
   password  String
-
 }
