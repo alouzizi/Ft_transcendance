@@ -1,33 +1,21 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { CreateUserDto } from 'src/user/dto/dto/user.dto';
-import { UserService } from 'src/user/UserService';
-import { LoginDto } from './dto/auth.dto';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard, PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { RefreshJwtGuard } from './guards/refresh.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-  ) {}
+  constructor(private authservoice: AuthService ) {}
 
-  @Post('register')
-  async regi sterUser(@Body() dto: CreateUserDto) {
-    return await this.userService.create(dto);
+  @Get('login42')
+  @UseGuards(AuthGuard('42-intranet'))
+  async loginWith42() {
   }
 
-  @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return await this.authService.login(dto);
-  }
+  @Get('callback')
+  @UseGuards(AuthGuard('42-intranet'))
+  async callbackWith42(@Req() req) {
 
-  @UseGuards(RefreshJwtGuard)
-  @Post('refresh')
-  async refreshToken(@Request() req) {
-    console.log('refreshed');
-
-    return await this.authService.refreshToken(req.user);
+    return this.authservoice.validateUser(req.user);
   }
 }
 

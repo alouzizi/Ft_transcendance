@@ -1,14 +1,35 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { UserService } from './UserService';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { UserService } from './user.service';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard('42-intranet'))
+  @Get('42-intranet/login')
+  async loginWith42() {
+    // Trigger 42 Intranet authentication
+  }
+
+  @Post()
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createUser(createUserDto);
+  }
+
   @Get(':id')
-  async getUserProfile(@Param('id') id: number) {
-    return await this.userService.findById(id);
+  async getUser(@Param('id') id: number) {
+    return this.userService.getUserById(id);
+  }
+
+  @Put(':id')
+  async updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  async deleteUser(@Param('id') id: number) {
+    return this.userService.deleteUser(id);
   }
 }

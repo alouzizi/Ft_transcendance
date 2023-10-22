@@ -1,19 +1,12 @@
 import { Module } from '@nestjs/common';
-
-import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
+import { PassportModule } from '@nestjs/passport';
+import { FortyTwoIntranetStrategy } from './auth/42-intranet.strategy';
 import { AuthModule } from './auth/auth.module';
-import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    UserModule,
-    AuthModule,
+    AuthModule
+    PassportModule.register({ defaultStrategy: '42-intranet' }),
   ],
-  controllers: [],
-  providers: [PrismaService],
 })
 export class AppModule {}
