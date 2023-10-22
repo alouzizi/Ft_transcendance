@@ -10,3 +10,14 @@ export class CreateUserDto {
   @IsString()
   password: string;
 }
+
+export class UpdateUserDto {
+  @IsString()
+  name: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}

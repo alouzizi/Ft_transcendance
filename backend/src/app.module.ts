@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    AuthModule
+    AuthModule,
     PassportModule.register({ defaultStrategy: '42-intranet' }),
   ],
 })

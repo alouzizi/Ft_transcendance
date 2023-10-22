@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile} from 'passport-42';
 import { AuthService } from './auth.service';
-import { User } from '../user/user.entity';
+// import { User } from '../user/user.entity';
 
 @Injectable()
 export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-intranet') {
@@ -21,7 +21,7 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
                     accessToken: string,
                     refreshToken: string,
                     profile: Profile,
-          ): Promise<user> {
+          ){
                   const { username } = profile
 		              const user = {
 			                  username: username,
