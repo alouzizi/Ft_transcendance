@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const dto_1 = require("./dto");
+const refresh_guard_1 = require("./guard/refresh.guard");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -25,6 +26,9 @@ let AuthController = class AuthController {
     }
     signup(dto) {
         return this.authService.signup(dto);
+    }
+    async refreshToken(req) {
+        return this.authService.refreshToken(req.user);
     }
 };
 exports.AuthController = AuthController;
@@ -43,6 +47,14 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.AuthDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signup", null);
+__decorate([
+    (0, common_1.UseGuards)(refresh_guard_1.RefreshJwtGuard),
+    (0, common_1.Post)("refresh"),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refreshToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

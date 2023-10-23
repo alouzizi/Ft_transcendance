@@ -5,9 +5,12 @@ import {
   HttpStatus,
   Post,
   Req,
+  Request,
+  UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
+import { RefreshJwtGuard } from "./guard/refresh.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -22,5 +25,11 @@ export class AuthController {
   @Post("signup")
   signup(@Body() dto: AuthDto) {
     return this.authService.signup(dto);
+  }
+
+  @UseGuards(RefreshJwtGuard)
+  @Post("refresh")
+  async refreshToken(@Request() req) {
+    return this.authService.refreshToken(req.user);
   }
 }

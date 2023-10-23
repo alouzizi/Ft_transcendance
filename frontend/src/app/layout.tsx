@@ -5,15 +5,19 @@ import { Inter } from "next/font/google";
 import NavBar from "@/components/ ProjectComp/navBar/NavBar";
 import { useState } from "react";
 import SideBar from "@/components/ ProjectComp/sideBar/SideBar";
+import Provider from "./context/client-provider";
+import { getServerSession } from "next-auth";
+import { options } from "./api/auth/[...nextauth]/options";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [show, setShow] = useState(false);
+  const session = await getServerSession(options);
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -46,7 +50,7 @@ export default function RootLayout({
          2xl:pl-20
          `}
           >
-            {children}
+            <Provider session={session}>{children}</Provider>
           </div>
         </div>
       </body>

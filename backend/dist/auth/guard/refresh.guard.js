@@ -9,11 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtGuard = void 0;
+exports.RefreshJwtGuard = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
-let JwtGuard = class JwtGuard {
+let RefreshJwtGuard = class RefreshJwtGuard {
     constructor(jwtService, config) {
         this.jwtService = jwtService;
         this.config = config;
@@ -26,7 +26,7 @@ let JwtGuard = class JwtGuard {
         }
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.config.get("JWT_SECRET"),
+                secret: this.config.get("JWT_RefreshTokenKey"),
             });
             request["user"] = payload;
         }
@@ -37,13 +37,13 @@ let JwtGuard = class JwtGuard {
     }
     extractTokenFromHeader(request) {
         const [type, token] = request.headers.authorization.split(" ") ?? [];
-        return type === "Bearer" ? token : undefined;
+        return type === "Refresh" ? token : undefined;
     }
 };
-exports.JwtGuard = JwtGuard;
-exports.JwtGuard = JwtGuard = __decorate([
+exports.RefreshJwtGuard = RefreshJwtGuard;
+exports.RefreshJwtGuard = RefreshJwtGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService,
         config_1.ConfigService])
-], JwtGuard);
-//# sourceMappingURL=jwt.guard.js.map
+], RefreshJwtGuard);
+//# sourceMappingURL=refresh.guard.js.map

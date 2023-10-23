@@ -31,12 +31,12 @@ let AuthService = class AuthService {
                     hash: hash,
                 },
             });
-            return this.signToken(user.id, user.email);
+            return this.signToken(user);
         }
         catch (error) {
             if (error instanceof library_1.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    throw new common_1.ForbiddenException('Credential taken');
+                if (error.code === "P2002") {
+                    throw new common_1.ForbiddenException("Credential taken");
                 }
             }
             throw error;
@@ -49,26 +49,51 @@ let AuthService = class AuthService {
             },
         });
         if (!user) {
-            throw new common_1.ForbiddenException('Credential incorrect');
+            throw new common_1.ForbiddenException("Credential incorrect");
         }
         const pwMatches = await argon.verify(user.hash, dto.password);
         if (!pwMatches) {
-            throw new common_1.ForbiddenException('Credential incorrect');
+            throw new common_1.ForbiddenException("Credential incorrect");
         }
-        return this.signToken(user.id, user.email);
+        return this.signToken(user);
     }
-    async signToken(userId, email) {
+    async signToken(user) {
         const payload = {
-            sub: userId,
-            email: email,
+            sub: user.id,
+            email: user.email,
         };
-        const secret = this.config.get('JWT_SECRET');
-        const token = await this.jwt.signAsync(payload, {
-            expiresIn: '15m',
-            secret: secret,
+        const access_token = await this.jwt.signAsync(payload, {
+            expiresIn: "20s",
+            secret: this.config.get("JWT_SECRET"),
+        });
+        const refresh_token = await this.jwt.signAsync(payload, {
+            expiresIn: "7d",
+            secret: this.config.get("JWT_RefreshTokenKey"),
+        });
+        const myUser = user;
+        delete myUser.hash;
+        return {
+            user: myUser,
+            access_token: access_token,
+            refresh_token: refresh_token,
+        };
+    }
+    async refreshToken(user) {
+        const payload = {
+            sub: user.id,
+            email: user.email,
+        };
+        const access_token = await this.jwt.signAsync(payload, {
+            expiresIn: "20s",
+            secret: this.config.get("JWT_SECRET"),
+        });
+        const refresh_token = await this.jwt.signAsync(payload, {
+            expiresIn: "7d",
+            secret: this.config.get("JWT_RefreshTokenKey"),
         });
         return {
-            access_token: token,
+            access_token: access_token,
+            refresh_token: refresh_token,
         };
     }
 };

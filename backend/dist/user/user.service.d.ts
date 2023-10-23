@@ -1,9 +1,9 @@
 import { User } from "@prisma/client";
-import { UserService } from "./user.service";
-export declare class UserController {
-    private userService;
-    constructor(userService: UserService);
-    getMe(user: User): Promise<{
+import { PrismaService } from "src/prisma/prisma.service";
+export declare class UserService {
+    private prisma;
+    constructor(prisma: PrismaService);
+    getMyUser(user: User): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
