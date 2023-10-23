@@ -31,5 +31,6 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
 
       }
       return this.authService.validateUser(user)
+      // return profile;
   }
 }
