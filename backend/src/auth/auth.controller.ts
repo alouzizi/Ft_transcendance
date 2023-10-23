@@ -9,7 +9,6 @@ export class AuthController {
   @Get('login42')
   @UseGuards(AuthGuard('42-intranet'))
   async loginWith42() {
-    console.log("hhhhhh")
   }
 
   @Get('42-intranet/callback')
