@@ -1,28 +1,44 @@
-version: '3.8'
+# version: '3.8'
 
-services:
-  backend:
-    image: my-app-backend
-    build:
-      context: ./backend
-    ports:
-      - 5432:5432
-    depends_on:
-      - database
-  frontend:
-    image: my-app-frontend
-    build:
-      context: ./frontend
-    ports:
-      - "3001:3000"
-  database:
-    image: postgres:latest
+# services:
+#   backend:
+#     image: my-app-backend
+#     build:
+#       context: ./backend
+#     ports:
+#       - 5432:5432
+#     depends_on:
+#       - database
+#   frontend:
+#     image: my-app-frontend
+#     build:
+#       context: ./frontend
+#     ports:
+#       - "3001:3000"
+#   database:
+#     image: postgres:latest
     
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: 123
+#       POSTGRES_DB: postgres
+#   adminer:
+#     image: adminer
+#     ports:
+#       - 8080:8080
+
+
+version: '3.8'
+services:
+  database:
+    image: postgres:13
+    ports:     
+      - 5434:5432
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: postgres
-  adminer:
-    image: adminer
-    ports:
-      - 8080:8080
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: nest
+    networks:
+        - mynetwork
+networks:
+    mynetwork:
