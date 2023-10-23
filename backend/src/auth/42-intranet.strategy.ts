@@ -22,13 +22,13 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
                     refreshToken: string,
                     profile: Profile,
           ){
-            
                   const { username } = profile
 		              const user = {
 			                  username: username,
 			                  email: profile['emails'][0]['value'],
 			                  password: username,
 			                  login42: username, 
+
       }
       return this.authService.validateUser(user)
   }
