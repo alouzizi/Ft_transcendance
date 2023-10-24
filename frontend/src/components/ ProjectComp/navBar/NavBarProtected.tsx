@@ -1,6 +1,6 @@
 "use client";
 import { FiMenu } from "react-icons/fi";
-import SideBar from "../sideBar/SideBar";
+import SideBar from "./sideBar/SideBar";
 import { ReactNode, useState } from "react";
 export default function NavBarProtected(prompt: { children: ReactNode }) {
   const [show, setShow] = useState(false);
@@ -15,7 +15,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
           <div
             onClick={() => {
               setShow((prev) => !prev);
-              console.log(show + " click");
+              // console.log(show + " click");
             }}
             className="my-auto "
           >

@@ -1,3 +1,4 @@
+"use client";
 import OpenAccountForm from "@/components/StarterComp/form/OpenAccountForm";
 
 export default function openAccount() {

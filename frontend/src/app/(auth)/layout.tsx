@@ -1,3 +1,4 @@
+"use client";
 export default function AuthLayout(prompt: { children: React.ReactNode }) {
   return (
     <div className="bg-color-main w-screen h-screen py-16">

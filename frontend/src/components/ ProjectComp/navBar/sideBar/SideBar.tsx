@@ -6,6 +6,7 @@ import { MdLeaderboard } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 import { IoGameController } from "react-icons/io5";
 import { IoSettingsSharp } from "react-icons/io5";
+import { BiSolidLogOut } from "react-icons/bi";
 import SBSection from "./SBSection";
 import SBItems from "./SBItems";
 import { useState } from "react";
@@ -72,6 +73,11 @@ export default function SideBar() {
       icon: <IoSettingsSharp className={`${getIconStyle(6)}`} />,
       index: 6,
     },
+    {
+      pageName: "api/auth/signout",
+      icon: <BiSolidLogOut className={`${getIconStyle(6)}`} />,
+      index: 7,
+    },
   ];
 
   const handleItemClick = (index: number) => {
@@ -86,11 +92,10 @@ export default function SideBar() {
   };
 
   return (
-    <div 
-    id="SideBar"
-    className=" flex flex-col  pb-8 pt-20 bg-color-main-dark w-28 h-screen fixed top-0 ">
-     
-
+    <div
+      id="SideBar"
+      className=" flex flex-col  pb-8 pt-20 bg-color-main-dark w-28 h-screen fixed top-0 "
+    >
       <div className=" flex flex-col justify-between h-5/6 ">
         <SBSection sectionName="Home">
           {sBItemsList.slice(0, 5).map((item) => (
@@ -105,7 +110,7 @@ export default function SideBar() {
         </SBSection>
 
         <SBSection sectionName="Profile">
-          {sBItemsList.slice(5, 7).map((item) => (
+          {sBItemsList.slice(5, 8).map((item) => (
             <SBItems
               key={item.pageName}
               pageName={item.pageName}

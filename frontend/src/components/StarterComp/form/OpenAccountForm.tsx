@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import GoogleSignInButton from "../GoogleSignInButton";
+import { Backend_URL } from "@/lib/Constants";
 
 export default function OpenAccountForm() {
   const FormSchema = z
@@ -37,6 +38,24 @@ export default function OpenAccountForm() {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
+    // const res = await fetch(Backend_URL + "/auth/signup", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     email: data.email,
+    //     password: data.password,
+    //   }),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+    // if (!res.ok) {
+    //   alert(res.statusText);
+    //   return;
+    // }
+    // const response = await res.json();
+    // alert("User Registered!");
+
+    // console.log(response);
   }
 
   return (
