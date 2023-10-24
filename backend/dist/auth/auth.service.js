@@ -84,7 +84,7 @@ let AuthService = class AuthService {
             email: user.email,
         };
         const access_token = await this.jwt.signAsync(payload, {
-            expiresIn: "20s",
+            expiresIn: "5h",
             secret: this.config.get("JWT_SECRET"),
         });
         const refresh_token = await this.jwt.signAsync(payload, {

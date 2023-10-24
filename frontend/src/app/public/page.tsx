@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import type { NextRequest } from "next/server";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export default async function Protected(req: NextRequest): Promise<any> {
-  const session = await getServerSession(options);
+  const session = await getServerSession(authOptions);
   console.log(session);
   return (
     <div className="grid grid-cols-2 text-white p-4">

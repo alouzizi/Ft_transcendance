@@ -91,8 +91,9 @@ import { AuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
+import { Backend_URL } from "@/lib/Constants";
 
-export const options: AuthOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -101,60 +102,37 @@ export const options: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const res = await login(credentials?.email, credentials?.password);
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+        const res = await login(credentials.email, credentials.password);
         if (res.status === "ok") {
           console.log(res);
           return res.token;
         } else if (res.status === "error") {
-          console.log(res.msg);
+          console.log(res);
           return null;
         }
       },
     }),
   ],
   session: { strategy: "jwt" },
-  callbacks: {
-    async session ({ session, token, user }) {
-      const sanitizedToken = Object.keys(token).reduce((p, c) => {
-        // strip unnecessary properties
-        if (
-          c !== "iat" &&
-          c !== "exp" &&
-          c !== "jti" &&
-          c !== "apiToken"
-        ) {
-          return { ...p, [c]: token[c] }
-        } else {
-          return p
-        }
-      }, {})
-      return { ...session, user: sanitizedToken, apiToken: token.apiToken }
-    },
-    async jwt ({ token, user, account, profile }) {
-      if (typeof user !== "undefined") {
-        // user has just signed in so the user object is populated
-        return user as unknown as JWT
-      }
-      return token
-    }
-  }
+  callbacks: {},
 };
 
-const BASE_URL = "http://localhost:4000";
-
-const login = async (
-  userName: string | undefined,
-  password: string | undefined
-) => {
-  console.log("userName: " + userName);
+const login = async (email: string, password: string) => {
+  console.log("email: " + email);
   console.log("password: " + password);
   try {
-    const response = await fetch(`${BASE_URL}/auth/signin`, {
+    const response = await fetch(`${Backend_URL}/auth/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userName, password: password }),
+      body: JSON.stringify({ email: email, password: password }),
     });
     const data = await response.json();
+    if (data.statusCode >= 400) {
+      return { status: "error", msg: data.message[0] };
+    }
     return { status: "ok", token: data.access_token };
   } catch (error: any) {
     return { status: "error", msg: error.message };
