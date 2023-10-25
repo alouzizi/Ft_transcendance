@@ -5,6 +5,9 @@ import { Backend_URL } from "@/lib/Constants";
 import { AuthOptions } from "next-auth";
 
 export const authOptions: AuthOptions = {
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -13,6 +16,7 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        console.log("=================8888");
         if (!credentials?.email || !credentials?.password) {
           return null;
         }

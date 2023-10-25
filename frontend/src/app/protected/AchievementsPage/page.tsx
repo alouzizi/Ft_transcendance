@@ -16,7 +16,7 @@ export default function AchievementsPage() {
       <div className="flex flex-row mt-12 mb-8 ml-8  md:ml-24">
         <IoMdArrowRoundBack
           onClick={() => {
-            router.push("/HomePage");
+            router.back();
           }}
           className=" my-auto mr-2 text-gray-400 hover:text-white active:text-gray-400 text-2xl md:text-3xl"
         />
@@ -48,25 +48,25 @@ export default function AchievementsPage() {
         "
         >
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="gold"
           />
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="bronz"
           />
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="selver"
           />
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="bronz"

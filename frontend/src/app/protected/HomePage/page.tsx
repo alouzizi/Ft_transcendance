@@ -39,7 +39,7 @@ export default function HomePage() {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
-          src="profile-img.png"
+          src="https://images.alphacoders.com/129/1294445.jpg"
           alt=""
         />
 
@@ -76,9 +76,21 @@ export default function HomePage() {
            2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
           "
           >
-            <CardInfo cardImg="ranking.png" cardName="Ranking" value="15" />
-            <CardInfo cardImg="matches.png" cardName="Matches" value="152" />
-            <CardInfo cardImg="win-rate.png" cardName="Win Rate" value="80%" />
+            <CardInfo
+              cardImg="https://drive.google.com/uc?export=download&id=1CjxIhlvR6rv1IZDnOwkTXoA4p9FSc7SZ"
+              cardName="Ranking"
+              value="15"
+            />
+            <CardInfo
+              cardImg="https://drive.google.com/uc?export=download&id=1bpBue-PagDnzK8I4KtlMLCchYmEewKDb"
+              cardName="Matches"
+              value="152"
+            />
+            <CardInfo
+              cardImg="https://drive.google.com/uc?export=download&id=14xEy2ZYs63ypZ8nhiIXGc2RCwJLSpfRC"
+              cardName="Win Rate"
+              value="80%"
+            />
           </div>
         </div>
       </div>
@@ -98,7 +110,7 @@ export default function HomePage() {
           sectionName="Game History"
           btnName="See All History"
           btnClicked={() => {
-            router.push("/HistoryPage");
+            router.push("/protected/HistoryPage");
           }}
         >
           <HistoryItem
@@ -106,47 +118,47 @@ export default function HomePage() {
             firstPlayerPoints={12}
             secondPlayerName="jalal motaya"
             secondPlayerPoints={5}
-            firstPlayerImg="profile-img.png"
-            secondPlayerImg="profile-img.png"
+            firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
+            secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
           />
           <HistoryItem
             firstPlayerName="hamza boumahdi"
             firstPlayerPoints={12}
             secondPlayerName="jalal motaya"
             secondPlayerPoints={5}
-            firstPlayerImg="profile-img.png"
-            secondPlayerImg="profile-img.png"
+            firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
+            secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
           />
           <HistoryItem
             firstPlayerName="hamza boumahdi"
             firstPlayerPoints={12}
             secondPlayerName="jalal motaya"
             secondPlayerPoints={5}
-            firstPlayerImg="profile-img.png"
-            secondPlayerImg="profile-img.png"
+            firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
+            secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
           />
         </HomeSection>
         <HomeSection
           sectionName="Last Achievements"
           btnName="See All Achievements"
           btnClicked={() => {
-            router.push("/AchievementsPage");
+            router.push("/protected/AchievementsPage");
           }}
         >
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="selver"
           />
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="bronz"
           />
           <AchievementItem
-            image="achiev1.png"
+            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
             title="Novice"
             mission="Win 10 matches"
             type="gold"

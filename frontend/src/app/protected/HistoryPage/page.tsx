@@ -16,7 +16,7 @@ export default function HistoryPage() {
       <div className="flex flex-row mt-12 mb-8 ml-8  md:ml-24">
         <IoMdArrowRoundBack
           onClick={() => {
-            router.push("/HomePage");
+            router.back();
           }}
           className=" my-auto mr-2 text-gray-400 hover:text-white active:text-gray-400 text-2xl md:text-3xl"
         />
@@ -36,23 +36,23 @@ export default function HistoryPage() {
         <MyDropDown items={items} />
         <HistoryItem
           firstPlayerName="hamza boumahdi"
-          firstPlayerImg="profile-img.png"
-          secondPlayerImg="profile-img.png"
+          firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
+          secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
           firstPlayerPoints={12}
           secondPlayerName="jalal motaya"
           secondPlayerPoints={5}
         />
         <HistoryItem
-          firstPlayerImg="profile-img.png"
-          secondPlayerImg="profile-img.png"
+          firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
+          secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
           firstPlayerName="hamza boumahdi"
           firstPlayerPoints={1}
           secondPlayerName="jalal motaya"
           secondPlayerPoints={5}
         />
         <HistoryItem
-          firstPlayerImg="profile-img.png"
-          secondPlayerImg="profile-img.png"
+          firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
+          secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
           firstPlayerName="hamza boumahd"
           firstPlayerPoints={5}
           secondPlayerName="jalal motaya"

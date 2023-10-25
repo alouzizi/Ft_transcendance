@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import GoogleSignInButton from "../GoogleSignInButton";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
   const FormSchema = z.object({
@@ -22,15 +23,25 @@ export default function LoginForm() {
     password: z
       .string()
       .min(1, "Password is required")
-      .min(8, "Password must have 8 characters"),
+      .min(4, "Password must have 8 characters"),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
+    const res = await signIn("Credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: true,
+      callbackUrl: "/protected/HomePage",
+    });
+    console.log("res ===");
+    console.log(res);
+    console.log("res ===");
+    // signIn();
   }
 
   return (

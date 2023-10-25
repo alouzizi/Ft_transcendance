@@ -38,16 +38,12 @@ export default function OpenAccountForm() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
+    console.log("backend: ===> " + Backend_URL + "/auth/signup");
     try {
       const res = await fetch(Backend_URL + "/auth/signup", {
         method: "POST",
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email, password: data.password }),
       });
       if (!res.ok) {
         alert(res.statusText);
@@ -58,7 +54,7 @@ export default function OpenAccountForm() {
 
       console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error("Error occurred: ", error);
     }
   }
 

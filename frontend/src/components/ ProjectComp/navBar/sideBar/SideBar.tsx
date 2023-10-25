@@ -39,43 +39,43 @@ export default function SideBar() {
 
   let sBItemsList = [
     {
-      pageName: "HomePage",
+      pageName: "protected/HomePage",
       icon: <GoHomeFill className={`${getIconStyle(0)}`} />,
       index: 0,
     },
     {
-      pageName: "ChatPage",
+      pageName: "protected/ChatPage",
       icon: <BsFillChatDotsFill className={`${getIconStyle(1)}`} />,
       index: 1,
     },
     {
-      pageName: "FriendsPage",
+      pageName: "protected/FriendsPage",
       icon: <FaUserFriends className={`${getIconStyle(2)}`} />,
       index: 2,
     },
     {
-      pageName: "LeaderboardPage",
+      pageName: "protected/LeaderboardPage",
       icon: <MdLeaderboard className={`${getIconStyle(3)}`} />,
       index: 3,
     },
     {
-      pageName: "GamePage",
+      pageName: "protected/GamePage",
       icon: <IoGameController className={`${getIconStyle(4)}`} />,
       index: 4,
     },
     {
-      pageName: "NotificationPage",
+      pageName: "protected/NotificationPage",
       icon: <IoMdNotifications className={`${getIconStyle(5)}`} />,
       index: 5,
     },
     {
-      pageName: "SettingsPage",
+      pageName: "protected/SettingsPage",
       icon: <IoSettingsSharp className={`${getIconStyle(6)}`} />,
       index: 6,
     },
     {
       pageName: "api/auth/signout",
-      icon: <BiSolidLogOut className={`${getIconStyle(6)}`} />,
+      icon: <BiSolidLogOut className={`${getIconStyle(7)}`} />,
       index: 7,
     },
   ];
@@ -133,7 +133,7 @@ export default function SideBar() {
          md:w-16 md:h-16
          
          "
-        src="profile-img.png"
+        src="https://images.alphacoders.com/129/1294445.jpg"
         alt=""
       />
     </div>

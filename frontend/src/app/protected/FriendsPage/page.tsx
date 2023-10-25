@@ -127,9 +127,15 @@ export default function FriendsPage() {
           >
             {`${itemsStatus} - 3`}
           </p>
-          <FriendItem friendImg={"profile-img.png"} />
-          <FriendItem friendImg={"profile-img.png"} />
-          <FriendItem friendImg={"profile-img.png"} />
+          <FriendItem
+            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
+          />
+          <FriendItem
+            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
+          />
+          <FriendItem
+            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
+          />
         </div>
       </div>
     </div>
