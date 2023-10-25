@@ -18,8 +18,10 @@ export declare class AuthService {
             firstName: string;
             lastName: string;
         };
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
     signin(dto: AuthDto): Promise<{
         user: {
@@ -31,8 +33,10 @@ export declare class AuthService {
             firstName: string;
             lastName: string;
         };
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
     signToken(user: User): Promise<{
         user: {
@@ -44,11 +48,15 @@ export declare class AuthService {
             firstName: string;
             lastName: string;
         };
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
     refreshToken(user: User): Promise<{
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
 }

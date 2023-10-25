@@ -13,8 +13,10 @@ export declare class AuthController {
             firstName: string;
             lastName: string;
         };
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
     signup(dto: AuthDto): Promise<{
         user: {
@@ -26,11 +28,15 @@ export declare class AuthController {
             firstName: string;
             lastName: string;
         };
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
     refreshToken(req: any): Promise<{
-        access_token: string;
-        refresh_token: string;
+        backendTokens: {
+            access_token: string;
+            refresh_token: string;
+        };
     }>;
 }

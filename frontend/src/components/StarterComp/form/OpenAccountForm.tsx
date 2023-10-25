@@ -36,26 +36,30 @@ export default function OpenAccountForm() {
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-    // const res = await fetch(Backend_URL + "/auth/signup", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     email: data.email,
-    //     password: data.password,
-    //   }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-    // if (!res.ok) {
-    //   alert(res.statusText);
-    //   return;
-    // }
-    // const response = await res.json();
-    // alert("User Registered!");
+    try {
+      const res = await fetch(Backend_URL + "/auth/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok) {
+        alert(res.statusText);
+        return;
+      }
+      const response = await res.json();
+      alert("User Registered!");
 
-    // console.log(response);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

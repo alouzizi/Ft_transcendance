@@ -63,7 +63,7 @@ let AuthService = class AuthService {
             email: user.email,
         };
         const access_token = await this.jwt.signAsync(payload, {
-            expiresIn: "20s",
+            expiresIn: "5h",
             secret: this.config.get("JWT_SECRET"),
         });
         const refresh_token = await this.jwt.signAsync(payload, {
@@ -74,8 +74,10 @@ let AuthService = class AuthService {
         delete myUser.hash;
         return {
             user: myUser,
-            access_token: access_token,
-            refresh_token: refresh_token,
+            backendTokens: {
+                access_token: access_token,
+                refresh_token: refresh_token,
+            },
         };
     }
     async refreshToken(user) {
@@ -92,8 +94,10 @@ let AuthService = class AuthService {
             secret: this.config.get("JWT_RefreshTokenKey"),
         });
         return {
-            access_token: access_token,
-            refresh_token: refresh_token,
+            backendTokens: {
+                access_token: access_token,
+                refresh_token: refresh_token,
+            },
         };
     }
 };
