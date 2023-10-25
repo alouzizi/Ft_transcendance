@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-// import { User } from '../user/user.entity';
-
+import { UserService } from 'src/users/UserService';
 @Injectable()
 export class AuthService {
-  // Implement your authentication logic here
-  async validateUser(user: any) {
-    // Validate the user and return the user object if valid
-    // You can use your own logic and database queries here
-    return user;
-  }
+  constructor(private usersService: UserService) {}
+  async validateUser(username: string, password: string) {}
+  //   const userExists = await this.usersService.doesUserExistByUsername(username);
+  
+  //   if (userExists) {
+  //     const user = await this.usersService.findByUsername(username);
+  //     // Rest of your authentication logic
+  //   } else {
+  //     throw new UnauthorizedException('User not found');
+  //   }
+  // }
+  return this.authservice.validateUser(req.user);
 }

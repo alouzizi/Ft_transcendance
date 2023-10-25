@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile} from 'passport-42';
 import { AuthService } from './auth.service';
-// import { User } from '../user/user.entity';
 
 @Injectable()
 export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-intranet') {
@@ -22,15 +21,23 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
                     refreshToken: string,
                     profile: Profile,
           ){
-                  const { username } = profile
+                  const {  id, username, email, first_name, last_name, image,wallet,cursus_users, _json } = profile 
 		              const user = {
+                        intra_id : profile.id,
 			                  username: username,
 			                  email: profile['emails'][0]['value'],
 			                  password: username,
-			                  login42: username, 
-
+                        first_name: first_name,
+                        last_name: last_name,
+                        profilePicture: image.link,
+                        wallet: wallet,
+                        level: cursus_users[1].level,
+			                  grade: cursus_users[1].grade,
+			                  // access_token: accessToken,
+			                  login42: _json,
       }
-      return this.authService.validateUser(user)
-      // return profile;
+      console.log(profile);
+      // return this.authService.validateUser(user)
+      return profile;
   }
 }

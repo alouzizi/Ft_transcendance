@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Res, Redirect } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './UserService';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
@@ -6,11 +6,12 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
   @UseGuards(AuthGuard('42-intranet'))
   @Get('42-intranet/login')
-  async loginWith42() {
-    // Trigger 42 Intranet authentication
+  async loginWith42(@Res() res) {
+    // Assuming you have access to the authenticated user's information,
+    // you can check if the user is in the database.
+    
   }
 
   @Post()

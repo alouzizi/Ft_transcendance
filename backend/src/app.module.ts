@@ -3,6 +3,7 @@ import { PassportModule } from '@nestjs/passport';
 import { FortyTwoIntranetStrategy } from './auth/42-intranet.strategy';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { UserService } from './users/UserService';
 
 @Module({
   imports: [
