@@ -1,13 +1,12 @@
 "use client";
-
-import AchievementItem from "@/components/ ProjectComp/AchievementsComp/AchievementItem";
-import CardInfo from "@/components/ ProjectComp/homeComp/CardInfo";
-import HistoryItem from "@/components/ ProjectComp/historyComp/HistoryItem";
-import HomeSection from "@/components/ ProjectComp/homeComp/HomeSection";
-import LevelBar from "@/components/ ProjectComp/homeComp/LevelBar";
+import CardInfo from "@/app/protected/DashboardPage/components/CardInfo";
+import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
+import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
+import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import { useRouter } from "next/navigation";
+import AchievementItem from "../AchievementsPage/components/AchievementItem";
 
-export default function HomePage() {
+export default function DashboardPage() {
   const router = useRouter();
 
   return (
@@ -95,7 +94,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* this is the HomePage Sections */}
+      {/* this is the DashboardPage Sections */}
       <div
         className=" flex mx-auto
       

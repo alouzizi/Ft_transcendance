@@ -14,10 +14,12 @@ import {
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import GoogleSignInButton from "../GoogleSignInButton";
 import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 
-export default function LoginForm() {
+export default function login() {
   const FormSchema = z.object({
     email: z.string().min(1, "Email is required").email("Invalid email"),
     password: z
@@ -29,18 +31,31 @@ export default function LoginForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-    const res = await signIn("Credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: true,
-      callbackUrl: "/protected/HomePage",
-    });
-    console.log("res ===");
-    console.log(res);
-    console.log("res ===");
+    try {
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        callbackUrl: "/protected/DashboardPage",
+      });
+      if (!res?.error) {
+        router.push(callbackUrl);
+      } else {
+        setError("invalid email or password");
+      }
+    } catch (error: any) {
+      // setLoading(false);
+      setError(error);
+    }
+    // console.log("res ===");
+    // console.log(res);
+    // console.log("res ===");
     // signIn();
   }
 
@@ -102,7 +117,7 @@ export default function LoginForm() {
             If you don&apos;t have an account, please&nbsp;
             <Link
               className="text-blue-500 hover:underline cursor-pointer"
-              href="/openAccount"
+              href="/auth/openAccount"
             >
               Sign up
             </Link>

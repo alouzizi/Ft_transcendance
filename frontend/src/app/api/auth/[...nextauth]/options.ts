@@ -6,11 +6,11 @@ import { AuthOptions } from "next-auth";
 
 export const authOptions: AuthOptions = {
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "Sign in",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },

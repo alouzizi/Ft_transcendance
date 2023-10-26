@@ -39,7 +39,7 @@ export default function SideBar() {
 
   let sBItemsList = [
     {
-      pageName: "protected/HomePage",
+      pageName: "protected/DashboardPage",
       icon: <GoHomeFill className={`${getIconStyle(0)}`} />,
       index: 0,
     },

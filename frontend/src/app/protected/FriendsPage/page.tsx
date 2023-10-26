@@ -1,6 +1,6 @@
 "use client";
 
-import FriendItem from "@/components/ ProjectComp/FriendsComp/FriendItem";
+import FriendItem from "@/app/protected/FriendsPage/components/FriendItem";
 import { useState } from "react";
 
 export default function FriendsPage() {

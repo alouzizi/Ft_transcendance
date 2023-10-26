@@ -1,8 +1,8 @@
 "use client";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-import HistoryItem from "@/components/ ProjectComp/historyComp/HistoryItem";
-import MyDropDown from "@/components/ ProjectComp/historyComp/MyDropDown";
+import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
+import MyDropDown from "@/app/protected/HistoryPage/components/MyDropDown";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 

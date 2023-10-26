@@ -1,5 +1,5 @@
+import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
-import { Button } from "../ui/button";
 
 export default function GoogleSignInButton(prompt: { children: ReactNode }) {
   const loginWithGoogle = () => {

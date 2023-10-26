@@ -1,10 +1,10 @@
 "use client";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-import MyDropDown from "@/components/ ProjectComp/historyComp/MyDropDown";
+import MyDropDown from "@/app/protected/HistoryPage/components/MyDropDown";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import AchievementItem from "@/components/ ProjectComp/AchievementsComp/AchievementItem";
+import AchievementItem from "./components/AchievementItem";
 
 export default function AchievementsPage() {
   const items = ["All", "Bronz", "Selver", "Gold"];

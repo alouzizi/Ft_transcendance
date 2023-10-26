@@ -16,7 +16,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
           </Link>
           <div className="flex flex-row space-x-2">
             <Link
-              href="api/auth/signin"
+              href="/api/auth/signin"
               className={buttonVariants({
                 variant: "outline",
                 className: "text-color-main bg-color-main-whith",
@@ -25,7 +25,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
               Login
             </Link>
             <Link
-              href="openAccount"
+              href="/auth/openAccount"
               className={buttonVariants({
                 variant: "outline",
                 className: "text-color-main bg-color-main-whith",
