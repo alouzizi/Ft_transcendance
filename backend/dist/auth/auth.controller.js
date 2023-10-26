@@ -25,6 +25,7 @@ let AuthController = class AuthController {
         return this.authService.signin(dto);
     }
     signup(dto) {
+        console.log(dto);
         return this.authService.signup(dto);
     }
     async refreshToken(req) {

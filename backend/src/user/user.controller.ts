@@ -1,18 +1,32 @@
-import { Controller, Get, Req, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { User } from "@prisma/client";
-import { Request } from "express";
-import { GetUser } from "src/auth/decorator";
-import { JwtGuard } from "src/auth/guard";
-import { UserService } from "./user.service";
+import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { UserService } from './user.service';
 
-@UseGuards(JwtGuard)
-@Controller("users")
+@Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
-  @Get("me")
-  async getMe(@GetUser("") user: User) {
-    return this.userService.getMyUser(user);
+
+  // @UseGuards(JwtGuard)
+  @Get(':id')
+  async getUserProfile(@Param('id') id: number) {
+    return await this.userService.findById(id);
   }
-}
+
+  // @UseGuards(JwtGuard)
+  @Get('/all')
+  async getAllUser() {
+    return await this.userService.findAllUsers();
+  }
+
+
+  @Get('/getValideUsers/:id')
+  async getValideUsers(@Param('id') senderId: number) {
+    return await this.userService.getValideUsers(senderId);
+  }
+
+
+  @Get('/getUserForMsg/:id')
+  async getUserForMsg(@Param('id') senderId: number) {
+    return await this.userService.getUserForMsg(senderId);
+  }
+} 

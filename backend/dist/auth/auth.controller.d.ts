@@ -6,12 +6,12 @@ export declare class AuthController {
     signin(dto: AuthDto): Promise<{
         user: {
             id: number;
-            createdAt: Date;
-            updatedAt: Date;
             email: string;
+            username: string;
             hash: string;
-            firstName: string;
-            lastName: string;
+            avatar: string;
+            status: import(".prisma/client").$Enums.Status;
+            lastSee: Date;
         };
         backendTokens: {
             access_token: string;
@@ -22,12 +22,12 @@ export declare class AuthController {
     signup(dto: AuthDto): Promise<{
         user: {
             id: number;
-            createdAt: Date;
-            updatedAt: Date;
             email: string;
+            username: string;
             hash: string;
-            firstName: string;
-            lastName: string;
+            avatar: string;
+            status: import(".prisma/client").$Enums.Status;
+            lastSee: Date;
         };
         backendTokens: {
             access_token: string;

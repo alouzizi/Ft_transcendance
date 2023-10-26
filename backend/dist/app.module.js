@@ -9,10 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_module_1 = require("./auth/auth.module");
-const user_module_1 = require("./user/user.module");
-const bookmark_module_1 = require("./bookmark/bookmark.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const config_1 = require("@nestjs/config");
+const user_module_1 = require("./user/user.module");
+const messages_module_1 = require("./messages/messages.module");
+const friendship_module_1 = require("./friendship/friendship.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -20,10 +21,11 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             auth_module_1.AuthModule,
-            user_module_1.UserModule,
-            bookmark_module_1.BookmarkModule,
             prisma_module_1.PrismaModule,
             config_1.ConfigModule.forRoot({ isGlobal: true }),
+            user_module_1.UserModule,
+            messages_module_1.MessagesModule,
+            friendship_module_1.FriendshipModule,
         ],
     })
 ], AppModule);

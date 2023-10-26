@@ -50,6 +50,7 @@ export default function openAccount() {
         body: JSON.stringify({ email: data.email, password: data.password }),
       });
       if (!res.ok) {
+        console.log(res);
         alert(res.statusText);
         return;
       }

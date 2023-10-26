@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { User, Bookmark, PrismaClient } from "@prisma/client";
+import { User, PrismaClient } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import * as argon from "argon2";
 import { AuthDto } from "./dto";
@@ -26,11 +26,14 @@ export class AuthService {
         data: {
           email: dto.email,
           hash: hash,
+          avatar: "",
+          username: "4f4",
         },
       });
       // return the saved user
       return this.signToken(user);
     } catch (error) {
+      console.log(error);
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
           throw new ForbiddenException("Credential taken");

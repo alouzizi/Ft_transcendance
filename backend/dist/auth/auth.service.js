@@ -30,11 +30,14 @@ let AuthService = class AuthService {
                 data: {
                     email: dto.email,
                     hash: hash,
+                    avatar: "",
+                    username: "4f4",
                 },
             });
             return this.signToken(user);
         }
         catch (error) {
+            console.log(error);
             if (error instanceof library_1.PrismaClientKnownRequestError) {
                 if (error.code === "P2002") {
                     throw new common_1.ForbiddenException("Credential taken");

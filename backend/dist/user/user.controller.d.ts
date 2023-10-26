@@ -1,15 +1,45 @@
-import { User } from "@prisma/client";
-import { UserService } from "./user.service";
+import { UserService } from './user.service';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    getMe(user: User): Promise<{
+    getUserProfile(id: number): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         email: string;
+        username: string;
         hash: string;
-        firstName: string;
-        lastName: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    getAllUser(): Promise<{
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getValideUsers(senderId: number): Promise<{
+        friendship: number;
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getUserForMsg(senderId: number): Promise<{
+        usersMsgList: {
+            id: number;
+            email: string;
+            username: string;
+            hash: string;
+            avatar: string;
+            status: import(".prisma/client").$Enums.Status;
+            lastSee: Date;
+        }[];
+        lastMsgs: any[];
     }>;
 }

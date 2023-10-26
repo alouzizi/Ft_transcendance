@@ -14,28 +14,54 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
-const decorator_1 = require("../auth/decorator");
-const guard_1 = require("../auth/guard");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getMe(user) {
-        return this.userService.getMyUser(user);
+    async getUserProfile(id) {
+        return await this.userService.findById(id);
+    }
+    async getAllUser() {
+        return await this.userService.findAllUsers();
+    }
+    async getValideUsers(senderId) {
+        return await this.userService.getValideUsers(senderId);
+    }
+    async getUserForMsg(senderId) {
+        return await this.userService.getUserForMsg(senderId);
     }
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Get)("me"),
-    __param(0, (0, decorator_1.GetUser)("")),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "getMe", null);
+], UserController.prototype, "getUserProfile", null);
+__decorate([
+    (0, common_1.Get)('/all'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUser", null);
+__decorate([
+    (0, common_1.Get)('/getValideUsers/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getValideUsers", null);
+__decorate([
+    (0, common_1.Get)('/getUserForMsg/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserForMsg", null);
 exports.UserController = UserController = __decorate([
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
-    (0, common_1.Controller)("users"),
+    (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

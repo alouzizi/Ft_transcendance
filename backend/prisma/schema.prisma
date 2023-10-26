@@ -10,32 +10,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  email String @unique
-  hash  String
-
-  firstName String?
-  lastName  String?
-  bookmarks Bookmark[]
-
-  @@map("users")
+enum Status {
+  ACTIF
+  INACTIF
 }
 
-model Bookmark {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id Int @id @default(autoincrement())
 
-  title       String
-  description String?
-  link        String
+  email    String  @unique
+  username String?
+  hash     String
+  avatar   String?
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  status  Status   @default(INACTIF)
+  lastSee DateTime @default(now())
 
-  @@map("bookmarks")
+  directMessage DirectMessage[]
+  frienRequest  FriendRequest[]
+  Friend        Friend[]
+  BlockedUser   BlockedUser[]
+}
+
+enum MessageStatus {
+  NotReceived
+  Received
+  Seen
+}
+
+model DirectMessage {
+  id            Int           @id @default(autoincrement())
+  content       String
+  createdAt     DateTime      @default(now())
+  user          User          @relation(fields: [senderId], references: [id])
+  showed        Boolean       @default(true)
+  senderId      Int
+  receivedId    Int
+  messageStatus MessageStatus @default(NotReceived)
+}
+
+model FriendRequest {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receivedId Int
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model Friend {
+  id         Int  @id @default(autoincrement())
+  user       User @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receivedId Int
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model BlockedUser {
+  id         Int  @id @default(autoincrement())
+  user       User @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receivedId Int
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }

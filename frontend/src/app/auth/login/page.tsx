@@ -70,7 +70,8 @@ export default function login() {
                     <Input
                       className="text-black"
                       placeholder="mail@example.com"
-                      {...field}
+                      value={field.value} // Add value and onChange here
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
@@ -90,7 +91,8 @@ export default function login() {
                       className="text-black"
                       placeholder="Enter Password"
                       type="password"
-                      {...field}
+                      value={field.value} // Add value and onChange here
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
