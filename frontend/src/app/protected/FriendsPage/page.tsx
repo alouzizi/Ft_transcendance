@@ -61,7 +61,6 @@ export default function FriendsPage() {
     updatedIsSelectedList[item.index] = true;
     setItemsStatus(item.btnName);
     setIsSelectedList(updatedIsSelectedList);
-    console.log(updatedIsSelectedList[item.index]);
   };
 
   return (

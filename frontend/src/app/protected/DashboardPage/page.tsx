@@ -75,21 +75,9 @@ export default function DashboardPage() {
            2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
           "
           >
-            <CardInfo
-              cardImg="https://drive.google.com/uc?export=download&id=1CjxIhlvR6rv1IZDnOwkTXoA4p9FSc7SZ"
-              cardName="Ranking"
-              value="15"
-            />
-            <CardInfo
-              cardImg="https://drive.google.com/uc?export=download&id=1bpBue-PagDnzK8I4KtlMLCchYmEewKDb"
-              cardName="Matches"
-              value="152"
-            />
-            <CardInfo
-              cardImg="https://drive.google.com/uc?export=download&id=14xEy2ZYs63ypZ8nhiIXGc2RCwJLSpfRC"
-              cardName="Win Rate"
-              value="80%"
-            />
+            <CardInfo cardImg="/ranking.png" cardName="Ranking" value="15" />
+            <CardInfo cardImg="/matches.png" cardName="Matches" value="152" />
+            <CardInfo cardImg="/win-rate.png" cardName="Win Rate" value="80%" />
           </div>
         </div>
       </div>
@@ -145,19 +133,19 @@ export default function DashboardPage() {
           }}
         >
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="selver"
           />
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="bronz"
           />
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="gold"

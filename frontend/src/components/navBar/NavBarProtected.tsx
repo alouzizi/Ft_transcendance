@@ -9,17 +9,12 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
     <div className="flex flex-col h-screen">
       <div className=" flex flex-row justify-items-start h-20 bg-color-main-dark z-30">
         <div className="w-28 h-full  flex flex-col justify-center ">
-          <img
-            className="h-3/4 m-auto"
-            src="https://drive.google.com/uc?export=download&id=1DEDBzMnY8CkJPPZ4jwwZ32HT0gGbPOd7"
-            alt=""
-          />
+          <img className="h-3/4 m-auto" src="/logo.png" alt="" />
         </div>
         <div className="flex flex-row justify-center p-2">
           <div
             onClick={() => {
               setShow((prev) => !prev);
-              // console.log(show + " click");
             }}
             className="my-auto "
           >

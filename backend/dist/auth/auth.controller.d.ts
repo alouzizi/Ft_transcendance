@@ -16,6 +16,7 @@ export declare class AuthController {
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
     signup(dto: AuthDto): Promise<{
@@ -31,12 +32,14 @@ export declare class AuthController {
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
     refreshToken(req: any): Promise<{
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
 }

@@ -21,6 +21,7 @@ export declare class AuthService {
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
     signin(dto: AuthDto): Promise<{
@@ -36,6 +37,7 @@ export declare class AuthService {
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
     signToken(user: User): Promise<{
@@ -51,12 +53,14 @@ export declare class AuthService {
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
     refreshToken(user: User): Promise<{
         backendTokens: {
             access_token: string;
             refresh_token: string;
+            expiresIn: number;
         };
     }>;
 }

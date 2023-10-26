@@ -7,6 +7,8 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 
+const EXPIRE_TIME = 20 * 1000;
+
 @Injectable({})
 export class AuthService {
   constructor(
@@ -66,7 +68,7 @@ export class AuthService {
       email: user.email,
     };
     const access_token = await this.jwt.signAsync(payload, {
-      expiresIn: "5h",
+      expiresIn: "20s",
       secret: this.config.get("JWT_SECRET"),
     });
     const refresh_token = await this.jwt.signAsync(payload, {
@@ -81,6 +83,7 @@ export class AuthService {
       backendTokens: {
         access_token: access_token,
         refresh_token: refresh_token,
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
     };
   }
@@ -92,7 +95,7 @@ export class AuthService {
     };
 
     const access_token = await this.jwt.signAsync(payload, {
-      expiresIn: "5h",
+      expiresIn: "20s",
       secret: this.config.get("JWT_SECRET"),
     });
     const refresh_token = await this.jwt.signAsync(payload, {
@@ -103,6 +106,7 @@ export class AuthService {
       backendTokens: {
         access_token: access_token,
         refresh_token: refresh_token,
+        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
     };
   }

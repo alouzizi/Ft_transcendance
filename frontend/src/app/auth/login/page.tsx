@@ -36,7 +36,6 @@ export default function login() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
     try {
       const res = await signIn("credentials", {
         email: data.email,
@@ -50,13 +49,8 @@ export default function login() {
         setError("invalid email or password");
       }
     } catch (error: any) {
-      // setLoading(false);
       setError(error);
     }
-    // console.log("res ===");
-    // console.log(res);
-    // console.log("res ===");
-    // signIn();
   }
 
   return (

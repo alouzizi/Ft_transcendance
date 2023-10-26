@@ -8,7 +8,6 @@ import AchievementItem from "./components/AchievementItem";
 
 export default function AchievementsPage() {
   const items = ["All", "Bronz", "Selver", "Gold"];
-  const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
 
   return (
@@ -48,25 +47,25 @@ export default function AchievementsPage() {
         "
         >
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="gold"
           />
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="bronz"
           />
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="selver"
           />
           <AchievementItem
-            image="https://drive.google.com/uc?export=download&id=1MqBy_nVt0tknpwjjHPYeeLPJ6XWBeqBH"
+            image="/achiev1.png"
             title="Novice"
             mission="Win 10 matches"
             type="bronz"

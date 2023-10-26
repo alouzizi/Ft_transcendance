@@ -16,6 +16,7 @@ const argon = require("argon2");
 const library_1 = require("@prisma/client/runtime/library");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const EXPIRE_TIME = 20 * 1000;
 let AuthService = class AuthService {
     constructor(prisma, jwt, config) {
         this.prisma = prisma;
@@ -63,7 +64,7 @@ let AuthService = class AuthService {
             email: user.email,
         };
         const access_token = await this.jwt.signAsync(payload, {
-            expiresIn: "5h",
+            expiresIn: "20s",
             secret: this.config.get("JWT_SECRET"),
         });
         const refresh_token = await this.jwt.signAsync(payload, {
@@ -77,6 +78,7 @@ let AuthService = class AuthService {
             backendTokens: {
                 access_token: access_token,
                 refresh_token: refresh_token,
+                expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
             },
         };
     }
@@ -86,7 +88,7 @@ let AuthService = class AuthService {
             email: user.email,
         };
         const access_token = await this.jwt.signAsync(payload, {
-            expiresIn: "5h",
+            expiresIn: "20s",
             secret: this.config.get("JWT_SECRET"),
         });
         const refresh_token = await this.jwt.signAsync(payload, {
@@ -97,6 +99,7 @@ let AuthService = class AuthService {
             backendTokens: {
                 access_token: access_token,
                 refresh_token: refresh_token,
+                expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
             },
         };
     }

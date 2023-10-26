@@ -4,6 +4,21 @@ import { JWT } from "next-auth/jwt";
 import { Backend_URL } from "@/lib/Constants";
 import { AuthOptions } from "next-auth";
 
+async function refreshToken(token: JWT): Promise<JWT> {
+  const res = await fetch(Backend_URL + "/auth/refresh", {
+    method: "POST",
+    headers: {
+      Authorization: `Refresh ${token.backendTokens.refresh_token}`,
+    },
+  });
+
+  const response = await res.json();
+  return {
+    ...token,
+    backendTokens: response,
+  };
+}
+
 export const authOptions: AuthOptions = {
   pages: {
     signIn: "/auth/login",
@@ -16,16 +31,13 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log("=================8888");
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
         const res = await login(credentials.email, credentials.password);
         if (res.status === "ok") {
-          console.log(res);
           return res.data;
         } else if (res.status === "error") {
-          console.log(res);
           return null;
         }
       },
@@ -34,16 +46,16 @@ export const authOptions: AuthOptions = {
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user }) {
-      console.log("========={ token, user }");
-      console.log({ token, user });
-      console.log("========={ token, user }");
       if (user) {
         return {
           ...token,
           ...user,
         };
       }
-      return token;
+      if (new Date().getTime() < token.backendTokens.expiresIn) {
+        return token;
+      }
+      return await refreshToken(token);
     },
 
     async session({ token, session }) {
@@ -55,8 +67,6 @@ export const authOptions: AuthOptions = {
 };
 
 async function login(email: string, password: string) {
-  // console.log("email: " + email);
-  // console.log("password: " + password);
   try {
     const response = await fetch(`${Backend_URL}/auth/signin`, {
       method: "POST",
@@ -67,8 +77,6 @@ async function login(email: string, password: string) {
     if (data.statusCode >= 400) {
       return { status: "error", msg: data.message[0] };
     }
-    // console.log("data: ");
-    // console.log(data);
     return { status: "ok", data: data };
   } catch (error: any) {
     return { status: "error", msg: error.message };

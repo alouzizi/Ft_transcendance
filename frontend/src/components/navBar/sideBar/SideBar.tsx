@@ -88,7 +88,6 @@ export default function SideBar() {
     }
     updatedIsSelectedList[index] = true;
     setIsSelectedList(updatedIsSelectedList);
-    console.log(updatedIsSelectedList[index]);
   };
 
   return (

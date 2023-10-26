@@ -43,8 +43,6 @@ export default function openAccount() {
   const searchParams = useSearchParams();
   const callbackUrl = "/protected/DashboardPage";
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    console.log("backend: ===> " + Backend_URL + "/auth/signup");
     try {
       const res = await fetch(Backend_URL + "/auth/signup", {
         method: "POST",
@@ -60,7 +58,7 @@ export default function openAccount() {
         const res = await signIn("credentials", {
           email: data.email,
           password: data.password,
-          // redirect: false,
+          redirect: false,
           callbackUrl: "/protected/DashboardPage",
         });
         if (!res?.error) {
@@ -72,8 +70,6 @@ export default function openAccount() {
         // setLoading(false);
         setError(error);
       }
-
-      console.log(response);
     } catch (error) {
       console.error("Error occurred: ", error);
     }
