@@ -1,7 +1,14 @@
-export default function ChatPage() {
+import BoxChat from './components/BoxChat';
+import ListUser from './components/ListUser';
+
+const PageChat = async () => {
+
   return (
-    <div className="flex flex-col bg-color-main ">
-      <h1 className="text-left">hello ChatPage</h1>
+    <div className="flex justify-center items-center h-screen">
+      <ListUser />
+      <BoxChat />
     </div>
   );
-}
+};
+
+export default PageChat;

@@ -25,13 +25,14 @@ let AuthService = class AuthService {
     }
     async signup(dto) {
         try {
+            const index = Math.floor(Math.random() * 100) + 1;
             const hash = await argon.hash(dto.password);
             const user = await this.prisma.user.create({
                 data: {
                     email: dto.email,
                     hash: hash,
-                    avatar: "",
-                    username: "4f4",
+                    avatar: `https://randomuser.me/api/portraits/women/${index}.jpg`,
+                    username: dto.email,
                 },
             });
             return this.signToken(user);

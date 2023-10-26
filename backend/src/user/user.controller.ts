@@ -9,6 +9,7 @@ export class UserController {
   // @UseGuards(JwtGuard)
   @Get(':id')
   async getUserProfile(@Param('id') id: number) {
+    console.log("call de");
     return await this.userService.findById(id);
   }
 

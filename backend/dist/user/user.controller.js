@@ -20,6 +20,7 @@ let UserController = class UserController {
         this.userService = userService;
     }
     async getUserProfile(id) {
+        console.log("call de");
         return await this.userService.findById(id);
     }
     async getAllUser() {

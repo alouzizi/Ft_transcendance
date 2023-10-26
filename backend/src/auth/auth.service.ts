@@ -15,10 +15,12 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService
-  ) {}
+  ) { }
 
   async signup(dto: AuthDto) {
     try {
+      // randem image
+      const index = Math.floor(Math.random() * 100) + 1;
       // generate the password hash
       const hash = await argon.hash(dto.password);
       // save the new user in the db
@@ -26,8 +28,8 @@ export class AuthService {
         data: {
           email: dto.email,
           hash: hash,
-          avatar: "",
-          username: "4f4",
+          avatar: `https://randomuser.me/api/portraits/women/${index}.jpg`,
+          username: dto.email,
         },
       });
       // return the saved user
