@@ -13,7 +13,7 @@ import {
 } from "@radix-ui/react-popover";
 export default function FriendItem(prompt: { friendImg: string }) {
   return (
-    <div className="cursor-pointer my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
+    <div className="text-white cursor-pointer my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
       <div className="flex flex-row ">
         <img
           className="object-cover mx-auto  rounded-full 

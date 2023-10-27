@@ -14,6 +14,10 @@ const config_1 = require("@nestjs/config");
 const user_module_1 = require("./user/user.module");
 const messages_module_1 = require("./messages/messages.module");
 const friendship_module_1 = require("./friendship/friendship.module");
+const game_controller_1 = require("./game/game.controller");
+const game_1 = require("./game/game");
+const game_service_1 = require("./game/game.service");
+const game_module_1 = require("./game/game.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,7 +30,10 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             messages_module_1.MessagesModule,
             friendship_module_1.FriendshipModule,
+            game_module_1.GameModule,
         ],
+        controllers: [game_controller_1.GameController],
+        providers: [game_1.Game, game_service_1.GameService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

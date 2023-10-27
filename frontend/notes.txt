@@ -1,0 +1,32 @@
+
+cardInfo:{
+    FullName: "hix coder",
+    userName: "hix",
+    avatar: "",
+    level: 6.75,
+    ranking: 15,
+    matches: 152,
+    winRate: (wins * 100)/matches
+}
+
+gameHistory:[
+    {
+        userId: 1
+        userPoints: 6
+        opponentId: 1,
+        opponentPoints: 5,
+    },
+     {
+         userId: 1
+        userPoints: 6
+        opponentId: 1,
+        opponentPoints: 5,
+    },
+     {
+          userId: 1
+        userPoints: 6
+        opponentId: 1,
+        opponentPoints: 5,
+    }
+
+]

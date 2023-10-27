@@ -63,7 +63,7 @@ export default function DashboardPage() {
           2xl:ml-6 2xl:mt-12 2xl:w-1/3
           "
           >
-            <h1>Player Full Name</h1>
+            <h1 className="text-white">Player Full Name</h1>
             <p className="text-gray-400 text-sm">@userName</p>
           </div>
 

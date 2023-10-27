@@ -30,6 +30,7 @@ model User {
   frienRequest  FriendRequest[]
   Friend        Friend[]
   BlockedUser   BlockedUser[]
+  gameHistory   GameHistory[]
 }
 
 enum MessageStatus {
@@ -75,4 +76,13 @@ model BlockedUser {
   receivedId Int
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model GameHistory {
+  id             Int  @id @default(autoincrement())
+  userPoints     Int
+  userId         Int
+  opponentId     Int
+  opponentPoints Int
+  user           User @relation(fields: [userId], references: [id])
 }
