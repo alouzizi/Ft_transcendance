@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ACTIF
+  INACTIF
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  email    String  @unique
+  username String?
+  hash     String
+  avatar   String?
+
+  status  Status   @default(INACTIF)
+  lastSee DateTime @default(now())
+
+  directMessage DirectMessage[]
+  frienRequest  FriendRequest[]
+  Friend        Friend[]
+  BlockedUser   BlockedUser[]
+}
+
+enum MessageStatus {
+  NotReceived
+  Received
+  Seen
+}
+
+model DirectMessage {
+  id            Int           @id @default(autoincrement())
+  content       String
+  createdAt     DateTime      @default(now())
+  user          User          @relation(fields: [senderId], references: [id])
+  showed        Boolean       @default(true)
+  senderId      Int
+  receivedId    Int
+  messageStatus MessageStatus @default(NotReceived)
+}
+
+model FriendRequest {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receivedId Int
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model Friend {
+  id         Int  @id @default(autoincrement())
+  user       User @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receivedId Int
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model BlockedUser {
+  id         Int  @id @default(autoincrement())
+  user       User @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receivedId Int
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
