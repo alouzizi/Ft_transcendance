@@ -6,13 +6,16 @@ import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private prisma: PrismaService, private configService: ConfigService) {
+  constructor(private prisma: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('JWT_SECRET'),
+      secretOrKey: process.env.jwtSecrectKey
     });
   }
+
+  private static extrac
   async validate(payload: any) {
-    return this.prisma.user.findUnique({ where: { id: payload.sub } });
+    
+    return this.prisma.user.findUnique({ where: { intra_id: payload.sub } });
   }
 }

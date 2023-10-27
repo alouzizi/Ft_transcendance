@@ -10,11 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model User {
-  id        Int @id @default(autoincrement())
-  email     String  @unique
-  name      String?
-  password  String
+  id            String @id @default(uuid())
+  intra_id      String @unique
+  first_name    String
+  last_name     String
+  nickname      String @unique
+  email         String  
+  password      String
+  profilePic    String
+  level         Float
+  grade         String
 
-
+  twoFactorAuth Boolean     @default(false)
+  AsciiSecretQr String?
   
 }

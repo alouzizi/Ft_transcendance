@@ -24,7 +24,6 @@ import {
       } catch {
         throw new UnauthorizedException();
       }
-  
       return true;
     }
   
