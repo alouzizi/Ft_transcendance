@@ -19,7 +19,15 @@ export class UserController {
     // you can check if the user is in the database.
     
   }
+  @Post('signup')
+  async signUp(@Body() user: { username: string; password: string }) {
+    return this.userService.signUp(user.username, user.password);
+  }
 
+  @Post('signin')
+  async signIn(@Body() user: { username: string; password: string }) {
+    return this.userService.signIn(user.username, user.password);
+  }
   // @Post()
   // async createUser(@Body() createUserDto: any) {
   //   return this.userService.createUser(createUserDto);
