@@ -9,6 +9,9 @@ import AchievementItem from "../AchievementsPage/components/AchievementItem";
 export default function DashboardPage() {
   const router = useRouter();
 
+
+
+
   return (
     <div className="flex flex-col h-fit 2xl:h-screen max-w-8xl bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}

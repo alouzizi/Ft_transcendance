@@ -7,7 +7,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 import { IoPersonAdd, IoPersonRemove } from "react-icons/io5";
-import { useGlobalContext } from '../Context/store';
+import { useGlobalContext } from '../../../context/store';
 import { getValideUsers } from '../api/fetch-users';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';

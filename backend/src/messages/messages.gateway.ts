@@ -29,7 +29,7 @@ export class MessagesGateway
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
-    console.log(`Client connected: ---> ${client.id}`);
+    console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
     if (typeof client.handshake.query.senderId === 'string') {
       client.join(client.handshake.query.senderId);
       const senderId = parseInt(client.handshake.query.senderId);

@@ -4,9 +4,8 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 
 import { GoDotFill } from "react-icons/go";
-import { useGlobalContext } from '../Context/store';
+import { useGlobalContext } from '../../../context/store';
 import { getUserForMsg } from '../api/fetch-users';
-import { socket, socketInitializer } from '../api/init-socket';
 import { extractHoursAndM } from './widgetMsg';
 import { useSession } from 'next-auth/react';
 import AlertDialogFind from './FindAlert';
@@ -23,7 +22,7 @@ export function getColorStatus(status: any): string {
 
 const ListUser = () => {
   const { data: session } = useSession();
-  const { setGeust, setUser, geust } = useGlobalContext();
+  const { setGeust, setUser, geust, socket } = useGlobalContext();
   const [users, setUsers] = useState<userDto[]>([])
   const [lastMsgs, setLastMsgs] = useState<msgDto[]>([])
 
@@ -34,15 +33,16 @@ const ListUser = () => {
     if (session) {
       const user: userDto = session.user;
       setUser(session.user);
-      socketInitializer(user);
       const getListUsers = async () => {
         const usersList = await getUserForMsg(user.id);
         setUsers(usersList.usersMsgList);
         setLastMsgs(usersList.lastMsgs);
       };
       getListUsers();
-      socket.on("findMsg2UsersResponse", getListUsers);
-      socket.on("updateData", getListUsers);
+      if (socket) {
+        socket.on("findMsg2UsersResponse", getListUsers);
+        socket.on("updateData", getListUsers);
+      }
     }
   }, [session])
 

@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { Avatar, Flex, Text, Box, ScrollArea } from '@radix-ui/themes';
 import TextField from '@mui/material/TextField';
-import { useGlobalContext } from '../Context/store';
+import { useGlobalContext } from '../../../context/store';
 import { AiFillMessage } from "react-icons/ai";
 import { BsPersonFillAdd, } from "react-icons/bs";
 import { FaUserTimes, } from "react-icons/fa";
@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react';
 import { getValideUsers } from '../api/fetch-users';
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 import { accepteRequistFriend, removeRequistFriend, sendRequistFriend } from '../api/send-Friend-req';
-import { emitMessage, socket, socketInitializer } from '../api/init-socket';
 import { getColorStatus } from './ListUser';
 
 
@@ -25,7 +24,7 @@ export default function AlertDialogFind() {
     const [searsh, setSearsh] = useState('');
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
-    const { user, setGeust } = useGlobalContext();
+    const { user, setGeust, socket } = useGlobalContext();
 
     const [clicked, setClicked] = useState<number>(0)
     const [update, setUpdate] = useState<number>(0)
@@ -64,7 +63,8 @@ export default function AlertDialogFind() {
             socket.on("updateData", updateIcons);
         }
         return () => {
-            socket.off("updateData", updateIcons);
+            if (socket)
+                socket.off("updateData", updateIcons);
         };
     }, [socket]);
 
@@ -90,7 +90,7 @@ export default function AlertDialogFind() {
                         onClick={async () => {
                             await sendRequistFriend(user.id, elm.id);
                             elm.friendship = 3;
-                            socket.emit('updateData', {
+                            socket?.emit('updateData', {
                                 content: '',
                                 senderId: user.id,
                                 receivedId: elm.id,
@@ -103,7 +103,7 @@ export default function AlertDialogFind() {
                         onClick={async () => {
                             await accepteRequistFriend(user.id, elm.id);
                             elm.friendship = 1;
-                            socket.emit('updateData', {
+                            socket?.emit('updateData', {
                                 content: '',
                                 senderId: user.id,
                                 receivedId: elm.id,
@@ -116,7 +116,7 @@ export default function AlertDialogFind() {
                         onClick={async () => {
                             await removeRequistFriend(user.id, elm.id);
                             elm.friendship = 0;
-                            socket.emit('updateData', {
+                            socket?.emit('updateData', {
                                 content: '',
                                 senderId: user.id,
                                 receivedId: elm.id,

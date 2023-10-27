@@ -1,5 +1,7 @@
 'use client';
-import { createContext, useContext, Dispatch, SetStateAction, useState } from "react";
+import { Backend_URL } from "@/lib/Constants";
+import { createContext, useContext, Dispatch, SetStateAction, useState, useEffect } from "react";
+import { io, Socket } from 'Socket.IO-client';
 
 enum Status {
     ACTIF = "ACTIF",
@@ -15,12 +17,9 @@ enum MessageStatus {
 interface ContextProps {
     user: userDto,
     setUser: Dispatch<SetStateAction<userDto>>,
-
     geust: userDto,
     setGeust: Dispatch<SetStateAction<userDto>>,
-
-    valueNav: number,
-    setValueNav: Dispatch<SetStateAction<number>>
+    socket: Socket | null, // Add the socket property
 
 }
 
@@ -48,8 +47,7 @@ const GlobalContext = createContext<ContextProps>({
     },
     setGeust: () => { },
 
-    valueNav: 0,
-    setValueNav: () => { },
+    socket: null, // Initialize socket as null
 
 
 })
@@ -81,12 +79,35 @@ export const GlobalContextProvider = ({ children }: {
 
     })
 
+    const [socket, setSocket] = useState<Socket | null>(null);
+    useEffect(() => {
+        // const socket = io('your-socket-server-url');
 
+        if (user.id != -1) {
+            const socket = io(Backend_URL, {
+                transports: ['websocket'],
+                query: {
+                    senderId: user.id,
+                },
+            });
+            setSocket(socket);
+            socket.on('connect', () => {
+                console.log('--------------------------------------- user connected');
+            });
+            socket.on('disconnect', () => {
+                console.log('++++++++++++++++++++++++++++++++++++++++ user connected');
+            });
+        }
 
-    const [valueNav, setValueNav] = useState<number>(0);
+        return () => {
+            // if (user.id !== - 1 && socket) {
+            //     socket.disconnect();
+            // }
+        };
+    }, [user.id]);
 
     return (
-        <GlobalContext.Provider value={{ geust, setGeust, user, setUser, valueNav, setValueNav }}>
+        <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket }}>
             {children}
         </GlobalContext.Provider>
     )

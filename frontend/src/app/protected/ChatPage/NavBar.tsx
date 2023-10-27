@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { AiFillSetting } from "react-icons/ai";
 import { GoDotFill } from "react-icons/go";
 import { getColorStatus } from './components/ListUser';
-import { useGlobalContext } from './Context/store';
+import { useGlobalContext } from '../../context/store';
 import SignOutAlertDialog from './components/SignoutAlert';
 
 const NavBar = () => {

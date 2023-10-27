@@ -30,7 +30,7 @@ let MessagesGateway = class MessagesGateway {
         console.log('Gateway Initialized');
     }
     async handleConnection(client, ...args) {
-        console.log(`Client connected: ---> ${client.id}`);
+        console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
         if (typeof client.handshake.query.senderId === 'string') {
             client.join(client.handshake.query.senderId);
             const senderId = parseInt(client.handshake.query.senderId);

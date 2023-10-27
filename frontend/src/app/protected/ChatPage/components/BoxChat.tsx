@@ -2,10 +2,9 @@
 import { TextField, Avatar, ScrollArea, Box, Text, Flex } from '@radix-ui/themes';
 import { useEffect, useRef, useState } from 'react';
 import { BsFillSendFill } from "react-icons/bs";
-import { useGlobalContext } from '../Context/store';
+import { useGlobalContext } from '../../../context/store';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import { getMessageTwoUsers } from '../api/fetch-msg';
-import { emitMessage, socket } from '../api/init-socket';
 import { GoDotFill } from "react-icons/go";
 import { getColorStatus } from './ListUser';
 import { formatDistance } from 'date-fns'
@@ -13,7 +12,7 @@ import { formatDistance } from 'date-fns'
 const BoxChat = () => {
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<msgDto[]>([]);
-    const { geust, user, setGeust } = useGlobalContext();
+    const { geust, user, socket, setGeust } = useGlobalContext();
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
     const [isTyping, setIsTyping] = useState<boolean>(false)
     const scrollToBottom = () => {
@@ -28,7 +27,7 @@ const BoxChat = () => {
     }, [Allmsg, isTyping, user.id, geust.id])
 
     useEffect(() => {
-        if (user.id !== -1) {
+        if (user.id !== -1 && socket) {
             const handleReceivedMessage = (data: msgDto) => {
                 if (data.senderId === geust.id || data.senderId === user.id) {
                     setIsTyping(false);
@@ -71,8 +70,8 @@ const BoxChat = () => {
     // }, [geust.id, user.id]);
 
     useEffect(() => {
-        if (msg != "") {
-            emitMessage('isTyping', {
+        if (msg != "" && socket) {
+            socket.emit('isTyping', {
                 content: '',
                 senderId: user.id,
                 receivedId: geust.id,
@@ -81,7 +80,7 @@ const BoxChat = () => {
     }, [msg])
 
     useEffect(() => {
-        if (user.id !== -1) {
+        if (user.id !== -1 && socket) {
             const updateIsTyping = (data: msgDto) => {
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
@@ -98,8 +97,8 @@ const BoxChat = () => {
     }, [geust.id, user.id]);
 
     const handleSendMessage = () => {
-        if (msg.trim() != '') {
-            emitMessage('createMessage', {
+        if (msg.trim() != '' && socket) {
+            socket.emit('createMessage', {
                 content: msg.trim(),
                 senderId: user.id,
                 receivedId: geust.id,
