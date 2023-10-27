@@ -1,33 +1,28 @@
 'use client'
+import { Button, DialogActions } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { TbSquareRoundedPlusFilled } from "react-icons/tb";
-import { IoPersonAdd, IoPersonRemove } from "react-icons/io5";
-import { useGlobalContext } from '../../../context/store';
-import { getValideUsers } from '../api/fetch-users';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import Checkbox from '@mui/material/Checkbox';
-import { Button, DialogActions } from '@mui/material';
-import { MdDeleteForever } from "react-icons/md";
+import TextField from '@mui/material/TextField';
+import { Avatar, Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { GoDotFill } from 'react-icons/go';
+import { IoPersonAdd, IoPersonRemove } from "react-icons/io5";
+import { TbSquareRoundedPlusFilled } from "react-icons/tb";
+import { TiDelete } from "react-icons/ti";
+import { useGlobalContext } from '../../../context/store';
+import { getValideUsers } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
-import { Avatar, Flex, Text, Box, ScrollArea } from '@radix-ui/themes';
 
 export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
+
 
     const [channelType, setChannelType] = useState<string>('public');
     const [channelName, setChannelName] = useState('');
@@ -72,6 +67,7 @@ export default function AlertAddChannel() {
         if (fonud) return true;
         return false;
     }
+
     const widgetSearsh = usersFilter.map((elm) => {
         return <Box p="1" pr="3" className='mx-2' >
             <Flex align="center" justify="between" className='border-b py-2'>
@@ -102,10 +98,20 @@ export default function AlertAddChannel() {
             </Flex>
         </Box>
     });
+
+    const [isMouseOver, setIsMouseOver] = useState(-1);
     const widgetMembers = membersChannel.map((elm) => {
-        return <Box style={{ display: "inline-block", border: 2 }}>
-            <div className='flex  items-center p-1 m-1' style={{ background: "yellow", borderRadius: 5 }}>
+        return <Box style={{ display: "inline-block" }}
+            onMouseEnter={() => setIsMouseOver(elm.id)}
+            onMouseLeave={() => setIsMouseOver(-1)}>
+            <div className='flex  items-center  px-2 m-1'
+                style={{ background: "pink", borderTopRightRadius: 10, borderBottomRightRadius: 10 }}>
                 <p>{elm.username}</p>
+                {(isMouseOver === elm.id) && <TiDelete onClick={() => {
+                    setMembersChannel((prevMembers) =>
+                        prevMembers.filter((member) => member.id !== elm.id));
+                }} color='red' />}
+
             </div>
         </Box>
     })
@@ -113,16 +119,18 @@ export default function AlertAddChannel() {
         <div>
 
             <TbSquareRoundedPlusFilled style={{ color: 'blue', fontSize: '40px', cursor: 'pointer' }}
-                onClick={handleClickOpen} />
+                onClick={() => setOpen(true)} />
 
             <Dialog
                 open={open}
                 keepMounted
-                onClose={handleClose}
+            // onClose={handleClose}
             >
+                <div className='flex justify-end mt-2 mr-2' >
+                    <TiDelete onClick={() => setOpen(false)} size="30" />
+                </div>
                 <DialogTitle textAlign="center" >{"Create Channel"}</DialogTitle>
-
-                <DialogContent className='w-[20rem] h-[25rem] '>
+                <DialogContent className='w-[25rem] h-[25rem] '>
 
                     <div
                         style={{
@@ -133,6 +141,7 @@ export default function AlertAddChannel() {
                         <ScrollArea type="always" scrollbars="vertical"
                             style={{
                                 height: 300, width: 200,
+                                alignItems: "center", justifyItems: "center"
                             }}>
 
                             <FormControl className='ml-2'>
@@ -177,7 +186,7 @@ export default function AlertAddChannel() {
 
 
                             {widgetMembers}
-                            <TextField fullWidth size="small" className='mt-2'
+                            <TextField fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Add membres" variant="outlined"
                                 value={member}
@@ -191,7 +200,7 @@ export default function AlertAddChannel() {
 
                     <DialogActions style={{ justifyContent: 'center' }}>
                         <Button style={{ background: 'blue', color: "white" }}
-                            onClick={handleClose}>Create</Button>
+                            onClick={() => setOpen(false)}>Create</Button>
                     </DialogActions>
 
                 </DialogContent>
