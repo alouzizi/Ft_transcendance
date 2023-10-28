@@ -33,7 +33,7 @@ export default function HomeSection(prompt: {
         </h1>
         <p
           onClick={prompt.btnClicked}
-          className="border-2 border-white p-2 px-4 ml-2 rounded-full text-xs cursor-pointer text-white
+          className="border-2 border-white p-2 px-4 ml-2 rounded-full text-xs cursor-pointer
                 hover:text-gray-400 hover:border-gray-400
                 active:text-white active:border-white
 

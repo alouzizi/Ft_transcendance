@@ -30,3 +30,18 @@ gameHistory:[
     }
 
 ]
+
+
+===========================================
+
+
+play match
+block friend
+remove friend
+
+
+friendCard: {
+    userName: 
+    avatar:
+
+}

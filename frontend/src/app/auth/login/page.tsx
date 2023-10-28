@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,12 +13,15 @@ import {
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import { useGlobalContext } from "@/app/context/store";
 
 export default function login() {
+  const { setUser } = useGlobalContext();
+
   const FormSchema = z.object({
     email: z.string().min(1, "Email is required").email("Invalid email"),
     password: z
@@ -35,6 +37,9 @@ export default function login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+
+
+  const { data: session } = useSession();
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       const res = await signIn("credentials", {
@@ -43,8 +48,9 @@ export default function login() {
         redirect: false,
         callbackUrl: "/protected/DashboardPage",
       });
+
       if (!res?.error) {
-        router.push(callbackUrl);
+        // router.push(callbackUrl);
       } else {
         setError("invalid email or password");
       }
@@ -52,7 +58,13 @@ export default function login() {
       setError(error);
     }
   }
-
+  useEffect(() => {
+    if (session) {
+      console.log("Session data: --> ", session);
+      setUser(session.user);
+      router.push(callbackUrl);
+    }
+  }, [session]);
   return (
     <div>
       <Form {...form}>
@@ -123,3 +135,5 @@ export default function login() {
     </div>
   );
 }
+
+

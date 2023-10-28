@@ -66,7 +66,7 @@ export default function FriendsPage() {
   return (
     <div className="flex flex-col bg-color-main h-screen w-screen ">
       <div className="flex flex-col justify-end mt-12 mb-8 ml-8  md:ml-24 ">
-        <h1 className="text-left font-bold text-lg md:text-2xl mb-12 text-white">
+        <h1 className="text-left font-bold text-lg md:text-2xl mb-12">
           Friends
         </h1>
         {/* this is the head of the FriendPage */}
@@ -93,7 +93,7 @@ export default function FriendsPage() {
           ))}
 
           <button
-            className="text-white mr-4 w-fit font-meduim  py-1 rounded-md   bg-green-700 hover:bg-green-600
+            className="mr-4 w-fit font-meduim  py-1 rounded-md   bg-green-700 hover:bg-green-600
           
          
           // small screen

@@ -14,7 +14,7 @@ import { RefreshJwtGuard } from "./guard/refresh.guard";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @HttpCode(HttpStatus.OK) // for make status code 200 not 201
   @Post("signin")

@@ -19,6 +19,8 @@ export class AuthService {
 
   async signup(dto: AuthDto) {
     try {
+      // randem image
+      const index = Math.floor(Math.random() * 100) + 1;
       // generate the password hash
       const hash = await argon.hash(dto.password);
       // save the new user in the db
@@ -26,8 +28,8 @@ export class AuthService {
         data: {
           email: dto.email,
           hash: hash,
-          avatar: "",
-          username: "4f4",
+          avatar: `https://randomuser.me/api/portraits/women/${index}.jpg`,
+          username: dto.email,
         },
       });
       // return the saved user
@@ -71,7 +73,7 @@ export class AuthService {
       email: user.email,
     };
     const access_token = await this.jwt.signAsync(payload, {
-      expiresIn: "20s",
+      expiresIn: "5h",
       secret: this.config.get("JWT_SECRET"),
     });
     const refresh_token = await this.jwt.signAsync(payload, {
@@ -98,7 +100,7 @@ export class AuthService {
     };
 
     const access_token = await this.jwt.signAsync(payload, {
-      expiresIn: "20s",
+      expiresIn: "5h",
       secret: this.config.get("JWT_SECRET"),
     });
     const refresh_token = await this.jwt.signAsync(payload, {

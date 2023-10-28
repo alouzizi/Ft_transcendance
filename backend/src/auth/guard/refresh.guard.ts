@@ -15,7 +15,7 @@ export class RefreshJwtGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private config: ConfigService
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
