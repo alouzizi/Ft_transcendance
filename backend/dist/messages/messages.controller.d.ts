@@ -3,12 +3,12 @@ export declare class MessageController {
     private readonly messagesService;
     constructor(messagesService: MessagesService);
     getMessages(send: string, rec: string): Promise<{
-        id: number;
+        id: string;
         content: string;
         createdAt: Date;
         showed: boolean;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
         messageStatus: import(".prisma/client").$Enums.MessageStatus;
-    }[] | "">;
+    }[]>;
 }

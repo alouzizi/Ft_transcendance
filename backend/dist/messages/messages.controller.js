@@ -20,11 +20,7 @@ let MessageController = class MessageController {
         this.messagesService = messagesService;
     }
     async getMessages(send, rec) {
-        const r = parseInt(rec);
-        const s = parseInt(send);
-        if (isNaN(r) || isNaN(s))
-            return '';
-        return this.messagesService.getMessage(s, r);
+        return this.messagesService.getMessage(send, rec);
     }
 };
 exports.MessageController = MessageController;

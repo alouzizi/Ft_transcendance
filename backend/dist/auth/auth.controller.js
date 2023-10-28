@@ -28,6 +28,10 @@ let AuthController = class AuthController {
         console.log(dto);
         return this.authService.signup(dto);
     }
+    async callbackWith42(req, res) {
+        console.log("profil howa niit ?? :", req.user);
+        return req.user;
+    }
     async refreshToken(req) {
         return this.authService.refreshToken(req.user);
     }
@@ -48,6 +52,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.AuthDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signup", null);
+__decorate([
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Response]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "callbackWith42", null);
 __decorate([
     (0, common_1.UseGuards)(refresh_guard_1.RefreshJwtGuard),
     (0, common_1.Post)("refresh"),

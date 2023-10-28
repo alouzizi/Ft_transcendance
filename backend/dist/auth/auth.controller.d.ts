@@ -5,11 +5,18 @@ export declare class AuthController {
     constructor(authService: AuthService);
     signin(dto: AuthDto): Promise<{
         user: {
-            id: number;
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
             email: string;
-            username: string;
+            profilePic: string;
             hash: string;
-            avatar: string;
+            twoFactorAuth: boolean;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
         };
@@ -21,11 +28,18 @@ export declare class AuthController {
     }>;
     signup(dto: AuthDto): Promise<{
         user: {
-            id: number;
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
             email: string;
-            username: string;
+            profilePic: string;
             hash: string;
-            avatar: string;
+            twoFactorAuth: boolean;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
         };
@@ -35,6 +49,7 @@ export declare class AuthController {
             expiresIn: number;
         };
     }>;
+    callbackWith42(req: any, res: Response): Promise<any>;
     refreshToken(req: any): Promise<{
         backendTokens: {
             access_token: string;

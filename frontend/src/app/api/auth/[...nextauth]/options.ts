@@ -1,8 +1,8 @@
-import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import { Backend_URL } from "@/lib/Constants";
 import { AuthOptions } from "next-auth";
+import FortyTwoProvider from "next-auth/providers/42-school";
 
 async function refreshToken(token: JWT): Promise<JWT> {
   const res = await fetch(Backend_URL + "/auth/refresh", {
@@ -42,11 +42,15 @@ export const authOptions: AuthOptions = {
         }
       },
     }),
+
+
   ],
 
   session: { strategy: "jwt" },
 
   callbacks: {
+
+
     async jwt({ token, user }) {
       if (user) {
         return {

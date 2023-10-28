@@ -1,9 +1,9 @@
 
 type userDto = {
-  id: number;
+  id: string;
   email: string;
-  username: string;
-  avatar: string;
+  nickname: string;
+  profilePic: string;
   status: Status;
   lastSee: number;
   friendship: number
@@ -12,19 +12,19 @@ type userDto = {
 
 
 type msgDto = {
-  id: number;
+  id: string;
   content: string;
   createdAt: number;
-  senderId: number;
-  receivedId: number;
+  senderId: string;
+  receivedId: string;
   messageStatus: MessageStatus;
 };
 
 type reqFriendsDto = {
-  id: number;
+  id: string;
   createdAt: number;
-  senderId: number;
-  receivedId: number;
+  senderId: string;
+  receivedId: string;
 }
 
 
@@ -40,10 +40,10 @@ enum MessageStatus {
   Seen = "Seen"
 }
 
-type channelDto = {
-  id: number;
-  channleName: string;
-  channelType: string;
-  channlePassword: string;
-}
+// type channelDto = {
+//   id: number;
+//   channleName: string;
+//   channelType: string;
+//   channlePassword: string;
+// }
 

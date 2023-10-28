@@ -46,7 +46,7 @@ const ListUser = () => {
   }, [session])
 
   useEffect(() => {
-    if (geust.id === -1 && users.length !== 0) {
+    if (geust.id === "-1" && users.length !== 0) {
       setGeust(users[0]);
     }
     // mazal matistatx
@@ -66,7 +66,7 @@ const ListUser = () => {
       }}>
       <Avatar
         size="3"
-        src={el.avatar}
+        src={el.profilePic}
         radius="full"
         fallback="T"
       />
@@ -75,7 +75,7 @@ const ListUser = () => {
       </div>
       <Flex direction="column" className='items-start pl-2'>
         <Text size="2" weight="bold" className=''>
-          {el.username}
+          {el.nickname}
         </Text>
         <Text className='text-neutral-500 text-sm w-32 line-clamp-1 overflow-hidden' >
           {lastMsgs[index].content}

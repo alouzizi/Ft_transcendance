@@ -28,7 +28,7 @@ const BoxChat = () => {
     }, [Allmsg, isTyping, user.id, geust.id])
 
     useEffect(() => {
-        if (user.id !== -1 && socket) {
+        if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: msgDto) => {
                 if (data.senderId === geust.id || data.senderId === user.id) {
                     setIsTyping(false);
@@ -47,16 +47,16 @@ const BoxChat = () => {
             const msgs = await getMessageTwoUsers(user.id, geust.id);
             setAllMessage(msgs);
         }
-        if (geust.id !== -1 && user.id !== -1) {
+        if (geust.id !== "-1" && user.id !== "-1") {
             getData();
         }
     }, [geust.id, user.id]);
 
 
     useEffect(() => {
-        if (user.id !== -1 && socket) {
+        if (user.id !== "-1 " && socket) {
             const upDateGeust = async () => {
-                if (geust.id !== -1) {
+                if (geust.id !== "-1") {
                     const temp = await getUser(geust.id);
                     setGeust(temp);
                     setIsTyping(false);
@@ -80,7 +80,7 @@ const BoxChat = () => {
     }, [msg])
 
     useEffect(() => {
-        if (user.id !== -1 && socket) {
+        if (user.id !== "-1" && socket) {
             const updateIsTyping = (data: msgDto) => {
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
@@ -108,7 +108,7 @@ const BoxChat = () => {
     }
 
 
-    return (geust.id != -1) ? (
+    return (geust.id != "-1") ? (
         <Box
             style={{
                 width: 500, height: 600,
@@ -118,7 +118,7 @@ const BoxChat = () => {
             <div className="flex border-b items-center justify-start  bg-white pl-2 pt-2 pb-2 rounded-t-lg">
                 <Avatar
                     size="3"
-                    src={geust.avatar}
+                    src={geust.profilePic}
                     radius="full"
                     fallback="T"
                 />
@@ -127,7 +127,7 @@ const BoxChat = () => {
                 </Text>
                 <Flex direction="column" className='flex' >
                     <Text size="2" weight="bold" className='pl-2'>
-                        {geust.username}
+                        {geust.nickname}
                     </Text>
                     {
                         (geust.status === 'INACTIF') ?

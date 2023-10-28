@@ -16,16 +16,23 @@ enum Status {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id         String  @id @default(uuid())
+  intra_id   String  @unique
+  first_name String?
+  last_name  String?
+  nickname   String  @unique
+  email      String? @unique
+  profilePic String?
+  hash       String?
 
-  email    String  @unique
-  username String?
-  hash     String
-  avatar   String?
+  twoFactorAuth Boolean @default(false)
+  AsciiSecretQr String?
 
-  status  Status   @default(INACTIF)
-  lastSee DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  status        Status          @default(INACTIF)
+  lastSee       DateTime        @default(now())
   directMessage DirectMessage[]
   frienRequest  FriendRequest[]
   Friend        Friend[]
@@ -39,40 +46,40 @@ enum MessageStatus {
 }
 
 model DirectMessage {
-  id            Int           @id @default(autoincrement())
+  id            String        @id @default(uuid())
   content       String
   createdAt     DateTime      @default(now())
   user          User          @relation(fields: [senderId], references: [id])
   showed        Boolean       @default(true)
-  senderId      Int
-  receivedId    Int
+  senderId      String
+  receivedId    String
   messageStatus MessageStatus @default(NotReceived)
 }
 
 model FriendRequest {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   user       User     @relation(fields: [senderId], references: [id])
-  senderId   Int
-  receivedId Int
+  senderId   String
+  receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }
 
 model Friend {
-  id         Int  @id @default(autoincrement())
-  user       User @relation(fields: [senderId], references: [id])
-  senderId   Int
-  receivedId Int
+  id         String @id @default(uuid())
+  user       User   @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }
 
 model BlockedUser {
-  id         Int  @id @default(autoincrement())
-  user       User @relation(fields: [senderId], references: [id])
-  senderId   Int
-  receivedId Int
+  id         String @id @default(uuid())
+  user       User   @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }

@@ -20,16 +20,19 @@ export class AuthService {
   async signup(dto: AuthDto) {
     try {
       // randem image
+      const intra_id_k = Math.floor(Math.random() * 10000000) + 1;
+      // randem image
       const index = Math.floor(Math.random() * 100) + 1;
       // generate the password hash
       const hash = await argon.hash(dto.password);
       // save the new user in the db
       const user = await this.prisma.user.create({
         data: {
+          intra_id: `${intra_id_k}`,
           email: dto.email,
           hash: hash,
-          avatar: `https://randomuser.me/api/portraits/women/${index}.jpg`,
-          username: dto.email,
+          profilePic: `https://randomuser.me/api/portraits/women/${index}.jpg`,
+          nickname: dto.email,
         },
       });
       // return the saved user
@@ -114,5 +117,21 @@ export class AuthService {
         expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
     };
+  }
+
+  async valiadteUserAndCreateJWT(user: User) {
+    console.log("in validate : ", user)
+    // try {
+    //   const authResult = await this.UserService.findByIntraId(user.intra_id);
+    //   if (authResult) {
+
+    //     return this.generateAccessToken(user);//res.redirect('/profile');
+    //   } else {
+    //     return null;//res.redirect('https://github.com/');
+    //   }
+
+    // } catch (error) {
+    //   return null;//res.redirect('https://github.com/');
+    // }
   }
 }

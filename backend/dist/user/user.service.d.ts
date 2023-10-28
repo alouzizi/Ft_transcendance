@@ -5,49 +5,84 @@ export declare class UserService {
     private messagesService;
     constructor(prisma: PrismaService, messagesService: MessagesService);
     findByEmail(email: string): Promise<{
-        id: number;
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
         email: string;
-        username: string;
+        profilePic: string;
         hash: string;
-        avatar: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
-    findById(id: number): Promise<{
-        id: number;
+    findById(id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
         email: string;
-        username: string;
+        profilePic: string;
         hash: string;
-        avatar: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
     findAllUsers(): Promise<{
-        id: number;
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
         email: string;
-        username: string;
+        profilePic: string;
         hash: string;
-        avatar: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getValideUsers(senderId: number): Promise<{
+    getValideUsers(senderId: string): Promise<{
         friendship: number;
-        id: number;
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
         email: string;
-        username: string;
+        profilePic: string;
         hash: string;
-        avatar: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getUserForMsg(senderId: number): Promise<{
+    getUserForMsg(senderId: string): Promise<{
         usersMsgList: {
-            id: number;
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
             email: string;
-            username: string;
+            profilePic: string;
             hash: string;
-            avatar: string;
+            twoFactorAuth: boolean;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
         }[];

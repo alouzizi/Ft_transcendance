@@ -25,14 +25,16 @@ let AuthService = class AuthService {
     }
     async signup(dto) {
         try {
+            const intra_id_k = Math.floor(Math.random() * 10000000) + 1;
             const index = Math.floor(Math.random() * 100) + 1;
             const hash = await argon.hash(dto.password);
             const user = await this.prisma.user.create({
                 data: {
+                    intra_id: `${intra_id_k}`,
                     email: dto.email,
                     hash: hash,
-                    avatar: `https://randomuser.me/api/portraits/women/${index}.jpg`,
-                    username: dto.email,
+                    profilePic: `https://randomuser.me/api/portraits/women/${index}.jpg`,
+                    nickname: dto.email,
                 },
             });
             return this.signToken(user);
@@ -106,6 +108,9 @@ let AuthService = class AuthService {
                 expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
             },
         };
+    }
+    async valiadteUserAndCreateJWT(user) {
+        console.log("in validate : ", user);
     }
 };
 exports.AuthService = AuthService;

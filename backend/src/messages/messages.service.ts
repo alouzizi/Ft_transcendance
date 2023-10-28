@@ -52,7 +52,7 @@ export class MessagesService {
   }
 
 
-  async getMessage(senderId: number, receivedId: number) {
+  async getMessage(senderId: string, receivedId: string) {
     const msgUserTemp = await this.prisma.directMessage.findMany({
       where: {
         OR: [
@@ -74,7 +74,7 @@ export class MessagesService {
     return msgUser;
   }
 
-  async getLastMessages(senderId: number, receivedId: number) {
+  async getLastMessages(senderId: string, receivedId: string) {
     const lastMessage = await this.prisma.directMessage.findFirst({
       where: {
         OR: [

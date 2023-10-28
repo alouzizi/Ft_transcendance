@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const jwt_1 = require("@nestjs/jwt");
-const strategy_1 = require("./strategy");
+const _42_intranet_strategy_1 = require("./42-intranet.strategy");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -19,7 +19,7 @@ exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [jwt_1.JwtModule.register({})],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, strategy_1.JwtStrategy],
+        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

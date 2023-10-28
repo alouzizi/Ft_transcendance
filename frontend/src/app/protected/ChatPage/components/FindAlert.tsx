@@ -38,7 +38,7 @@ export default function AlertDialogFind() {
 
     useEffect(() => {
         async function getData() {
-            if (user.id !== -1) {
+            if (user.id !== "-1") {
                 const temp = await getValideUsers(user.id);
                 setValideUsers(temp);
             }
@@ -49,7 +49,7 @@ export default function AlertDialogFind() {
 
     useEffect(() => {
         const tmp: userDto[] = valideUsers.filter((elm) => {
-            const username = elm.username;
+            const username = elm.nickname;
             return ((username.includes(searsh) && searsh != '') || searsh === "*");
         })
         setUsersFilter(tmp);
@@ -73,7 +73,7 @@ export default function AlertDialogFind() {
             <Flex align="center" justify="between" className='border-b py-2'>
                 <div className='flex items-center relative'>
                     <Avatar
-                        src={elm.avatar}
+                        src={elm.profilePic}
                         fallback="T"
                         style={{ height: '40px', borderRadius: '40px', cursor: 'pointer' }}
                     />
@@ -81,7 +81,7 @@ export default function AlertDialogFind() {
                         <GoDotFill size={15} color={getColorStatus(elm.status)} />
                     </div>
                     <Text size="3" weight="bold" className='pl-2'>
-                        {elm.username}
+                        {elm.nickname}
                     </Text>
                 </div>
                 <div className='flex items-center'>

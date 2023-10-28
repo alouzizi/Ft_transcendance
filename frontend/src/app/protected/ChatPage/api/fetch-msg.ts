@@ -3,8 +3,8 @@ import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
 
 export async function getMessageTwoUsers(
-    sender: number,
-    recived: number,
+    sender: string,
+    recived: string,
 ) {
     const response = await axios.get(
         Backend_URL + `/messages/${sender}/${recived}`,
@@ -15,8 +15,8 @@ export async function getMessageTwoUsers(
 
 
 export async function getLastMessageTwoUsers(
-    sender: number,
-    recived: number,
+    sender: string,
+    recived: string,
 ) {
     const response = await axios.get(
         Backend_URL + `/messages/lastMsg/${sender}/${recived}`,

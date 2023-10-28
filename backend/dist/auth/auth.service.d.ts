@@ -10,11 +10,18 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwt: JwtService, config: ConfigService);
     signup(dto: AuthDto): Promise<{
         user: {
-            id: number;
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
             email: string;
-            username: string;
+            profilePic: string;
             hash: string;
-            avatar: string;
+            twoFactorAuth: boolean;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
         };
@@ -26,11 +33,18 @@ export declare class AuthService {
     }>;
     signin(dto: AuthDto): Promise<{
         user: {
-            id: number;
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
             email: string;
-            username: string;
+            profilePic: string;
             hash: string;
-            avatar: string;
+            twoFactorAuth: boolean;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
         };
@@ -42,11 +56,18 @@ export declare class AuthService {
     }>;
     signToken(user: User): Promise<{
         user: {
-            id: number;
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
             email: string;
-            username: string;
+            profilePic: string;
             hash: string;
-            avatar: string;
+            twoFactorAuth: boolean;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
         };
@@ -63,4 +84,5 @@ export declare class AuthService {
             expiresIn: number;
         };
     }>;
+    valiadteUserAndCreateJWT(user: User): Promise<void>;
 }

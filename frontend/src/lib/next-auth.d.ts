@@ -3,10 +3,10 @@ import NextAuth from 'next-auth/next';
 declare module 'next-auth' {
   interface Session {
     user: {
-      id: number;
+      id: string;
       email: string;
-      username: string;
-      avatar: string;
+      nickname: string;
+      profilePic: string;
       status: Status;
       lastSee: number;
       friendship: number;
@@ -23,10 +23,10 @@ import { JWT } from 'next-auth/jwt';
 declare module 'next-auth/jwt' {
   interface JWT {
     user: {
-      id: number;
+      id: string;
       email: string;
-      username: string;
-      avatar: string;
+      nickname: string;
+      profilePic: string;
       status: Status;
       lastSee: number;
       friendship: number;

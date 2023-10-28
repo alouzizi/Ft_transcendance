@@ -57,7 +57,7 @@ export default function AlertAddChannel() {
 
     useEffect(() => {
         async function getData() {
-            if (user.id !== -1) {
+            if (user.id !== '-1') {
                 const temp = await getValideUsers(user.id);
                 setValideUsers(temp);
             }
@@ -67,7 +67,7 @@ export default function AlertAddChannel() {
 
     useEffect(() => {
         const tmp: userDto[] = valideUsers.filter((elm) => {
-            const username = elm.username;
+            const username = elm.nickname;
             return ((username.includes(member) && member != '') || member === "*");
         })
         setUsersFilter(tmp);
@@ -84,7 +84,7 @@ export default function AlertAddChannel() {
             <Flex align="center" justify="between" className='border-b py-2'>
                 <div className='flex items-center relative'>
                     <Avatar
-                        src={elm.avatar}
+                        src={elm.profilePic}
                         fallback="T"
                         style={{ height: '30px', borderRadius: '30px' }}
                     />
@@ -92,7 +92,7 @@ export default function AlertAddChannel() {
                         <GoDotFill size={15} color={getColorStatus(elm.status)} />
                     </div>
                     <Text size="3" weight="bold" className='pl-2'>
-                        {elm.username}
+                        {elm.nickname}
                     </Text>
                 </div>
                 {checkIsExist(elm, membersChannel) ?
@@ -110,14 +110,14 @@ export default function AlertAddChannel() {
         </Box>
     });
 
-    const [isMouseOver, setIsMouseOver] = useState(-1);
+    const [isMouseOver, setIsMouseOver] = useState('-1');
     const widgetMembers = membersChannel.map((elm) => {
         return <Box style={{ display: "inline-block" }}
             onMouseEnter={() => setIsMouseOver(elm.id)}
-            onMouseLeave={() => setIsMouseOver(-1)}>
+            onMouseLeave={() => setIsMouseOver('-1')}>
             <div className='flex  items-center  pl-2 pr-1.5 m-1'
                 style={{ background: "pink", borderTopRightRadius: 10, borderBottomRightRadius: 10 }}>
-                <p>{elm.username}</p>
+                <p>{elm.nickname}</p>
                 {(isMouseOver === elm.id) && <TiDelete onClick={() => {
                     setMembersChannel((prevMembers) =>
                         prevMembers.filter((member) => member.id !== elm.id));

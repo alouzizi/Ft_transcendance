@@ -20,53 +20,37 @@ let FriendshipController = class FriendshipController {
         this.friendshipService = friendshipService;
     }
     async getSendRequistFriends(sender) {
-        const senderId = parseInt(sender);
-        return await this.friendshipService.getSendRequistFriends(senderId);
+        return await this.friendshipService.getSendRequistFriends(sender);
     }
     async getRecivedRequistFriends(sender) {
-        const senderId = parseInt(sender);
-        return await this.friendshipService.getRecivedRequistFriends(senderId);
+        return await this.friendshipService.getRecivedRequistFriends(sender);
     }
     async getFriends(sender) {
-        const senderId = parseInt(sender);
-        return await this.friendshipService.getFriends(senderId);
+        return await this.friendshipService.getFriends(sender);
     }
     async getBlockedUser(sender) {
-        const senderId = parseInt(sender);
-        return await this.friendshipService.getBlockedUser(senderId);
+        return await this.friendshipService.getBlockedUser(sender);
     }
     async addFriendRequest(sender, recived) {
-        const senderId = parseInt(sender);
-        const recivedId = parseInt(recived);
-        return await this.friendshipService.sendFriendRequist(senderId, recivedId);
+        return await this.friendshipService.sendFriendRequist(sender, recived);
     }
     async removeFriendRequest(sender, recived) {
-        const senderId = parseInt(sender);
-        const recivedId = parseInt(recived);
-        return await this.friendshipService.removeFriendRequist(senderId, recivedId);
+        return await this.friendshipService.removeFriendRequist(sender, recived);
     }
     async accepteFriendRequest(sender, recived) {
-        const senderId = parseInt(sender);
-        const recivedId = parseInt(recived);
-        await this.friendshipService.removeFriendRequist(recivedId, senderId);
-        return await this.friendshipService.accepteFriendRequest(senderId, recivedId);
+        await this.friendshipService.removeFriendRequist(recived, sender);
+        return await this.friendshipService.accepteFriendRequest(sender, recived);
     }
     async deleteFriend(sender, recived) {
-        const senderId = parseInt(sender);
-        const recivedId = parseInt(recived);
-        return await this.friendshipService.deleteFriend(senderId, recivedId);
+        return await this.friendshipService.deleteFriend(sender, recived);
     }
     async blockedUser(sender, recived) {
-        const senderId = parseInt(sender);
-        const recivedId = parseInt(recived);
-        await this.friendshipService.removeFriendRequist(recivedId, senderId);
-        await this.friendshipService.deleteFriend(recivedId, senderId);
-        return await this.friendshipService.blockedUser(senderId, recivedId);
+        await this.friendshipService.removeFriendRequist(recived, sender);
+        await this.friendshipService.deleteFriend(recived, sender);
+        return await this.friendshipService.blockedUser(sender, recived);
     }
     async unBlockedUser(sender, recived) {
-        const senderId = parseInt(sender);
-        const recivedId = parseInt(recived);
-        return await this.friendshipService.unBlockedUser(senderId, recivedId);
+        return await this.friendshipService.unBlockedUser(sender, recived);
     }
 };
 exports.FriendshipController = FriendshipController;

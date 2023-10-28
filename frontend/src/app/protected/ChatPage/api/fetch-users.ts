@@ -1,7 +1,7 @@
 import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
 
-export async function getUser(id: number) {
+export async function getUser(id: string) {
     const res = await axios.get(
         Backend_URL + `/user/${id}`,
     );
@@ -17,7 +17,7 @@ export async function getAllUsers(author: string) {
     return users;
 }
 
-export async function getValideUsers(id: number) {
+export async function getValideUsers(id: string) {
     console.log("------> ", Backend_URL + `user/getValideUsers/${id}`);
     const res = await axios.get(
         Backend_URL + `/user/getValideUsers/${id}`,
@@ -26,7 +26,7 @@ export async function getValideUsers(id: number) {
     return users;
 }
 
-export async function getUserForMsg(senderId: number) {
+export async function getUserForMsg(senderId: string) {
     console.log("------> ", Backend_URL + `/user/getUserForMsg/${senderId}`);
     const res = await axios.get(
         Backend_URL + `/user/getUserForMsg/${senderId}`,

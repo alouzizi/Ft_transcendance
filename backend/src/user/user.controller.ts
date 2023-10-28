@@ -8,8 +8,7 @@ export class UserController {
 
   // @UseGuards(JwtGuard)
   @Get(':id')
-  async getUserProfile(@Param('id') id: number) {
-    console.log("call de");
+  async getUserProfile(@Param('id') id: string) {
     return await this.userService.findById(id);
   }
 
@@ -21,13 +20,13 @@ export class UserController {
 
 
   @Get('/getValideUsers/:id')
-  async getValideUsers(@Param('id') senderId: number) {
+  async getValideUsers(@Param('id') senderId: string) {
     return await this.userService.getValideUsers(senderId);
   }
 
 
   @Get('/getUserForMsg/:id')
-  async getUserForMsg(@Param('id') senderId: number) {
+  async getUserForMsg(@Param('id') senderId: string) {
     return await this.userService.getUserForMsg(senderId);
   }
 } 

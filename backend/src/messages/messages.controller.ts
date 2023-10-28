@@ -7,11 +7,8 @@ export class MessageController {
 
   @Get(':send/:rec')
   async getMessages(@Param('send') send: string, @Param('rec') rec: string) {
-    const r = parseInt(rec);
-    const s = parseInt(send);
 
-    if (isNaN(r) || isNaN(s)) return '';
 
-    return this.messagesService.getMessage(s, r);
+    return this.messagesService.getMessage(send, rec);
   }
 }

@@ -1,7 +1,7 @@
 export class CreateMessageDto {
   content: string;
-  senderId: number;
-  receivedId: number;
+  senderId: string;
+  receivedId: string;
 }
 
 

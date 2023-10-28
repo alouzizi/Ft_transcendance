@@ -71,13 +71,13 @@ export function MessageLeft({ message, geust }: { message: msgDto, geust: userDt
         <div className='flex'>
             <Avatar
                 size="1"
-                src={geust.avatar}
+                src={geust.profilePic}
                 radius="full"
                 fallback="T"
             />
             <div className='pl-2'>
                 <Text as="span" size="2" weight="bold">
-                    {geust.username}
+                    {geust.nickname}
                 </Text>
                 <div style={cardStyles} className='relative'>
                     <div className='mb-4  text-sm'> {message.content}</div>

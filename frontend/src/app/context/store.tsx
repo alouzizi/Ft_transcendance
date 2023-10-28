@@ -25,10 +25,10 @@ interface ContextProps {
 
 const GlobalContext = createContext<ContextProps>({
     user: {
-        id: -1,
+        id: '-1',
         email: '',
-        username: '',
-        avatar: '',
+        nickname: '',
+        profilePic: '',
         status: Status.INACTIF,
         lastSee: 0,
         friendship: -1,
@@ -37,10 +37,10 @@ const GlobalContext = createContext<ContextProps>({
     setUser: () => { },
 
     geust: {
-        id: -1,
+        id: '-1',
         email: '',
-        username: '',
-        avatar: '',
+        nickname: '',
+        profilePic: '',
         status: Status.INACTIF,
         lastSee: 0,
         friendship: -1,
@@ -58,10 +58,10 @@ export const GlobalContextProvider = ({ children }: {
     children: React.ReactNode;
 }) => {
     const [user, setUser] = useState<userDto>({
-        id: -1,
+        id: '-1',
         email: '',
-        username: '',
-        avatar: '',
+        nickname: '',
+        profilePic: '',
         status: Status.INACTIF,
         lastSee: 0,
         friendship: -1,
@@ -69,10 +69,10 @@ export const GlobalContextProvider = ({ children }: {
     })
 
     const [geust, setGeust] = useState<userDto>({
-        id: -1,
+        id: '-1',
         email: '',
-        username: '',
-        avatar: '',
+        nickname: '',
+        profilePic: '',
         status: Status.INACTIF,
         lastSee: 0,
         friendship: -1,
@@ -83,7 +83,7 @@ export const GlobalContextProvider = ({ children }: {
     useEffect(() => {
         // const socket = io('your-socket-server-url');
 
-        if (user.id != -1) {
+        if (user.id != '-1') {
             const socket = io(Backend_URL, {
                 transports: ['websocket'],
                 query: {

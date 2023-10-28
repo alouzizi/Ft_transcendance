@@ -9,7 +9,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private messagesService: MessagesService
-  ) {}
+  ) { }
 
   async findByEmail(email: string) {
     return await this.prisma.user.findUnique({
@@ -19,7 +19,7 @@ export class UserService {
     });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -31,7 +31,7 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
 
-  async getValideUsers(senderId: number) {
+  async getValideUsers(senderId: string) {
     const users = await this.prisma.user.findMany();
     const blockerUsers = await this.prisma.blockedUser.findMany({
       where: {
@@ -86,7 +86,7 @@ export class UserService {
     return result;
   }
 
-  async getUserForMsg(senderId: number) {
+  async getUserForMsg(senderId: string) {
     const users = await this.prisma.user.findMany();
     const usersMsg = await this.prisma.directMessage.findMany({
       where: {
@@ -96,7 +96,7 @@ export class UserService {
         createdAt: "desc",
       },
     });
-    const distinctUserIds = new Set<number>();
+    const distinctUserIds = new Set<string>();
     for (const msg of usersMsg) {
       if (msg.senderId === senderId) {
         distinctUserIds.add(msg.receivedId);
