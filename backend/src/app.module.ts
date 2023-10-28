@@ -5,6 +5,8 @@ import { ConfigModule } from "@nestjs/config";
 import { UserModule } from "./user/user.module";
 import { MessagesModule } from "./messages/messages.module";
 import { FriendshipModule } from "./friendship/friendship.module";
+import { HixcoderController } from "./hixcoder/hixcoder.controller";
+import { HixcoderModule } from "./hixcoder/hixcoder.module";
 
 @Module({
   imports: [
@@ -14,6 +16,7 @@ import { FriendshipModule } from "./friendship/friendship.module";
     UserModule,
     MessagesModule,
     FriendshipModule,
+    HixcoderModule,
   ],
 })
 export class AppModule {}
