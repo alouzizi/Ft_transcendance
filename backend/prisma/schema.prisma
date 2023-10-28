@@ -16,12 +16,14 @@ model User {
   last_name     String
   nickname      String @unique
   email         String  
-  password      String
   profilePic    String
   level         Float
   grade         String
 
   twoFactorAuth Boolean     @default(false)
   AsciiSecretQr String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
 }

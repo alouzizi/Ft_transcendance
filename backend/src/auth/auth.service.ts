@@ -1,33 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/users/UserService';
 import { JwtService } from '@nestjs/jwt';
-import { Profile } from 'passport-42';
-import { UnauthorizedException } from '@nestjs/common';
+import { User } from '@prisma/client';
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private UserService: UserService,
-    ) {}
-  async validateUser(profile: Profile){
-    const user = await this.validateUser(profile.intra_id);
+    private UserService: UserService) {}
 
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-
-    }
-    // If the user is found, generate an access token
-    const accessToken = this.generateAccessToken(user);
-    
+  async generateAccessToken(user: any){
+    // Create a JWT access token based on the user's data
+    const payload = { sub: user.intra_id, nickname: user.login42}; // Customize the payload as needed
+    console.log("paylod",payload)
     return {
-      access_token: accessToken,
-      user: user, // You can customize this based on your user model
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
-
-  generateAccessToken(user: any): string {
-    // Create a JWT access token based on the user's data
-    const payload = { sub: user.intra_id, username: user.username }; // Customize the payload as needed
-    return this.jwtService.sign(payload);
+    async valiadteUserAndCreateJWT(user: User)
+  {
+    console.log("in validate : ",user)
+    try {
+      const authResult = await this.UserService.findByIntraId(user.intra_id);
+    if(authResult){
+      
+      return this.generateAccessToken(user);//res.redirect('/profile');
+    }else {
+      return null;//res.redirect('https://github.com/');
+    }
+    
+  } catch (error){
+      return null;//res.redirect('https://github.com/');
+    }  
   }
 }
+
+///check if user in db 
+//user == true => redirect profile
+//user create => signup

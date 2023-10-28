@@ -1,31 +1,27 @@
 import { Injectable, UnprocessableEntityException} from '@nestjs/common';
 import { PassportStrategy  } from '@nestjs/passport';
+import { Prisma } from '@prisma/client';
 import { Strategy, Profile, VerifyCallback } from 'passport-42';
-import { AuthService } from './auth.service';
 import { UserService } from 'src/users/UserService';
 
 @Injectable()
 export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-intranet') {
-  constructor(private readonly userService: UserService, private readonly authService: AuthService) {
+  constructor(private readonly UserService: UserService) {
     super(
       {
-        authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
-        tokenURL: 'https://api.intra.42.fr/oauth/token',
+        // authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
+        // tokenURL: 'https://api.intra.42.fr/oauth/authorize',
         clientID: process.env.FORTYTWO_CLIENT_ID,
         clientSecret: process.env.FORTYTWO_CLIENT_SECRET,
         callbackURL: 'http://localhost:3000/auth/42-intranet/callback',
         scope: ['public'],
       });
-      }
-     validateUser(profile: Profile){ //accessToken: string, refreshToken: string
-      console.log('profile', profile);
-      const { id, username,first_name, last_name, image,wallet,cursus_users,login } = profile._json
+    }
+     validateUser( profile: Profile){ // refreshToken: string
+      const { id,first_name,last_name,image,wallet,cursus_users,login } = profile._json
 		              const user = {
-                        // intra_id : id.tostring(),
                         intra_id: typeof id === 'string' ? id : id.toString(),
-			                  username: username,
 			                  email: profile['emails'][0]['value'],
-			                  password: username,
                         first_name: first_name,
                         last_name: last_name,
                         profilePicture: image.link,
@@ -33,29 +29,28 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
                         level: cursus_users[1].level,
 			                  grade: cursus_users[1].grade,
 			                  login42: login,
-                        // accessToken
                   };
+                  console.log(user);
                   return user;
       }
-      async validate(accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback){
+      async validate( accessToken: String, refreshToken: string,profile: Profile, done: VerifyCallback){  //accessToken: string,refreshToken: string
         try { 
+          console.log('profile', profile);
           const user = await this.validateUser(profile);
-          let checkuser = await this.userService.findByIntraId(user.intra_id);
-
+          let checkuser = await this.UserService.findByIntraId(user.intra_id);
+          console.log(checkuser);
           if(checkuser){
-            // const createNewUser = await this.authService.signup(user);
-            checkuser = await this.userService.findByIntraId(user.intra_id);
+            // checkuser = await this.userService.findByIntraId(user.intra_id);
             done (null, user);
           } else {
-            let createuser = await this.userService.createUser(user.intra_id);
-            done(null, createuser);
+          console.log("here")
+            let createnewuser = await this.UserService.createUser(user);
+            done(null, createnewuser);
             // throw new UnprocessableEntityException('Validation failed');
           }
+          return user
         } catch (error){
           done( error, false);
         }
-      }
-      // console.log(profile);
-      // return this.authService.validateUser(user)
-      // return profile;
+      } 
 }

@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/users/UserService'; 
 import { PrismaService } from 'src/prisma.service';
-import { JwtService, JwtModule} from '@nestjs/jwt';
+import { JwtModule} from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { FortyTwoIntranetStrategy } from './42-intranet.strategy';
 
@@ -11,10 +11,12 @@ import { FortyTwoIntranetStrategy } from './42-intranet.strategy';
   imports:[
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: "1d" }
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,FortyTwoIntranetStrategy,UserService,PrismaService,JwtService],
+  providers: [AuthService,FortyTwoIntranetStrategy,UserService,PrismaService],
 })
 export class AuthModule {}
