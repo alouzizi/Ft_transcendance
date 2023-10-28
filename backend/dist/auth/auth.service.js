@@ -16,12 +16,14 @@ const argon = require("argon2");
 const library_1 = require("@prisma/client/runtime/library");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const user_service_1 = require("../user/user.service");
 const EXPIRE_TIME = 20 * 1000;
 let AuthService = class AuthService {
-    constructor(prisma, jwt, config) {
+    constructor(prisma, config, userService, jwtService) {
         this.prisma = prisma;
-        this.jwt = jwt;
         this.config = config;
+        this.userService = userService;
+        this.jwtService = jwtService;
     }
     async signup(dto) {
         try {
@@ -69,11 +71,11 @@ let AuthService = class AuthService {
             sub: user.id,
             email: user.email,
         };
-        const access_token = await this.jwt.signAsync(payload, {
+        const access_token = await this.jwtService.signAsync(payload, {
             expiresIn: "20s",
             secret: this.config.get("JWT_SECRET"),
         });
-        const refresh_token = await this.jwt.signAsync(payload, {
+        const refresh_token = await this.jwtService.signAsync(payload, {
             expiresIn: "7d",
             secret: this.config.get("JWT_RefreshTokenKey"),
         });
@@ -93,11 +95,11 @@ let AuthService = class AuthService {
             sub: user.id,
             email: user.email,
         };
-        const access_token = await this.jwt.signAsync(payload, {
+        const access_token = await this.jwtService.signAsync(payload, {
             expiresIn: "20s",
             secret: this.config.get("JWT_SECRET"),
         });
-        const refresh_token = await this.jwt.signAsync(payload, {
+        const refresh_token = await this.jwtService.signAsync(payload, {
             expiresIn: "7d",
             secret: this.config.get("JWT_RefreshTokenKey"),
         });
@@ -109,15 +111,35 @@ let AuthService = class AuthService {
             },
         };
     }
+    async generateAccessToken(user) {
+        const payload = { sub: user.intra_id, nickname: user.login42 };
+        console.log("paylod", payload);
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
+    }
     async valiadteUserAndCreateJWT(user) {
         console.log("in validate : ", user);
+        try {
+            const authResult = await this.userService.findByIntraId(user.intra_id);
+            if (authResult) {
+                return this.signToken(user);
+            }
+            else {
+                return null;
+            }
+        }
+        catch (error) {
+            return null;
+        }
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)({}),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        user_service_1.UserService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

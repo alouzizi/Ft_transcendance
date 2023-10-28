@@ -118,4 +118,32 @@ export class UserService {
     }
     return { usersMsgList, lastMsgs };
   }
+
+
+
+  // saliha -------------------
+
+  async createUser(user1: any) {
+    console.log("my user iss", user1.intra_id);
+    const user = await this.prisma.user.create({
+      data: {
+        intra_id: user1.intra_id.toString(),
+        nickname: user1.login42.toString(),
+        email: user1.email.toString(),
+        profilePic: user1.profilePicture.toString(),
+        last_name: user1.last_name,
+        first_name: user1.first_name
+      },
+
+    });
+    console.log("prisma user is ", user)
+    return user;
+  }
+
+  async findByIntraId(intra_id: string) {
+    return this.prisma.user.findUnique({
+      where: { intra_id: intra_id },
+    });
+  }
+
 }

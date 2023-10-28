@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 export declare class AuthController {
@@ -49,12 +50,6 @@ export declare class AuthController {
             expiresIn: number;
         };
     }>;
-    callbackWith42(req: any, res: Response): Promise<any>;
-    refreshToken(req: any): Promise<{
-        backendTokens: {
-            access_token: string;
-            refresh_token: string;
-            expiresIn: number;
-        };
-    }>;
+    loginWith42(): Promise<void>;
+    callbackWith42(req: any, res: Response): Promise<void>;
 }

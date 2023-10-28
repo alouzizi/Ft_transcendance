@@ -88,4 +88,36 @@ export declare class UserService {
         }[];
         lastMsgs: any[];
     }>;
+    createUser(user1: any): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    findByIntraId(intra_id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
 }

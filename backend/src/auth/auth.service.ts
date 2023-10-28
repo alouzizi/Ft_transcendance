@@ -4,8 +4,9 @@ import { PrismaService } from "src/prisma/prisma.service";
 import * as argon from "argon2";
 import { AuthDto } from "./dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from "@nestjs/config";
+import { UserService } from "src/user/user.service";
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -13,8 +14,10 @@ const EXPIRE_TIME = 20 * 1000;
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private jwt: JwtService,
-    private config: ConfigService
+    private config: ConfigService,
+    private userService: UserService,
+    private jwtService: JwtService,
+
   ) { }
 
   async signup(dto: AuthDto) {
@@ -75,11 +78,11 @@ export class AuthService {
       sub: user.id,
       email: user.email,
     };
-    const access_token = await this.jwt.signAsync(payload, {
+    const access_token = await this.jwtService.signAsync(payload, {
       expiresIn: "20s",
       secret: this.config.get("JWT_SECRET"),
     });
-    const refresh_token = await this.jwt.signAsync(payload, {
+    const refresh_token = await this.jwtService.signAsync(payload, {
       expiresIn: "7d",
       secret: this.config.get("JWT_RefreshTokenKey"),
     });
@@ -102,11 +105,11 @@ export class AuthService {
       email: user.email,
     };
 
-    const access_token = await this.jwt.signAsync(payload, {
+    const access_token = await this.jwtService.signAsync(payload, {
       expiresIn: "20s",
       secret: this.config.get("JWT_SECRET"),
     });
-    const refresh_token = await this.jwt.signAsync(payload, {
+    const refresh_token = await this.jwtService.signAsync(payload, {
       expiresIn: "7d",
       secret: this.config.get("JWT_RefreshTokenKey"),
     });
@@ -119,19 +122,31 @@ export class AuthService {
     };
   }
 
+
+  // saliha --------------------------------------------------------------------------
+
+  async generateAccessToken(user: any) {
+    // Create a JWT access token based on the user's data
+    const payload = { sub: user.intra_id, nickname: user.login42 }; // Customize the payload as needed
+    console.log("paylod", payload)
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
   async valiadteUserAndCreateJWT(user: User) {
     console.log("in validate : ", user)
-    // try {
-    //   const authResult = await this.UserService.findByIntraId(user.intra_id);
-    //   if (authResult) {
+    try {
+      const authResult = await this.userService.findByIntraId(user.intra_id);
+      if (authResult) {
+        return this.signToken(user);
+        // return this.generateAccessToken(user);//res.redirect('/profile');
+      } else {
+        return null;//res.redirect('https://github.com/');
+      }
 
-    //     return this.generateAccessToken(user);//res.redirect('/profile');
-    //   } else {
-    //     return null;//res.redirect('https://github.com/');
-    //   }
-
-    // } catch (error) {
-    //   return null;//res.redirect('https://github.com/');
-    // }
+    } catch (error) {
+      return null;//res.redirect('https://github.com/');
+    }
   }
 }

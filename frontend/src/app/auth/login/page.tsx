@@ -16,8 +16,8 @@ import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import GoogleSignInButton from "../components/GoogleSignInButton";
 import { useGlobalContext } from "@/app/context/store";
+import axios from "axios";
 
 export default function login() {
   const { setUser } = useGlobalContext();
@@ -121,7 +121,21 @@ export default function login() {
             <p className="text-black  text-center my-auto">or</p>
             <hr className="w-[40%] bg-black h-[1px] my-auto" />
           </div>
-          <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
+          {/* <GoogleSignInButton>Sign in with Google</GoogleSignInButton> */}
+
+          <>
+            <button onClick={async () => {
+              const res = await axios.get(
+                `http://localhost:4000/auth/login42`,
+              );
+              console.log(res);
+            }}
+              className="border border-blue-500 rounded-xl flex justify-center mx-auto items-center w-28 h-10">
+              <img className='w-[29px]' src="/42.svg" />
+              school
+            </button>
+          </>
+
           <p className=" text-center text-sm text-gray-600 mt-2">
             If you don&apos;t have an account, please&nbsp;
             <Link
