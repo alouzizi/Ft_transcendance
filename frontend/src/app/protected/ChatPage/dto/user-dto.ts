@@ -1,3 +1,4 @@
+
 type userDto = {
   id: number;
   email: string;
@@ -38,3 +39,11 @@ enum MessageStatus {
   Received = "Received",
   Seen = "Seen"
 }
+
+type channelDto = {
+  id: number;
+  channleName: string;
+  channelType: string;
+  channlePassword: string;
+}
+

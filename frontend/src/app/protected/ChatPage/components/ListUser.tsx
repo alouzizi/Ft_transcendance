@@ -1,8 +1,7 @@
 "use client"
 import Box from '@mui/material/Box';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
-import { useEffect, useState } from 'react';
-
+import { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
 import { getUserForMsg } from '../api/fetch-users';
@@ -50,6 +49,11 @@ const ListUser = () => {
     if (geust.id === -1 && users.length !== 0) {
       setGeust(users[0]);
     }
+    // mazal matistatx
+    // if (users.length === 0 && geust.id !== 0) {
+    //   setUsers([geust]);
+    //   setLastMsgs([])
+    // }
   }, [users])
 
   const userWidget = (users.length != 0) ? users.map((el, index) => {

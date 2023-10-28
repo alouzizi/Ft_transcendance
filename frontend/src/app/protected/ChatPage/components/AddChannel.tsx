@@ -19,14 +19,29 @@ import { TiDelete } from "react-icons/ti";
 import { useGlobalContext } from '../../../context/store';
 import { getValideUsers } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
+import { z } from "zod";
+
+
 
 export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
 
+    const channelNameSchema = z.string()
+        .min(3)
+        .max(50)
+        .refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
 
-    const [channelType, setChannelType] = useState<string>('public');
+    const channelkeySchema = z.string()
+        .min(3)
+        .max(50)
+        .refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+
+
+    const [errorName, setErrorName] = useState("");
+    const [errorKey, setErrorKey] = useState("");
     const [channelName, setChannelName] = useState('');
-    const [key, setKey] = useState('');
+    const [channelType, setChannelType] = useState<string>('public');
+    const [channelKey, setChannelKey] = useState('');
     const [member, setMember] = useState('');
     const [protect, setProtected] = useState<boolean>(false);
 
@@ -39,11 +54,7 @@ export default function AlertAddChannel() {
         setChannelType(event.target.value);
         console.log(event.target.value);
     };
-    const handleProtected = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event);
-        setProtected(event.target.checked);
 
-    };
     useEffect(() => {
         async function getData() {
             if (user.id !== -1) {
@@ -104,7 +115,7 @@ export default function AlertAddChannel() {
         return <Box style={{ display: "inline-block" }}
             onMouseEnter={() => setIsMouseOver(elm.id)}
             onMouseLeave={() => setIsMouseOver(-1)}>
-            <div className='flex  items-center  px-2 m-1'
+            <div className='flex  items-center  pl-2 pr-1.5 m-1'
                 style={{ background: "pink", borderTopRightRadius: 10, borderBottomRightRadius: 10 }}>
                 <p>{elm.username}</p>
                 {(isMouseOver === elm.id) && <TiDelete onClick={() => {
@@ -172,20 +183,25 @@ export default function AlertAddChannel() {
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Name" variant="outlined"
                                 value={channelName}
-                                onChange={(e) => { setChannelName(e.target.value) }} />
+                                onChange={(e) => { setErrorName(''); setChannelName(e.target.value) }} />
+                            {errorName && <Text as="div" color='red'>{errorName}</Text>}
 
-                            <FormControlLabel control={<Checkbox onChange={handleProtected} />} label="Protected" />
+                            <FormControlLabel control={<Checkbox onChange={(event) => {
+                                setErrorKey('');
+                                setProtected(event.target.checked);
+                            }} />} label="Protected" />
 
                             <TextField
                                 disabled={!protect}
-                                fullWidth size="small" className='mt-1 mb-3'
+                                required={protect}
+                                fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Key" variant="outlined"
-                                value={key}
-                                onChange={(e) => { setKey(e.target.value) }} />
+                                value={channelKey}
+                                onChange={(e) => { setErrorKey(''), setChannelKey(e.target.value) }} />
+                            {errorKey && <Text as="div" color='red'>{errorKey}</Text>}
 
-
-                            {widgetMembers}
+                            <div className='mt-2'> {widgetMembers}</div>
                             <TextField fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Add membres" variant="outlined"
@@ -200,7 +216,21 @@ export default function AlertAddChannel() {
 
                     <DialogActions style={{ justifyContent: 'center' }}>
                         <Button style={{ background: 'blue', color: "white" }}
-                            onClick={() => setOpen(false)}>Create</Button>
+                            onClick={() => {
+                                const parsName = channelNameSchema.safeParse(channelName);
+                                const parskey = channelkeySchema.safeParse(channelKey);
+                                console.log("parskey-->", parskey);
+                                if (parsName.success && (parskey.success || !protect)) {
+                                    console.log("valide");
+                                } else {
+
+                                    if (!parsName.success) setErrorName('Invalid channel name');
+                                    if (!parskey.success && protect) setErrorKey('Invalid channel key');
+                                }
+
+
+
+                            }}>Create</Button>
                     </DialogActions>
 
                 </DialogContent>

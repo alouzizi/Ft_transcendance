@@ -8,6 +8,7 @@ import { getMessageTwoUsers } from '../api/fetch-msg';
 import { GoDotFill } from "react-icons/go";
 import { getColorStatus } from './ListUser';
 import { formatDistance } from 'date-fns'
+import { getUser } from '../api/fetch-users';
 
 const BoxChat = () => {
     const [msg, setMsg] = useState('');
@@ -52,22 +53,21 @@ const BoxChat = () => {
     }, [geust.id, user.id]);
 
 
-    // axhad l fake
-    // useEffect(() => {
-    //     if (user.id !== -1) {
-    //         const upDateGeust = async () => {
-    //             if (geust.id !== -1) {
-    //                 const temp = await getUser(geust.id);
-    //                 setGeust(temp);
-    //                 setIsTyping(false);
-    //             }
-    //         }
-    //         socket.on("updateData", upDateGeust);
-    //         return () => {
-    //             socket.off("updateData", upDateGeust);
-    //         };
-    //     }
-    // }, [geust.id, user.id]);
+    useEffect(() => {
+        if (user.id !== -1 && socket) {
+            const upDateGeust = async () => {
+                if (geust.id !== -1) {
+                    const temp = await getUser(geust.id);
+                    setGeust(temp);
+                    setIsTyping(false);
+                }
+            }
+            socket.on("updateData", upDateGeust);
+            return () => {
+                socket.off("updateData", upDateGeust);
+            };
+        }
+    }, [geust.id, user.id]);
 
     useEffect(() => {
         if (msg != "" && socket) {
