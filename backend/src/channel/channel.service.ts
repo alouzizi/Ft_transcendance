@@ -1,8 +1,8 @@
-import { HttpStatus, Injectable, Res } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ChannelType, Prisma } from '@prisma/client';
 
 
 
@@ -12,10 +12,7 @@ export class ChannelService {
     private prisma: PrismaService
   ) { }
 
-
-
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
-    // let type: string = createChannelDto.channelType; (type == '1') ? ChannelType.Private : ChannelType.Public
     try {
       const newChannel = await this.prisma.channel.create({
         data: {
@@ -25,6 +22,23 @@ export class ChannelService {
           channelType: createChannelDto.channelType
         }
       })
+      console.log(newChannel);
+      await this.prisma.channelMember.create({
+        data: {
+          userId: senderId,
+          isAdmin: false,
+          channelId: newChannel.id,
+        }
+      })
+      createChannelDto.channelMember.forEach(async (item: string) => {
+        await this.prisma.channelMember.create({
+          data: {
+            userId: item,
+            isAdmin: false,
+            channelId: newChannel.id,
+          }
+        })
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -37,6 +51,7 @@ export class ChannelService {
     }
     return 'This action adds a new channel';
   }
+
 
   findAll() {
     return `This action returns all channel`;

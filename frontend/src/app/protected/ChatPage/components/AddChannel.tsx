@@ -46,7 +46,7 @@ export default function AlertAddChannel() {
     const [errorName, setErrorName] = useState("");
     const [errorKey, setErrorKey] = useState("");
 
-    const [member, setMember] = useState('');
+    const [memberSearch, setMemberSearch] = useState('');
     const [protect, setProtected] = useState<boolean>(false);
 
     const { user } = useGlobalContext();
@@ -78,11 +78,26 @@ export default function AlertAddChannel() {
     useEffect(() => {
         const tmp: userDto[] = valideUsers.filter((elm) => {
             const username = elm.nickname;
-            return ((username.includes(member) && member != '') || member === "*");
+            return ((username.includes(memberSearch) && memberSearch != '') || memberSearch === "*");
         })
         setUsersFilter(tmp);
-    }, [member, valideUsers])
+    }, [memberSearch, valideUsers])
 
+    const resetData = () => {
+        setChannelData({
+            channleName: '',
+            channelType: ChannelType.Public,
+            channlePassword: '',
+            channelMember: []
+        });
+        setIsReady(false);
+        setMemberSearch('');
+        setProtected(false);
+        setUsersFilter([]);
+        setMembersChannel([]);
+
+
+    }
 
     useEffect(() => {
         async function createCha() {
@@ -92,6 +107,7 @@ export default function AlertAddChannel() {
                     setErrorName(res.error);
                 else {
                     setOpen(false);
+                    resetData();
                 }
                 console.log(res)
             }
@@ -249,8 +265,8 @@ export default function AlertAddChannel() {
                             <TextField fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Add membres" variant="outlined"
-                                value={member}
-                                onChange={(e) => { setMember(e.target.value) }} />
+                                value={memberSearch}
+                                onChange={(e) => { setMemberSearch(e.target.value) }} />
                             {widgetSearsh}
 
 

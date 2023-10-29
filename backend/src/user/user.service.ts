@@ -1,8 +1,10 @@
-import { Injectable, ConflictException } from "@nestjs/common";
+import { Injectable, } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { CreateUserDto } from "./dto/user.dto";
-import { hash as dd } from "bcrypt";
+
 import { MessagesService } from "src/messages/messages.service";
+import { MessageItemList } from "./dto/user.dto";
+import { Channel, Message, Status } from "@prisma/client";
+
 
 @Injectable()
 export class UserService {
@@ -11,13 +13,6 @@ export class UserService {
     private messagesService: MessagesService
   ) { }
 
-  async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-  }
 
   async findById(id: string) {
     return await this.prisma.user.findUnique({
@@ -31,13 +26,16 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
 
+
   async getValideUsers(senderId: string) {
     const users = await this.prisma.user.findMany();
+
     const blockerUsers = await this.prisma.blockedUser.findMany({
       where: {
         OR: [{ senderId: senderId }, { receivedId: senderId }],
       },
     });
+
     const temp = users.filter((user) => {
       if (user.id === senderId) return false;
       const found = blockerUsers.find((elm) => {
@@ -49,6 +47,7 @@ export class UserService {
       if (found) return false;
       return true;
     });
+
     const result = await Promise.all(
       temp.map(async (user) => {
         let friends = await this.prisma.friend.findFirst({
@@ -65,50 +64,97 @@ export class UserService {
             ],
           },
         });
-        if (friends) return { ...user, friendship: 1 };
+        if (friends) return { ...user, friendship: 1 }; // friends
         let freiReq = await this.prisma.friendRequest.findFirst({
           where: {
             senderId: user.id,
             receivedId: senderId,
           },
         });
-        if (freiReq) return { ...user, friendship: 2 };
+        if (freiReq) return { ...user, friendship: 2 }; //  user that I sent a friend request
         let sendReq = await this.prisma.friendRequest.findFirst({
           where: {
             senderId: senderId,
             receivedId: user.id,
           },
         });
-        if (sendReq) return { ...user, friendship: 3 };
-        return { ...user, friendship: 0 };
+        if (sendReq) return { ...user, friendship: 3 };  // user who sent a friend request 
+        return { ...user, friendship: 0 }; // user
       })
     );
     return result;
   }
 
-  async getUserForMsg(senderId: string) {
-    const users = await this.prisma.user.findMany();
-    const usersMsg = await this.prisma.directMessage.findMany({
+  async getChannleForMsg(senderId: string) {
+    let result: MessageItemList[] = [];
+    let myChannel: Channel[] = [];
+    const channelMembers = await this.prisma.channelMember.findMany({
       where: {
-        OR: [{ senderId: senderId }, { receivedId: senderId }],
+        userId: senderId
+      }
+    });
+    for (const ch of channelMembers) {
+      const channel = await this.prisma.channel.findUnique({ where: { id: ch.channelId } });
+      myChannel.push(channel);
+    }
+    for (const channel of myChannel) {
+      const lastMessageChannel = await this.prisma.message.findFirst({
+        where: {
+          isDirectMessage: false,
+          channelId: channel.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+
+      });
+
+      if (lastMessageChannel) {
+        const temp: MessageItemList = {
+          idDirectMsg: false,
+          id: channel.id,
+          name: channel.channelName,
+          avatar: "https://randomuser.me/api/portraits/women/55.jpg",
+          status: Status.INACTIF,
+          lastMsg: lastMessageChannel.content,
+          createdAt: lastMessageChannel.createdAt
+        }
+        result.push(temp);
+      }
+    }
+    return result;
+  }
+
+  async getUserForMsg(senderId: string) {
+    let result: MessageItemList[] = [];
+    const resultChannel = await this.getChannleForMsg(senderId);
+    const userToUersMsg = await this.prisma.message.findMany({
+      where: {
+        OR: [{ senderId: senderId, isDirectMessage: true },
+        { receivedId: senderId, isDirectMessage: true }],
       },
       orderBy: {
         createdAt: "desc",
       },
     });
+
     const distinctUserIds = new Set<string>();
-    for (const msg of usersMsg) {
+    for (const msg of userToUersMsg) {
       if (msg.senderId === senderId) {
         distinctUserIds.add(msg.receivedId);
       } else {
         distinctUserIds.add(msg.senderId);
       }
     }
+
     const idUsersArray = Array.from(distinctUserIds);
-    const usersMsgList = idUsersArray.map((id) =>
-      users.find((user) => user.id === id)
-    );
-    let lastMsgs = [];
+    let usersMsgList: any = [];
+    for (const id of idUsersArray) {
+      const user = await this.prisma.user.findUnique({ where: { id } })
+      usersMsgList.push(user);
+    }
+
+    let lastMsgs: Message[] = [];
     for (let i = 0; i < usersMsgList.length; i++) {
       const temp = await this.messagesService.getLastMessages(
         senderId,
@@ -116,7 +162,22 @@ export class UserService {
       );
       lastMsgs.push(temp);
     }
-    return { usersMsgList, lastMsgs };
+    for (let i = 0; i < usersMsgList.length; i++) {
+      const temp: MessageItemList = {
+        idDirectMsg: true,
+        id: usersMsgList[i].id,
+
+        name: usersMsgList[i].nickname,
+        avatar: usersMsgList[i].profilePic,
+        status: usersMsgList[i].status,
+
+        lastMsg: lastMsgs[i].content,
+        createdAt: lastMsgs[i].createdAt
+      }
+      result.push(temp);
+    }
+
+    return [...result, ...resultChannel];
   }
 
 

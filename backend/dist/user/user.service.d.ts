@@ -1,25 +1,10 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { MessagesService } from "src/messages/messages.service";
+import { MessageItemList } from "./dto/user.dto";
 export declare class UserService {
     private prisma;
     private messagesService;
     constructor(prisma: PrismaService, messagesService: MessagesService);
-    findByEmail(email: string): Promise<{
-        id: string;
-        intra_id: string;
-        first_name: string;
-        last_name: string;
-        nickname: string;
-        email: string;
-        profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    }>;
     findById(id: string): Promise<{
         id: string;
         intra_id: string;
@@ -69,25 +54,8 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getUserForMsg(senderId: string): Promise<{
-        usersMsgList: {
-            id: string;
-            intra_id: string;
-            first_name: string;
-            last_name: string;
-            nickname: string;
-            email: string;
-            profilePic: string;
-            hash: string;
-            twoFactorAuth: boolean;
-            AsciiSecretQr: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: import(".prisma/client").$Enums.Status;
-            lastSee: Date;
-        }[];
-        lastMsgs: any[];
-    }>;
+    getChannleForMsg(senderId: string): Promise<MessageItemList[]>;
+    getUserForMsg(senderId: string): Promise<MessageItemList[]>;
     createUser(user1: any): Promise<{
         id: string;
         intra_id: string;

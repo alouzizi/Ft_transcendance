@@ -48,7 +48,7 @@ export class MessagesGateway
             },
           });
 
-          await this.prisma.directMessage.updateMany({
+          await this.prisma.message.updateMany({
             where: {
               receivedId: senderId,
               messageStatus: MessageStatus.NotReceived,
@@ -102,8 +102,6 @@ export class MessagesGateway
 
   @SubscribeMessage('updateData')
   async updateData(@MessageBody() ids: CreateMessageDto,) {
-    console.log("---------------------------- try to update");
-    console.log(ids.senderId, ids.receivedId);
     this.wss.to(ids.senderId).emit('updateData', {});
     this.wss.to(ids.receivedId).emit('updateData', {});
   }

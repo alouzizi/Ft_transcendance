@@ -4,7 +4,7 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
-import { getUserForMsg } from '../api/fetch-users';
+import { getUser, getUserForMsg } from '../api/fetch-users';
 import { extractHoursAndM } from './widgetMsg';
 import { useSession } from 'next-auth/react';
 import AlertDialogFind from './FindAlert';
@@ -22,8 +22,8 @@ export function getColorStatus(status: any): string {
 const ListUser = () => {
   const { data: session } = useSession();
   const { setGeust, setUser, geust, socket } = useGlobalContext();
-  const [users, setUsers] = useState<userDto[]>([])
-  const [lastMsgs, setLastMsgs] = useState<msgDto[]>([])
+
+  const [itemList, setItemList] = useState<MessageItemList[]>([]);
 
 
   const [direct, setDirect] = useState<boolean>(true);
@@ -34,8 +34,7 @@ const ListUser = () => {
       setUser(session.user);
       const getListUsers = async () => {
         const usersList = await getUserForMsg(user.id);
-        setUsers(usersList.usersMsgList);
-        setLastMsgs(usersList.lastMsgs);
+        setItemList(usersList)
       };
       getListUsers();
       if (socket) {
@@ -45,44 +44,50 @@ const ListUser = () => {
     }
   }, [session])
 
+  const getVueGeust = async (id: string) => {
+    const tempGeust = await getUser(id);
+
+    setGeust(tempGeust);
+  };
+
   useEffect(() => {
-    if (geust.id === "-1" && users.length !== 0) {
-      setGeust(users[0]);
+    if (geust.id === "-1" && itemList.length !== 0) {
+      getVueGeust(itemList[0].id);
     }
     // mazal matistatx
     // if (users.length === 0 && geust.id !== 0) {
     //   setUsers([geust]);
     //   setLastMsgs([])
     // }
-  }, [users])
+  }, [itemList])
 
-  const userWidget = (users.length != 0) ? users.map((el, index) => {
+  const userWidget = (itemList.length != 0) ? itemList.map((el, index) => {
     return <Flex align="center" className='relative border-b py-2 pl-1' key={index}
       style={{
         background: (el.id === geust.id) ? "#f1f3f9" : 'white'
       }}
       onClick={() => {
-        setGeust(el);
+        getVueGeust(el.id);
       }}>
       <Avatar
         size="3"
-        src={el.profilePic}
+        src={el.avatar}
         radius="full"
         fallback="T"
       />
       <div className='absolute pt-6 pl-7'>
-        <GoDotFill size={20} color={getColorStatus(el.status)} />
+        {el.idDirectMsg ? <GoDotFill size={20} color={getColorStatus(el.status)} /> : <></>}
       </div>
       <Flex direction="column" className='items-start pl-2'>
         <Text size="2" weight="bold" className=''>
-          {el.nickname}
+          {el.name}
         </Text>
         <Text className='text-neutral-500 text-sm w-32 line-clamp-1 overflow-hidden' >
-          {lastMsgs[index].content}
+          {el.lastMsg}
         </Text>
       </Flex>
       <Text size="1" className='absolute bottom-0 right-4'>
-        {extractHoursAndM(lastMsgs[index].createdAt)}
+        {extractHoursAndM(el.createdAt)}
       </Text>
       {
         (el.id === geust.id) ? <Box sx={{

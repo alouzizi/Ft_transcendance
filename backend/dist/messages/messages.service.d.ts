@@ -6,6 +6,7 @@ export declare class MessagesService {
     constructor(prisma: PrismaService);
     create(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
     getMessage(senderId: string, receivedId: string): Promise<{
+        isDirectMessage: boolean;
         id: string;
         content: string;
         createdAt: Date;
@@ -13,8 +14,10 @@ export declare class MessagesService {
         senderId: string;
         receivedId: string;
         messageStatus: import(".prisma/client").$Enums.MessageStatus;
+        channelId: string;
     }[]>;
     getLastMessages(senderId: string, receivedId: string): Promise<{
+        isDirectMessage: boolean;
         id: string;
         content: string;
         createdAt: Date;
@@ -22,8 +25,6 @@ export declare class MessagesService {
         senderId: string;
         receivedId: string;
         messageStatus: import(".prisma/client").$Enums.MessageStatus;
-    } | {
-        content: string;
-        createdAt: number;
+        channelId: string;
     }>;
 }

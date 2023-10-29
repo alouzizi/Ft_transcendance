@@ -14,12 +14,25 @@ type userDto = {
 };
 
 
+type geustDto = {
+  isUser: boolean;
+  id: string;
+  nickname: string;
+  profilePic: string;
+  status: Status;
+  lastSee: number;
+  friendship: number;
+  lenUser: number;
+  lenUserLive: number;
+
+};
 
 enum MessageStatus {
   NotReceived = "NotReceived",
   Received = "Received",
   Seen = "Seen"
 }
+
 type msgDto = {
   id: string;
   content: string;
@@ -29,17 +42,25 @@ type msgDto = {
   messageStatus: MessageStatus;
 };
 
+type MessageItemList = {
+  idDirectMsg: Boolean;
+
+  name: string;
+  avatar: string;
+  lastMsg: string;
+  createdAt: number;
+
+  status: Status;
+
+  id: string; // id user geust or id channel 
+}
+
 type reqFriendsDto = {
   id: string;
   createdAt: number;
   senderId: string;
   receivedId: string;
 }
-
-
-
-
-
 
 enum ChannelType {
   Public,

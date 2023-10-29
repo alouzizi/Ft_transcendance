@@ -39,11 +39,14 @@ export class MessagesService {
     })
     if (user.status === "ACTIF")
       messageStatus = "Received"
-    const msg = await this.prisma.directMessage.create({
+
+    const msg = await this.prisma.message.create({
       data: {
         ...createMessageDto,
+        receivedId: createMessageDto.receivedId,
+        isDirectMessage: true,
         showed,
-        messageStatus
+        messageStatus,
       },
     });
     if (showed)
@@ -53,7 +56,7 @@ export class MessagesService {
 
 
   async getMessage(senderId: string, receivedId: string) {
-    const msgUserTemp = await this.prisma.directMessage.findMany({
+    const msgUserTemp = await this.prisma.message.findMany({
       where: {
         OR: [
           {
@@ -75,18 +78,16 @@ export class MessagesService {
   }
 
   async getLastMessages(senderId: string, receivedId: string) {
-    const lastMessage = await this.prisma.directMessage.findFirst({
+    const lastMessage = await this.prisma.message.findFirst({
       where: {
         OR: [
           {
             senderId,
             receivedId,
-            showed: true,
           },
           {
             senderId: receivedId,
             receivedId: senderId,
-            showed: true
           },
         ],
       },
@@ -94,12 +95,6 @@ export class MessagesService {
         createdAt: 'desc',
       },
     });
-    if (!lastMessage) {
-      return {
-        content: "",
-        createdAt: 5
-      }
-    }
     return lastMessage;
   }
 }

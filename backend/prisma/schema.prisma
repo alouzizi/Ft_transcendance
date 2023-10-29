@@ -15,6 +15,12 @@ enum Status {
   INACTIF
 }
 
+enum MessageStatus {
+  NotReceived
+  Received
+  Seen
+}
+
 model User {
   id         String  @id @default(uuid())
   intra_id   String  @unique
@@ -31,30 +37,43 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  status        Status          @default(INACTIF)
-  lastSee       DateTime        @default(now())
-  directMessage DirectMessage[]
-  frienRequest  FriendRequest[]
-  Friend        Friend[]
-  BlockedUser   BlockedUser[]
-  Channel       Channel[]
+  status       Status          @default(INACTIF)
+  lastSee      DateTime        @default(now())
+  message      Message[]
+  frienRequest FriendRequest[]
+  Friend       Friend[]
+  BlockedUser  BlockedUser[]
+  Channel      Channel[]
 }
 
-enum MessageStatus {
-  NotReceived
-  Received
-  Seen
+model Channel {
+  id              String      @id @default(uuid())
+  channelName     String      @unique
+  channelType     ChannelType @default(Public)
+  channelPassword String
+  createdAt       DateTime    @default(now())
+
+  User           User?  @relation(fields: [channelOwnerId], references: [id])
+  channelOwnerId String
+
+  ChannelMember ChannelMember[]
+  // message       Message[]
+  Message       Message[]
 }
 
-model DirectMessage {
-  id            String        @id @default(uuid())
-  content       String
-  createdAt     DateTime      @default(now())
-  user          User          @relation(fields: [senderId], references: [id])
-  showed        Boolean       @default(true)
-  senderId      String
-  receivedId    String
-  messageStatus MessageStatus @default(NotReceived)
+model Message {
+  isDirectMessage Boolean       @default(true)
+  id              String        @id @default(uuid())
+  content         String
+  createdAt       DateTime      @default(now())
+  user            User?         @relation(fields: [senderId], references: [id])
+  showed          Boolean       @default(true)
+  senderId        String
+  receivedId      String?
+  messageStatus   MessageStatus @default(NotReceived)
+
+  Channel   Channel? @relation(fields: [channelId], references: [id])
+  channelId String?
 }
 
 // friendship
@@ -93,24 +112,11 @@ enum ChannelType {
   Private
 }
 
-model Channel {
-  id              String      @id @default(uuid())
-  channelName     String      @unique
-  channelType     ChannelType @default(Public)
-  channelPassword String
-  createdAt       DateTime    @default(now())
-
-  User           User?  @relation(fields: [channelOwnerId], references: [id])
-  channelOwnerId String
-
-  ChannelMember ChannelMember[]
-}
-
 model ChannelMember {
   id      String  @id @default(uuid())
   userId  String
   isAdmin Boolean
 
-  Channel   Channel? @relation(fields: [channelId], references: [id])
-  channelId String?
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
 }

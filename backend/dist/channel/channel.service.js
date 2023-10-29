@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
+const prisma_service_1 = require("../prisma/prisma.service");
 let ChannelService = class ChannelService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -26,6 +26,23 @@ let ChannelService = class ChannelService {
                     channelPassword: createChannelDto.channlePassword,
                     channelType: createChannelDto.channelType
                 }
+            });
+            console.log(newChannel);
+            await this.prisma.channelMember.create({
+                data: {
+                    userId: senderId,
+                    isAdmin: false,
+                    channelId: newChannel.id,
+                }
+            });
+            createChannelDto.channelMember.forEach(async (item) => {
+                await this.prisma.channelMember.create({
+                    data: {
+                        userId: item,
+                        isAdmin: false,
+                        channelId: newChannel.id,
+                    }
+                });
             });
         }
         catch (error) {
