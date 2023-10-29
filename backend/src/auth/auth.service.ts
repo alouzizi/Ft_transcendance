@@ -6,6 +6,7 @@ import { AuthDto } from "./dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { create } from "domain";
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -32,6 +33,7 @@ export class AuthService {
           username: dto.email,
         },
       });
+
       // return the saved user
       return this.signToken(user);
     } catch (error) {
