@@ -51,7 +51,7 @@ export default function login() {
       });
 
       if (!res?.error) {
-        // router.push(callbackUrl);
+        router.push(callbackUrl);
       } else {
         setError("invalid email or password");
       }
@@ -63,7 +63,7 @@ export default function login() {
     if (session) {
       console.log("Session data: --> ", session);
       setUser(session.user);
-      router.push(callbackUrl);
+      // router.push(callbackUrl);
     }
   }, [session]);
   return (

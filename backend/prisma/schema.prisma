@@ -37,6 +37,7 @@ model User {
   frienRequest  FriendRequest[]
   Friend        Friend[]
   BlockedUser   BlockedUser[]
+  Channel       Channel[]
 }
 
 enum MessageStatus {
@@ -55,6 +56,8 @@ model DirectMessage {
   receivedId    String
   messageStatus MessageStatus @default(NotReceived)
 }
+
+// friendship
 
 model FriendRequest {
   id         String   @id @default(uuid())
@@ -82,4 +85,32 @@ model BlockedUser {
   receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+// channle
+enum ChannelType {
+  Public
+  Private
+}
+
+model Channel {
+  id              String      @id @default(uuid())
+  channelName     String      @unique
+  channelType     ChannelType @default(Public)
+  channelPassword String
+  createdAt       DateTime    @default(now())
+
+  User           User?  @relation(fields: [channelOwnerId], references: [id])
+  channelOwnerId String
+
+  ChannelMember ChannelMember[]
+}
+
+model ChannelMember {
+  id      String  @id @default(uuid())
+  userId  String
+  isAdmin Boolean
+
+  Channel   Channel? @relation(fields: [channelId], references: [id])
+  channelId String?
 }

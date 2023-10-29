@@ -20,28 +20,32 @@ import { useGlobalContext } from '../../../context/store';
 import { getValideUsers } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
 import { z } from "zod";
+import { createChannel } from '../api/fetch-channel';
 
-
+enum ChannelType {
+    Public,
+    Private
+}
 
 export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
 
-    const channelNameSchema = z.string()
-        .min(3)
-        .max(50)
-        .refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
-
-    const channelkeySchema = z.string()
-        .min(3)
-        .max(50)
-        .refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+    const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
+    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
 
 
+    const [channelData, setChannelData] = useState<channelDto>({
+        channleName: '',
+        channelType: ChannelType.Public,
+        channlePassword: '',
+        channelMember: []
+    })
+
+
+    const [isReady, setIsReady] = useState(false);
     const [errorName, setErrorName] = useState("");
     const [errorKey, setErrorKey] = useState("");
-    const [channelName, setChannelName] = useState('');
-    const [channelType, setChannelType] = useState<string>('public');
-    const [channelKey, setChannelKey] = useState('');
+
     const [member, setMember] = useState('');
     const [protect, setProtected] = useState<boolean>(false);
 
@@ -51,8 +55,14 @@ export default function AlertAddChannel() {
     const [membersChannel, setMembersChannel] = useState<userDto[]>([]);
 
     const handleChannelType = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChannelType(event.target.value);
-        console.log(event.target.value);
+        setChannelData((prevState) => {
+            return { ...prevState, channelType: ChannelType.Public };
+        });
+        if (event.target.value === 'private') {
+            setChannelData((prevState) => {
+                return { ...prevState, channelType: ChannelType.Private };
+            });
+        }
     };
 
     useEffect(() => {
@@ -73,14 +83,32 @@ export default function AlertAddChannel() {
         setUsersFilter(tmp);
     }, [member, valideUsers])
 
+
+    useEffect(() => {
+        async function createCha() {
+            if (isReady) {
+                const res = await createChannel(channelData, user.id);
+                if (res.status === 202)
+                    setErrorName(res.error);
+                else {
+                    setOpen(false);
+                }
+                console.log(res)
+            }
+        }
+        createCha();
+        return () => setIsReady(false);
+    }, [isReady])
+
+
+
     const checkIsExist = (elm: userDto, list: userDto[]): boolean => {
         const fonud = list.find((tmp) => elm.id === tmp.id);
         if (fonud) return true;
         return false;
     }
-
     const widgetSearsh = usersFilter.map((elm) => {
-        return <Box p="1" pr="3" className='mx-2' >
+        return <Box p="1" pr="3" className='mx-2' key={elm.id}>
             <Flex align="center" justify="between" className='border-b py-2'>
                 <div className='flex items-center relative'>
                     <Avatar
@@ -112,7 +140,7 @@ export default function AlertAddChannel() {
 
     const [isMouseOver, setIsMouseOver] = useState('-1');
     const widgetMembers = membersChannel.map((elm) => {
-        return <Box style={{ display: "inline-block" }}
+        return <Box key={elm.id} style={{ display: "inline-block" }}
             onMouseEnter={() => setIsMouseOver(elm.id)}
             onMouseLeave={() => setIsMouseOver('-1')}>
             <div className='flex  items-center  pl-2 pr-1.5 m-1'
@@ -126,6 +154,7 @@ export default function AlertAddChannel() {
             </div>
         </Box>
     })
+
     return (
         <div>
 
@@ -163,14 +192,14 @@ export default function AlertAddChannel() {
 
                                     <FormControlLabel
                                         control={
-                                            <Radio checked={channelType === 'public'}
+                                            <Radio checked={channelData.channelType === ChannelType.Public}
                                                 value="public"
                                                 onChange={handleChannelType}
                                             />} label="Public" />
 
                                     <FormControlLabel
                                         control={
-                                            <Radio checked={channelType === 'private'}
+                                            <Radio checked={channelData.channelType === ChannelType.Private}
                                                 value="private"
                                                 onChange={handleChannelType}
 
@@ -182,12 +211,21 @@ export default function AlertAddChannel() {
                             <TextField required fullWidth size="small" className='mt-3'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Name" variant="outlined"
-                                value={channelName}
-                                onChange={(e) => { setErrorName(''); setChannelName(e.target.value) }} />
+                                value={channelData.channleName}
+                                onChange={(e) => {
+                                    setErrorName('');
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, channleName: e.target.value };
+                                    });
+
+                                }} />
                             {errorName && <Text as="div" color='red'>{errorName}</Text>}
 
                             <FormControlLabel control={<Checkbox onChange={(event) => {
                                 setErrorKey('');
+                                setChannelData((prevState) => {
+                                    return { ...prevState, channlePassword: '' };
+                                });
                                 setProtected(event.target.checked);
                             }} />} label="Protected" />
 
@@ -197,8 +235,14 @@ export default function AlertAddChannel() {
                                 fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Key" variant="outlined"
-                                value={channelKey}
-                                onChange={(e) => { setErrorKey(''), setChannelKey(e.target.value) }} />
+                                value={channelData.channlePassword}
+                                onChange={(e) => {
+                                    setErrorKey(''),
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channlePassword: e.target.value };
+                                        });
+
+                                }} />
                             {errorKey && <Text as="div" color='red'>{errorKey}</Text>}
 
                             <div className='mt-2'> {widgetMembers}</div>
@@ -217,11 +261,18 @@ export default function AlertAddChannel() {
                     <DialogActions style={{ justifyContent: 'center' }}>
                         <Button style={{ background: 'blue', color: "white" }}
                             onClick={() => {
-                                const parsName = channelNameSchema.safeParse(channelName);
-                                const parskey = channelkeySchema.safeParse(channelKey);
-                                console.log("parskey-->", parskey);
+                                const parsName = channelNameSchema.safeParse(channelData.channleName);
+                                const parskey = channelkeySchema.safeParse(channelData.channlePassword);
                                 if (parsName.success && (parskey.success || !protect)) {
-                                    console.log("valide");
+                                    for (const user of membersChannel) {
+                                        setChannelData((prevState) => {
+                                            return {
+                                                ...prevState,
+                                                channelMember: [...prevState.channelMember, user.id]
+                                            };
+                                        });
+                                    }
+                                    setIsReady(true);
                                 } else {
 
                                     if (!parsName.success) setErrorName('Invalid channel name');

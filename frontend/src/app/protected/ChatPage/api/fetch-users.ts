@@ -18,7 +18,6 @@ export async function getAllUsers(author: string) {
 }
 
 export async function getValideUsers(id: string) {
-    console.log("------> ", Backend_URL + `user/getValideUsers/${id}`);
     const res = await axios.get(
         Backend_URL + `/user/getValideUsers/${id}`,
     );

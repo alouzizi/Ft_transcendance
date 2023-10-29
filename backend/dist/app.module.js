@@ -14,6 +14,7 @@ const config_1 = require("@nestjs/config");
 const user_module_1 = require("./user/user.module");
 const messages_module_1 = require("./messages/messages.module");
 const friendship_module_1 = require("./friendship/friendship.module");
+const channel_module_1 = require("./channel/channel.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             messages_module_1.MessagesModule,
             friendship_module_1.FriendshipModule,
+            channel_module_1.ChannelModule,
         ],
     })
 ], AppModule);

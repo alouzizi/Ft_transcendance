@@ -5,7 +5,6 @@ export async function sendRequistFriend(senderId: string, recivedId: string) {
     await axios.post(
         Backend_URL + `/friendship/sendFriendRequest/${senderId}/${recivedId}`,
     );
-
 }
 
 export async function removeRequistFriend(senderId: string, recivedId: string) {

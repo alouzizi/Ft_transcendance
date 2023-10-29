@@ -5,7 +5,8 @@ import { ConfigModule } from "@nestjs/config";
 import { UserModule } from "./user/user.module";
 import { MessagesModule } from "./messages/messages.module";
 import { FriendshipModule } from "./friendship/friendship.module";
-import { FortyTwoIntranetStrategy } from "./auth/42-intranet.strategy";
+import { ChannelModule } from './channel/channel.module';
+
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { FortyTwoIntranetStrategy } from "./auth/42-intranet.strategy";
     UserModule,
     MessagesModule,
     FriendshipModule,
+    ChannelModule,
   ],
 })
 export class AppModule { }

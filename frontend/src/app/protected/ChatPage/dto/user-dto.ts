@@ -1,3 +1,7 @@
+enum Status {
+  ACTIF = "ACTIF",
+  INACTIF = "INACTIF",
+}
 
 type userDto = {
   id: string;
@@ -11,6 +15,11 @@ type userDto = {
 
 
 
+enum MessageStatus {
+  NotReceived = "NotReceived",
+  Received = "Received",
+  Seen = "Seen"
+}
 type msgDto = {
   id: string;
   content: string;
@@ -29,21 +38,19 @@ type reqFriendsDto = {
 
 
 
-enum Status {
-  ACTIF = "ACTIF",
-  INACTIF = "INACTIF",
+
+
+
+enum ChannelType {
+  Public,
+  Private
 }
 
-enum MessageStatus {
-  NotReceived = "NotReceived",
-  Received = "Received",
-  Seen = "Seen"
+type channelDto = {
+  // id: number;
+  channleName: string;
+  channelType: ChannelType;
+  channlePassword: string;
+  channelMember: string[];
 }
-
-// type channelDto = {
-//   id: number;
-//   channleName: string;
-//   channelType: string;
-//   channlePassword: string;
-// }
 
