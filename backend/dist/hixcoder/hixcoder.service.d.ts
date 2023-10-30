@@ -45,6 +45,13 @@ export declare class HixcoderService {
     } | {
         error: any;
     }>;
+    removeFriend(senderId: number, recieverId: number): Promise<{
+        id: number;
+        senderId: number;
+        receivedId: number;
+    } | {
+        error: any;
+    }>;
     test_giveFriendsToUser(userId: number): Promise<{
         id: number;
         senderId: number;

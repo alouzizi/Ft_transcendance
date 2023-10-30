@@ -66,4 +66,15 @@ export class HixcoderController {
     const recieverId = parseInt(reciever);
     return this.hixcoderService.unblockFriend(senderId, recieverId);
   }
+
+  // for remove friend
+  @Post("/removeFriend/:sender/:reciever")
+  async removeFriend(
+    @Param("sender") sender: string,
+    @Param("reciever") reciever: string
+  ) {
+    const senderId = parseInt(sender);
+    const recieverId = parseInt(reciever);
+    return this.hixcoderService.removeFriend(senderId, recieverId);
+  }
 }

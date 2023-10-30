@@ -50,6 +50,11 @@ let HixcoderController = class HixcoderController {
         const recieverId = parseInt(reciever);
         return this.hixcoderService.unblockFriend(senderId, recieverId);
     }
+    async removeFriend(sender, reciever) {
+        const senderId = parseInt(sender);
+        const recieverId = parseInt(reciever);
+        return this.hixcoderService.removeFriend(senderId, recieverId);
+    }
 };
 exports.HixcoderController = HixcoderController;
 __decorate([
@@ -104,6 +109,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "unblockFriend", null);
+__decorate([
+    (0, common_1.Post)("/removeFriend/:sender/:reciever"),
+    __param(0, (0, common_1.Param)("sender")),
+    __param(1, (0, common_1.Param)("reciever")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "removeFriend", null);
 exports.HixcoderController = HixcoderController = __decorate([
     (0, common_1.Controller)("hixcoder"),
     __metadata("design:paramtypes", [hixcoder_service_1.HixcoderService])

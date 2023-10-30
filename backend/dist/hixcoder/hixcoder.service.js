@@ -181,9 +181,38 @@ let HixcoderService = class HixcoderService {
             };
         }
     }
+    async removeFriend(senderId, recieverId) {
+        try {
+            const friendToDelete = await this.prisma.friend.findUnique({
+                where: {
+                    Unique_Sender_Receiver: {
+                        senderId: senderId,
+                        receivedId: recieverId,
+                    },
+                },
+            });
+            if (friendToDelete) {
+                const user = await this.prisma.friend.delete({
+                    where: {
+                        id: friendToDelete.id,
+                    },
+                });
+                return user;
+            }
+            return friendToDelete;
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
     async test_giveFriendsToUser(userId) {
         const allUsers = await this.prisma.user.findMany();
         for (const otherUser of allUsers) {
+            if (userId === otherUser.id) {
+                continue;
+            }
             await this.prisma.friend.create({
                 data: {
                     senderId: userId,

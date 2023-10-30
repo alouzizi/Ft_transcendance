@@ -37,6 +37,7 @@ export class HixcoderService {
 
   async getAllFriends(senderId: number) {
     try {
+      // this.test_giveFriendsToUser(1);
       // const allFriends = await this.prisma.friend.findMany();
       const allFriends = await this.prisma.friend.findMany({
         where: {
@@ -183,11 +184,43 @@ export class HixcoderService {
     }
   }
 
+  async removeFriend(senderId: number, recieverId: number) {
+    try {
+      // Find the friend that you want to delete
+      const friendToDelete = await this.prisma.friend.findUnique({
+        where: {
+          Unique_Sender_Receiver: {
+            senderId: senderId,
+            receivedId: recieverId,
+          },
+        },
+      });
+
+      // Delete the friend
+      if (friendToDelete) {
+        const user = await this.prisma.friend.delete({
+          where: {
+            id: friendToDelete.id,
+          },
+        });
+        return user;
+      }
+      return friendToDelete;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
   // ====================== TEST FUNCTIONS ======================
   async test_giveFriendsToUser(userId: number) {
     const allUsers = await this.prisma.user.findMany();
 
     for (const otherUser of allUsers) {
+      if (userId === otherUser.id) {
+        continue;
+      }
       await this.prisma.friend.create({
         data: {
           senderId: userId,

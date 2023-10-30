@@ -38,7 +38,6 @@ export default function login() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-
   const { data: session } = useSession();
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
@@ -60,7 +59,7 @@ export default function login() {
   }
   useEffect(() => {
     if (session) {
-      console.log("Session data: --> ", session);
+      console.log("Session data: -----------------> ", session);
       setUser(session.user);
       router.push(callbackUrl);
     }
@@ -135,5 +134,3 @@ export default function login() {
     </div>
   );
 }
-
-

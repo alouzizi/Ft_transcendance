@@ -15,11 +15,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <GlobalContextProvider>
-          <Theme className=" bg-[#151b2d] text-white">
-            <Providers>{children}</Providers>
-          </Theme>
-        </GlobalContextProvider>
+        <Providers>
+          <GlobalContextProvider>
+            <Theme className=" bg-[#151b2d] text-white">{children}</Theme>
+          </GlobalContextProvider>
+        </Providers>
       </body>
     </html>
   );

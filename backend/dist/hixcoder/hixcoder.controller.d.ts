@@ -45,4 +45,11 @@ export declare class HixcoderController {
     } | {
         error: any;
     }>;
+    removeFriend(sender: string, reciever: string): Promise<{
+        id: number;
+        senderId: number;
+        receivedId: number;
+    } | {
+        error: any;
+    }>;
 }

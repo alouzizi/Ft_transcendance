@@ -14,12 +14,18 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Backend_URL } from "@/lib/Constants";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import { useGlobalContext } from "@/app/context/store";
+import { useEffect } from "react";
 
 export default function openAccount() {
+  const { setUser } = useGlobalContext();
+
+  const { data: session } = useSession();
+
   const FormSchema = z
     .object({
       username: z.string().min(1, "Username is required").max(100),
@@ -42,6 +48,15 @@ export default function openAccount() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = "/protected/DashboardPage";
+
+  useEffect(() => {
+    if (session) {
+      console.log("Session data: -----------------> ", session);
+      setUser(session.user);
+      router.push(callbackUrl);
+    }
+  }, [session]);
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       const res = await fetch(Backend_URL + "/auth/signup", {
