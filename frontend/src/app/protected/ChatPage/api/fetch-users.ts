@@ -34,7 +34,21 @@ export async function getUserForMsg(senderId: string) {
     return users;
 }
 
+export async function getUserGeust(id: string) {
+    const res = await axios.get(
+        Backend_URL + `/user/getUserGeust/${id}`,
+    );
+    const geust = await res.data;
+    return geust;
+}
 
+export async function getChannelGeust(id: string) {
+    const res = await axios.get(
+        Backend_URL + `/user/getChannelGeust/${id}`,
+    );
+    const geust = await res.data;
+    return geust;
+}
 
 
 

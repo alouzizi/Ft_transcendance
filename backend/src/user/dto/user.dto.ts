@@ -26,7 +26,7 @@ export class CreateUserDto {
 
 
 export class MessageItemList {
-  idDirectMsg: Boolean;
+  isDirectMsg: Boolean;
 
   name: string;
   avatar: string;

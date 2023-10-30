@@ -4,7 +4,7 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
-import { getUser, getUserForMsg } from '../api/fetch-users';
+import { getChannelGeust, getUser, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import { extractHoursAndM } from './widgetMsg';
 import { useSession } from 'next-auth/react';
 import AlertDialogFind from './FindAlert';
@@ -44,15 +44,20 @@ const ListUser = () => {
     }
   }, [session])
 
-  const getVueGeust = async (id: string) => {
-    const tempGeust = await getUser(id);
+  const getVueGeust = async (id: string, isUser: Boolean) => {
 
-    setGeust(tempGeust);
+    let geustTemp: geustDto;
+    if (isUser)
+      geustTemp = await getUserGeust(id);
+    else
+      geustTemp = await getChannelGeust(id);
+    setGeust(geustTemp);
+
   };
 
   useEffect(() => {
     if (geust.id === "-1" && itemList.length !== 0) {
-      getVueGeust(itemList[0].id);
+      getVueGeust(itemList[0].id, itemList[0].isDirectMsg);
     }
     // mazal matistatx
     // if (users.length === 0 && geust.id !== 0) {
@@ -67,7 +72,7 @@ const ListUser = () => {
         background: (el.id === geust.id) ? "#f1f3f9" : 'white'
       }}
       onClick={() => {
-        getVueGeust(el.id);
+        getVueGeust(el.id, el.isDirectMsg);
       }}>
       <Avatar
         size="3"
@@ -76,7 +81,7 @@ const ListUser = () => {
         fallback="T"
       />
       <div className='absolute pt-6 pl-7'>
-        {el.idDirectMsg ? <GoDotFill size={20} color={getColorStatus(el.status)} /> : <></>}
+        {el.isDirectMsg ? <GoDotFill size={20} color={getColorStatus(el.status)} /> : <></>}
       </div>
       <Flex direction="column" className='items-start pl-2'>
         <Text size="2" weight="bold" className=''>

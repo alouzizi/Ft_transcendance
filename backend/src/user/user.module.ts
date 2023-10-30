@@ -5,9 +5,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { MessagesService } from 'src/messages/messages.service';
 import { AuthService } from 'src/auth/auth.service';
+import { ChannelService } from 'src/channel/channel.service';
 
 @Module({
-  providers: [UserService, PrismaService, JwtService, MessagesService, AuthService],
+  providers: [UserService, PrismaService, JwtService,
+    MessagesService, AuthService, ChannelService],
   controllers: [UserController],
   imports: []
 })

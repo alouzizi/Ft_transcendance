@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { MessagesService } from 'src/messages/messages.service';
+import { ChannelService } from 'src/channel/channel.service';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { MessagesService } from 'src/messages/messages.service';
   ],
 
   controllers: [AuthController],
-  providers: [AuthService, FortyTwoIntranetStrategy, MessagesService, PrismaService, UserService],
+  providers: [AuthService, FortyTwoIntranetStrategy,
+    MessagesService, PrismaService, UserService, ChannelService],
 })
 
 export class AuthModule { }

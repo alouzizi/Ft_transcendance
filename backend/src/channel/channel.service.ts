@@ -19,7 +19,8 @@ export class ChannelService {
           channelOwnerId: senderId,
           channelName: createChannelDto.channleName,
           channelPassword: createChannelDto.channlePassword,
-          channelType: createChannelDto.channelType
+          channelType: createChannelDto.channelType,
+          avatar: "https://randomuser.me/api/portraits/women/82.jpg"
         }
       })
       console.log(newChannel);
@@ -53,13 +54,19 @@ export class ChannelService {
   }
 
 
+  async findChannelById(id: string) {
+    return await this.prisma.channel.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+
   findAll() {
     return `This action returns all channel`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} channel`;
-  }
 
   update(id: number, updateChannelDto: UpdateChannelDto) {
     return `This action updates a #${id} channel`;

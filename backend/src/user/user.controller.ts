@@ -29,4 +29,15 @@ export class UserController {
   async getUserForMsg(@Param('id') senderId: string) {
     return await this.userService.getUserForMsg(senderId);
   }
+
+
+  @Get('getUserGeust/:id')
+  async getUserGeust(@Param('id') id: string) {
+    return await this.userService.getUserGeust(id);
+  }
+
+  @Get('getChannelGeust/:id')
+  async getChannelGeust(@Param('id') id: string) {
+    return await this.userService.getChannelGeust(id);
+  }
 } 

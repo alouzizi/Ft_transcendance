@@ -17,6 +17,7 @@ exports.ChannelModule = ChannelModule = __decorate([
     (0, common_1.Module)({
         controllers: [channel_controller_1.ChannelController],
         providers: [channel_service_1.ChannelService],
+        exports: [channel_service_1.ChannelService]
     })
 ], ChannelModule);
 //# sourceMappingURL=channel.module.js.map

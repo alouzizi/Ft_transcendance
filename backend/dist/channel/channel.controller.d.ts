@@ -8,7 +8,15 @@ export declare class ChannelController {
         error: string;
     }>;
     findAll(): string;
-    findOne(id: string): string;
+    findOne(id: string): Promise<{
+        id: string;
+        channelName: string;
+        channelType: import(".prisma/client").$Enums.ChannelType;
+        channelPassword: string;
+        createdAt: Date;
+        avatar: string;
+        channelOwnerId: string;
+    }>;
     update(id: string, updateChannelDto: UpdateChannelDto): string;
     remove(id: string): string;
 }

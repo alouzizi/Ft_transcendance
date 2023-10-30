@@ -10,7 +10,7 @@ export function extractHoursAndM(time: number): string {
     return `${hours}:${minutes}`;
 }
 
-export function IsTypingMsg({ geust }: { geust: userDto }) {
+export function IsTypingMsg() {
     const cardStyles = {
         width: 50,
         borderRadius: 20,
@@ -30,7 +30,7 @@ export function IsTypingMsg({ geust }: { geust: userDto }) {
     );
 }
 
-export function MessageRight({ message, geust }: { message: msgDto, geust: userDto }) {
+export function MessageRight({ message }: { message: msgDto }) {
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 0,
@@ -55,7 +55,7 @@ export function MessageRight({ message, geust }: { message: msgDto, geust: userD
         </div>
     );
 }
-export function MessageLeft({ message, geust }: { message: msgDto, geust: userDto }) {
+export function MessageLeft({ message, geust }: { message: msgDto, geust: geustDto }) {
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 10,
@@ -129,7 +129,7 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
-export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: userDto }) {
+export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: geustDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
     return messages.map((elm, index) => {
@@ -150,7 +150,7 @@ export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: u
                 }
 
                 {elm.receivedId == geust.id ? (
-                    <MessageRight message={elm} geust={geust} />
+                    <MessageRight message={elm} />
                 ) : (
                     <MessageLeft message={elm} geust={geust} />
                 )}

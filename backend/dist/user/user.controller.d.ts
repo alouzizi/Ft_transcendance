@@ -52,4 +52,27 @@ export declare class UserController {
         lastSee: Date;
     }[]>;
     getUserForMsg(senderId: string): Promise<import("./dto/user.dto").MessageItemList[]>;
+    getUserGeust(id: string): Promise<{
+        isUser: boolean;
+        id: string;
+        nickname: string;
+        profilePic: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+        lenUser: number;
+        lenUserLive: number;
+    }>;
+    getChannelGeust(id: string): Promise<{
+        isUser: boolean;
+        id: string;
+        nickname: string;
+        profilePic: string;
+        status: {
+            ACTIF: "ACTIF";
+            INACTIF: "INACTIF";
+        };
+        lastSee: Date;
+        lenUser: number;
+        lenUserLive: number;
+    }>;
 }

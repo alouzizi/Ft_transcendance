@@ -33,7 +33,7 @@ let ChannelController = class ChannelController {
         return this.channelService.findAll();
     }
     findOne(id) {
-        return this.channelService.findOne(+id);
+        return this.channelService.findChannelById(id);
     }
     update(id, updateChannelDto) {
         return this.channelService.update(+id, updateChannelDto);

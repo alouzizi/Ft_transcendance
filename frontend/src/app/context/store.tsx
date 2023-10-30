@@ -14,11 +14,21 @@ enum MessageStatus {
     Seen = "Seen"
 }
 
+
+// isUser: boolean;
+// id: string;
+// nickname: string;
+// profilePic: string;
+// status: Status;
+// lastSee: number;
+// lenUser: number;
+// lenUserLive: number;
+
 interface ContextProps {
     user: userDto,
     setUser: Dispatch<SetStateAction<userDto>>,
-    geust: userDto,
-    setGeust: Dispatch<SetStateAction<userDto>>,
+    geust: geustDto,
+    setGeust: Dispatch<SetStateAction<geustDto>>,
     socket: Socket | null, // Add the socket property
 
 }
@@ -37,13 +47,14 @@ const GlobalContext = createContext<ContextProps>({
     setUser: () => { },
 
     geust: {
+        isUser: true,
         id: '-1',
-        email: '',
         nickname: '',
         profilePic: '',
         status: Status.INACTIF,
         lastSee: 0,
-        friendship: -1,
+        lenUser: 0,
+        lenUserLive: 0,
     },
     setGeust: () => { },
 
@@ -68,14 +79,15 @@ export const GlobalContextProvider = ({ children }: {
 
     })
 
-    const [geust, setGeust] = useState<userDto>({
+    const [geust, setGeust] = useState<geustDto>({
+        isUser: true,
         id: '-1',
-        email: '',
         nickname: '',
         profilePic: '',
         status: Status.INACTIF,
         lastSee: 0,
-        friendship: -1,
+        lenUser: 0,
+        lenUserLive: 0,
 
     })
 
@@ -92,10 +104,10 @@ export const GlobalContextProvider = ({ children }: {
             });
             setSocket(socket);
             socket.on('connect', () => {
-                console.log('--------------------------------------- user connected');
+                console.log('socket --> user connected');
             });
             socket.on('disconnect', () => {
-                console.log('++++++++++++++++++++++++++++++++++++++++ user connected');
+                console.log('socket --> user disconnected');
             });
         }
 

@@ -27,6 +27,21 @@ const BoxChat = () => {
         scrollToBottom();
     }, [Allmsg, isTyping, user.id, geust.id])
 
+    const getVueGeust = async (id: string) => {
+        const tempGeust: userDto = await getUser(id);
+        const temp: geustDto = {
+            isUser: true,
+            id: tempGeust.id,
+            nickname: tempGeust.nickname,
+            profilePic: tempGeust.profilePic,
+            status: tempGeust.status,
+            lastSee: tempGeust.lastSee,
+            lenUser: 0,
+            lenUserLive: 0,
+        };
+        setGeust(temp);
+    };
+
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: msgDto) => {
@@ -57,8 +72,7 @@ const BoxChat = () => {
         if (user.id !== "-1 " && socket) {
             const upDateGeust = async () => {
                 if (geust.id !== "-1") {
-                    const temp = await getUser(geust.id);
-                    setGeust(temp);
+                    getVueGeust(geust.id);
                     setIsTyping(false);
                 }
             }
@@ -123,7 +137,7 @@ const BoxChat = () => {
                     fallback="T"
                 />
                 <Text className='absolute pt-6 pl-7'>
-                    <GoDotFill size={20} color={getColorStatus(geust.status)} />
+                    {geust.isUser ? <GoDotFill size={20} color={getColorStatus(geust.status)} /> : <></>}
                 </Text>
                 <Flex direction="column" className='flex' >
                     <Text size="2" weight="bold" className='pl-2'>
@@ -143,7 +157,7 @@ const BoxChat = () => {
                 <ScrollArea scrollbars="vertical" style={{ height: 500 }} ref={scrollAreaRef}>
                     <Box p="1" pr="3">
                         <ShowMessages messages={Allmsg} geust={geust} />
-                        {isTyping ? <IsTypingMsg geust={geust} /> : <></>}
+                        {isTyping ? <IsTypingMsg /> : <></>}
                     </Box>
                 </ScrollArea>
 

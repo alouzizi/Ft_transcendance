@@ -16,6 +16,7 @@ const passport_1 = require("@nestjs/passport");
 const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
 const messages_service_1 = require("../messages/messages.service");
+const channel_service_1 = require("../channel/channel.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -30,7 +31,8 @@ exports.AuthModule = AuthModule = __decorate([
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy, messages_service_1.MessagesService, prisma_service_1.PrismaService, user_service_1.UserService],
+        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy,
+            messages_service_1.MessagesService, prisma_service_1.PrismaService, user_service_1.UserService, channel_service_1.ChannelService],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

@@ -21,7 +21,6 @@ type geustDto = {
   profilePic: string;
   status: Status;
   lastSee: number;
-  friendship: number;
   lenUser: number;
   lenUserLive: number;
 
@@ -43,7 +42,7 @@ type msgDto = {
 };
 
 type MessageItemList = {
-  idDirectMsg: Boolean;
+  isDirectMsg: Boolean;
 
   name: string;
   avatar: string;

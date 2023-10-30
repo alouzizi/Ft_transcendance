@@ -4,13 +4,15 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { MessagesService } from "src/messages/messages.service";
 import { MessageItemList } from "./dto/user.dto";
 import { Channel, Message, Status } from "@prisma/client";
+import { ChannelService } from "src/channel/channel.service";
 
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
+    private channelService: ChannelService,
   ) { }
 
 
@@ -111,10 +113,10 @@ export class UserService {
 
       if (lastMessageChannel) {
         const temp: MessageItemList = {
-          idDirectMsg: false,
+          isDirectMsg: false,
           id: channel.id,
           name: channel.channelName,
-          avatar: "https://randomuser.me/api/portraits/women/55.jpg",
+          avatar: channel.avatar,
           status: Status.INACTIF,
           lastMsg: lastMessageChannel.content,
           createdAt: lastMessageChannel.createdAt
@@ -164,7 +166,7 @@ export class UserService {
     }
     for (let i = 0; i < usersMsgList.length; i++) {
       const temp: MessageItemList = {
-        idDirectMsg: true,
+        isDirectMsg: true,
         id: usersMsgList[i].id,
 
         name: usersMsgList[i].nickname,
@@ -181,6 +183,35 @@ export class UserService {
   }
 
 
+
+  async getUserGeust(id: string) {
+    const user = await this.findById(id);
+    return {
+      isUser: true,
+      id: user.id,
+      nickname: user.nickname,
+      profilePic: user.profilePic,
+      status: user.status,
+      lastSee: user.lastSee,
+      lenUser: 0,
+      lenUserLive: 0,
+    };
+  }
+
+
+  async getChannelGeust(id: string) {
+    const channel = await this.channelService.findChannelById(id);
+    return {
+      isUser: false,
+      id: channel.id,
+      nickname: channel.channelName,
+      profilePic: channel.avatar,
+      status: Status,
+      lastSee: channel.createdAt,
+      lenUser: 0,
+      lenUserLive: 0,
+    };
+  }
 
   // saliha -------------------
 

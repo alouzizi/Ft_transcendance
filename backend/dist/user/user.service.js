@@ -14,10 +14,12 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const messages_service_1 = require("../messages/messages.service");
 const client_1 = require("@prisma/client");
+const channel_service_1 = require("../channel/channel.service");
 let UserService = class UserService {
-    constructor(prisma, messagesService) {
+    constructor(prisma, messagesService, channelService) {
         this.prisma = prisma;
         this.messagesService = messagesService;
+        this.channelService = channelService;
     }
     async findById(id) {
         return await this.prisma.user.findUnique({
@@ -108,10 +110,10 @@ let UserService = class UserService {
             });
             if (lastMessageChannel) {
                 const temp = {
-                    idDirectMsg: false,
+                    isDirectMsg: false,
                     id: channel.id,
                     name: channel.channelName,
-                    avatar: "https://randomuser.me/api/portraits/women/55.jpg",
+                    avatar: channel.avatar,
                     status: client_1.Status.INACTIF,
                     lastMsg: lastMessageChannel.content,
                     createdAt: lastMessageChannel.createdAt
@@ -155,7 +157,7 @@ let UserService = class UserService {
         }
         for (let i = 0; i < usersMsgList.length; i++) {
             const temp = {
-                idDirectMsg: true,
+                isDirectMsg: true,
                 id: usersMsgList[i].id,
                 name: usersMsgList[i].nickname,
                 avatar: usersMsgList[i].profilePic,
@@ -166,6 +168,32 @@ let UserService = class UserService {
             result.push(temp);
         }
         return [...result, ...resultChannel];
+    }
+    async getUserGeust(id) {
+        const user = await this.findById(id);
+        return {
+            isUser: true,
+            id: user.id,
+            nickname: user.nickname,
+            profilePic: user.profilePic,
+            status: user.status,
+            lastSee: user.lastSee,
+            lenUser: 0,
+            lenUserLive: 0,
+        };
+    }
+    async getChannelGeust(id) {
+        const channel = await this.channelService.findChannelById(id);
+        return {
+            isUser: false,
+            id: channel.id,
+            nickname: channel.channelName,
+            profilePic: channel.avatar,
+            status: client_1.Status,
+            lastSee: channel.createdAt,
+            lenUser: 0,
+            lenUserLive: 0,
+        };
     }
     async createUser(user1) {
         console.log("my user iss", user1.intra_id);
@@ -192,6 +220,7 @@ exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        messages_service_1.MessagesService])
+        messages_service_1.MessagesService,
+        channel_service_1.ChannelService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

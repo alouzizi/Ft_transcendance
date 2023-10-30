@@ -31,6 +31,12 @@ let UserController = class UserController {
     async getUserForMsg(senderId) {
         return await this.userService.getUserForMsg(senderId);
     }
+    async getUserGeust(id) {
+        return await this.userService.getUserGeust(id);
+    }
+    async getChannelGeust(id) {
+        return await this.userService.getChannelGeust(id);
+    }
 };
 exports.UserController = UserController;
 __decorate([
@@ -60,6 +66,20 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserForMsg", null);
+__decorate([
+    (0, common_1.Get)('getUserGeust/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserGeust", null);
+__decorate([
+    (0, common_1.Get)('getChannelGeust/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getChannelGeust", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])
