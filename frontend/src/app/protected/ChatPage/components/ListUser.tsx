@@ -4,7 +4,7 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
-import { getChannelGeust, getUser, getUserForMsg, getUserGeust, getVueGeust } from '../api/fetch-users';
+import { getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import { extractHoursAndM } from './widgetMsg';
 import { useSession } from 'next-auth/react';
 import AlertDialogFind from './FindAlert';
@@ -42,16 +42,20 @@ const ListUser = () => {
         socket.on("updateData", getListUsers);
       }
     }
-  }, [session])
+  }, [session, socket])
 
-  const getDataGeust = async (id: string, isUser: Boolean) => {
-    const temp = await getVueGeust(id, isUser);
-    setGeust(temp);
+  const getDataGeust = async (tmp: MessageItemList) => {
+    let geustTemp: geustDto;
+    if (tmp.isDirectMsg)
+      geustTemp = await getUserGeust(tmp.id);
+    else
+      geustTemp = await getChannelGeust(tmp.id);
+    setGeust(geustTemp);
   };
 
   useEffect(() => {
     if (geust.id === "-1" && itemList.length !== 0) {
-      getDataGeust(itemList[0].id, itemList[0].isDirectMsg);
+      getDataGeust(itemList[0]);
     }
     // mazal matistatx
     // if (users.length === 0 && geust.id !== 0) {
@@ -66,7 +70,7 @@ const ListUser = () => {
         background: (el.id === geust.id) ? "#f1f3f9" : 'white'
       }}
       onClick={() => {
-        getDataGeust(el.id, el.isDirectMsg);
+        getDataGeust(el);
       }}>
       <Avatar
         size="3"
@@ -81,9 +85,11 @@ const ListUser = () => {
         <Text size="2" weight="bold" className=''>
           {el.name}
         </Text>
-        <Text className='text-neutral-500 text-sm w-32 line-clamp-1 overflow-hidden' >
+        {/* text-neutral-500  w-32  */}
+        <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
+          {(!el.isDirectMsg ? <Text weight='medium'>{el.nameSenderChannel}:{' '}</Text> : <></>)}
           {el.lastMsg}
-        </Text>
+        </Box>
       </Flex>
       <Text size="1" className='absolute bottom-0 right-4'>
         {extractHoursAndM(el.createdAt)}

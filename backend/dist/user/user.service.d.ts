@@ -73,13 +73,9 @@ export declare class UserService {
         id: string;
         nickname: string;
         profilePic: string;
-        status: {
-            ACTIF: "ACTIF";
-            INACTIF: "INACTIF";
-        };
+        status: "INACTIF";
         lastSee: Date;
         lenUser: number;
-        lenUserLive: number;
     }>;
     createUser(user1: any): Promise<{
         id: string;

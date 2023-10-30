@@ -67,12 +67,8 @@ export declare class UserController {
         id: string;
         nickname: string;
         profilePic: string;
-        status: {
-            ACTIF: "ACTIF";
-            INACTIF: "INACTIF";
-        };
+        status: "INACTIF";
         lastSee: Date;
         lenUser: number;
-        lenUserLive: number;
     }>;
 }

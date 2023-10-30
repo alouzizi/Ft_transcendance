@@ -22,8 +22,6 @@ type geustDto = {
   status: Status;
   lastSee: number;
   lenUser: number;
-  lenUserLive: number;
-
 };
 
 enum MessageStatus {
@@ -54,7 +52,8 @@ type MessageItemList = {
 
   status: Status;
 
-  id: string; // id user geust or id channel 
+  id: string; // id user geust or id channel
+  nameSenderChannel: string;
 }
 
 type reqFriendsDto = {

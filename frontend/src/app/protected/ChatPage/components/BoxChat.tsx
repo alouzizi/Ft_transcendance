@@ -145,7 +145,9 @@ const BoxChat = () => {
                     {
                         (geust.status === 'INACTIF') ?
                             <Text size="1" weight="light" className='pl-2'>
-                                {formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true })}
+                                {geust.isUser ?
+                                    formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true }) :
+                                    <>{geust.lenUser} members</>}
                             </Text> :
                             <></>
                     }

@@ -52,9 +52,21 @@ export class MessagesService {
         messageStatus,
       },
     });
+    const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+    const temp: SendMessageDto = {
+      id: msg.id,
+      content: msg.content,
+      createdAt: msg.createdAt,
+      senderId: msg.senderId,
+      receivedId: msg.receivedId,
+      messageStatus: msg.messageStatus,
+      avata: senderUser.profilePic,
+      nickName: senderUser.nickname
+    }
+    console.log("=------> ", msg);
     if (showed)
-      server.to(msg.receivedId.toString()).emit('findMsg2UsersResponse', msg);
-    server.to(msg.senderId.toString()).emit('findMsg2UsersResponse', msg);
+      server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
+    server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
   }
 
   async createChannelMessage(server: Server, createMessageDto: CreateMessageDto) {

@@ -54,7 +54,6 @@ const GlobalContext = createContext<ContextProps>({
         status: Status.INACTIF,
         lastSee: 0,
         lenUser: 0,
-        lenUserLive: 0,
     },
     setGeust: () => { },
 
@@ -87,7 +86,6 @@ export const GlobalContextProvider = ({ children }: {
         status: Status.INACTIF,
         lastSee: 0,
         lenUser: 0,
-        lenUserLive: 0,
 
     })
 

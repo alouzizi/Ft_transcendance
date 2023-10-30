@@ -15,4 +15,5 @@ export declare class MessageItemList {
     createdAt: Date;
     status: Status;
     id: string;
+    nameSenderChannel: string;
 }

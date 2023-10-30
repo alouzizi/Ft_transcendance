@@ -110,8 +110,9 @@ export class UserService {
         },
 
       });
-
       if (lastMessageChannel) {
+        const userSender = await this.prisma.user.findUnique({ where: { id: lastMessageChannel.senderId } });
+
         const temp: MessageItemList = {
           isDirectMsg: false,
           id: channel.id,
@@ -119,7 +120,9 @@ export class UserService {
           avatar: channel.avatar,
           status: Status.INACTIF,
           lastMsg: lastMessageChannel.content,
-          createdAt: lastMessageChannel.createdAt
+          createdAt: lastMessageChannel.createdAt,
+
+          nameSenderChannel: userSender.nickname,
         }
         result.push(temp);
       }
@@ -174,7 +177,8 @@ export class UserService {
         status: usersMsgList[i].status,
 
         lastMsg: lastMsgs[i].content,
-        createdAt: lastMsgs[i].createdAt
+        createdAt: lastMsgs[i].createdAt,
+        nameSenderChannel: "null"
       }
       resultDirect.push(temp);
     }
@@ -209,15 +213,15 @@ export class UserService {
 
   async getChannelGeust(id: string) {
     const channel = await this.channelService.findChannelById(id);
+    const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
     return {
       isUser: false,
       id: channel.id,
       nickname: channel.channelName,
       profilePic: channel.avatar,
-      status: Status,
+      status: Status.INACTIF,
       lastSee: channel.createdAt,
-      lenUser: 0,
-      lenUserLive: 0,
+      lenUser: members.length,
     };
   }
 
