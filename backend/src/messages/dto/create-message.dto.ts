@@ -1,8 +1,23 @@
+import { MessageStatus } from "@prisma/client";
+
 export class CreateMessageDto {
   content: string;
   senderId: string;
   receivedId: string;
-  idDirectMessage: boolean
+  isDirectMessage: boolean
+}
+
+
+export class SendMessageDto {
+  id: string;
+  content: string;
+  createdAt: Date;
+  senderId: string;
+  receivedId: string;
+  messageStatus: MessageStatus;
+
+  avata: string;
+  nickName: string;
 }
 
 

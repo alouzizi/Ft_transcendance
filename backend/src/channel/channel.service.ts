@@ -40,6 +40,7 @@ export class ChannelService {
           }
         })
       });
+      return newChannel;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -50,7 +51,6 @@ export class ChannelService {
         }
       }
     }
-    return 'This action adds a new channel';
   }
 
 

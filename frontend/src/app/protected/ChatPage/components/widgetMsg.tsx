@@ -55,7 +55,7 @@ export function MessageRight({ message }: { message: msgDto }) {
         </div>
     );
 }
-export function MessageLeft({ message, geust }: { message: msgDto, geust: geustDto }) {
+export function MessageLeft({ message }: { message: msgDto }) {
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 10,
@@ -71,13 +71,13 @@ export function MessageLeft({ message, geust }: { message: msgDto, geust: geustD
         <div className='flex'>
             <Avatar
                 size="1"
-                src={geust.profilePic}
+                src={message.avata}
                 radius="full"
                 fallback="T"
             />
             <div className='pl-2'>
                 <Text as="span" size="2" weight="bold">
-                    {geust.nickname}
+                    {message.nickName}
                 </Text>
                 <div style={cardStyles} className='relative'>
                     <div className='mb-4  text-sm'> {message.content}</div>
@@ -129,7 +129,7 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
-export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: geustDto }) {
+export function ShowMessages({ messages, user }: { messages: msgDto[], user: userDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
     return messages.map((elm, index) => {
@@ -149,10 +149,10 @@ export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: g
                         : (<></>)
                 }
 
-                {elm.receivedId == geust.id ? (
-                    <MessageRight message={elm} />
+                {(elm.senderId == user.id) ? (
+                    <MessageRight message={elm} /> // red
                 ) : (
-                    <MessageLeft message={elm} geust={geust} />
+                    <MessageLeft message={elm} />
                 )}
             </div>
         return tag;

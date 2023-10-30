@@ -19,19 +19,30 @@ let MessageController = class MessageController {
     constructor(messagesService) {
         this.messagesService = messagesService;
     }
-    async getMessages(send, rec) {
-        return this.messagesService.getMessage(send, rec);
+    async getDirectMessage(send, rec) {
+        return this.messagesService.getDirectMessage(send, rec);
+    }
+    async getChannelMessage(send, channelId) {
+        return this.messagesService.getChannelMessage(send, channelId);
     }
 };
 exports.MessageController = MessageController;
 __decorate([
-    (0, common_1.Get)(':send/:rec'),
+    (0, common_1.Get)('getDirectMessage/:send/:rec'),
     __param(0, (0, common_1.Param)('send')),
     __param(1, (0, common_1.Param)('rec')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
-], MessageController.prototype, "getMessages", null);
+], MessageController.prototype, "getDirectMessage", null);
+__decorate([
+    (0, common_1.Get)('getChannelMessage/:send/:channelId'),
+    __param(0, (0, common_1.Param)('send')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], MessageController.prototype, "getChannelMessage", null);
 exports.MessageController = MessageController = __decorate([
     (0, common_1.Controller)('messages'),
     __metadata("design:paramtypes", [messages_service_1.MessagesService])

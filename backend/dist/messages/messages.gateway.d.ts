@@ -13,7 +13,7 @@ export declare class MessagesGateway implements OnGatewayInit, OnGatewayConnecti
     afterInit(server: any): void;
     handleConnection(client: Socket, ...args: any[]): Promise<void>;
     handleDisconnect(client: any): Promise<void>;
-    create(createMessageDto: CreateMessageDto): Promise<void>;
+    createMessage(createMessageDto: CreateMessageDto): Promise<void>;
     updateData(ids: CreateMessageDto): Promise<void>;
     isTyping(ids: CreateMessageDto): Promise<void>;
 }

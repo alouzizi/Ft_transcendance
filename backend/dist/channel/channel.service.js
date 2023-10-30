@@ -45,6 +45,7 @@ let ChannelService = class ChannelService {
                     }
                 });
             });
+            return newChannel;
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
@@ -56,7 +57,6 @@ let ChannelService = class ChannelService {
                 }
             }
         }
-        return 'This action adds a new channel';
     }
     async findChannelById(id) {
         return await this.prisma.channel.findUnique({

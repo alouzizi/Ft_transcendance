@@ -17,7 +17,7 @@ import { IoPersonAdd, IoPersonRemove } from "react-icons/io5";
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 import { TiDelete } from "react-icons/ti";
 import { useGlobalContext } from '../../../context/store';
-import { getValideUsers } from '../api/fetch-users';
+import { getValideUsers, getVueGeust } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
 import { z } from "zod";
 import { createChannel } from '../api/fetch-channel';
@@ -49,7 +49,7 @@ export default function AlertAddChannel() {
     const [memberSearch, setMemberSearch] = useState('');
     const [protect, setProtected] = useState<boolean>(false);
 
-    const { user } = useGlobalContext();
+    const { user, setGeust } = useGlobalContext();
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
     const [membersChannel, setMembersChannel] = useState<userDto[]>([]);
@@ -98,7 +98,10 @@ export default function AlertAddChannel() {
 
 
     }
-
+    const getDataGeust = async (id: string, isUser: Boolean) => {
+        const temp = await getVueGeust(id, isUser);
+        setGeust(temp);
+    };
     useEffect(() => {
         async function createCha() {
             if (isReady) {
@@ -106,6 +109,8 @@ export default function AlertAddChannel() {
                 if (res.status === 202)
                     setErrorName(res.error);
                 else {
+                    console.log(res);
+                    getDataGeust(res.id, false);
                     setOpen(false);
                     resetData();
                 }

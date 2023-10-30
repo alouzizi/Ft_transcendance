@@ -124,7 +124,7 @@ let UserService = class UserService {
         return result;
     }
     async getUserForMsg(senderId) {
-        let result = [];
+        let resultDirect = [];
         const resultChannel = await this.getChannleForMsg(senderId);
         const userToUersMsg = await this.prisma.message.findMany({
             where: {
@@ -165,9 +165,15 @@ let UserService = class UserService {
                 lastMsg: lastMsgs[i].content,
                 createdAt: lastMsgs[i].createdAt
             };
-            result.push(temp);
+            resultDirect.push(temp);
         }
-        return [...result, ...resultChannel];
+        const result = [...resultDirect, ...resultChannel];
+        result.sort((a, b) => {
+            const myDate1 = new Date(a.createdAt);
+            const myDate2 = new Date(b.createdAt);
+            return myDate2.getTime() - myDate1.getTime();
+        });
+        return result;
     }
     async getUserGeust(id) {
         const user = await this.findById(id);

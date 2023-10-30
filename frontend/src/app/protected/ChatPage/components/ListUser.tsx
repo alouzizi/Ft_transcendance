@@ -4,7 +4,7 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
-import { getChannelGeust, getUser, getUserForMsg, getUserGeust } from '../api/fetch-users';
+import { getChannelGeust, getUser, getUserForMsg, getUserGeust, getVueGeust } from '../api/fetch-users';
 import { extractHoursAndM } from './widgetMsg';
 import { useSession } from 'next-auth/react';
 import AlertDialogFind from './FindAlert';
@@ -44,20 +44,14 @@ const ListUser = () => {
     }
   }, [session])
 
-  const getVueGeust = async (id: string, isUser: Boolean) => {
-
-    let geustTemp: geustDto;
-    if (isUser)
-      geustTemp = await getUserGeust(id);
-    else
-      geustTemp = await getChannelGeust(id);
-    setGeust(geustTemp);
-
+  const getDataGeust = async (id: string, isUser: Boolean) => {
+    const temp = await getVueGeust(id, isUser);
+    setGeust(temp);
   };
 
   useEffect(() => {
     if (geust.id === "-1" && itemList.length !== 0) {
-      getVueGeust(itemList[0].id, itemList[0].isDirectMsg);
+      getDataGeust(itemList[0].id, itemList[0].isDirectMsg);
     }
     // mazal matistatx
     // if (users.length === 0 && geust.id !== 0) {
@@ -72,7 +66,7 @@ const ListUser = () => {
         background: (el.id === geust.id) ? "#f1f3f9" : 'white'
       }}
       onClick={() => {
-        getVueGeust(el.id, el.isDirectMsg);
+        getDataGeust(el.id, el.isDirectMsg);
       }}>
       <Avatar
         size="3"

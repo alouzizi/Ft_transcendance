@@ -4,7 +4,15 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 export declare class ChannelService {
     private prisma;
     constructor(prisma: PrismaService);
-    createChannel(createChannelDto: CreateChannelDto, senderId: string): Promise<"This action adds a new channel" | {
+    createChannel(createChannelDto: CreateChannelDto, senderId: string): Promise<{
+        id: string;
+        channelName: string;
+        channelType: import(".prisma/client").$Enums.ChannelType;
+        channelPassword: string;
+        createdAt: Date;
+        avatar: string;
+        channelOwnerId: string;
+    } | {
         status: number;
         error: string;
     }>;

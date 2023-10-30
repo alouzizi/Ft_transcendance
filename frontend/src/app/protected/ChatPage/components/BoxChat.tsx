@@ -4,18 +4,22 @@ import { useEffect, useRef, useState } from 'react';
 import { BsFillSendFill } from "react-icons/bs";
 import { useGlobalContext } from '../../../context/store';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
-import { getMessageTwoUsers } from '../api/fetch-msg';
+import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { GoDotFill } from "react-icons/go";
 import { getColorStatus } from './ListUser';
 import { formatDistance } from 'date-fns'
-import { getUser } from '../api/fetch-users';
+import { getChannelGeust, getUser, getUserGeust, getVueGeust } from '../api/fetch-users';
 
 const BoxChat = () => {
+    const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<msgDto[]>([]);
+
     const { geust, user, socket, setGeust } = useGlobalContext();
-    const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+
     const [isTyping, setIsTyping] = useState<boolean>(false)
+
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {
             scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
@@ -27,25 +31,15 @@ const BoxChat = () => {
         scrollToBottom();
     }, [Allmsg, isTyping, user.id, geust.id])
 
-    const getVueGeust = async (id: string) => {
-        const tempGeust: userDto = await getUser(id);
-        const temp: geustDto = {
-            isUser: true,
-            id: tempGeust.id,
-            nickname: tempGeust.nickname,
-            profilePic: tempGeust.profilePic,
-            status: tempGeust.status,
-            lastSee: tempGeust.lastSee,
-            lenUser: 0,
-            lenUserLive: 0,
-        };
+    const getDataGeust = async (id: string, isUser: Boolean) => {
+        const temp = await getVueGeust(id, isUser);
         setGeust(temp);
     };
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: msgDto) => {
-                if (data.senderId === geust.id || data.senderId === user.id) {
+                if (data.senderId === geust.id || data.senderId === user.id || !geust.isUser) {
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
                 }
@@ -59,7 +53,11 @@ const BoxChat = () => {
 
     useEffect(() => {
         async function getData() {
-            const msgs = await getMessageTwoUsers(user.id, geust.id);
+            let msgs;
+            if (geust.isUser)
+                msgs = await getMessageTwoUsers(user.id, geust.id);
+            else
+                msgs = await getMessagesChannel(user.id, geust.id);
             setAllMessage(msgs);
         }
         if (geust.id !== "-1" && user.id !== "-1") {
@@ -72,7 +70,7 @@ const BoxChat = () => {
         if (user.id !== "-1 " && socket) {
             const upDateGeust = async () => {
                 if (geust.id !== "-1") {
-                    getVueGeust(geust.id);
+                    getDataGeust(geust.id, geust.isUser);
                     setIsTyping(false);
                 }
             }
@@ -113,6 +111,7 @@ const BoxChat = () => {
     const handleSendMessage = () => {
         if (msg.trim() != '' && socket) {
             socket.emit('createMessage', {
+                isDirectMessage: geust.isUser,
                 content: msg.trim(),
                 senderId: user.id,
                 receivedId: geust.id,
@@ -156,7 +155,7 @@ const BoxChat = () => {
             <div   >
                 <ScrollArea scrollbars="vertical" style={{ height: 500 }} ref={scrollAreaRef}>
                     <Box p="1" pr="3">
-                        <ShowMessages messages={Allmsg} geust={geust} />
+                        <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}
                     </Box>
                 </ScrollArea>

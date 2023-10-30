@@ -89,8 +89,8 @@ let MessagesGateway = class MessagesGateway {
             }
         }
     }
-    async create(createMessageDto) {
-        await this.messagesService.create(this.wss, createMessageDto);
+    async createMessage(createMessageDto) {
+        await this.messagesService.createMessage(this.wss, createMessageDto);
     }
     async updateData(ids) {
         this.wss.to(ids.senderId).emit('updateData', {});
@@ -111,7 +111,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
-], MessagesGateway.prototype, "create", null);
+], MessagesGateway.prototype, "createMessage", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('updateData'),
     __param(0, (0, websockets_1.MessageBody)()),

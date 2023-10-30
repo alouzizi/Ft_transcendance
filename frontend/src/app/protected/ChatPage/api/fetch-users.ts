@@ -1,6 +1,17 @@
 import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
 
+
+export async function getVueGeust(id: string, isUser: Boolean) {
+    let geustTemp: geustDto;
+    if (isUser)
+        geustTemp = await getUserGeust(id);
+    else
+        geustTemp = await getChannelGeust(id);
+    return geustTemp;
+};
+
+
 export async function getUser(id: string) {
     const res = await axios.get(
         Backend_URL + `/user/${id}`,
@@ -26,7 +37,6 @@ export async function getValideUsers(id: string) {
 }
 
 export async function getUserForMsg(senderId: string) {
-    console.log("------> ", Backend_URL + `/user/getUserForMsg/${senderId}`);
     const res = await axios.get(
         Backend_URL + `/user/getUserForMsg/${senderId}`,
     );

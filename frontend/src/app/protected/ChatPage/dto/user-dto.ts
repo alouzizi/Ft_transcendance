@@ -39,6 +39,9 @@ type msgDto = {
   senderId: string;
   receivedId: string;
   messageStatus: MessageStatus;
+
+  avata: string;
+  nickName: string;
 };
 
 type MessageItemList = {

@@ -94,10 +94,10 @@ export class MessagesGateway
   }
 
   @SubscribeMessage('createMessage')
-  async create(
+  async createMessage(
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
-    await this.messagesService.create(this.wss, createMessageDto);
+    await this.messagesService.createMessage(this.wss, createMessageDto);
   }
 
   @SubscribeMessage('updateData')

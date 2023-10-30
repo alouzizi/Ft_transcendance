@@ -5,10 +5,14 @@ import { MessagesService } from './messages.service';
 export class MessageController {
   constructor(private readonly messagesService: MessagesService) { }
 
-  @Get(':send/:rec')
-  async getMessages(@Param('send') send: string, @Param('rec') rec: string) {
+  @Get('getDirectMessage/:send/:rec')
+  async getDirectMessage(@Param('send') send: string, @Param('rec') rec: string) {
+    return this.messagesService.getDirectMessage(send, rec);
+  }
 
 
-    return this.messagesService.getMessage(send, rec);
+  @Get('getChannelMessage/:send/:channelId')
+  async getChannelMessage(@Param('send') send: string, @Param('channelId') channelId: string) {
+    return this.messagesService.getChannelMessage(send, channelId);
   }
 }

@@ -7,7 +7,19 @@ export async function getMessageTwoUsers(
     recived: string,
 ) {
     const response = await axios.get(
-        Backend_URL + `/messages/${sender}/${recived}`,
+        Backend_URL + `/messages/getDirectMessage/${sender}/${recived}`,
+    );
+    const allMessage = await response.data;
+    return allMessage;
+}
+
+
+export async function getMessagesChannel(
+    sender: string,
+    channelId: string,
+) {
+    const response = await axios.get(
+        Backend_URL + `/messages/getChannelMessage/${sender}/${channelId}`,
     );
     const allMessage = await response.data;
     return allMessage;

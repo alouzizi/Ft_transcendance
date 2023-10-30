@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Status = exports.CreateMessageDto = void 0;
+exports.Status = exports.SendMessageDto = exports.CreateMessageDto = void 0;
 class CreateMessageDto {
 }
 exports.CreateMessageDto = CreateMessageDto;
+class SendMessageDto {
+}
+exports.SendMessageDto = SendMessageDto;
 var Status;
 (function (Status) {
     Status[Status["ACTIF"] = 0] = "ACTIF";
