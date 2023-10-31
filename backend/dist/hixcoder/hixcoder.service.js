@@ -22,7 +22,14 @@ let HixcoderService = class HixcoderService {
         try {
             const allFriends = await this.prisma.friend.findMany({
                 where: {
-                    senderId: senderId,
+                    OR: [
+                        {
+                            senderId: senderId,
+                        },
+                        {
+                            receivedId: senderId,
+                        },
+                    ],
                 },
             });
             const onlineFriends = [];
@@ -50,7 +57,14 @@ let HixcoderService = class HixcoderService {
         try {
             const allFriends = await this.prisma.friend.findMany({
                 where: {
-                    senderId: senderId,
+                    OR: [
+                        {
+                            senderId: senderId,
+                        },
+                        {
+                            receivedId: senderId,
+                        },
+                    ],
                 },
             });
             const onlineFriends = [];
@@ -75,16 +89,32 @@ let HixcoderService = class HixcoderService {
     }
     async getPendingFriends(senderId) {
         try {
-            const pendingFriendsTmp = await this.prisma.friendRequest.findMany({
+            const pendingFriendsTmp1 = await this.prisma.friendRequest.findMany({
                 where: {
                     senderId: senderId,
                 },
             });
+            const pendingFriendsTmp2 = await this.prisma.friendRequest.findMany({
+                where: {
+                    receivedId: senderId,
+                },
+            });
             const pendingFriends = [];
-            for (const element of pendingFriendsTmp) {
+            for (const element of pendingFriendsTmp1) {
                 const user = await this.prisma.user.findUnique({
                     where: {
                         id: element.receivedId,
+                    },
+                });
+                if (!(0, class_validator_1.isEmpty)(user)) {
+                    console.log(user);
+                    pendingFriends.push(user);
+                }
+            }
+            for (const element of pendingFriendsTmp2) {
+                const user = await this.prisma.user.findUnique({
+                    where: {
+                        id: element.senderId,
                     },
                 });
                 if (!(0, class_validator_1.isEmpty)(user)) {
@@ -104,7 +134,14 @@ let HixcoderService = class HixcoderService {
         try {
             const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
                 where: {
-                    senderId: senderId,
+                    OR: [
+                        {
+                            senderId: senderId,
+                        },
+                        {
+                            receivedId: senderId,
+                        },
+                    ],
                 },
             });
             const blockedFriends = [];
