@@ -2,7 +2,6 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-import { signOut } from "next-auth/react";
 import * as React from 'react';
 import { FaSignOutAlt } from "react-icons/fa";
 
@@ -19,7 +18,6 @@ export default function SignOutAlertDialog() {
 
     const logout = () => {
         handleClose();
-        signOut();
     }
     return (
         <div>

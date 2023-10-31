@@ -13,6 +13,14 @@ type userDto = {
   friendship: number
 };
 
+type ownerDto = {
+  id: string;
+  intra_id: string;
+  first_name: string;
+  last_name: string;
+  nickname: string;
+  profilePic: string;
+};
 
 type geustDto = {
   isUser: boolean;

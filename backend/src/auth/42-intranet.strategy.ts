@@ -35,7 +35,7 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
         try {
             const user = await this.validateUser(profile);
             let checkuser = await this.userService.findByIntraId(user.intra_id);
-            console.log("--------> ", checkuser);
+            console.log("checkuser--------> ", checkuser);
             if (checkuser) {
                 // checkuser = await this.userService.findByIntraId(user.intra_id);
                 done(null, user);
@@ -43,6 +43,7 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
                 console.log("here")
                 let createnewuser = await this.userService.createUser(user);
                 done(null, createnewuser);
+                console.log("createnewuser--------> ", createnewuser);
                 // throw new UnprocessableEntityException('Validation failed');
             }
             return user

@@ -15,12 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
+const guard_1 = require("../auth/guard");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
     async getUserProfile(id) {
         return await this.userService.findById(id);
+    }
+    async getUserByIdintr(id_intra) {
+        const user = await this.userService.findByIntraId(id_intra);
+        const temp = {
+            id: user.id,
+            intra_id: user.intra_id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            nickname: user.nickname,
+            profilePic: user.profilePic
+        };
+        return temp;
     }
     async getAllUser() {
         return await this.userService.findAllUsers();
@@ -46,6 +59,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
+__decorate([
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
+    (0, common_1.Get)('/intra/:id_intra'),
+    __param(0, (0, common_1.Param)('id_intra')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserByIdintr", null);
 __decorate([
     (0, common_1.Get)('/all'),
     __metadata("design:type", Function),

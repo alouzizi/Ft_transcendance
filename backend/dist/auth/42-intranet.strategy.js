@@ -40,7 +40,7 @@ let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passpo
         try {
             const user = await this.validateUser(profile);
             let checkuser = await this.userService.findByIntraId(user.intra_id);
-            console.log("--------> ", checkuser);
+            console.log("checkuser--------> ", checkuser);
             if (checkuser) {
                 done(null, user);
             }
@@ -48,6 +48,7 @@ let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passpo
                 console.log("here");
                 let createnewuser = await this.userService.createUser(user);
                 done(null, createnewuser);
+                console.log("createnewuser--------> ", createnewuser);
             }
             return user;
         }

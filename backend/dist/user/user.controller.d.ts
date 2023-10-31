@@ -18,6 +18,14 @@ export declare class UserController {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
+    getUserByIdintr(id_intra: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        profilePic: string;
+    }>;
     getAllUser(): Promise<{
         id: string;
         intra_id: string;

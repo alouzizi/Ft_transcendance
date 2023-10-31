@@ -17,19 +17,7 @@ import { AuthDto } from "./dto";
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @HttpCode(HttpStatus.OK) // for make status code 200 not 201
-  @Post("signin")
-  signin(@Body() dto: AuthDto) {
-    return this.authService.signin(dto);
-  }
 
-  @Post("signup")
-  signup(@Body() dto: AuthDto) {
-    return this.authService.signup(dto);
-  }
-
-
-  // saliah -----------------------------------
 
   @Get('login42')
   @UseGuards(AuthGuard('42-intranet'))
@@ -42,14 +30,11 @@ export class AuthController {
   async callbackWith42(@Req() req: any, @Res() res: Response) {
     console.log("profil howa niit ?? :", req.user);
     const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
-    // console.log(ret);
     if (ret != null) {
       // res.cookie("auth", ret);
     }
-    // req.cookies('intra_id', req.user.accessToken);
-    // req.cookies(accessToken:'accessToken' ,JWT_SECRET_KEY);
+    res.cookie('intra_id', req.user.intra_id);
+    res.cookie('access_token', ret.access_token);
     res.redirect("http://localhost:3000/protected/DashboardPage");
-    // res.redirect('http://www.google.com');
-    res.send(ret)
   }
 }

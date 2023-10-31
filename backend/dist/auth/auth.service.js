@@ -12,8 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const argon = require("argon2");
-const library_1 = require("@prisma/client/runtime/library");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const user_service_1 = require("../user/user.service");
@@ -25,54 +23,13 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    async signup(dto) {
-        try {
-            const intra_id_k = Math.floor(Math.random() * 10000000) + 1;
-            const index = Math.floor(Math.random() * 100) + 1;
-            const hash = await argon.hash(dto.password);
-            const user = await this.prisma.user.create({
-                data: {
-                    intra_id: `${intra_id_k}`,
-                    email: dto.email,
-                    hash: hash,
-                    profilePic: `https://randomuser.me/api/portraits/women/${index}.jpg`,
-                    nickname: dto.email,
-                },
-            });
-            return this.signToken(user);
-        }
-        catch (error) {
-            console.log(error);
-            if (error instanceof library_1.PrismaClientKnownRequestError) {
-                if (error.code === "P2002") {
-                    throw new common_1.ForbiddenException("Credential taken");
-                }
-            }
-            throw error;
-        }
-    }
-    async signin(dto) {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                email: dto.email,
-            },
-        });
-        if (!user) {
-            throw new common_1.ForbiddenException("Credential incorrect");
-        }
-        const pwMatches = await argon.verify(user.hash, dto.password);
-        if (!pwMatches) {
-            throw new common_1.ForbiddenException("Credential incorrect");
-        }
-        return this.signToken(user);
-    }
     async signToken(user) {
         const payload = {
-            sub: user.id,
+            sub: user.intra_id,
             email: user.email,
         };
         const access_token = await this.jwtService.signAsync(payload, {
-            expiresIn: "20s",
+            expiresIn: "7d",
             secret: this.config.get("JWT_SECRET"),
         });
         const refresh_token = await this.jwtService.signAsync(payload, {
@@ -81,22 +38,20 @@ let AuthService = class AuthService {
         });
         const myUser = user;
         delete myUser.hash;
+        console.log("user -> ", user);
         return {
-            user: myUser,
-            backendTokens: {
-                access_token: access_token,
-                refresh_token: refresh_token,
-                expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
-            },
+            access_token: access_token,
+            refresh_token: refresh_token,
+            expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
         };
     }
     async refreshToken(user) {
         const payload = {
-            sub: user.id,
+            sub: user.intra_id,
             email: user.email,
         };
         const access_token = await this.jwtService.signAsync(payload, {
-            expiresIn: "20s",
+            expiresIn: "7d",
             secret: this.config.get("JWT_SECRET"),
         });
         const refresh_token = await this.jwtService.signAsync(payload, {
@@ -104,11 +59,9 @@ let AuthService = class AuthService {
             secret: this.config.get("JWT_RefreshTokenKey"),
         });
         return {
-            backendTokens: {
-                access_token: access_token,
-                refresh_token: refresh_token,
-                expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
-            },
+            access_token: access_token,
+            refresh_token: refresh_token,
+            expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
         };
     }
     async generateAccessToken(user) {
@@ -119,7 +72,6 @@ let AuthService = class AuthService {
         };
     }
     async valiadteUserAndCreateJWT(user) {
-        console.log("in validate : ", user);
         try {
             const authResult = await this.userService.findByIntraId(user.intra_id);
             if (authResult) {

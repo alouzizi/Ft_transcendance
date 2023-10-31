@@ -14,26 +14,18 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
           <Link href="/">
             <Laugh size={32} />
           </Link>
-          <div className="flex flex-row space-x-2">
-            <Link
-              href="/api/auth/signin"
-              className={buttonVariants({
-                variant: "outline",
-                className: "text-color-main bg-color-main-whith",
-              })}
-            >
-              Login
-            </Link>
-            <Link
-              href="/auth/openAccount"
-              className={buttonVariants({
-                variant: "outline",
-                className: "text-color-main bg-color-main-whith",
-              })}
-            >
-              Open account
-            </Link>
-          </div>
+
+          <Link
+            href="/auth"
+            className={buttonVariants({
+              variant: "outline",
+              className: "text-color-main bg-color-main-whith",
+            })}
+          >
+            Login
+          </Link>
+
+
         </div>
       </div>
       {prompt.children}

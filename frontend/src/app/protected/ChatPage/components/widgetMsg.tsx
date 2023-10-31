@@ -129,7 +129,7 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
-export function ShowMessages({ messages, user }: { messages: msgDto[], user: userDto }) {
+export function ShowMessages({ messages, user }: { messages: msgDto[], user: ownerDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
     return messages.map((elm, index) => {

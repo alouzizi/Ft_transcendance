@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import { Inter } from "next/font/google";
-import Providers from "./context/providers";
 import '@radix-ui/themes/styles.css';
 import { Theme } from "@radix-ui/themes";
 import { GlobalContextProvider } from "./context/store";
@@ -17,7 +16,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <GlobalContextProvider>
           <Theme className=' bg-[#151b2d]'>
-            <Providers>{children}</Providers>
+            {children}
           </Theme>
         </GlobalContextProvider>
       </body>

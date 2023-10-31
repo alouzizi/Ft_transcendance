@@ -5,11 +5,30 @@ import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import { useRouter } from "next/navigation";
 import AchievementItem from "../AchievementsPage/components/AchievementItem";
+import { useEffect } from "react";
+import { useGlobalContext } from "@/app/context/store";
+import { Backend_URL } from "@/lib/Constants";
+import Cookies from 'js-cookie';
 
 export default function DashboardPage() {
   const router = useRouter();
-
-
+  const { setUser, user } = useGlobalContext();
+  useEffect(() => {
+    const getDataUser = async () => {
+      const id_intra = Cookies.get('intra_id');
+      const token = Cookies.get('access_token');
+      const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const owner = await res.json();
+      setUser(owner);
+    };
+    getDataUser();
+  }, []);
 
 
   return (
@@ -41,7 +60,7 @@ export default function DashboardPage() {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
-          src="https://images.alphacoders.com/129/1294445.jpg"
+          src={user.profilePic}
           alt=""
         />
 
@@ -66,8 +85,8 @@ export default function DashboardPage() {
           2xl:ml-6 2xl:mt-12 2xl:w-1/3
           "
           >
-            <h1>Player Full Name</h1>
-            <p className="text-gray-400 text-sm">@userName</p>
+            <h1>{user.first_name} {' '} {user.last_name}</h1>
+            <p className="text-gray-400 text-sm">{user.nickname}</p>
           </div>
 
           <div

@@ -11,7 +11,7 @@ import { FaUserTimes, } from "react-icons/fa";
 import { BiUserCheck } from "react-icons/bi";
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
-import { getValideUsers } from '../api/fetch-users';
+import { getValideUsers, getVueGeust } from '../api/fetch-users';
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 import { accepteRequistFriend, removeRequistFriend, sendRequistFriend } from '../api/send-Friend-req';
 import { getColorStatus } from './ListUser';
@@ -67,6 +67,11 @@ export default function AlertDialogFind() {
                 socket.off("updateData", updateIcons);
         };
     }, [socket]);
+
+    const getDataGeust = async (id: string, isUser: Boolean) => {
+        const temp = await getVueGeust(id, isUser);
+        setGeust(temp);
+    };
 
     const widgetItem = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
         return <Box p="1" pr="3" key={index}>
@@ -127,7 +132,7 @@ export default function AlertDialogFind() {
                     <AiFillMessage size='20' style={{ cursor: 'pointer' }}
                         onClick={() => {
                             handleClose();
-                            setGeust(elm);
+                            getDataGeust(elm.id, true); // proble
                         }} />
                 </div>
             </Flex>

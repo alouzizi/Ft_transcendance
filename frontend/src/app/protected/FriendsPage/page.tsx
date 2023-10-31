@@ -37,11 +37,10 @@ export default function FriendsPage() {
   function getIconStyle(index: number) {
     const iconStyle = ` font-bold  py-1 rounded-md  
     transition ease-in-out delay-100
-    ${
-      isSelectedList[index]
+    ${isSelectedList[index]
         ? "text-white bg-[#515562] hover:bg-[#515562] hover:text-white"
         : "text-gray-300 bg-transparent hover:bg-[#2A2F40] hover:text-slate-50"
-    }
+      }
 
     // small screen
     text-xs px-2 mr-1.5

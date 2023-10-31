@@ -8,11 +8,11 @@ enum Status {
     INACTIF = "INACTIF",
 }
 
-enum MessageStatus {
-    NotReceived = "NotReceived",
-    Received = "Received",
-    Seen = "Seen"
-}
+// enum MessageStatus {
+//     NotReceived = "NotReceived",
+//     Received = "Received",
+//     Seen = "Seen"
+// }
 
 
 // isUser: boolean;
@@ -25,8 +25,8 @@ enum MessageStatus {
 // lenUserLive: number;
 
 interface ContextProps {
-    user: userDto,
-    setUser: Dispatch<SetStateAction<userDto>>,
+    user: ownerDto,
+    setUser: Dispatch<SetStateAction<ownerDto>>,
     geust: geustDto,
     setGeust: Dispatch<SetStateAction<geustDto>>,
     socket: Socket | null, // Add the socket property
@@ -36,12 +36,11 @@ interface ContextProps {
 const GlobalContext = createContext<ContextProps>({
     user: {
         id: '-1',
-        email: '',
+        intra_id: '',
+        first_name: '',
+        last_name: '',
         nickname: '',
-        profilePic: '',
-        status: Status.INACTIF,
-        lastSee: 0,
-        friendship: -1,
+        profilePic: ''
 
     },
     setUser: () => { },
@@ -62,20 +61,23 @@ const GlobalContext = createContext<ContextProps>({
 
 })
 
-
+// id: string;
+// intra_id: string;
+// first_name: string;
+// last_name: string;
+// nickname: string;
+// profilePic: string;
 
 export const GlobalContextProvider = ({ children }: {
     children: React.ReactNode;
 }) => {
-    const [user, setUser] = useState<userDto>({
+    const [user, setUser] = useState<ownerDto>({
         id: '-1',
-        email: '',
+        intra_id: '',
+        first_name: '',
+        last_name: '',
         nickname: '',
-        profilePic: '',
-        status: Status.INACTIF,
-        lastSee: 0,
-        friendship: -1,
-
+        profilePic: ''
     })
 
     const [geust, setGeust] = useState<geustDto>({
@@ -90,6 +92,7 @@ export const GlobalContextProvider = ({ children }: {
     })
 
     const [socket, setSocket] = useState<Socket | null>(null);
+
     useEffect(() => {
         // const socket = io('your-socket-server-url');
 

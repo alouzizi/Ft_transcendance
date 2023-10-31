@@ -6,7 +6,6 @@ import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
 import { getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import { extractHoursAndM } from './widgetMsg';
-import { useSession } from 'next-auth/react';
 import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
 
@@ -20,8 +19,7 @@ export function getColorStatus(status: any): string {
 }
 
 const ListUser = () => {
-  const { data: session } = useSession();
-  const { setGeust, setUser, geust, socket } = useGlobalContext();
+  const { setGeust, setUser, geust, socket, user } = useGlobalContext();
 
   const [itemList, setItemList] = useState<MessageItemList[]>([]);
 
@@ -29,20 +27,17 @@ const ListUser = () => {
   const [direct, setDirect] = useState<boolean>(true);
 
   useEffect(() => {
-    if (session) {
-      const user: userDto = session.user;
-      setUser(session.user);
-      const getListUsers = async () => {
-        const usersList = await getUserForMsg(user.id);
-        setItemList(usersList)
-      };
-      getListUsers();
-      if (socket) {
-        socket.on("findMsg2UsersResponse", getListUsers);
-        socket.on("updateData", getListUsers);
-      }
+    const getListUsers = async () => {
+      const usersList = await getUserForMsg(user.id);
+      setItemList(usersList)
+    };
+    getListUsers();
+    if (socket) {
+      socket.on("findMsg2UsersResponse", getListUsers);
+      socket.on("updateData", getListUsers);
     }
-  }, [session, socket])
+
+  }, [socket])
 
   const getDataGeust = async (tmp: MessageItemList) => {
     let geustTemp: geustDto;
