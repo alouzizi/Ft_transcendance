@@ -75,11 +75,23 @@ let HixcoderService = class HixcoderService {
     }
     async getPendingFriends(senderId) {
         try {
-            const pendingFriends = await this.prisma.friendRequest.findMany({
+            const pendingFriendsTmp = await this.prisma.friendRequest.findMany({
                 where: {
                     senderId: senderId,
                 },
             });
+            const pendingFriends = [];
+            for (const element of pendingFriendsTmp) {
+                const user = await this.prisma.user.findUnique({
+                    where: {
+                        id: element.receivedId,
+                    },
+                });
+                if (!(0, class_validator_1.isEmpty)(user)) {
+                    console.log(user);
+                    pendingFriends.push(user);
+                }
+            }
             return pendingFriends;
         }
         catch (error) {
@@ -90,11 +102,23 @@ let HixcoderService = class HixcoderService {
     }
     async getBlockedFriends(senderId) {
         try {
-            const blockedFriends = await this.prisma.blockedUser.findMany({
+            const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
                 where: {
                     senderId: senderId,
                 },
             });
+            const blockedFriends = [];
+            for (const element of blockedFriendsTmp) {
+                const user = await this.prisma.user.findUnique({
+                    where: {
+                        id: element.receivedId,
+                    },
+                });
+                if (!(0, class_validator_1.isEmpty)(user)) {
+                    console.log(user);
+                    blockedFriends.push(user);
+                }
+            }
             return blockedFriends;
         }
         catch (error) {

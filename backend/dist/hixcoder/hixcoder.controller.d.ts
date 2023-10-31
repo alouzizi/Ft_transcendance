@@ -8,19 +8,10 @@ export declare class HixcoderController {
     getAllFriends(sender: string): Promise<any[] | {
         error: any;
     }>;
-    getPendingFriends(sender: string): Promise<{
-        id: number;
-        createdAt: Date;
-        senderId: number;
-        receivedId: number;
-    }[] | {
+    getPendingFriends(sender: string): Promise<any[] | {
         error: any;
     }>;
-    getBlockedFriends(sender: string): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
-    }[] | {
+    getBlockedFriends(sender: string): Promise<any[] | {
         error: any;
     }>;
     sendFriendRequest(sender: string, reciever: string): Promise<{

@@ -45,3 +45,7 @@ friendCard: {
     avatar:
 
 }
+
+
+tasks: 
+- show online friends

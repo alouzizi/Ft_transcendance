@@ -74,8 +74,8 @@ let FriendshipService = class FriendshipService {
                     {
                         senderId: recivedId,
                         receivedId: sendId,
-                    }
-                ]
+                    },
+                ],
             },
         });
         return req;
@@ -133,8 +133,8 @@ let FriendshipService = class FriendshipService {
                     },
                     {
                         receivedId: senderId,
-                    }
-                ]
+                    },
+                ],
             },
         });
         return sendRequests;
@@ -148,8 +148,8 @@ let FriendshipService = class FriendshipService {
                     },
                     {
                         receivedId: senderId,
-                    }
-                ]
+                    },
+                ],
             },
         });
         return sendRequests;

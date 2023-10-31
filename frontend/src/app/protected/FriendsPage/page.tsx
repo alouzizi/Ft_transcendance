@@ -1,40 +1,9 @@
 "use client";
 
-import { getOnlineFriends } from "@/app/api/hixcoder/FriendsPage";
-import { useGlobalContext } from "@/app/context/store";
-import FriendItem from "@/app/protected/FriendsPage/components/FriendItem";
-import { Backend_URL } from "@/lib/Constants";
-import email from "next-auth/providers/email";
-import { use, useEffect, useState } from "react";
-import { array } from "zod";
+import { useState } from "react";
+import FriendCategory from "./components/FriendCategory";
 
 export default function FriendsPage() {
-  const { user } = useGlobalContext();
-  const isClient = typeof window !== "undefined";
-  async function getOnlineFriends(userId: number) {
-    try {
-      const response = await fetch(
-        `${Backend_URL}/hixcoder/onlineFriends/${userId}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await response.json();
-      if (data.statusCode >= 400) {
-        return { status: "error", msg: data.message[0] };
-      }
-      return data;
-    } catch (error: any) {
-      return { status: "error", msg: error.message };
-    }
-  }
-
-  useEffect(() => {
-    console.log(user);
-    // const data = use(getOnlineFriends(user.id));
-    // console.log(data);
-  }, [user.id, isClient]);
   // Create an array to store the isSelected state for each item
   const [isSelectedList, setIsSelectedList] = useState([
     true,
@@ -146,30 +115,7 @@ export default function FriendsPage() {
           lg:w-[60%]
         "
         >
-          <p
-            className="mr-4 mb-4 w-fit font-bold  py-1 px-3 text-gray-400 
-          
-          // small screen
-          text-sm
-          // big screen 
-          md:text-md 
-          "
-          >
-            {`${itemsStatus} - 3`}
-          </p>
-          {/* for (let i = 0; i < array.length; i++) {
-            const element = array[i];
-            
-          } */}
-          <FriendItem
-            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
-          />
-          <FriendItem
-            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
-          />
-          <FriendItem
-            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
-          />
+          <FriendCategory itemsStatus={itemsStatus} />
         </div>
       </div>
     </div>
