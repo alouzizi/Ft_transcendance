@@ -9,7 +9,6 @@ export class UserService {
     private prisma: PrismaService
   ){}
 
-
   async createUser(user1:any){
     console.log("my user iss",user1.intra_id);
     const user = await this.prisma.user.create({
@@ -20,8 +19,8 @@ export class UserService {
         profilePic:user1.profilePicture.toString(),
         last_name:user1.last_name,
         first_name:user1.first_name,
-        level:parseFloat(user1.level.toString()),
-        grade:user1.grade.toString()
+        // level:parseFloat(user1.level.toString()),
+        // grade:user1.grade.toString()
       },
     
     });
@@ -41,12 +40,12 @@ export class UserService {
       where: { intra_id: id },
     });
   }
-  // async updateUser(id: string, data: Prisma.UserUpdateInput){
-  //   return this.prisma.user.update({
-  //     where: { id: id },
-  //     data,
-  //   });
-  // }
+  async updateUser(id: string, data: Prisma.UserUpdateInput){
+    return this.prisma.user.update({
+      where: { id: id },
+      data,
+    });
+  }
 async findByIntraId(intra_id: string){
   return this.prisma.user.findUnique({
     where: { intra_id: intra_id },

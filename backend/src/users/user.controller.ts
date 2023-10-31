@@ -17,10 +17,10 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
-  // @Put(':id')
-  // async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.updateUser(id, updateUserDto);
-  // }
+  @Put(':id')
+  async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(id, updateUserDto);
+  }
 
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
