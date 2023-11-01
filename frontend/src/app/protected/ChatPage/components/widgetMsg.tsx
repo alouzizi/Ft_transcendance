@@ -147,6 +147,7 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
         margin: 'auto',
         background: "#fefae0",
     };
+
     let messageTmp: string = "";
     if (message.contentMsg.includes('create')) {
         if (message.senderId === user.id)
@@ -162,7 +163,7 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
     return (
         <div className='mt-1'>
             <div style={cardStyles} >
-                <Text className='flex items-center justify-center text-sm'>
+                <Text className='flex items-center justify-center text-sm text-center'>
                     {messageTmp}
                 </Text>
             </div>
