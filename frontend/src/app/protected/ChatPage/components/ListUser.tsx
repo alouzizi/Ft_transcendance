@@ -42,7 +42,7 @@ const ListUser = () => {
 
   const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
-    if (tmp.isDirectMsg)
+    if (tmp.isDirectMessage)
       geustTemp = await getUserGeust(tmp.receivedId);
     else
       geustTemp = await getChannelGeust(tmp.receivedId);
@@ -75,7 +75,7 @@ const ListUser = () => {
         fallback="T"
       />
       <div className='absolute pt-6 pl-7'>
-        {el.isDirectMsg ? <GoDotFill size={20} color={getColorStatus(el.receivedStatus)} /> : <></>}
+        {el.isDirectMessage ? <GoDotFill size={20} color={getColorStatus(el.receivedStatus)} /> : <></>}
       </div>
       <Flex direction="column" className='items-start pl-2'>
         <Text size="2" weight="bold" className=''>
@@ -83,7 +83,7 @@ const ListUser = () => {
         </Text>
         {/* text-neutral-500  w-32  */}
         <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
-          {(!el.isDirectMsg ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
+          {(!el.isDirectMessage ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
           {el.contentMsg}
         </Box>
       </Flex>

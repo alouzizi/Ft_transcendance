@@ -113,15 +113,10 @@ export default function AlertAddChannel() {
                     setOpen(false);
                     resetData();
                 }
-                console.log(res);
-                if (socket) {
-                    socket.emit('createMessage', {
-                        isDirectMessage: false,
-                        content: " created group ",
-                        senderId: user.id,
-                        receivedId: res.id,
-                    });
-                }
+                // if (socket) {
+                //     socket.emit('updateData', {
+                //     });
+                // }
             }
         }
         createCha();

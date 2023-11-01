@@ -83,6 +83,8 @@ model Message {
 
   Channel   Channel? @relation(fields: [channelId], references: [id])
   channelId String?
+
+  InfoMessage Boolean @default(false)
 }
 
 // friendship

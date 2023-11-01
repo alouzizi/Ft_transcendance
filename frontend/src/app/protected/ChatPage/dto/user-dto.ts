@@ -39,7 +39,9 @@ enum MessageStatus {
 }
 
 type messageDto = {
-  isDirectMsg: Boolean;
+  isDirectMessage: Boolean;
+
+  InfoMessage: Boolean;
 
   senderId: string; // in channle or direct Msg
   senderName: string; // in channle or direct Msg
@@ -55,6 +57,8 @@ type messageDto = {
   receivedStatus: Status; // in DirectMsg
 
   OwnerChannelId: String;
+
+
 }
 
 type reqFriendsDto = {

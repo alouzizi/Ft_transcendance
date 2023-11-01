@@ -21,6 +21,7 @@ export declare class MessagesService {
         messageStatus: import(".prisma/client").$Enums.MessageStatus;
         receivedId: string;
         channelId: string;
+        InfoMessage: boolean;
     }>;
     getChannleForMsg(senderId: string): Promise<messageDto[]>;
     getMessageForList(senderId: string): Promise<messageDto[]>;

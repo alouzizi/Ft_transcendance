@@ -31,15 +31,36 @@ let ChannelService = class ChannelService {
             await this.prisma.channelMember.create({
                 data: {
                     userId: senderId,
-                    isAdmin: false,
+                    isAdmin: true,
+                    channelId: newChannel.id,
+                }
+            });
+            await this.prisma.message.create({
+                data: {
+                    senderId: senderId,
+                    receivedId: newChannel.id,
+                    content: "create group",
+                    isDirectMessage: false,
+                    InfoMessage: true,
                     channelId: newChannel.id,
                 }
             });
             createChannelDto.channelMember.forEach(async (item) => {
+                const userAdd = await this.prisma.user.findUnique({ where: { id: item } });
                 await this.prisma.channelMember.create({
                     data: {
                         userId: item,
                         isAdmin: false,
+                        channelId: newChannel.id,
+                    }
+                });
+                await this.prisma.message.create({
+                    data: {
+                        senderId: senderId,
+                        receivedId: newChannel.id,
+                        content: `added ${userAdd.nickname}`,
+                        isDirectMessage: false,
+                        InfoMessage: true,
                         channelId: newChannel.id,
                     }
                 });

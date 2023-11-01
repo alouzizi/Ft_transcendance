@@ -130,27 +130,44 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
-// 
-// 
-export function FirstMessage({ message, isOwner }: { message: messageDto, isOwner: Boolean }) {
+
+// $owner create group $channelName 
+// You created group $channelName
+
+// $owner add $userName
+// You add $userName
+
+// You Block this contact. Tap to unblock
+// You unblocked this contact
+export function MessageCenterInfo({ message, user }: { message: messageDto, user: ownerDto }) {
     const cardStyles = {
         width: 200,
         padding: 5,
         borderRadius: 10,
         margin: 'auto',
         background: "#fefae0",
-        display: 'flex', // Use flex display
-        alignItems: 'center',
     };
+    let messageTmp: string = "";
+    if (message.contentMsg.includes('create')) {
+        if (message.senderId === user.id)
+            messageTmp = `You created group ${message.receivedName}`;
+        else
+            messageTmp = `${message.senderName} create group ${message.receivedName}`
+    } else if (message.contentMsg.includes('added')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    }
     return (
-        <div style={cardStyles} className='mb-2 mt-2'>
-            <Text className='mb-4 text-sm text-center'>
-                {isOwner ?
-                    <Text>You created group</Text> :
-                    <Text>{message.senderName} created group</Text>}
-                {' '}"{message.receivedName}"
-            </Text>
+        <div className='mt-1'>
+            <div style={cardStyles} >
+                <Text className='flex items-center justify-center text-sm'>
+                    {messageTmp}
+                </Text>
+            </div>
         </div>
+
     );
 }
 
@@ -174,8 +191,8 @@ export function ShowMessages({ messages, user }: { messages: messageDto[], user:
                 }
 
                 {
-                    (index === 0 && !elm.isDirectMsg) ?
-                        <FirstMessage message={elm} isOwner={elm.OwnerChannelId === user.id} />
+                    (elm.InfoMessage === true) ?
+                        <MessageCenterInfo message={elm} user={user} />
                         : ((elm.senderId == user.id) ? (
                             <MessageRight message={elm} />
                         ) : (

@@ -47,16 +47,18 @@ export class MessagesService {
       data: {
         ...createMessageDto,
         receivedId: createMessageDto.receivedId,
-        isDirectMessage: true,
         showed,
         messageStatus,
+        InfoMessage: false
       },
     });
     const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
     const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
 
     const temp: messageDto = {
-      isDirectMsg: true,
+      isDirectMessage: true,
+
+      InfoMessage: false,
 
       senderId: msg.senderId,
       senderName: senderUser.nickname,
@@ -85,6 +87,7 @@ export class MessagesService {
         channelId: createMessageDto.receivedId,
         senderId: createMessageDto.senderId,
         isDirectMessage: false,
+        // InfoMessage: Boolean(createMessageDto.InfoMessage)
       },
     });
     const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } })
@@ -93,7 +96,9 @@ export class MessagesService {
     const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
     for (const member of channelMember) {
       const temp: messageDto = {
-        isDirectMsg: false,
+        isDirectMessage: false,
+
+        InfoMessage: false,
 
         senderId: msg.senderId,
         senderName: senderUser.nickname,
@@ -147,7 +152,9 @@ export class MessagesService {
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
         const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.receivedId } });
         const temp: messageDto = {
-          isDirectMsg: true,
+          isDirectMessage: true,
+
+          InfoMessage: msg.InfoMessage,
 
           senderId: msg.senderId,
           senderName: senderUser.nickname,
@@ -163,6 +170,8 @@ export class MessagesService {
           receivedStatus: receivedUser.status,
 
           OwnerChannelId: '', // no matter
+
+
         }
         return temp;
       })
@@ -186,7 +195,9 @@ export class MessagesService {
       msgUserTemp.map(async (msg) => {
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
         const temp: messageDto = {
-          isDirectMsg: false,
+          isDirectMessage: false,
+
+          InfoMessage: msg.InfoMessage,
 
           senderId: msg.senderId,
           senderName: senderUser.nickname,
@@ -257,7 +268,9 @@ export class MessagesService {
       });
       const userSender = await this.prisma.user.findUnique({ where: { id: lastMessageChannel.senderId } });
       const temp: messageDto = {
-        isDirectMsg: false,
+        isDirectMessage: false,
+
+        InfoMessage: false,
 
         senderId: lastMessageChannel.senderId,
         senderName: userSender.nickname,
@@ -312,7 +325,9 @@ export class MessagesService {
     for (const user of usersList) {
       const lastMessage = await this.getLastMessages(senderId, user.id);
       const tmp: messageDto = {
-        isDirectMsg: true,
+        isDirectMessage: true,
+
+        InfoMessage: false,
 
         senderId: '',  // no matter
         senderName: '',  // no matter

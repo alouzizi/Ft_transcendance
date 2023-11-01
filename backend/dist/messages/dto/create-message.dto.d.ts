@@ -4,9 +4,11 @@ export declare class CreateMessageDto {
     senderId: string;
     receivedId: string;
     isDirectMessage: boolean;
+    InfoMessage: boolean;
 }
 export declare class messageDto {
-    isDirectMsg: Boolean;
+    isDirectMessage: boolean;
+    InfoMessage: boolean;
     senderId: string;
     senderName: string;
     senderPic: string;
