@@ -1,34 +1,16 @@
 "use client";
+import { useGlobalContext } from "@/app/context/store";
 import CardInfo from "@/app/protected/DashboardPage/components/CardInfo";
-import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
+import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import { useRouter } from "next/navigation";
 import AchievementItem from "../AchievementsPage/components/AchievementItem";
-import { useEffect } from "react";
-import { useGlobalContext } from "@/app/context/store";
-import { Backend_URL } from "@/lib/Constants";
-import Cookies from 'js-cookie';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { setUser, user } = useGlobalContext();
-  useEffect(() => {
-    const getDataUser = async () => {
-      const id_intra = Cookies.get('intra_id');
-      const token = Cookies.get('access_token');
-      const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
-        method: 'GET',
-        headers: {
-          authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      const owner = await res.json();
-      setUser(owner);
-    };
-    getDataUser();
-  }, []);
+  const { user } = useGlobalContext();
+
 
 
   return (

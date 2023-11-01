@@ -6,6 +6,7 @@ export declare class CreateMessageDto {
     isDirectMessage: boolean;
 }
 export declare class SendMessageDto {
+    isDirectMsg: Boolean;
     id: string;
     content: string;
     createdAt: Date;
@@ -14,6 +15,7 @@ export declare class SendMessageDto {
     messageStatus: MessageStatus;
     avata: string;
     nickName: string;
+    nameChannel: string;
 }
 export declare enum Status {
     ACTIF = 0,

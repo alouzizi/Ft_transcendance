@@ -49,7 +49,7 @@ export default function AlertAddChannel() {
     const [memberSearch, setMemberSearch] = useState('');
     const [protect, setProtected] = useState<boolean>(false);
 
-    const { user, setGeust } = useGlobalContext();
+    const { user, setGeust, socket } = useGlobalContext();
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
     const [membersChannel, setMembersChannel] = useState<userDto[]>([]);
@@ -109,12 +109,19 @@ export default function AlertAddChannel() {
                 if (res.status === 202)
                     setErrorName(res.error);
                 else {
-                    console.log(res);
                     getDataGeust(res.id, false);
                     setOpen(false);
                     resetData();
                 }
-                console.log(res)
+                console.log(res);
+                if (socket) {
+                    socket.emit('createMessage', {
+                        isDirectMessage: false,
+                        content: " created group ",
+                        senderId: user.id,
+                        receivedId: res.id,
+                    });
+                }
             }
         }
         createCha();

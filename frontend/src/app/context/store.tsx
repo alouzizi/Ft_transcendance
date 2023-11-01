@@ -2,27 +2,13 @@
 import { Backend_URL } from "@/lib/Constants";
 import { createContext, useContext, Dispatch, SetStateAction, useState, useEffect } from "react";
 import { io, Socket } from 'Socket.IO-client';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 enum Status {
     ACTIF = "ACTIF",
     INACTIF = "INACTIF",
 }
-
-// enum MessageStatus {
-//     NotReceived = "NotReceived",
-//     Received = "Received",
-//     Seen = "Seen"
-// }
-
-
-// isUser: boolean;
-// id: string;
-// nickname: string;
-// profilePic: string;
-// status: Status;
-// lastSee: number;
-// lenUser: number;
-// lenUserLive: number;
 
 interface ContextProps {
     user: ownerDto,
@@ -71,6 +57,9 @@ const GlobalContext = createContext<ContextProps>({
 export const GlobalContextProvider = ({ children }: {
     children: React.ReactNode;
 }) => {
+
+    const router = useRouter();
+
     const [user, setUser] = useState<ownerDto>({
         id: '-1',
         intra_id: '',
@@ -94,9 +83,8 @@ export const GlobalContextProvider = ({ children }: {
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        // const socket = io('your-socket-server-url');
-
-        if (user.id != '-1') {
+        if ((user.id && user.id != '-1')) {
+            console.log("socket ---------------------> ", user.id);
             const socket = io(Backend_URL, {
                 transports: ['websocket'],
                 query: {
@@ -119,6 +107,29 @@ export const GlobalContextProvider = ({ children }: {
         };
     }, [user.id]);
 
+    useEffect(() => {
+        const getDataUser = async () => {
+            const id_intra = Cookies.get('intra_id');
+            const token = Cookies.get('access_token');
+
+            const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
+                method: 'GET',
+                headers: {
+                    authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (res.ok) {
+                const owner = await res.json();
+                setUser(owner);
+            } else {
+                router.push('/auth');
+
+            }
+        };
+        if (user.id === "-1")
+            getDataUser();
+    }, []);
     return (
         <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket }}>
             {children}

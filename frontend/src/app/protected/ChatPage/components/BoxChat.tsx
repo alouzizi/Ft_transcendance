@@ -8,7 +8,7 @@ import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { GoDotFill } from "react-icons/go";
 import { getColorStatus } from './ListUser';
 import { formatDistance } from 'date-fns'
-import { getChannelGeust, getUser, getUserGeust, getVueGeust } from '../api/fetch-users';
+import { getVueGeust } from '../api/fetch-users';
 
 const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);

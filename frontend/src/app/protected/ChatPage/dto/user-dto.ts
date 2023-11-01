@@ -39,6 +39,7 @@ enum MessageStatus {
 }
 
 type msgDto = {
+  isDirectMsg: Boolean;
   id: string;
   content: string;
   createdAt: number;
@@ -47,7 +48,8 @@ type msgDto = {
   messageStatus: MessageStatus;
 
   avata: string;
-  nickName: string;
+  nickName: string; // user
+  nameChannel: string;
 };
 
 type MessageItemList = {

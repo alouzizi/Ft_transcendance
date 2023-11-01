@@ -12,7 +12,6 @@ export class MessagesService {
   ) { }
 
   async createDirectMessage(server: Server, createMessageDto: CreateMessageDto) {
-    console.log('---- cretae user message ----');
     let showed: boolean = true;
     let messageStatus: MessageStatus = "NotReceived"
 
@@ -54,6 +53,7 @@ export class MessagesService {
     });
     const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
     const temp: SendMessageDto = {
+      isDirectMsg: true,
       id: msg.id,
       content: msg.content,
       createdAt: msg.createdAt,
@@ -61,9 +61,9 @@ export class MessagesService {
       receivedId: msg.receivedId,
       messageStatus: msg.messageStatus,
       avata: senderUser.profilePic,
-      nickName: senderUser.nickname
+      nickName: senderUser.nickname,
+      nameChannel: "null"
     }
-    console.log("=------> ", msg);
     if (showed)
       server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
     server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
@@ -78,11 +78,13 @@ export class MessagesService {
         isDirectMessage: false,
       },
     });
+    const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } })
     const channelMember = await this.prisma.channelMember.findMany(
       { where: { channelId: createMessageDto.receivedId } });
     const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
     for (const member of channelMember) {
       const temp: SendMessageDto = {
+        isDirectMsg: false,
         id: msg.id,
         content: msg.content,
         createdAt: msg.createdAt,
@@ -90,7 +92,8 @@ export class MessagesService {
         receivedId: msg.receivedId,
         messageStatus: msg.messageStatus,
         avata: senderUser.profilePic,
-        nickName: senderUser.nickname
+        nickName: senderUser.nickname,
+        nameChannel: channel.channelName
 
       }
       server.to(member.userId).emit('findMsg2UsersResponse', temp);
@@ -128,6 +131,7 @@ export class MessagesService {
       msgUser.map(async (msg) => {
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
         const temp: SendMessageDto = {
+          isDirectMsg: true,
           id: msg.id,
           content: msg.content,
           createdAt: msg.createdAt,
@@ -135,7 +139,8 @@ export class MessagesService {
           receivedId: msg.receivedId,
           messageStatus: msg.messageStatus,
           avata: senderUser.profilePic,
-          nickName: senderUser.nickname
+          nickName: senderUser.nickname,
+          nameChannel: ""
 
         }
         return temp;
@@ -155,10 +160,12 @@ export class MessagesService {
         createdAt: 'asc',
       },
     });
+    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } })
     const result = await Promise.all(
       msgUserTemp.map(async (msg) => {
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
         const temp: SendMessageDto = {
+          isDirectMsg: false,
           id: msg.id,
           content: msg.content,
           createdAt: msg.createdAt,
@@ -166,7 +173,8 @@ export class MessagesService {
           receivedId: msg.receivedId,
           messageStatus: msg.messageStatus,
           avata: senderUser.profilePic,
-          nickName: senderUser.nickname
+          nickName: senderUser.nickname,
+          nameChannel: channel.channelName
 
         }
         return temp;
@@ -174,9 +182,6 @@ export class MessagesService {
     )
     return result;
   }
-
-
-
 
 
   async getLastMessages(senderId: string, receivedId: string) {

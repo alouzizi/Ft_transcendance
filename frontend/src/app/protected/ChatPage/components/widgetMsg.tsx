@@ -55,6 +55,7 @@ export function MessageRight({ message }: { message: msgDto }) {
         </div>
     );
 }
+
 export function MessageLeft({ message }: { message: msgDto }) {
     const cardStyles = {
         width: 200,
@@ -129,6 +130,24 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
+
+export function FirstMessage({ message }: { message: msgDto }) {
+    const cardStyles = {
+        width: 200,
+        padding: 5,
+        borderRadius: 10,
+        margin: 'auto',
+        background: "#fefae0",
+        display: 'flex', // Use flex display
+        alignItems: 'center',
+    };
+    return (
+        <div style={cardStyles} className='mb-2 mt-2'>
+            <Text className='mb-4 text-sm text-center'> {message.nickName} {message.content} {message.nameChannel}</Text>
+        </div>
+    );
+}
+
 export function ShowMessages({ messages, user }: { messages: msgDto[], user: ownerDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
@@ -136,7 +155,6 @@ export function ShowMessages({ messages, user }: { messages: msgDto[], user: own
         const temp = showDays(currentDate, elm.createdAt);
         const tag =
             <div key={index}>
-
                 {
                     temp.show ?
                         (
@@ -149,11 +167,15 @@ export function ShowMessages({ messages, user }: { messages: msgDto[], user: own
                         : (<></>)
                 }
 
-                {(elm.senderId == user.id) ? (
-                    <MessageRight message={elm} /> // red
-                ) : (
-                    <MessageLeft message={elm} />
-                )}
+                {
+                    (index === 0 && !elm.isDirectMsg) ?
+                        <FirstMessage key={index} message={elm} />
+                        : ((elm.senderId == user.id) ? (
+                            <MessageRight message={elm} />
+                        ) : (
+                            <MessageLeft message={elm} />
+                        ))
+                }
             </div>
         return tag;
     })

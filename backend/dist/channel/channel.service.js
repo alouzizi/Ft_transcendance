@@ -28,7 +28,6 @@ let ChannelService = class ChannelService {
                     avatar: "https://randomuser.me/api/portraits/women/82.jpg"
                 }
             });
-            console.log(newChannel);
             await this.prisma.channelMember.create({
                 data: {
                     userId: senderId,

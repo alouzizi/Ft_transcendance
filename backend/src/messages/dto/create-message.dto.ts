@@ -9,6 +9,7 @@ export class CreateMessageDto {
 
 
 export class SendMessageDto {
+  isDirectMsg: Boolean;
   id: string;
   content: string;
   createdAt: Date;
@@ -18,6 +19,7 @@ export class SendMessageDto {
 
   avata: string;
   nickName: string;
+  nameChannel: string;
 }
 
 

@@ -3,13 +3,14 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
+import { MessagesService } from 'src/messages/messages.service';
 
 
 
 @Injectable()
 export class ChannelService {
   constructor(
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) { }
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
@@ -23,7 +24,6 @@ export class ChannelService {
           avatar: "https://randomuser.me/api/portraits/women/82.jpg"
         }
       })
-      console.log(newChannel);
       await this.prisma.channelMember.create({
         data: {
           userId: senderId,
