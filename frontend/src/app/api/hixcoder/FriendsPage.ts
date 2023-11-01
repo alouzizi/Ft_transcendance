@@ -3,6 +3,20 @@ import axios from "axios";
 
 // get online friends
 
+export async function getAllUsers(userId: number) {
+  try {
+    const response = await fetch(`${Backend_URL}/hixcoder/allUsers/${userId}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.log("getAllUsers error: " + error);
+    return null;
+  }
+}
+
 export async function getOnlineFriends(userId: number) {
   try {
     const response = await fetch(

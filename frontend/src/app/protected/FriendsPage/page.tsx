@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import FriendCategory from "./components/FriendCategory";
+import { FriendAlert } from "./components/FriendAlert/FriendAlert";
 
 export default function FriendsPage() {
   // Create an array to store the isSelected state for each item
@@ -63,6 +64,24 @@ export default function FriendsPage() {
     setIsSelectedList(updatedIsSelectedList);
   };
 
+  // ================== friend alert ==================
+  const handleAddFriend = () => {
+    console.log("add friend");
+  };
+
+  const [open, setOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("emails[1]");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+  // ================== /friend alert ==================
+
   return (
     <div className="flex flex-col bg-color-main h-screen w-screen ">
       <div className="flex flex-col justify-end mt-12 mb-8 ml-8  md:ml-24 ">
@@ -101,9 +120,15 @@ export default function FriendsPage() {
           // big screen 
           md:text-sm lg:text-md lg:px-4 
           "
+            onClick={handleClickOpen}
           >
             Add Friend
           </button>
+          <FriendAlert
+            selectedValue={selectedValue}
+            open={open}
+            onClose={handleClose}
+          />
         </div>
         {/* this is the friend items */}
         <div

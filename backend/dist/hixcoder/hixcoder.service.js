@@ -18,6 +18,23 @@ let HixcoderService = class HixcoderService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async getAllUsers(senderId) {
+        try {
+            const allUsers = await this.prisma.user.findMany({
+                where: {
+                    NOT: {
+                        id: senderId,
+                    },
+                },
+            });
+            return allUsers;
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
     async getOnlineFriends(senderId) {
         try {
             const allFriends = await this.prisma.friend.findMany({

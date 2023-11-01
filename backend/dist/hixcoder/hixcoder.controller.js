@@ -19,6 +19,10 @@ let HixcoderController = class HixcoderController {
     constructor(hixcoderService) {
         this.hixcoderService = hixcoderService;
     }
+    async getallUsers(sender) {
+        const senderId = parseInt(sender);
+        return this.hixcoderService.getAllUsers(senderId);
+    }
     async getOnlineFriends(sender) {
         const senderId = parseInt(sender);
         return this.hixcoderService.getOnlineFriends(senderId);
@@ -57,6 +61,13 @@ let HixcoderController = class HixcoderController {
     }
 };
 exports.HixcoderController = HixcoderController;
+__decorate([
+    (0, common_1.Get)("/allUsers/:sender"),
+    __param(0, (0, common_1.Param)("sender")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getallUsers", null);
 __decorate([
     (0, common_1.Get)("/onlineFriends/:sender"),
     __param(0, (0, common_1.Param)("sender")),

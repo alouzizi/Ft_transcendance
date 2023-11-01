@@ -2,6 +2,17 @@ import { PrismaService } from "src/prisma/prisma.service";
 export declare class HixcoderService {
     private prisma;
     constructor(prisma: PrismaService);
+    getAllUsers(senderId: number): Promise<{
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
     getOnlineFriends(senderId: number): Promise<any[] | {
         error: any;
     }>;

@@ -6,6 +6,15 @@ import { HixcoderService } from "./hixcoder.service";
 export class HixcoderController {
   constructor(private hixcoderService: HixcoderService) {}
 
+  // ==========================  Gets ==========================
+
+  // for get all users
+  @Get("/allUsers/:sender")
+  async getallUsers(@Param("sender") sender: string) {
+    const senderId = parseInt(sender);
+    return this.hixcoderService.getAllUsers(senderId);
+  }
+
   // for get all online friends
   @Get("/onlineFriends/:sender")
   async getOnlineFriends(@Param("sender") sender: string) {
@@ -33,6 +42,8 @@ export class HixcoderController {
     const senderId = parseInt(sender);
     return this.hixcoderService.getBlockedFriends(senderId);
   }
+
+  // ==========================  Posts ==========================
 
   // for send friend request
   @Post("/sendFriendRequest/:sender/:reciever")

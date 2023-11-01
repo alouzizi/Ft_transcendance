@@ -7,6 +7,35 @@ import { isEmpty } from "class-validator";
 export class HixcoderService {
   constructor(private prisma: PrismaService) {}
 
+  async getAllUsers(senderId: number) {
+    try {
+      const allUsers = await this.prisma.user.findMany({
+        where: {
+          NOT: {
+            id: senderId,
+          },
+        },
+      });
+      // const onlineFriends = [];
+      // for (const element of allFriends) {
+      //   const user = await this.prisma.user.findUnique({
+      //     where: {
+      //       id: element.receivedId,
+      //     },
+      //   });
+      //   if (!isEmpty(user)) {
+      //     console.log(user);
+      //     onlineFriends.push(user);
+      //   }
+      // }
+      return allUsers;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
   async getOnlineFriends(senderId: number) {
     try {
       const allFriends = await this.prisma.friend.findMany({
@@ -81,11 +110,13 @@ export class HixcoderService {
 
   async getPendingFriends(senderId: number) {
     try {
+      // find friends who I send freind request to
       const pendingFriendsTmp1 = await this.prisma.friendRequest.findMany({
         where: {
           senderId: senderId,
         },
       });
+      // find friends whose send freind request to me
       const pendingFriendsTmp2 = await this.prisma.friendRequest.findMany({
         where: {
           receivedId: senderId,
