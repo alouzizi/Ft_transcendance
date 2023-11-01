@@ -1,14 +1,7 @@
-import LoginComponent from '@/components/LoginComponent';
-import RegistrationComponent from '../components/RegistrationComponent';
-import EditProfile from '@/components/EditProfile';
+import { Theme } from "@radix-ui/themes";
+import HomePage from "./public/HomePage/page";
 
+export default function App() {
+  return <HomePage />
 
-export default function Home() {
-  return (
-    <div className='h-screen flex items-center justify-center'>
-    {/* <RegistrationComponent /> */}
-    {/* <LoginComponent/> */}
-    <EditProfile/>
-   </div>
-  )
 }
