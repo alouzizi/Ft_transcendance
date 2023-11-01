@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ACTIF
+  INACTIF
+}
+
+enum MessageStatus {
+  NotReceived
+  Received
+  Seen
+}
+
+enum ChannelType {
+  Public
+  Private
+}
+
+model User {
+  id         String  @id @default(uuid())
+  intra_id   String  @unique
+  first_name String?
+  last_name  String?
+  nickname   String  @unique
+  email      String? @unique
+  profilePic String?
+  hash       String?
+
+  twoFactorAuth Boolean @default(false)
+  AsciiSecretQr String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status       Status          @default(INACTIF)
+  lastSee      DateTime        @default(now())
+  message      Message[]
+  frienRequest FriendRequest[]
+  Friend       Friend[]
+  BlockedUser  BlockedUser[]
+  Channel      Channel[]
+}
+
+model Channel {
+  id              String      @id @default(uuid())
+  channelName     String      @unique
+  channelType     ChannelType @default(Public)
+  channelPassword String
+  createdAt       DateTime    @default(now())
+  avatar          String?
+
+  User           User?  @relation(fields: [channelOwnerId], references: [id])
+  channelOwnerId String
+
+  ChannelMember ChannelMember[]
+  Message       Message[]
+}
+
+model Message {
+  id String @id @default(uuid())
+
+  isDirectMessage Boolean @default(true)
+
+  senderId      String
+  content       String
+  createdAt     DateTime      @default(now())
+  showed        Boolean       @default(true)
+  messageStatus MessageStatus @default(NotReceived)
+
+  user User? @relation(fields: [senderId], references: [id])
+
+  receivedId String?
+
+  Channel   Channel? @relation(fields: [channelId], references: [id])
+  channelId String?
+
+  InfoMessage Boolean @default(false)
+}
+
+// friendship
+
+model FriendRequest {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model Friend {
+  id         String @id @default(uuid())
+  user       User   @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model BlockedUser {
+  id         String @id @default(uuid())
+  user       User   @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
+
+  @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
+}
+
+model ChannelMember {
+  id      String  @id @default(uuid())
+  userId  String
+  isAdmin Boolean
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+}
