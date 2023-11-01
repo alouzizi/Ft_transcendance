@@ -1,12 +1,9 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { MessagesService } from "src/messages/messages.service";
-import { MessageItemList } from "./dto/user.dto";
 import { ChannelService } from "src/channel/channel.service";
 export declare class UserService {
     private prisma;
-    private messagesService;
     private channelService;
-    constructor(prisma: PrismaService, messagesService: MessagesService, channelService: ChannelService);
+    constructor(prisma: PrismaService, channelService: ChannelService);
     findById(id: string): Promise<{
         id: string;
         intra_id: string;
@@ -56,8 +53,6 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getChannleForMsg(senderId: string): Promise<MessageItemList[]>;
-    getUserForMsg(senderId: string): Promise<MessageItemList[]>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;

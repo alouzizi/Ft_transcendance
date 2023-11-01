@@ -1,14 +1,16 @@
-import { CreateMessageDto, SendMessageDto } from './dto/create-message.dto';
+import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
+import { UserService } from 'src/user/user.service';
 export declare class MessagesService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private userService;
+    constructor(prisma: PrismaService, userService: UserService);
     createDirectMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
     createChannelMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
     createMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
-    getDirectMessage(senderId: string, receivedId: string): Promise<SendMessageDto[]>;
-    getChannelMessage(senderId: string, channelId: string): Promise<SendMessageDto[]>;
+    getDirectMessage(senderId: string, receivedId: string): Promise<messageDto[]>;
+    getChannelMessage(senderId: string, channelId: string): Promise<messageDto[]>;
     getLastMessages(senderId: string, receivedId: string): Promise<{
         id: string;
         isDirectMessage: boolean;
@@ -20,4 +22,6 @@ export declare class MessagesService {
         receivedId: string;
         channelId: string;
     }>;
+    getChannleForMsg(senderId: string): Promise<messageDto[]>;
+    getMessageForList(senderId: string): Promise<messageDto[]>;
 }

@@ -25,6 +25,9 @@ let MessageController = class MessageController {
     async getChannelMessage(send, channelId) {
         return this.messagesService.getChannelMessage(send, channelId);
     }
+    async getUserForMsg(senderId) {
+        return await this.messagesService.getMessageForList(senderId);
+    }
 };
 exports.MessageController = MessageController;
 __decorate([
@@ -43,6 +46,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "getChannelMessage", null);
+__decorate([
+    (0, common_1.Get)('/getUserForMsg/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], MessageController.prototype, "getUserForMsg", null);
 exports.MessageController = MessageController = __decorate([
     (0, common_1.Controller)('messages'),
     __metadata("design:paramtypes", [messages_service_1.MessagesService])

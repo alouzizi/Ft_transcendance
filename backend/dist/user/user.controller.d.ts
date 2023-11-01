@@ -59,7 +59,6 @@ export declare class UserController {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getUserForMsg(senderId: string): Promise<import("./dto/user.dto").MessageItemList[]>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;

@@ -15,4 +15,12 @@ export class MessageController {
   async getChannelMessage(@Param('send') send: string, @Param('channelId') channelId: string) {
     return this.messagesService.getChannelMessage(send, channelId);
   }
+
+
+
+  @Get('/getUserForMsg/:id')
+  async getUserForMsg(@Param('id') senderId: string) {
+    return await this.messagesService.getMessageForList(senderId);
+  }
+
 }

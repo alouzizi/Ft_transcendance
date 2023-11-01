@@ -8,8 +8,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { ChannelService } from 'src/channel/channel.service';
 
 @Module({
-  providers: [UserService, PrismaService, JwtService,
-    MessagesService, AuthService, ChannelService],
+  providers: [UserService, PrismaService, JwtService, AuthService, ChannelService],
   controllers: [UserController],
   imports: []
 })

@@ -30,7 +30,7 @@ export function IsTypingMsg() {
     );
 }
 
-export function MessageRight({ message }: { message: msgDto }) {
+export function MessageRight({ message }: { message: messageDto }) {
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 0,
@@ -43,7 +43,7 @@ export function MessageRight({ message }: { message: msgDto }) {
     };
     return (
         <div style={cardStyles} className='relative mb-2 mt-2'>
-            <div className='mb-4 text-sm'> {message.content}</div>
+            <div className='mb-4 text-sm'> {message.contentMsg}</div>
             <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
                 <Text size="1" className='pr-1'>
                     {extractHoursAndM(message.createdAt)}
@@ -56,7 +56,7 @@ export function MessageRight({ message }: { message: msgDto }) {
     );
 }
 
-export function MessageLeft({ message }: { message: msgDto }) {
+export function MessageLeft({ message }: { message: messageDto }) {
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 10,
@@ -72,16 +72,16 @@ export function MessageLeft({ message }: { message: msgDto }) {
         <div className='flex'>
             <Avatar
                 size="1"
-                src={message.avata}
+                src={message.senderPic}
                 radius="full"
                 fallback="T"
             />
             <div className='pl-2'>
                 <Text as="span" size="2" weight="bold">
-                    {message.nickName}
+                    {message.senderName}
                 </Text>
                 <div style={cardStyles} className='relative'>
-                    <div className='mb-4  text-sm'> {message.content}</div>
+                    <div className='mb-4  text-sm'> {message.contentMsg}</div>
                     <Text size="1" className='absolute bottom-1 right-2 mt-2'>
                         {extractHoursAndM(message.createdAt)}
                     </Text>
@@ -131,7 +131,7 @@ function showDays(currentDate: number, timeMsg: number) {
 }
 
 
-export function FirstMessage({ message }: { message: msgDto }) {
+export function FirstMessage({ message }: { message: messageDto }) {
     const cardStyles = {
         width: 200,
         padding: 5,
@@ -143,12 +143,12 @@ export function FirstMessage({ message }: { message: msgDto }) {
     };
     return (
         <div style={cardStyles} className='mb-2 mt-2'>
-            <Text className='mb-4 text-sm text-center'> {message.nickName} {message.content} {message.nameChannel}</Text>
+            <Text className='mb-4 text-sm text-center'> {message.senderName} {message.contentMsg} {message.receivedName}</Text>
         </div>
     );
 }
 
-export function ShowMessages({ messages, user }: { messages: msgDto[], user: ownerDto }) {
+export function ShowMessages({ messages, user }: { messages: messageDto[], user: ownerDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
     return messages.map((elm, index) => {

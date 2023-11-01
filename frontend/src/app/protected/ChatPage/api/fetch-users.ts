@@ -38,7 +38,7 @@ export async function getValideUsers(id: string) {
 
 export async function getUserForMsg(senderId: string) {
     const res = await axios.get(
-        Backend_URL + `/user/getUserForMsg/${senderId}`,
+        Backend_URL + `/messages/getUserForMsg/${senderId}`,
     );
     const users = await res.data;
     return users;

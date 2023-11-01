@@ -14,7 +14,7 @@ const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
     const [msg, setMsg] = useState('');
-    const [Allmsg, setAllMessage] = useState<msgDto[]>([]);
+    const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
     const { geust, user, socket, setGeust } = useGlobalContext();
 
@@ -38,7 +38,7 @@ const BoxChat = () => {
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
-            const handleReceivedMessage = (data: msgDto) => {
+            const handleReceivedMessage = (data: messageDto) => {
                 if (data.senderId === geust.id || data.senderId === user.id || !geust.isUser) {
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
@@ -93,7 +93,7 @@ const BoxChat = () => {
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
-            const updateIsTyping = (data: msgDto) => {
+            const updateIsTyping = (data: messageDto) => {
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
                     setTimeout(() => {

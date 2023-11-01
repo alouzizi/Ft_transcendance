@@ -38,32 +38,22 @@ enum MessageStatus {
   Seen = "Seen"
 }
 
-type msgDto = {
+type messageDto = {
   isDirectMsg: Boolean;
-  id: string;
-  content: string;
+
+  senderId: string; // in channle or direct Msg
+  senderName: string; // in channle or direct Msg
+  senderPic: string;  // in channle or direct Msg
+
+  contentMsg: string; // lastMsg or simpleMsg
   createdAt: number;
-  senderId: string;
-  receivedId: string;
   messageStatus: MessageStatus;
 
-  avata: string;
-  nickName: string; // user
-  nameChannel: string;
-};
+  receivedId: string; // id user in DirectMsg or id channle in ChannelMsg
+  receivedName: string; // in channle or direct Msg
+  receivedPic: string; // in channle or direct Msg
+  receivedStatus: Status; // in DirectMsg
 
-type MessageItemList = {
-  isDirectMsg: Boolean;
-
-  name: string;
-  avatar: string;
-  lastMsg: string;
-  createdAt: number;
-
-  status: Status;
-
-  id: string; // id user geust or id channel
-  nameSenderChannel: string;
 }
 
 type reqFriendsDto = {

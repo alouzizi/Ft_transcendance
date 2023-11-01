@@ -12,9 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const client_1 = require("@prisma/client");
+const user_service_1 = require("../user/user.service");
 let MessagesService = class MessagesService {
-    constructor(prisma) {
+    constructor(prisma, userService) {
         this.prisma = prisma;
+        this.userService = userService;
     }
     async createDirectMessage(server, createMessageDto) {
         let showed = true;
@@ -53,17 +56,19 @@ let MessagesService = class MessagesService {
             },
         });
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+        const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
         const temp = {
             isDirectMsg: true,
-            id: msg.id,
-            content: msg.content,
-            createdAt: msg.createdAt,
             senderId: msg.senderId,
-            receivedId: msg.receivedId,
+            senderName: senderUser.nickname,
+            senderPic: senderUser.profilePic,
+            contentMsg: msg.content,
+            createdAt: msg.createdAt,
             messageStatus: msg.messageStatus,
-            avata: senderUser.profilePic,
-            nickName: senderUser.nickname,
-            nameChannel: "null"
+            receivedId: msg.receivedId,
+            receivedName: receivedUser.nickname,
+            receivedPic: receivedUser.profilePic,
+            receivedStatus: receivedUser.status,
         };
         if (showed)
             server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
@@ -84,15 +89,16 @@ let MessagesService = class MessagesService {
         for (const member of channelMember) {
             const temp = {
                 isDirectMsg: false,
-                id: msg.id,
-                content: msg.content,
-                createdAt: msg.createdAt,
                 senderId: msg.senderId,
+                senderName: senderUser.nickname,
+                senderPic: senderUser.profilePic,
+                contentMsg: msg.content,
+                createdAt: msg.createdAt,
+                messageStatus: client_1.MessageStatus.NotReceived,
                 receivedId: msg.receivedId,
-                messageStatus: msg.messageStatus,
-                avata: senderUser.profilePic,
-                nickName: senderUser.nickname,
-                nameChannel: channel.channelName
+                receivedName: channel.channelName,
+                receivedPic: channel.avatar,
+                receivedStatus: client_1.Status.INACTIF,
             };
             server.to(member.userId).emit('findMsg2UsersResponse', temp);
         }
@@ -124,17 +130,19 @@ let MessagesService = class MessagesService {
         const msgUser = msgUserTemp.filter((msg) => (msg.showed === true || senderId === msg.senderId));
         const result = await Promise.all(msgUser.map(async (msg) => {
             const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+            const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.receivedId } });
             const temp = {
                 isDirectMsg: true,
-                id: msg.id,
-                content: msg.content,
-                createdAt: msg.createdAt,
                 senderId: msg.senderId,
-                receivedId: msg.receivedId,
+                senderName: senderUser.nickname,
+                senderPic: senderUser.profilePic,
+                contentMsg: msg.content,
+                createdAt: msg.createdAt,
                 messageStatus: msg.messageStatus,
-                avata: senderUser.profilePic,
-                nickName: senderUser.nickname,
-                nameChannel: ""
+                receivedId: msg.receivedId,
+                receivedName: receivedUser.nickname,
+                receivedPic: receivedUser.profilePic,
+                receivedStatus: receivedUser.status
             };
             return temp;
         }));
@@ -155,15 +163,16 @@ let MessagesService = class MessagesService {
             const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
             const temp = {
                 isDirectMsg: false,
-                id: msg.id,
-                content: msg.content,
-                createdAt: msg.createdAt,
                 senderId: msg.senderId,
+                senderName: senderUser.nickname,
+                senderPic: senderUser.profilePic,
+                contentMsg: msg.content,
+                createdAt: msg.createdAt,
+                messageStatus: client_1.MessageStatus.NotReceived,
                 receivedId: msg.receivedId,
-                messageStatus: msg.messageStatus,
-                avata: senderUser.profilePic,
-                nickName: senderUser.nickname,
-                nameChannel: channel.channelName
+                receivedName: channel.channelName,
+                receivedPic: channel.avatar,
+                receivedStatus: client_1.Status.INACTIF,
             };
             return temp;
         }));
@@ -189,10 +198,103 @@ let MessagesService = class MessagesService {
         });
         return lastMessage;
     }
+    async getChannleForMsg(senderId) {
+        let result = [];
+        let myChannel = [];
+        const channelMembers = await this.prisma.channelMember.findMany({
+            where: {
+                userId: senderId
+            }
+        });
+        for (const ch of channelMembers) {
+            const channel = await this.prisma.channel.findUnique({ where: { id: ch.channelId } });
+            myChannel.push(channel);
+        }
+        for (const channel of myChannel) {
+            const lastMessageChannel = await this.prisma.message.findFirst({
+                where: {
+                    isDirectMessage: false,
+                    channelId: channel.id,
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
+            const userSender = await this.prisma.user.findUnique({ where: { id: lastMessageChannel.senderId } });
+            const temp = {
+                isDirectMsg: false,
+                senderId: lastMessageChannel.senderId,
+                senderName: userSender.nickname,
+                senderPic: userSender.profilePic,
+                contentMsg: lastMessageChannel.content,
+                createdAt: lastMessageChannel.createdAt,
+                messageStatus: lastMessageChannel.messageStatus,
+                receivedId: channel.id,
+                receivedName: channel.channelName,
+                receivedPic: channel.avatar,
+                receivedStatus: client_1.Status.INACTIF,
+            };
+            result.push(temp);
+        }
+        return result;
+    }
+    async getMessageForList(senderId) {
+        let resultDirect = [];
+        const resultChannel = await this.getChannleForMsg(senderId);
+        const userToUersMsg = await this.prisma.message.findMany({
+            where: {
+                OR: [{ senderId: senderId, isDirectMessage: true },
+                    { receivedId: senderId, isDirectMessage: true }],
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        const distinctUserIds = new Set();
+        for (const msg of userToUersMsg) {
+            if (msg.senderId === senderId) {
+                distinctUserIds.add(msg.receivedId);
+            }
+            else {
+                distinctUserIds.add(msg.senderId);
+            }
+        }
+        const idUsersArray = Array.from(distinctUserIds);
+        let usersList = [];
+        for (const id of idUsersArray) {
+            const user = await this.prisma.user.findUnique({ where: { id } });
+            usersList.push(user);
+        }
+        for (const user of usersList) {
+            const lastMessage = await this.getLastMessages(senderId, user.id);
+            const tmp = {
+                isDirectMsg: true,
+                senderId: '',
+                senderName: '',
+                senderPic: '',
+                contentMsg: lastMessage.content,
+                createdAt: lastMessage.createdAt,
+                messageStatus: lastMessage.messageStatus,
+                receivedId: user.id,
+                receivedName: user.nickname,
+                receivedPic: user.profilePic,
+                receivedStatus: user.status,
+            };
+            resultDirect.push(tmp);
+        }
+        const result = [...resultDirect, ...resultChannel];
+        result.sort((a, b) => {
+            const myDate1 = new Date(a.createdAt);
+            const myDate2 = new Date(b.createdAt);
+            return myDate2.getTime() - myDate1.getTime();
+        });
+        return result;
+    }
 };
 exports.MessagesService = MessagesService;
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        user_service_1.UserService])
 ], MessagesService);
 //# sourceMappingURL=messages.service.js.map

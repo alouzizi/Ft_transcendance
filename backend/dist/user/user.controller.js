@@ -41,9 +41,6 @@ let UserController = class UserController {
     async getValideUsers(senderId) {
         return await this.userService.getValideUsers(senderId);
     }
-    async getUserForMsg(senderId) {
-        return await this.userService.getUserForMsg(senderId);
-    }
     async getUserGeust(id) {
         return await this.userService.getUserGeust(id);
     }
@@ -80,13 +77,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getValideUsers", null);
-__decorate([
-    (0, common_1.Get)('/getUserForMsg/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "getUserForMsg", null);
 __decorate([
     (0, common_1.Get)('getUserGeust/:id'),
     __param(0, (0, common_1.Param)('id')),

@@ -18,10 +18,11 @@ export function getColorStatus(status: any): string {
   return 'blue';
 }
 
-const ListUser = () => {
-  const { setGeust, setUser, geust, socket, user } = useGlobalContext();
 
-  const [itemList, setItemList] = useState<MessageItemList[]>([]);
+const ListUser = () => {
+  const { setGeust, geust, socket, user } = useGlobalContext();
+
+  const [itemList, setItemList] = useState<messageDto[]>([]);
 
 
   const [direct, setDirect] = useState<boolean>(true);
@@ -39,12 +40,12 @@ const ListUser = () => {
 
   }, [socket])
 
-  const getDataGeust = async (tmp: MessageItemList) => {
+  const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
     if (tmp.isDirectMsg)
-      geustTemp = await getUserGeust(tmp.id);
+      geustTemp = await getUserGeust(tmp.receivedId);
     else
-      geustTemp = await getChannelGeust(tmp.id);
+      geustTemp = await getChannelGeust(tmp.receivedId);
     setGeust(geustTemp);
   };
 
@@ -62,35 +63,35 @@ const ListUser = () => {
   const userWidget = (itemList.length != 0) ? itemList.map((el, index) => {
     return <Flex align="center" className='relative border-b py-2 pl-1' key={index}
       style={{
-        background: (el.id === geust.id) ? "#f1f3f9" : 'white'
+        background: (el.receivedId === geust.id) ? "#f1f3f9" : 'white'
       }}
       onClick={() => {
         getDataGeust(el);
       }}>
       <Avatar
         size="3"
-        src={el.avatar}
+        src={el.receivedPic}
         radius="full"
         fallback="T"
       />
       <div className='absolute pt-6 pl-7'>
-        {el.isDirectMsg ? <GoDotFill size={20} color={getColorStatus(el.status)} /> : <></>}
+        {el.isDirectMsg ? <GoDotFill size={20} color={getColorStatus(el.receivedStatus)} /> : <></>}
       </div>
       <Flex direction="column" className='items-start pl-2'>
         <Text size="2" weight="bold" className=''>
-          {el.name}
+          {el.receivedName}
         </Text>
         {/* text-neutral-500  w-32  */}
         <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
-          {(!el.isDirectMsg ? <Text weight='medium'>{el.nameSenderChannel}:{' '}</Text> : <></>)}
-          {el.lastMsg}
+          {(!el.isDirectMsg ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
+          {el.contentMsg}
         </Box>
       </Flex>
       <Text size="1" className='absolute bottom-0 right-4'>
         {extractHoursAndM(el.createdAt)}
       </Text>
       {
-        (el.id === geust.id) ? <Box sx={{
+        (el.receivedId === geust.id) ? <Box sx={{
           width: 6,
           height: 40,
           backgroundColor: 'blue',

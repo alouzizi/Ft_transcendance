@@ -11,7 +11,6 @@ import { ChannelService } from "src/channel/channel.service";
 export class UserService {
   constructor(
     private prisma: PrismaService,
-    private messagesService: MessagesService,
     private channelService: ChannelService,
   ) { }
 
@@ -86,114 +85,6 @@ export class UserService {
     );
     return result;
   }
-
-  async getChannleForMsg(senderId: string) {
-    let result: MessageItemList[] = [];
-    let myChannel: Channel[] = [];
-    const channelMembers = await this.prisma.channelMember.findMany({
-      where: {
-        userId: senderId
-      }
-    });
-    for (const ch of channelMembers) {
-      const channel = await this.prisma.channel.findUnique({ where: { id: ch.channelId } });
-      myChannel.push(channel);
-    }
-    for (const channel of myChannel) {
-      const lastMessageChannel = await this.prisma.message.findFirst({
-        where: {
-          isDirectMessage: false,
-          channelId: channel.id,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-
-      });
-      if (lastMessageChannel) {
-        const userSender = await this.prisma.user.findUnique({ where: { id: lastMessageChannel.senderId } });
-
-        const temp: MessageItemList = {
-          isDirectMsg: false,
-          id: channel.id,
-          name: channel.channelName,
-          avatar: channel.avatar,
-          status: Status.INACTIF,
-          lastMsg: lastMessageChannel.content,
-          createdAt: lastMessageChannel.createdAt,
-
-          nameSenderChannel: userSender.nickname,
-        }
-        result.push(temp);
-      }
-    }
-    return result;
-  }
-
-  async getUserForMsg(senderId: string) {
-    let resultDirect: MessageItemList[] = [];
-    const resultChannel = await this.getChannleForMsg(senderId);
-    const userToUersMsg = await this.prisma.message.findMany({
-      where: {
-        OR: [{ senderId: senderId, isDirectMessage: true },
-        { receivedId: senderId, isDirectMessage: true }],
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    const distinctUserIds = new Set<string>();
-    for (const msg of userToUersMsg) {
-      if (msg.senderId === senderId) {
-        distinctUserIds.add(msg.receivedId);
-      } else {
-        distinctUserIds.add(msg.senderId);
-      }
-    }
-
-    const idUsersArray = Array.from(distinctUserIds);
-    let usersMsgList: any = [];
-    for (const id of idUsersArray) {
-      const user = await this.prisma.user.findUnique({ where: { id } })
-      usersMsgList.push(user);
-    }
-
-    let lastMsgs: Message[] = [];
-    for (let i = 0; i < usersMsgList.length; i++) {
-      const temp = await this.messagesService.getLastMessages(
-        senderId,
-        usersMsgList[i].id
-      );
-      lastMsgs.push(temp);
-    }
-    for (let i = 0; i < usersMsgList.length; i++) {
-      const temp: MessageItemList = {
-        isDirectMsg: true,
-        id: usersMsgList[i].id,
-
-        name: usersMsgList[i].nickname,
-        avatar: usersMsgList[i].profilePic,
-        status: usersMsgList[i].status,
-
-        lastMsg: lastMsgs[i].content,
-        createdAt: lastMsgs[i].createdAt,
-        nameSenderChannel: "null"
-      }
-      resultDirect.push(temp);
-    }
-    const result = [...resultDirect, ...resultChannel]
-
-    result.sort((a: MessageItemList, b: MessageItemList) => {
-      const myDate1 = new Date(a.createdAt);
-      const myDate2 = new Date(b.createdAt);
-      return myDate2.getTime() - myDate1.getTime();
-    });
-
-
-    return result;
-  }
-
 
 
   async getUserGeust(id: string) {

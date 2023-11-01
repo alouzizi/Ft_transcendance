@@ -1,4 +1,5 @@
-import { MessageStatus } from "@prisma/client";
+import { MessageStatus, Status } from "@prisma/client";
+
 
 export class CreateMessageDto {
   content: string;
@@ -8,24 +9,24 @@ export class CreateMessageDto {
 }
 
 
-export class SendMessageDto {
+
+
+export class messageDto {
   isDirectMsg: Boolean;
-  id: string;
-  content: string;
+
+  senderId: string; // in channle or direct Msg
+  senderName: string; // in channle or direct Msg
+  senderPic: string;  // in channle or direct Msg
+
+  contentMsg: string; // lastMsg or simpleMsg
   createdAt: Date;
-  senderId: string;
-  receivedId: string;
   messageStatus: MessageStatus;
 
-  avata: string;
-  nickName: string;
-  nameChannel: string;
+  receivedId: string; // id user in DirectMsg or id channle in ChannelMsg
+  receivedName: string; // in channle or direct Msg
+  receivedPic: string; // in channle or direct Msg
+  receivedStatus: Status; // in DirectMsg
+
 }
 
 
-
-export enum Status {
-  ACTIF,
-  INACTIF,
-  WRITE,
-}

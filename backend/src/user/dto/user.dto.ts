@@ -35,7 +35,7 @@ export class MessageItemList {
 
   status: Status;
 
-  id: string; // id user geust or id channel
+  id: string; // id user geust or id channel 
   nameSenderChannel: string;
 }
 
