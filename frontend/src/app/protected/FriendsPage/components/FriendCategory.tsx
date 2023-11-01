@@ -56,11 +56,7 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
         {`${prompt.itemsStatus} - ${data.length}`}
       </p>
       {data.map((element) => (
-        <FriendItem
-          key={element.id}
-          friendImg={element.avatar}
-          friendName={element.username}
-        />
+        <FriendItem key={element.id} friendInfo={element} />
       ))}
     </div>
   );
