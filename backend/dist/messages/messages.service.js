@@ -69,6 +69,7 @@ let MessagesService = class MessagesService {
             receivedName: receivedUser.nickname,
             receivedPic: receivedUser.profilePic,
             receivedStatus: receivedUser.status,
+            OwnerChannelId: '',
         };
         if (showed)
             server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
@@ -99,6 +100,7 @@ let MessagesService = class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: client_1.Status.INACTIF,
+                OwnerChannelId: channel.channelOwnerId,
             };
             server.to(member.userId).emit('findMsg2UsersResponse', temp);
         }
@@ -142,7 +144,8 @@ let MessagesService = class MessagesService {
                 receivedId: msg.receivedId,
                 receivedName: receivedUser.nickname,
                 receivedPic: receivedUser.profilePic,
-                receivedStatus: receivedUser.status
+                receivedStatus: receivedUser.status,
+                OwnerChannelId: '',
             };
             return temp;
         }));
@@ -173,6 +176,7 @@ let MessagesService = class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: client_1.Status.INACTIF,
+                OwnerChannelId: channel.channelOwnerId,
             };
             return temp;
         }));
@@ -233,6 +237,7 @@ let MessagesService = class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: client_1.Status.INACTIF,
+                OwnerChannelId: channel.channelOwnerId,
             };
             result.push(temp);
         }
@@ -279,6 +284,7 @@ let MessagesService = class MessagesService {
                 receivedName: user.nickname,
                 receivedPic: user.profilePic,
                 receivedStatus: user.status,
+                OwnerChannelId: '',
             };
             resultDirect.push(tmp);
         }

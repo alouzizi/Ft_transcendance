@@ -54,6 +54,7 @@ type messageDto = {
   receivedPic: string; // in channle or direct Msg
   receivedStatus: Status; // in DirectMsg
 
+  OwnerChannelId: String;
 }
 
 type reqFriendsDto = {

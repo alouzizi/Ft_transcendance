@@ -130,8 +130,9 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
-
-export function FirstMessage({ message }: { message: messageDto }) {
+// 
+// 
+export function FirstMessage({ message, isOwner }: { message: messageDto, isOwner: Boolean }) {
     const cardStyles = {
         width: 200,
         padding: 5,
@@ -143,7 +144,12 @@ export function FirstMessage({ message }: { message: messageDto }) {
     };
     return (
         <div style={cardStyles} className='mb-2 mt-2'>
-            <Text className='mb-4 text-sm text-center'> {message.senderName} {message.contentMsg} {message.receivedName}</Text>
+            <Text className='mb-4 text-sm text-center'>
+                {isOwner ?
+                    <Text>You created group</Text> :
+                    <Text>{message.senderName} created group</Text>}
+                {' '}"{message.receivedName}"
+            </Text>
         </div>
     );
 }
@@ -169,7 +175,7 @@ export function ShowMessages({ messages, user }: { messages: messageDto[], user:
 
                 {
                     (index === 0 && !elm.isDirectMsg) ?
-                        <FirstMessage key={index} message={elm} />
+                        <FirstMessage message={elm} isOwner={elm.OwnerChannelId === user.id} />
                         : ((elm.senderId == user.id) ? (
                             <MessageRight message={elm} />
                         ) : (

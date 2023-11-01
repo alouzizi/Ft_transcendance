@@ -70,6 +70,8 @@ export class MessagesService {
       receivedName: receivedUser.nickname,
       receivedPic: receivedUser.profilePic,
       receivedStatus: receivedUser.status,
+
+      OwnerChannelId: '', // no matter
     }
     if (showed)
       server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
@@ -105,6 +107,8 @@ export class MessagesService {
         receivedName: channel.channelName,
         receivedPic: channel.avatar,
         receivedStatus: Status.INACTIF, // not matter
+
+        OwnerChannelId: channel.channelOwnerId,
 
       }
       server.to(member.userId).emit('findMsg2UsersResponse', temp);
@@ -156,7 +160,9 @@ export class MessagesService {
           receivedId: msg.receivedId,
           receivedName: receivedUser.nickname,
           receivedPic: receivedUser.profilePic,
-          receivedStatus: receivedUser.status
+          receivedStatus: receivedUser.status,
+
+          OwnerChannelId: '', // no matter
         }
         return temp;
       })
@@ -194,6 +200,8 @@ export class MessagesService {
           receivedName: channel.channelName,
           receivedPic: channel.avatar,
           receivedStatus: Status.INACTIF, // not matter
+
+          OwnerChannelId: channel.channelOwnerId,
         }
         return temp;
       })
@@ -263,6 +271,8 @@ export class MessagesService {
         receivedName: channel.channelName,
         receivedPic: channel.avatar,
         receivedStatus: Status.INACTIF, // no matter
+
+        OwnerChannelId: channel.channelOwnerId, // no matter
       }
       result.push(temp);
 
@@ -316,6 +326,8 @@ export class MessagesService {
         receivedName: user.nickname,
         receivedPic: user.profilePic,
         receivedStatus: user.status,
+
+        OwnerChannelId: '', // no matter
       }
       resultDirect.push(tmp);
     }

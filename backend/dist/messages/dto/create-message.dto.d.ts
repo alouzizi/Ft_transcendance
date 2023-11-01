@@ -17,4 +17,5 @@ export declare class messageDto {
     receivedName: string;
     receivedPic: string;
     receivedStatus: Status;
+    OwnerChannelId: String;
 }
