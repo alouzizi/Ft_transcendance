@@ -1,48 +1,44 @@
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type MyComponentProps = {
   imageSrc: string;
   text: string;
+  title: string;
   link: string;
 };
 
-const MyComponent = ({ imageSrc, text, link }: MyComponentProps) => {
+const MyComponent = ({ imageSrc, text, title, link }: MyComponentProps) => {
+  const router = useRouter();
   return (
-    <div className="flex w-full max-w-[48rem] flex-row rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-      <div className="relative m-0 w-2/5 shrink-0 overflow-hidden rounded-xl rounded-r-none bg-white bg-clip-border text-gray-700">
+    <div className="flex h-44 rounded-2xl bg-[#F1F3F9] bg-clip-border text-gray-700 mb-16 w-full md:w-auto">
+      <div className="h-full w-2/6 shrink-0 overflow-hidden rounded-xl rounded-r-none bg-white bg-clip-border">
         <img
           src={imageSrc}
           alt="Image"
-          className="object-cover  w-screen rounded-l-lg"
+          className="object-cover h-full  w-full rounded-l-xl"
         />
       </div>
-      <div className="p-6">
-        <h4 className="mb- block font-sans text-2xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased"> Test</h4>
-        <p
-          className="mb-8 block font-sans text-base font-normal leading-relaxed text-gray-700 antialiased"
-          style={{
-            fontFamily: "Fredoka One, sans-serif",
-            fontWeight: 700, 
-            lineHeight: "16px",
-            letterSpacing: "0em",
-            textAlign: "left",
-          }}
-        >
-          {text}
-        </p>
-        <button
-          className="bg-blue-500 hover-bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-          onClick={() => navigateToAnotherPage()}
-        >
-          Play
-        </button>
+      <div className="p-6 flex ">
+        <div className="flex flex-col">
+          <h4 className="uppercase font-bold text-sm/1 font-outfit text-black">
+            {title}
+          </h4>
+          <p className="font-fredoka font-400 text-[#999999] font-bold text-xs">
+            {text}
+          </p>
+        </div>
+
+      <button
+        className="uppercase bg-blue-500 hover:bg-blue-700 text-[#F1F3F9]  font-bold font-outfit py-2 px-4 rounded-full self-end"
+        onClick={() => router.push(link)}
+      >
+        Play
+      </button>
       </div>
     </div>
   );
 };
-
-function navigateToAnotherPage() {
-  // Your navigation logic here
-}
 
 export default MyComponent;
