@@ -110,41 +110,32 @@ export class HixcoderService {
 
   async getPendingFriends(senderId: number) {
     try {
-      // find friends who I send freind request to
-      const pendingFriendsTmp1 = await this.prisma.friendRequest.findMany({
+      const [pendingFriendsTmp1, pendingFriendsTmp2] = await Promise.all([
+        this.prisma.friendRequest.findMany({
+          where: {
+            senderId: senderId,
+          },
+        }),
+        this.prisma.friendRequest.findMany({
+          where: {
+            receivedId: senderId,
+          },
+        }),
+      ]);
+
+      const pendingFriendsIds = [
+        ...pendingFriendsTmp1.map((friend) => friend.receivedId),
+        ...pendingFriendsTmp2.map((friend) => friend.senderId),
+      ];
+
+      const pendingFriends = await this.prisma.user.findMany({
         where: {
-          senderId: senderId,
+          id: {
+            in: pendingFriendsIds,
+          },
         },
       });
-      // find friends whose send freind request to me
-      const pendingFriendsTmp2 = await this.prisma.friendRequest.findMany({
-        where: {
-          receivedId: senderId,
-        },
-      });
-      const pendingFriends = [];
-      for (const element of pendingFriendsTmp1) {
-        const user = await this.prisma.user.findUnique({
-          where: {
-            id: element.receivedId,
-          },
-        });
-        if (!isEmpty(user)) {
-          console.log(user);
-          pendingFriends.push(user);
-        }
-      }
-      for (const element of pendingFriendsTmp2) {
-        const user = await this.prisma.user.findUnique({
-          where: {
-            id: element.senderId,
-          },
-        });
-        if (!isEmpty(user)) {
-          console.log(user);
-          pendingFriends.push(user);
-        }
-      }
+
       return pendingFriends;
     } catch (error) {
       return {

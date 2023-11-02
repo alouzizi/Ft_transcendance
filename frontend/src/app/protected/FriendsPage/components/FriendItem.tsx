@@ -8,6 +8,9 @@ import {
 } from "../../../../components/ui/tooltip";
 
 import PopoverMenu from "./PopoverMenu";
+import { useContext } from "react";
+import { useGlobalDataContext } from "./FriendCategory";
+
 export default function FriendItem(prompt: { friendInfo: friendDto }) {
   function handleBlockFriend(): void {
     console.log("block" + prompt.friendInfo.id);
@@ -40,7 +43,7 @@ export default function FriendItem(prompt: { friendInfo: friendDto }) {
         </p>
       </div>
       <div className="flex flex-row ">
-        <PopoverMenu />
+        <PopoverMenu friendInfo={prompt.friendInfo} />
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>

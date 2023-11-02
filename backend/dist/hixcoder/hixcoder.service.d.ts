@@ -19,7 +19,15 @@ export declare class HixcoderService {
     getAllFriends(senderId: number): Promise<any[] | {
         error: any;
     }>;
-    getPendingFriends(senderId: number): Promise<any[] | {
+    getPendingFriends(senderId: number): Promise<{
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
         error: any;
     }>;
     getBlockedFriends(senderId: number): Promise<any[] | {

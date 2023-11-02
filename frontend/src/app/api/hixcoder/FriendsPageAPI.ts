@@ -1,7 +1,7 @@
 import { Backend_URL } from "@/lib/Constants";
 import axios from "axios";
 
-// get online friends
+// ============================ GETS ============================
 
 export async function getAllUsers(userId: number) {
   try {
@@ -85,6 +85,62 @@ export async function getBlockedFriends(userId: number) {
     return data;
   } catch (error: any) {
     console.log("getBlockedFriends error: " + error);
+    return null;
+  }
+}
+
+// ============================ POSTS ============================
+
+export async function removeFriend(senderId: number, recieverId: number) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/removeFriend/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("removeFriend error: " + error);
+    return null;
+  }
+}
+
+export async function blockFriend(senderId: number, recieverId: number) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/blockFriend/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("blockFriend error: " + error);
+    return null;
+  }
+}
+
+export async function sendFriendRequest(senderId: number, recieverId: number) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/sendFriendRequest/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("sendFriendRequest error: " + error);
     return null;
   }
 }

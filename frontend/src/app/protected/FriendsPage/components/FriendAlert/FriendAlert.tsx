@@ -20,7 +20,7 @@ import {
   getPendingFriends,
   getBlockedFriends,
   getAllUsers,
-} from "@/app/api/hixcoder/FriendsPage";
+} from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
 import Link from "next/link";
 import { ImCross } from "react-icons/im";
@@ -39,22 +39,26 @@ export function FriendAlert(props: SimpleDialogProps) {
     onClose(selectedValue);
   };
 
-  const handleListItemClick = (value: string) => {
-    onClose(value);
-  };
-
   // ================== fetch users ==================
   const [data, setData] = React.useState<friendDto[]>([]);
+  const [PendingFriendsList, setPendingFriendsList] = React.useState<
+    friendDto[]
+  >([]);
   const { user } = useGlobalContext();
   React.useEffect(() => {
     async function getData() {
       try {
-        let dataTmp = [];
-
-        dataTmp = await getAllUsers(user.id);
-        console.log(dataTmp);
-        setData(dataTmp);
-        return data;
+        const dataTmp = await getAllUsers(user.id);
+        const friendDataTmp = await getAllFriends(user.id);
+        const pendingFriendsList = await getPendingFriends(user.id);
+        setPendingFriendsList(pendingFriendsList);
+        const dataNotFriends = dataTmp.filter(
+          (dataItem: friendDto) =>
+            !friendDataTmp.some(
+              (friendItem: friendDto) => friendItem.id === dataItem.id
+            )
+        );
+        setData(dataNotFriends);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
@@ -63,17 +67,15 @@ export function FriendAlert(props: SimpleDialogProps) {
   }, [open]);
   // ================== /fetch users ==================
 
-  // ================== /handle search ==================
+  // ================== handle search ==================
   const [inputSearch, setInputSearch] = useState("");
   function handleSearch(event: ChangeEvent<HTMLInputElement>): void {
     setInputSearch(event.target.value);
-    console.log(inputSearch);
   }
 
   const filteredData = data.filter((user) => {
     return user.username.toLowerCase().includes(inputSearch.toLowerCase());
   });
-  console.log(filteredData);
   // ================== /handle search ==================
 
   return (
@@ -96,14 +98,9 @@ export function FriendAlert(props: SimpleDialogProps) {
         ></input>
         <div className="h-96 overflow-auto mb-8 ">
           {filteredData.map((element) => (
-            // <ListItem disableGutters key={email}>
-            //   <ListItemButton onClick={() => handleListItemClick(email)}>
-            //     <ListItemText primary={email} />
-            //   </ListItemButton>
-            // </ListItem>
             <FriendSearchItem
-              friendImg={element.avatar}
-              friendName={element.username}
+              userInfo={element}
+              pendingFriendsList={PendingFriendsList}
             />
           ))}
         </div>

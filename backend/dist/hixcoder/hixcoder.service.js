@@ -106,39 +106,29 @@ let HixcoderService = class HixcoderService {
     }
     async getPendingFriends(senderId) {
         try {
-            const pendingFriendsTmp1 = await this.prisma.friendRequest.findMany({
+            const [pendingFriendsTmp1, pendingFriendsTmp2] = await Promise.all([
+                this.prisma.friendRequest.findMany({
+                    where: {
+                        senderId: senderId,
+                    },
+                }),
+                this.prisma.friendRequest.findMany({
+                    where: {
+                        receivedId: senderId,
+                    },
+                }),
+            ]);
+            const pendingFriendsIds = [
+                ...pendingFriendsTmp1.map((friend) => friend.receivedId),
+                ...pendingFriendsTmp2.map((friend) => friend.senderId),
+            ];
+            const pendingFriends = await this.prisma.user.findMany({
                 where: {
-                    senderId: senderId,
+                    id: {
+                        in: pendingFriendsIds,
+                    },
                 },
             });
-            const pendingFriendsTmp2 = await this.prisma.friendRequest.findMany({
-                where: {
-                    receivedId: senderId,
-                },
-            });
-            const pendingFriends = [];
-            for (const element of pendingFriendsTmp1) {
-                const user = await this.prisma.user.findUnique({
-                    where: {
-                        id: element.receivedId,
-                    },
-                });
-                if (!(0, class_validator_1.isEmpty)(user)) {
-                    console.log(user);
-                    pendingFriends.push(user);
-                }
-            }
-            for (const element of pendingFriendsTmp2) {
-                const user = await this.prisma.user.findUnique({
-                    where: {
-                        id: element.senderId,
-                    },
-                });
-                if (!(0, class_validator_1.isEmpty)(user)) {
-                    console.log(user);
-                    pendingFriends.push(user);
-                }
-            }
             return pendingFriends;
         }
         catch (error) {

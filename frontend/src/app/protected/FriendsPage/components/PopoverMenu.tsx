@@ -3,11 +3,16 @@ import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { useGlobalDataContext } from "./FriendCategory";
+import { blockFriend, removeFriend } from "@/app/api/hixcoder/FriendsPageAPI";
+import { useGlobalContext } from "@/app/context/store";
 
-export default function PopoverMenu() {
+export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+
+  // ==================== popover configs =====================
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -19,18 +24,43 @@ export default function PopoverMenu() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  // ==================== /popover configs =====================
+
+  // ===================== handle popover options ==============
+  const contxt = useGlobalDataContext();
+  const user = useGlobalContext();
 
   function handlePlayMatch() {
+    console.log("play match with friend: " + prompt.friendInfo.username);
     handleClose();
   }
 
-  function handleRemoveFriend() {
+  async function handleRemoveFriend() {
+    try {
+      await removeFriend(user.user.id, prompt.friendInfo.id);
+      const updatedData = contxt.data.filter(
+        (item) => item.id !== prompt.friendInfo.id
+      );
+      contxt.setData(updatedData);
+    } catch (error) {
+      console.log("handleRemoveFriend: " + error);
+    }
     handleClose();
   }
 
-  function handleBlockFriend() {
+  async function handleBlockFriend() {
+    try {
+      await blockFriend(user.user.id, prompt.friendInfo.id);
+      const updatedData = contxt.data.filter(
+        (item) => item.id !== prompt.friendInfo.id
+      );
+      contxt.setData(updatedData);
+    } catch (error) {
+      console.log("handleBlockFriend: " + error);
+    }
     handleClose();
   }
+  // ===================== /handle popover options ===============
 
   return (
     <div className="my-auto ">
