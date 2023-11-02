@@ -49,3 +49,8 @@ friendCard: {
 
 tasks: 
 - show online friends
+
+
+===========================================
+tasks :
+- in the alertFriend don't show blocked friends

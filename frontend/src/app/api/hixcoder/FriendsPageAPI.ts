@@ -127,6 +127,24 @@ export async function blockFriend(senderId: number, recieverId: number) {
   }
 }
 
+export async function unblockFriend(senderId: number, recieverId: number) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/unblockFriend/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("unblockFriend error: " + error);
+    return null;
+  }
+}
+
 export async function sendFriendRequest(senderId: number, recieverId: number) {
   try {
     const response = await fetch(

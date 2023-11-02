@@ -75,7 +75,11 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
           {`${prompt.itemsStatus} - ${data.length}`}
         </p>
         {data.map((element) => (
-          <FriendItem key={element.id} friendInfo={element} />
+          <FriendItem
+            key={element.id}
+            friendInfo={element}
+            itemsStatus={prompt.itemsStatus}
+          />
         ))}
       </div>
     </DataContext.Provider>
