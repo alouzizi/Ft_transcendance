@@ -7,3 +7,9 @@ export class CreateChannelDto {
     channelMember: string[];
 }
 
+export class memberChannelDto {
+    userId: string;
+    nickname: string;
+    profilePic: string;
+    status: string;
+}

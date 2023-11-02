@@ -1,6 +1,5 @@
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateChannelDto } from './dto/create-channel.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
+import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 export declare class ChannelService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -25,7 +24,5 @@ export declare class ChannelService {
         avatar: string;
         channelOwnerId: string;
     }>;
-    findAll(): string;
-    update(id: number, updateChannelDto: UpdateChannelDto): string;
-    remove(id: number): string;
+    getMembersChannel(id: string): Promise<memberChannelDto[]>;
 }

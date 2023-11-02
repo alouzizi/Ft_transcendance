@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelController = void 0;
 const common_1 = require("@nestjs/common");
 const channel_service_1 = require("./channel.service");
-const update_channel_dto_1 = require("./dto/update-channel.dto");
 const client_1 = require("@prisma/client");
 let ChannelController = class ChannelController {
     constructor(channelService) {
@@ -29,17 +28,8 @@ let ChannelController = class ChannelController {
         };
         return this.channelService.createChannel(channelData, senderId);
     }
-    findAll() {
-        return this.channelService.findAll();
-    }
-    findOne(id) {
-        return this.channelService.findChannelById(id);
-    }
-    update(id, updateChannelDto) {
-        return this.channelService.update(+id, updateChannelDto);
-    }
-    remove(id) {
-        return this.channelService.remove(+id);
+    getMembersChannel(id) {
+        return this.channelService.getMembersChannel(id);
     }
 };
 exports.ChannelController = ChannelController;
@@ -52,33 +42,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "createChannel", null);
 __decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ChannelController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)('/getMembersChannel/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], ChannelController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_channel_dto_1.UpdateChannelDto]),
-    __metadata("design:returntype", void 0)
-], ChannelController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], ChannelController.prototype, "remove", null);
+], ChannelController.prototype, "getMembersChannel", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

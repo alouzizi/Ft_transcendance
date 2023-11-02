@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateChannelDto } from './dto/create-channel.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
-import { MessagesService } from 'src/messages/messages.service';
-import { channel } from 'diagnostics_channel';
+import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
+
 
 
 
@@ -85,17 +83,22 @@ export class ChannelService {
     });
   }
 
-
-  findAll() {
-    return `This action returns all channel`;
+  async getMembersChannel(id: string) {
+    let result: memberChannelDto[] = [];
+    const channel = await this.prisma.channel.findUnique({ where: { id } });
+    const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
+    for (const member of members) {
+      const user: User = await this.prisma.user.findUnique({ where: { id: member.userId } })
+      const temp = {
+        userId: member.userId,
+        nickname: user.nickname,
+        profilePic: user.profilePic,
+        status: (member.userId === channel.channelOwnerId) ? "Owner"
+          : (member.isAdmin ? 'Admin' : 'User')
+      }
+      result.push(temp);
+    }
+    return (result);
   }
 
-
-  update(id: number, updateChannelDto: UpdateChannelDto) {
-    return `This action updates a #${id} channel`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} channel`;
-  }
 }

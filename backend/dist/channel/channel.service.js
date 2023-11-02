@@ -85,14 +85,22 @@ let ChannelService = class ChannelService {
             },
         });
     }
-    findAll() {
-        return `This action returns all channel`;
-    }
-    update(id, updateChannelDto) {
-        return `This action updates a #${id} channel`;
-    }
-    remove(id) {
-        return `This action removes a #${id} channel`;
+    async getMembersChannel(id) {
+        let result = [];
+        const channel = await this.prisma.channel.findUnique({ where: { id } });
+        const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
+        for (const member of members) {
+            const user = await this.prisma.user.findUnique({ where: { id: member.userId } });
+            const temp = {
+                userId: member.userId,
+                nickname: user.nickname,
+                profilePic: user.profilePic,
+                status: (member.userId === channel.channelOwnerId) ? "Owner"
+                    : (member.isAdmin ? 'Admin' : 'User')
+            };
+            result.push(temp);
+        }
+        return (result);
     }
 };
 exports.ChannelService = ChannelService;

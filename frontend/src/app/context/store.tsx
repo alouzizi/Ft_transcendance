@@ -130,6 +130,7 @@ export const GlobalContextProvider = ({ children }: {
         if (user.id === "-1")
             getDataUser();
     }, []);
+    console.log('----------------------------');
     return (
         <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket }}>
             {children}

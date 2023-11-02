@@ -19,23 +19,10 @@ export class ChannelController {
     return this.channelService.createChannel(channelData, senderId);
   }
 
-  @Get()
-  findAll() {
-    return this.channelService.findAll();
+  @Get('/getMembersChannel/:id')
+  getMembersChannel(@Param('id') id: string) {
+    return this.channelService.getMembersChannel(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelService.findChannelById(id);
-  }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(+id, updateChannelDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.channelService.remove(+id);
-  }
 }

@@ -81,3 +81,9 @@ type channelDto = {
   channelMember: string[];
 }
 
+type memberChannelDto = {
+  userId: string;
+  nickname: string;
+  profilePic: string;
+  status: string;
+}

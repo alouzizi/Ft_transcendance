@@ -61,6 +61,15 @@ export async function getChannelGeust(id: string) {
 }
 
 
+export async function getMembersChannel(id: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/getMembersChannel/${id}`,
+    );
+    const members = await res.data;
+    return members;
+}
+
+
 
 
 
