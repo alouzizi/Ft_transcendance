@@ -16,10 +16,29 @@ export declare class HixcoderService {
     getOnlineFriends(senderId: number): Promise<any[] | {
         error: any;
     }>;
-    getAllFriends(senderId: number): Promise<any[] | {
+    getAllFriends(senderId: number): Promise<{
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getPendingFriends(senderId: number): Promise<{
+        isYouSender: boolean;
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getBlockedFriends(senderId: number): Promise<any[] | {
         error: any;
     }>;
-    getPendingFriends(senderId: number): Promise<{
+    getAllPossibleFriends(senderId: number): Promise<{
         id: number;
         email: string;
         username: string;
@@ -30,10 +49,30 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-    getBlockedFriends(senderId: number): Promise<any[] | {
+    sendFriendRequest(senderId: number, recieverId: number): Promise<{
+        id: number;
+        createdAt: Date;
+        senderId: number;
+        receivedId: number;
+    } | {
         error: any;
     }>;
-    sendFriendRequest(senderId: number, recieverId: number): Promise<{
+    acceptFriendRequest(senderId: number, recieverId: number): Promise<{
+        id: number;
+        senderId: number;
+        receivedId: number;
+    } | {
+        error: any;
+    }>;
+    unsendFriendRequest(senderId: number, recieverId: number): Promise<{
+        id: number;
+        createdAt: Date;
+        senderId: number;
+        receivedId: number;
+    } | {
+        error: any;
+    }>;
+    rejectFriendRequest(senderId: number, recieverId: number): Promise<{
         id: number;
         createdAt: Date;
         senderId: number;
@@ -60,6 +99,10 @@ export declare class HixcoderService {
         senderId: number;
         receivedId: number;
     } | {
+        id: number;
+        senderId: number;
+        receivedId: number;
+    }[] | {
         error: any;
     }>;
     test_giveFriendsToUser(userId: number): Promise<{

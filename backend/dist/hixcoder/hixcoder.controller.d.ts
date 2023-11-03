@@ -16,10 +16,29 @@ export declare class HixcoderController {
     getOnlineFriends(sender: string): Promise<any[] | {
         error: any;
     }>;
-    getAllFriends(sender: string): Promise<any[] | {
+    getAllFriends(sender: string): Promise<{
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getPendingFriends(sender: string): Promise<{
+        isYouSender: boolean;
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getBlockedFriends(sender: string): Promise<any[] | {
         error: any;
     }>;
-    getPendingFriends(sender: string): Promise<{
+    getAllPossibleFriends(sender: string): Promise<{
         id: number;
         email: string;
         username: string;
@@ -30,10 +49,30 @@ export declare class HixcoderController {
     }[] | {
         error: any;
     }>;
-    getBlockedFriends(sender: string): Promise<any[] | {
+    sendFriendRequest(sender: string, reciever: string): Promise<{
+        id: number;
+        createdAt: Date;
+        senderId: number;
+        receivedId: number;
+    } | {
         error: any;
     }>;
-    sendFriendRequest(sender: string, reciever: string): Promise<{
+    acceptFriendRequest(sender: string, reciever: string): Promise<{
+        id: number;
+        senderId: number;
+        receivedId: number;
+    } | {
+        error: any;
+    }>;
+    unsendFriendRequest(sender: string, reciever: string): Promise<{
+        id: number;
+        createdAt: Date;
+        senderId: number;
+        receivedId: number;
+    } | {
+        error: any;
+    }>;
+    rejectFriendRequest(sender: string, reciever: string): Promise<{
         id: number;
         createdAt: Date;
         senderId: number;
@@ -60,6 +99,10 @@ export declare class HixcoderController {
         senderId: number;
         receivedId: number;
     } | {
+        id: number;
+        senderId: number;
+        receivedId: number;
+    }[] | {
         error: any;
     }>;
 }

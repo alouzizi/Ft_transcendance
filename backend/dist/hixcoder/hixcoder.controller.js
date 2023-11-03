@@ -39,10 +39,29 @@ let HixcoderController = class HixcoderController {
         const senderId = parseInt(sender);
         return this.hixcoderService.getBlockedFriends(senderId);
     }
+    async getAllPossibleFriends(sender) {
+        const senderId = parseInt(sender);
+        return this.hixcoderService.getAllPossibleFriends(senderId);
+    }
     async sendFriendRequest(sender, reciever) {
         const senderId = parseInt(sender);
         const recieverId = parseInt(reciever);
         return this.hixcoderService.sendFriendRequest(senderId, recieverId);
+    }
+    async acceptFriendRequest(sender, reciever) {
+        const senderId = parseInt(sender);
+        const recieverId = parseInt(reciever);
+        return this.hixcoderService.acceptFriendRequest(senderId, recieverId);
+    }
+    async unsendFriendRequest(sender, reciever) {
+        const senderId = parseInt(sender);
+        const recieverId = parseInt(reciever);
+        return this.hixcoderService.unsendFriendRequest(senderId, recieverId);
+    }
+    async rejectFriendRequest(sender, reciever) {
+        const senderId = parseInt(sender);
+        const recieverId = parseInt(reciever);
+        return this.hixcoderService.rejectFriendRequest(senderId, recieverId);
     }
     async blockFriend(sender, reciever) {
         const senderId = parseInt(sender);
@@ -97,6 +116,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getBlockedFriends", null);
 __decorate([
+    (0, common_1.Get)("/allPossibleFriends/:sender"),
+    __param(0, (0, common_1.Param)("sender")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getAllPossibleFriends", null);
+__decorate([
     (0, common_1.Post)("/sendFriendRequest/:sender/:reciever"),
     __param(0, (0, common_1.Param)("sender")),
     __param(1, (0, common_1.Param)("reciever")),
@@ -104,6 +130,30 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "sendFriendRequest", null);
+__decorate([
+    (0, common_1.Post)("/acceptFriendRequest/:sender/:reciever"),
+    __param(0, (0, common_1.Param)("sender")),
+    __param(1, (0, common_1.Param)("reciever")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "acceptFriendRequest", null);
+__decorate([
+    (0, common_1.Post)("/unsendFriendRequest/:sender/:reciever"),
+    __param(0, (0, common_1.Param)("sender")),
+    __param(1, (0, common_1.Param)("reciever")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "unsendFriendRequest", null);
+__decorate([
+    (0, common_1.Post)("/rejectFriendRequest/:sender/:reciever"),
+    __param(0, (0, common_1.Param)("sender")),
+    __param(1, (0, common_1.Param)("reciever")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "rejectFriendRequest", null);
 __decorate([
     (0, common_1.Post)("/blockFriend/:sender/:reciever"),
     __param(0, (0, common_1.Param)("sender")),

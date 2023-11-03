@@ -6,6 +6,7 @@ type friendDto = {
   status: fStatus;
   lastSee: number;
   friendship: number;
+  isYouSender: boolean;
 };
 
 enum fStatus {

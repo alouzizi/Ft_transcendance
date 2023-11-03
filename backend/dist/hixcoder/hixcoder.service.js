@@ -37,29 +37,11 @@ let HixcoderService = class HixcoderService {
     }
     async getOnlineFriends(senderId) {
         try {
-            const allFriends = await this.prisma.friend.findMany({
-                where: {
-                    OR: [
-                        {
-                            senderId: senderId,
-                        },
-                        {
-                            receivedId: senderId,
-                        },
-                    ],
-                },
-            });
+            const allFriends = await this.getAllFriends(senderId);
             const onlineFriends = [];
             for (const element of allFriends) {
-                const user = await this.prisma.user.findUnique({
-                    where: {
-                        id: element.receivedId,
-                        status: "ACTIF",
-                    },
-                });
-                if (!(0, class_validator_1.isEmpty)(user)) {
-                    console.log(user);
-                    onlineFriends.push(user);
+                if (element.status === "ACTIF") {
+                    onlineFriends.push(element);
                 }
             }
             return onlineFriends;
@@ -72,36 +54,34 @@ let HixcoderService = class HixcoderService {
     }
     async getAllFriends(senderId) {
         try {
-            const allFriends = await this.prisma.friend.findMany({
+            const [allFriendsTmp1, allFriendsTmp2] = await Promise.all([
+                this.prisma.friend.findMany({
+                    where: {
+                        senderId: senderId,
+                    },
+                }),
+                this.prisma.friend.findMany({
+                    where: {
+                        receivedId: senderId,
+                    },
+                }),
+            ]);
+            const allFriendsIds = [
+                ...allFriendsTmp1.map((friend) => friend.receivedId),
+                ...allFriendsTmp2.map((friend) => friend.senderId),
+            ];
+            const allFriends = await this.prisma.user.findMany({
                 where: {
-                    OR: [
-                        {
-                            senderId: senderId,
-                        },
-                        {
-                            receivedId: senderId,
-                        },
-                    ],
+                    id: {
+                        in: allFriendsIds,
+                    },
                 },
             });
-            const onlineFriends = [];
-            for (const element of allFriends) {
-                const user = await this.prisma.user.findUnique({
-                    where: {
-                        id: element.receivedId,
-                    },
-                });
-                if (!(0, class_validator_1.isEmpty)(user)) {
-                    console.log(user);
-                    onlineFriends.push(user);
-                }
-            }
-            return onlineFriends;
+            return allFriends;
         }
         catch (error) {
-            return {
-                error: error,
-            };
+            console.log("error: ", error);
+            return null;
         }
     }
     async getPendingFriends(senderId) {
@@ -129,26 +109,26 @@ let HixcoderService = class HixcoderService {
                     },
                 },
             });
-            return pendingFriends;
+            const formattedPendingFriends = pendingFriends.map((friend) => {
+                const isYouSender1 = pendingFriendsTmp1.find((item) => item.receivedId === friend.id);
+                const isYouSender2 = pendingFriendsTmp2.find((item) => item.senderId === friend.id);
+                return {
+                    ...friend,
+                    isYouSender: isYouSender1 ? true : isYouSender2 ? false : null,
+                };
+            });
+            return formattedPendingFriends;
         }
         catch (error) {
-            return {
-                error: error,
-            };
+            console.log("error: ", error);
+            return null;
         }
     }
     async getBlockedFriends(senderId) {
         try {
             const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
                 where: {
-                    OR: [
-                        {
-                            senderId: senderId,
-                        },
-                        {
-                            receivedId: senderId,
-                        },
-                    ],
+                    senderId: senderId,
                 },
             });
             const blockedFriends = [];
@@ -164,6 +144,52 @@ let HixcoderService = class HixcoderService {
                 }
             }
             return blockedFriends;
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
+    async getAllPossibleFriends(senderId) {
+        try {
+            const allUsers = await this.prisma.user.findMany({
+                where: {
+                    NOT: {
+                        id: senderId,
+                    },
+                },
+            });
+            const allFriends = await this.prisma.friend.findMany({
+                where: {
+                    OR: [
+                        {
+                            senderId: senderId,
+                        },
+                        {
+                            receivedId: senderId,
+                        },
+                    ],
+                },
+            });
+            const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
+                where: {
+                    OR: [
+                        {
+                            senderId: senderId,
+                        },
+                        {
+                            receivedId: senderId,
+                        },
+                    ],
+                },
+            });
+            const possibleFriends = allUsers.filter((user) => {
+                const isFriend = allFriends.some((friend) => friend.senderId === user.id || friend.receivedId === user.id);
+                const isBlocked = blockedFriendsTmp.some((blocked) => blocked.senderId === user.id || blocked.receivedId === user.id);
+                return !isFriend && !isBlocked;
+            });
+            return possibleFriends;
         }
         catch (error) {
             return {
@@ -187,9 +213,46 @@ let HixcoderService = class HixcoderService {
             };
         }
     }
-    async blockFriend(senderId, recieverId) {
+    async acceptFriendRequest(senderId, recieverId) {
         try {
-            const friendToDelete = await this.prisma.friend.findUnique({
+            const userToAccept = await this.prisma.friendRequest.findUnique({
+                where: {
+                    Unique_Sender_Receiver: {
+                        senderId: recieverId,
+                        receivedId: senderId,
+                    },
+                },
+            });
+            console.log("userToAccept : ", userToAccept);
+            if (userToAccept) {
+                const user = await this.prisma.friend.create({
+                    data: {
+                        senderId: senderId,
+                        receivedId: recieverId,
+                    },
+                });
+                console.log();
+                await this.prisma.friendRequest.delete({
+                    where: {
+                        Unique_Sender_Receiver: {
+                            senderId: recieverId,
+                            receivedId: senderId,
+                        },
+                    },
+                });
+                return user;
+            }
+            return { error: "null" };
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
+    async unsendFriendRequest(senderId, recieverId) {
+        try {
+            const user = await this.prisma.friendRequest.delete({
                 where: {
                     Unique_Sender_Receiver: {
                         senderId: senderId,
@@ -197,13 +260,42 @@ let HixcoderService = class HixcoderService {
                     },
                 },
             });
-            if (friendToDelete) {
-                await this.prisma.friend.delete({
-                    where: {
-                        id: friendToDelete.id,
+            return user;
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
+    async rejectFriendRequest(senderId, recieverId) {
+        try {
+            const user = await this.prisma.friendRequest.delete({
+                where: {
+                    Unique_Sender_Receiver: {
+                        senderId: recieverId,
+                        receivedId: senderId,
                     },
-                });
-            }
+                },
+            });
+            return user;
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
+    async blockFriend(senderId, recieverId) {
+        try {
+            await this.prisma.friend.delete({
+                where: {
+                    Unique_Sender_Receiver: {
+                        senderId: senderId,
+                        receivedId: recieverId,
+                    },
+                },
+            });
             const user = await this.prisma.blockedUser.create({
                 data: {
                     senderId: senderId,
@@ -220,25 +312,12 @@ let HixcoderService = class HixcoderService {
     }
     async unblockFriend(senderId, recieverId) {
         try {
-            const friendToUnblock = await this.prisma.blockedUser.findUnique({
+            const user = await this.prisma.blockedUser.delete({
                 where: {
                     Unique_Sender_Receiver: {
                         senderId: senderId,
                         receivedId: recieverId,
                     },
-                },
-            });
-            if (friendToUnblock) {
-                await this.prisma.blockedUser.delete({
-                    where: {
-                        id: friendToUnblock.id,
-                    },
-                });
-            }
-            const user = await this.prisma.friend.create({
-                data: {
-                    senderId: senderId,
-                    receivedId: recieverId,
                 },
             });
             return user;
@@ -251,18 +330,24 @@ let HixcoderService = class HixcoderService {
     }
     async removeFriend(senderId, recieverId) {
         try {
-            const friendToDelete = await this.prisma.friend.findUnique({
+            const friendToDelete = await this.prisma.friend.findMany({
                 where: {
-                    Unique_Sender_Receiver: {
-                        senderId: senderId,
-                        receivedId: recieverId,
-                    },
+                    OR: [
+                        {
+                            senderId: recieverId,
+                            receivedId: senderId,
+                        },
+                        {
+                            senderId: senderId,
+                            receivedId: recieverId,
+                        },
+                    ],
                 },
             });
-            if (friendToDelete) {
+            for (const element of friendToDelete) {
                 const user = await this.prisma.friend.delete({
                     where: {
-                        id: friendToDelete.id,
+                        id: element.id,
                     },
                 });
                 return user;

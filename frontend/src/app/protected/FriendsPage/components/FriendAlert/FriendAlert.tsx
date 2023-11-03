@@ -20,6 +20,7 @@ import {
   getPendingFriends,
   getBlockedFriends,
   getAllUsers,
+  getAllPossibleFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
 import Link from "next/link";
@@ -37,8 +38,9 @@ export function FriendAlert(props: SimpleDialogProps) {
 
   const handleClose = () => {
     onClose(selectedValue);
+    setInputSearch("");
+    setData([]);
   };
-
   // ================== fetch users ==================
   const [data, setData] = React.useState<friendDto[]>([]);
   const [PendingFriendsList, setPendingFriendsList] = React.useState<
@@ -48,17 +50,10 @@ export function FriendAlert(props: SimpleDialogProps) {
   React.useEffect(() => {
     async function getData() {
       try {
-        const dataTmp = await getAllUsers(user.id);
-        const friendDataTmp = await getAllFriends(user.id);
+        const AllPossibleFriendsDataTmp = await getAllPossibleFriends(user.id);
         const pendingFriendsList = await getPendingFriends(user.id);
         setPendingFriendsList(pendingFriendsList);
-        const dataNotFriends = dataTmp.filter(
-          (dataItem: friendDto) =>
-            !friendDataTmp.some(
-              (friendItem: friendDto) => friendItem.id === dataItem.id
-            )
-        );
-        setData(dataNotFriends);
+        setData(AllPossibleFriendsDataTmp);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
@@ -72,10 +67,10 @@ export function FriendAlert(props: SimpleDialogProps) {
   function handleSearch(event: ChangeEvent<HTMLInputElement>): void {
     setInputSearch(event.target.value);
   }
-
   const filteredData = data.filter((user) => {
     return user.username.toLowerCase().includes(inputSearch.toLowerCase());
   });
+
   // ================== /handle search ==================
 
   return (
@@ -99,6 +94,7 @@ export function FriendAlert(props: SimpleDialogProps) {
         <div className="h-96 overflow-auto mb-8 ">
           {filteredData.map((element) => (
             <FriendSearchItem
+              key={element.id}
               userInfo={element}
               pendingFriendsList={PendingFriendsList}
             />

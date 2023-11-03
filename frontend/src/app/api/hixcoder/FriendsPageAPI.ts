@@ -89,6 +89,23 @@ export async function getBlockedFriends(userId: number) {
   }
 }
 
+export async function getAllPossibleFriends(userId: number) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/allPossibleFriends/${userId}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.log("getAllPossibleFriends error: " + error);
+    return null;
+  }
+}
+
 // ============================ POSTS ============================
 
 export async function removeFriend(senderId: number, recieverId: number) {
@@ -159,6 +176,69 @@ export async function sendFriendRequest(senderId: number, recieverId: number) {
     return data;
   } catch (error: any) {
     console.log("sendFriendRequest error: " + error);
+    return null;
+  }
+}
+
+export async function unsendFriendRequest(
+  senderId: number,
+  recieverId: number
+) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/unsendFriendRequest/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("unsendFriendRequest error: " + error);
+    return null;
+  }
+}
+
+export async function rejectFriendRequest(
+  senderId: number,
+  recieverId: number
+) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/rejectFriendRequest/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("rejectFriendRequest error: " + error);
+    return null;
+  }
+}
+
+export async function acceptFriendRequest(
+  senderId: number,
+  recieverId: number
+) {
+  try {
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/acceptFriendRequest/${senderId}/${recieverId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error: any) {
+    console.log("acceptFriendRequest error: " + error);
     return null;
   }
 }

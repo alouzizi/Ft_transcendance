@@ -12,30 +12,7 @@ export default function FriendSearchItem(prompt: {
   userInfo: friendDto;
   pendingFriendsList: friendDto[];
 }) {
-  // // ================== fetch users ==================
-  // const [requestFriendsList, setRequestFriendsList] = React.useState<
-  //   friendDto[]
-  // >([]);
-  // const { user } = useGlobalContext();
-  // React.useEffect(() => {
-  //   async function getData() {
-  //     try {
-  //       let dataTmp = [];
-
-  //       dataTmp = await getPendingFriends(user.id);
-  //       // console.log(dataTmp);
-  //       setRequestFriendsList(dataTmp);
-  //     } catch (error: any) {
-  //       console.log("Friend alert getData error: " + error);
-  //     }
-  //   }
-  //   getData();
-  // }, [requestFriendsList]);
-  // // ================== /fetch users ==================
-
   // ================== handle Invite ==================
-
-  // const isPending2= prompt.pendingFriendsList.some
   const user = useGlobalContext();
   const [isPending, setIsPending] = useState(
     prompt.pendingFriendsList.some((item) => item.id === prompt.userInfo.id)
@@ -44,10 +21,6 @@ export default function FriendSearchItem(prompt: {
     try {
       await sendFriendRequest(user.user.id, userInfo.id);
       setIsPending(true);
-      // const updatedData = contxt.data.filter(
-      //   (item) => item.id !== prompt.friendInfo.id
-      // );
-      // contxt.setData(updatedData);
     } catch (error) {
       console.log("handleInvite: " + error);
     }
