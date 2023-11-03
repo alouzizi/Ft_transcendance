@@ -102,6 +102,30 @@ let ChannelService = class ChannelService {
         }
         return (result);
     }
+    async changeStatusAdmin(senderId, channelId, userId) {
+        const admin = await this.prisma.channelMember.findUnique({
+            where: {
+                Unique_userId_channelId: { channelId, userId: senderId }
+            },
+        });
+        const user = await this.prisma.channelMember.findUnique({
+            where: {
+                Unique_userId_channelId: { channelId, userId }
+            },
+        });
+        if (admin.isAdmin) {
+            const update = await this.prisma.channelMember.update({
+                where: {
+                    Unique_userId_channelId: { channelId, userId }
+                },
+                data: {
+                    isAdmin: !user.isAdmin,
+                },
+            });
+            return true;
+        }
+        return false;
+    }
 };
 exports.ChannelService = ChannelService;
 exports.ChannelService = ChannelService = __decorate([

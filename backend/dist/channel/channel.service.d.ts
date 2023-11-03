@@ -25,4 +25,5 @@ export declare class ChannelService {
         channelOwnerId: string;
     }>;
     getMembersChannel(id: string): Promise<memberChannelDto[]>;
+    changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
 }

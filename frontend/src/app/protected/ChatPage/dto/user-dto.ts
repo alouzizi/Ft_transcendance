@@ -24,12 +24,17 @@ type ownerDto = {
 
 type geustDto = {
   isUser: boolean;
+
   id: string;
   nickname: string;
   profilePic: string;
+
   status: Status;
+
   lastSee: number;
   lenUser: number;
+
+  idUserOwner: string;
 };
 
 enum MessageStatus {

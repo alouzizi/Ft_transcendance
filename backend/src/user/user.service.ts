@@ -97,7 +97,7 @@ export class UserService {
       status: user.status,
       lastSee: user.lastSee,
       lenUser: 0,
-      lenUserLive: 0,
+      idUserOwner: 0,
     };
   }
 
@@ -113,6 +113,7 @@ export class UserService {
       status: Status.INACTIF,
       lastSee: channel.createdAt,
       lenUser: members.length,
+      idUserOwner: channel.channelOwnerId
     };
   }
 

@@ -124,4 +124,6 @@ model ChannelMember {
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
 }

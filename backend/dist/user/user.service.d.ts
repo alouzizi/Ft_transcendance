@@ -61,7 +61,7 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
         lenUser: number;
-        lenUserLive: number;
+        idUserOwner: number;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
@@ -71,6 +71,7 @@ export declare class UserService {
         status: "INACTIF";
         lastSee: Date;
         lenUser: number;
+        idUserOwner: string;
     }>;
     createUser(user1: any): Promise<{
         id: string;

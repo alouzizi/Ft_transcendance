@@ -1,11 +1,12 @@
 'use client';
-import { TextField, Avatar, ScrollArea, Text, Flex } from '@radix-ui/themes';
-import Box from '@mui/material/Box';
 import { useGlobalContext } from '@/app/context/store';
-import { IoMdMore } from "react-icons/io";
-import { RxExit } from "react-icons/rx";
+import Box from '@mui/material/Box';
+import { Avatar, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
+import { RxExit } from "react-icons/rx";
 import { getMembersChannel } from '../api/fetch-users';
+import LongMenu from './components/alert_menu';
+
 
 
 const PageChat = () => {
@@ -17,13 +18,12 @@ const PageChat = () => {
             const getMemberChannel = async () => {
                 const tmp = await getMembersChannel(geust.id);
                 setMembers(tmp);
-                console.log(tmp);
             }
             getMemberChannel();
             return () => {
             };
         }
-    }, [geust.id]);
+    }, [geust.id, geust.lastSee]);
 
     const widgetMembers = members.map((member: memberChannelDto, index) => {
         return (
@@ -35,18 +35,33 @@ const PageChat = () => {
                         radius="full"
                         fallback="T"
                     />
-                    <div className='flex-grow flex items-center justify-between'>
-                        <Text weight='medium' className='pl-1.5'>{member.userId === user.id ? "You"
-                            : member.nickname}</Text>
-                        {member.status === "User" ?
-                            <IoMdMore className='pr-1' size='21' /> :
-                            <Text weight='light' color='gray' className='pr-1'>{member.status}</Text>}
+                    <div className='flex-grow flex items-center justify-between pr-2'>
+                        <Text weight='medium' className='pl-1.5'>
+                            {member.userId === user.id ? "You" : member.nickname}
+                        </Text>
+                        <div className='flex items-center justify-center'>
+                            {member.status === "Admin" ?
+                                <Text weight='light' color='gray' className='pr-1'>{member.status}</Text> :
+                                <></>}
+                            {member.status === "Owner" ?
+                                <Text weight='light' color='gray' className='pr-1'>{member.status}</Text> :
+                                ((user.id === geust.idUserOwner) ?
+                                    <LongMenu member={member} /> :
+                                    <></>)
+                            }
+                        </div>
                     </div>
+
                 </div>
                 <div className='border-b border-white ml-10'></div>
             </div>
         )
     })
+
+    {/* {member.status === "User" ?
+                                ((user.id === geust.idUserOwner) ? <LongMenu member={member} /> : <></>) :
+                               }
+                            */}
     return (
         <div className="flex justify-center items-center h-screen">
             <Box
@@ -56,6 +71,7 @@ const PageChat = () => {
                     borderRadius: 10, background: "#f1f3f9", marginLeft: 3
                 }}
             >
+
                 <div className="flex flex-col border-b items-center justify-center pt-2">
                     <Avatar
                         size="5"

@@ -9,3 +9,11 @@ export async function createChannel(channelData: channelDto, senderId: string) {
     return data;
 
 }
+
+export async function changeStatusAdmin(senderId: string, channelId: string, userId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/changeStatusAdmin/${senderId}/${channelId}/${userId}`);
+    const data = await res.data;
+    return data;
+
+}

@@ -25,4 +25,9 @@ export class ChannelController {
   }
 
 
+  @Get('/changeStatusAdmin/:senderId/:channelId/:userId')
+  changeStatusAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.changeStatusAdmin(senderId, channelId, userId);
+  }
+
 }

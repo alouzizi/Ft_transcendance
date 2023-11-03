@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { ChannelMember, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 
@@ -99,6 +99,32 @@ export class ChannelService {
       result.push(temp);
     }
     return (result);
+  }
+
+  async changeStatusAdmin(senderId: string, channelId: string, userId: string) {
+    const admin: ChannelMember = await this.prisma.channelMember.findUnique({
+      where: {
+        Unique_userId_channelId: { channelId, userId: senderId }
+      },
+    })
+    const user: ChannelMember = await this.prisma.channelMember.findUnique({
+      where: {
+        Unique_userId_channelId: { channelId, userId }
+      },
+    })
+    if (admin.isAdmin) {
+      const update: ChannelMember = await this.prisma.channelMember.update({
+        where: {
+          Unique_userId_channelId: { channelId, userId }
+        },
+        data: {
+          isAdmin: !user.isAdmin,
+        },
+      },
+      )
+      return true;
+    }
+    return false;
   }
 
 }
