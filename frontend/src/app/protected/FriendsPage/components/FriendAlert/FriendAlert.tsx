@@ -68,7 +68,10 @@ export function FriendAlert(props: SimpleDialogProps) {
     setInputSearch(event.target.value);
   }
   const filteredData = data.filter((user) => {
-    return user.username.toLowerCase().includes(inputSearch.toLowerCase());
+    return (
+      user.username.toLowerCase().includes(inputSearch.toLowerCase()) &&
+      inputSearch !== ""
+    );
   });
 
   // ================== /handle search ==================
@@ -92,13 +95,17 @@ export function FriendAlert(props: SimpleDialogProps) {
           onChange={handleSearch}
         ></input>
         <div className="h-96 overflow-auto mb-8 ">
-          {filteredData.map((element) => (
-            <FriendSearchItem
-              key={element.id}
-              userInfo={element}
-              pendingFriendsList={PendingFriendsList}
-            />
-          ))}
+          {filteredData.length !== 0 ? (
+            filteredData.map((element) => (
+              <FriendSearchItem
+                key={element.id}
+                userInfo={element}
+                pendingFriendsList={PendingFriendsList}
+              />
+            ))
+          ) : (
+            <p>"{inputSearch}" username not exist!</p>
+          )}
         </div>
       </div>
     </Dialog>
