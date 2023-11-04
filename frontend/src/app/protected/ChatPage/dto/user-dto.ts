@@ -74,15 +74,19 @@ type reqFriendsDto = {
 }
 
 enum ChannelType {
-  Public,
-  Private
+  Public = 'Public',
+  Private = 'Private'
 }
 
+
+
 type channelDto = {
-  // id: number;
   channleName: string;
   channelType: ChannelType;
   channlePassword: string;
+  avatar: string;
+  channelOwnerId: string;
+  protected: boolean;
   channelMember: string[];
 }
 

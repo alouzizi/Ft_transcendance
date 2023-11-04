@@ -78,6 +78,21 @@ let ChannelService = class ChannelService {
             }
         }
     }
+    async getChannel(senderId, channelId) {
+        const channel = await this.prisma.channel.findUnique({
+            where: {
+                id: channelId,
+            },
+        });
+        return {
+            channleName: channel.channelName,
+            channelType: channel.channelType,
+            protected: (channel.channelPassword === '') ? false : true,
+            channlePassword: '8888',
+            avatar: channel.avatar,
+            channelOwnerId: channel.channelOwnerId
+        };
+    }
     async findChannelById(id) {
         return await this.prisma.channel.findUnique({
             where: {

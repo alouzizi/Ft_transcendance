@@ -15,6 +15,14 @@ export declare class ChannelService {
         status: number;
         error: string;
     }>;
+    getChannel(senderId: string, channelId: string): Promise<{
+        channleName: string;
+        channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
+        channlePassword: string;
+        avatar: string;
+        channelOwnerId: string;
+    }>;
     findChannelById(id: string): Promise<{
         id: string;
         channelName: string;

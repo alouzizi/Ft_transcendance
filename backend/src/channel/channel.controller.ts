@@ -19,6 +19,12 @@ export class ChannelController {
     return this.channelService.createChannel(channelData, senderId);
   }
 
+
+  @Get('/getChannel/:senderId/:channelId')
+  getChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.getChannel(senderId, channelId);
+  }
+
   @Get('/getMembersChannel/:id')
   getMembersChannel(@Param('id') id: string) {
     return this.channelService.getMembersChannel(id);

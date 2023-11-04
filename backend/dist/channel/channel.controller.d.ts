@@ -14,6 +14,14 @@ export declare class ChannelController {
         status: number;
         error: string;
     }>;
+    getChannel(senderId: string, channelId: string): Promise<{
+        channleName: string;
+        channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
+        channlePassword: string;
+        avatar: string;
+        channelOwnerId: string;
+    }>;
     getMembersChannel(id: string): Promise<import("./dto/create-channel.dto").memberChannelDto[]>;
     changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
     kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;

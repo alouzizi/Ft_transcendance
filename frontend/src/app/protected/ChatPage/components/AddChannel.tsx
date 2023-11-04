@@ -23,10 +23,9 @@ import { z } from "zod";
 import { createChannel } from '../api/fetch-channel';
 
 enum ChannelType {
-    Public,
-    Private
+    Public = 'Public',
+    Private = 'Private'
 }
-
 export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
 
@@ -38,6 +37,9 @@ export default function AlertAddChannel() {
         channleName: '',
         channelType: ChannelType.Public,
         channlePassword: '',
+        channelOwnerId: '',
+        avatar: '',
+        protected: false,
         channelMember: []
     })
 
@@ -88,7 +90,10 @@ export default function AlertAddChannel() {
             channleName: '',
             channelType: ChannelType.Public,
             channlePassword: '',
-            channelMember: []
+            channelMember: [],
+            channelOwnerId: '',
+            protected: false,
+            avatar: '',
         });
         setIsReady(false);
         setMemberSearch('');

@@ -28,6 +28,9 @@ let ChannelController = class ChannelController {
         };
         return this.channelService.createChannel(channelData, senderId);
     }
+    getChannel(senderId, channelId) {
+        return this.channelService.getChannel(senderId, channelId);
+    }
     getMembersChannel(id) {
         return this.channelService.getMembersChannel(id);
     }
@@ -50,6 +53,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "createChannel", null);
+__decorate([
+    (0, common_1.Get)('/getChannel/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "getChannel", null);
 __decorate([
     (0, common_1.Get)('/getMembersChannel/:id'),
     __param(0, (0, common_1.Param)('id')),

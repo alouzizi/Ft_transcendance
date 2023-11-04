@@ -54,13 +54,14 @@ const ListUser = () => {
       getDataGeust(itemList[0]);
     }
     // mazal matistatx
-    // if (users.length === 0 && geust.id !== 0) {
+    // if (users.length  === 0 && geust.id !== 0) {
     //   setUsers([geust]);
     //   setLastMsgs([])
     // }
   }, [itemList])
 
-  const userWidget = (itemList.length != 0) ? itemList.map((el, index) => {
+
+  const userWidget: any = (itemList.length != 0) ? itemList.map((el, index) => {
     return <Flex align="center" className='relative border-b py-2 pl-1' key={index}
       style={{
         background: (el.receivedId === geust.id) ? "#f1f3f9" : 'white'

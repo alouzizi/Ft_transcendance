@@ -17,6 +17,13 @@ export async function changeStatusAdmin(senderId: string, channelId: string, use
     return data;
 }
 
+export async function getChannel(senderId: string, channelId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/getChannel/${senderId}/${channelId}`);
+    const data = await res.data;
+    return data;
+}
+
 
 export async function kickMember(senderId: string, channelId: string, userId: string) {
     const res = await axios.get(
