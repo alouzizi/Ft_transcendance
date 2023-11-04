@@ -30,4 +30,14 @@ export class ChannelController {
     return this.channelService.changeStatusAdmin(senderId, channelId, userId);
   }
 
+  @Get('/kickmember/:senderId/:channelId/:userId')
+  kickMember(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.kickMember(senderId, channelId, userId);
+  }
+
+  @Get('/kickmember/:senderId/:channelId/:userId')
+  banMember(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.banMember(senderId, channelId, userId);
+  }
+
 }

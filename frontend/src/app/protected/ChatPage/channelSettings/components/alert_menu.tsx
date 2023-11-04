@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import * as React from 'react';
-import { changeStatusAdmin } from '../../api/fetch-channel';
+import { changeStatusAdmin, kickMember } from '../../api/fetch-channel';
 
 const options1 = [
     'Make Group Admin',
@@ -33,13 +33,20 @@ export default function LongMenu({ member }: { member: memberChannelDto }) {
     };
 
     React.useEffect(() => {
-        if (member.status === 'Admin') setOptions(options1);
-        else setOptions(options2);
-    }, [geust.lastSee]);
+        console.log(member);
+        if (member.status === 'Admin') setOptions(options2);
+        else setOptions(options1);
+        return (() => { setOptions([]) })
+    }, [geust.lastSee, open]);
 
     const handleClose = async (e: any) => {
         if (options[0] === e) {
             const result = await changeStatusAdmin(user.id, geust.id, member.userId);
+            setGeust((preGeust: geustDto) => {
+                return { ...preGeust, lastSee: preGeust.lastSee + 1 }
+            });
+        } else if (options[1] === e) {
+            const result = await kickMember(user.id, geust.id, member.userId);
             setGeust((preGeust: geustDto) => {
                 return { ...preGeust, lastSee: preGeust.lastSee + 1 }
             });

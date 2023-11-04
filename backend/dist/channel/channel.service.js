@@ -100,6 +100,9 @@ let ChannelService = class ChannelService {
             };
             result.push(temp);
         }
+        result.sort((a, b) => {
+            return a.nickname.localeCompare(b.nickname);
+        });
         return (result);
     }
     async changeStatusAdmin(senderId, channelId, userId) {
@@ -121,6 +124,44 @@ let ChannelService = class ChannelService {
                 data: {
                     isAdmin: !user.isAdmin,
                 },
+            });
+            return true;
+        }
+        return false;
+    }
+    async kickMember(senderId, channelId, userId) {
+        const admin = await this.prisma.channelMember.findUnique({
+            where: {
+                Unique_userId_channelId: { channelId, userId: senderId }
+            },
+        });
+        if (admin.isAdmin) {
+            const update = await this.prisma.kickedMember.create({
+                data: { userId, channelId }
+            });
+            const deleteUser = await this.prisma.channelMember.delete({
+                where: {
+                    Unique_userId_channelId: { channelId, userId }
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+    async banMember(senderId, channelId, userId) {
+        const admin = await this.prisma.channelMember.findUnique({
+            where: {
+                Unique_userId_channelId: { channelId, userId: senderId }
+            },
+        });
+        if (admin.isAdmin) {
+            const update = await this.prisma.bannedMember.create({
+                data: { userId, channelId }
+            });
+            const deleteUser = await this.prisma.channelMember.delete({
+                where: {
+                    Unique_userId_channelId: { channelId, userId }
+                }
             });
             return true;
         }

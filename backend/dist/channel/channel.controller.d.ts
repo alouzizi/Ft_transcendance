@@ -16,4 +16,6 @@ export declare class ChannelController {
     }>;
     getMembersChannel(id: string): Promise<import("./dto/create-channel.dto").memberChannelDto[]>;
     changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
 }

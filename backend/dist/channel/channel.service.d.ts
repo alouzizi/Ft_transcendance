@@ -26,4 +26,6 @@ export declare class ChannelService {
     }>;
     getMembersChannel(id: string): Promise<memberChannelDto[]>;
     changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
 }

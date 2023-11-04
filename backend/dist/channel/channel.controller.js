@@ -34,6 +34,12 @@ let ChannelController = class ChannelController {
     changeStatusAdmin(senderId, channelId, userId) {
         return this.channelService.changeStatusAdmin(senderId, channelId, userId);
     }
+    kickMember(senderId, channelId, userId) {
+        return this.channelService.kickMember(senderId, channelId, userId);
+    }
+    banMember(senderId, channelId, userId) {
+        return this.channelService.banMember(senderId, channelId, userId);
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -60,6 +66,24 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "changeStatusAdmin", null);
+__decorate([
+    (0, common_1.Get)('/kickmember/:senderId/:channelId/:userId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "kickMember", null);
+__decorate([
+    (0, common_1.Get)('/kickmember/:senderId/:channelId/:userId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "banMember", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

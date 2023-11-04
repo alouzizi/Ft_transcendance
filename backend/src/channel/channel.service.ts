@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ChannelMember, Prisma, User } from '@prisma/client';
+import { BannedMember, ChannelMember, KickedMember, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 
@@ -98,6 +98,9 @@ export class ChannelService {
       }
       result.push(temp);
     }
+    result.sort((a: memberChannelDto, b: memberChannelDto) => {
+      return a.nickname.localeCompare(b.nickname);
+    });
     return (result);
   }
 
@@ -122,6 +125,46 @@ export class ChannelService {
         },
       },
       )
+      return true;
+    }
+    return false;
+  }
+
+  async kickMember(senderId: string, channelId: string, userId: string) {
+    const admin: ChannelMember = await this.prisma.channelMember.findUnique({
+      where: {
+        Unique_userId_channelId: { channelId, userId: senderId }
+      },
+    })
+    if (admin.isAdmin) {
+      const update: KickedMember = await this.prisma.kickedMember.create({
+        data: { userId, channelId }
+      });
+      const deleteUser = await this.prisma.channelMember.delete({
+        where: {
+          Unique_userId_channelId: { channelId, userId }
+        }
+      })
+      return true;
+    }
+    return false;
+  }
+
+  async banMember(senderId: string, channelId: string, userId: string) {
+    const admin: ChannelMember = await this.prisma.channelMember.findUnique({
+      where: {
+        Unique_userId_channelId: { channelId, userId: senderId }
+      },
+    })
+    if (admin.isAdmin) {
+      const update: BannedMember = await this.prisma.bannedMember.create({
+        data: { userId, channelId }
+      });
+      const deleteUser = await this.prisma.channelMember.delete({
+        where: {
+          Unique_userId_channelId: { channelId, userId }
+        }
+      })
       return true;
     }
     return false;
