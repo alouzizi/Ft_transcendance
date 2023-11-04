@@ -104,7 +104,7 @@ export function FriendAlert(props: SimpleDialogProps) {
               />
             ))
           ) : (
-            <p>"{inputSearch}" username not exist!</p>
+            <p className="text-center text-gray-400 ">Username not found</p>
           )}
         </div>
       </div>

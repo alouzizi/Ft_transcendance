@@ -35,6 +35,20 @@ let HixcoderService = class HixcoderService {
             };
         }
     }
+    async getOneUser(recieverId) {
+        try {
+            const oneUser = await this.prisma.user.findFirst({
+                where: {
+                    username: recieverId,
+                },
+            });
+            return oneUser;
+        }
+        catch (error) {
+            console.log("getOneUser error: ", error);
+            return null;
+        }
+    }
     async getOnlineFriends(senderId) {
         try {
             const allFriends = await this.getAllFriends(senderId);
@@ -288,12 +302,18 @@ let HixcoderService = class HixcoderService {
     }
     async blockFriend(senderId, recieverId) {
         try {
-            await this.prisma.friend.delete({
+            await this.prisma.friend.deleteMany({
                 where: {
-                    Unique_Sender_Receiver: {
-                        senderId: senderId,
-                        receivedId: recieverId,
-                    },
+                    OR: [
+                        {
+                            senderId: recieverId,
+                            receivedId: senderId,
+                        },
+                        {
+                            senderId: senderId,
+                            receivedId: recieverId,
+                        },
+                    ],
                 },
             });
             const user = await this.prisma.blockedUser.create({

@@ -13,6 +13,15 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
+    getOneUser(recieverId: string): Promise<{
+        id: number;
+        email: string;
+        username: string;
+        hash: string;
+        avatar: string;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
     getOnlineFriends(senderId: number): Promise<any[] | {
         error: any;
     }>;

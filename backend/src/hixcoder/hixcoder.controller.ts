@@ -15,6 +15,12 @@ export class HixcoderController {
     return this.hixcoderService.getAllUsers(senderId);
   }
 
+  // for get one user
+  @Get("/oneUser/:recieverUsername")
+  async getOneUser(@Param("recieverUsername") userName: string) {
+    return this.hixcoderService.getOneUser(userName);
+  }
+
   // for get all online friends
   @Get("/onlineFriends/:sender")
   async getOnlineFriends(@Param("sender") sender: string) {

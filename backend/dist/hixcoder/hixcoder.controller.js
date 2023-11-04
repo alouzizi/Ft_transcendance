@@ -23,6 +23,9 @@ let HixcoderController = class HixcoderController {
         const senderId = parseInt(sender);
         return this.hixcoderService.getAllUsers(senderId);
     }
+    async getOneUser(userName) {
+        return this.hixcoderService.getOneUser(userName);
+    }
     async getOnlineFriends(sender) {
         const senderId = parseInt(sender);
         return this.hixcoderService.getOnlineFriends(senderId);
@@ -87,6 +90,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getallUsers", null);
+__decorate([
+    (0, common_1.Get)("/oneUser/:recieverUsername"),
+    __param(0, (0, common_1.Param)("recieverUsername")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getOneUser", null);
 __decorate([
     (0, common_1.Get)("/onlineFriends/:sender"),
     __param(0, (0, common_1.Param)("sender")),

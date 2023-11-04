@@ -24,6 +24,7 @@ import { MdOutlineDone } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import Badge from "@mui/material/Badge";
 import { green } from "@mui/material/colors";
+import Link from "next/link";
 export default function FriendItem(prompt: {
   friendInfo: friendDto;
   itemsStatus: string;
@@ -88,54 +89,56 @@ export default function FriendItem(prompt: {
   // ==================== /handleCancel =====================
 
   return (
-    <div className="cursor-pointer my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
-      <div className="flex flex-row ">
-        {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
-        <Badge
-          badgeContent={4}
-          sx={{
-            "& .MuiBadge-badge": {
-              backgroundColor:
-                prompt.friendInfo.status === "ACTIF" ? "#15ff00" : "#9b9c9b",
-              width: 22,
-              height: 22,
-              borderRadius: 50,
-              border: "4px solid #2A2F40",
-            },
-          }}
-          variant="dot"
-          overlap="circular"
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-        >
-          <img
-            className="object-cover mx-auto  rounded-full 
+    <div className=" my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
+      <Link href={`/protected/DashboardPage/${prompt.friendInfo.username}`}>
+        <div className="flex flex-row cursor-pointer">
+          {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
+          <Badge
+            badgeContent={4}
+            sx={{
+              "& .MuiBadge-badge": {
+                backgroundColor:
+                  prompt.friendInfo.status === "ACTIF" ? "#15ff00" : "#9b9c9b",
+                width: 22,
+                height: 22,
+                borderRadius: 50,
+                border: "4px solid #2A2F40",
+              },
+            }}
+            variant="dot"
+            overlap="circular"
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <img
+              className="object-cover mx-auto  rounded-full 
           
         // small screen
         w-12 h-12
         // Big screen
         md:w-14 md:h-14
         "
-            src={prompt.friendInfo.avatar}
-            alt=""
-          />
-        </Badge>
-        <p
-          className="ml-4 my-auto
+              src={prompt.friendInfo.avatar}
+              alt=""
+            />
+          </Badge>
+          <p
+            className="ml-4 my-auto
         
         // small screen
         text-sm
         // Big screen
         md:text-md
         "
-        >
-          {prompt.friendInfo.username}
-        </p>
-      </div>
+          >
+            {prompt.friendInfo.username}
+          </p>
+        </div>
+      </Link>
       {prompt.itemsStatus === "Blocked" ? (
-        <div className="flex flex-row ">
+        <div className="flex flex-row cursor-pointer">
           <Tooltip title="Unblock" placement="top" className="text-lg">
             <div
               onClick={handleUnblock}
@@ -147,7 +150,7 @@ export default function FriendItem(prompt: {
         </div>
       ) : prompt.itemsStatus === "Pending" ? (
         prompt.friendInfo.isYouSender ? (
-          <div className="flex flex-row ">
+          <div className="flex flex-row cursor-pointer">
             <Tooltip title="Cancel" placement="top" className="text-lg">
               <div
                 onClick={handleCancel}
@@ -158,7 +161,7 @@ export default function FriendItem(prompt: {
             </Tooltip>
           </div>
         ) : (
-          <div className="flex flex-row ">
+          <div className="flex flex-row cursor-pointer">
             <Tooltip title="Reject" placement="top" className="text-lg">
               <div
                 onClick={handleReject}
@@ -178,7 +181,7 @@ export default function FriendItem(prompt: {
           </div>
         )
       ) : (
-        <div className="flex flex-row ">
+        <div className="flex flex-row cursor-pointer">
           <PopoverMenu friendInfo={prompt.friendInfo} />
 
           <Tooltip title="Message" placement="top" className="text-lg">

@@ -17,6 +17,24 @@ export async function getAllUsers(userId: number) {
   }
 }
 
+export async function getOneUser(username: string) {
+  try {
+    console.log(`${Backend_URL}/hixcoder/oneUser/${username}`);
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/oneUser/${username}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.log("getOneUser error: " + error);
+    return null;
+  }
+}
+
 export async function getOnlineFriends(userId: number) {
   try {
     const response = await fetch(

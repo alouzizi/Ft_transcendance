@@ -54,9 +54,9 @@ tasks:
 ===========================================
 tasks :
 - in the alertFriend don't show blocked friends ✅
-- develop end point for who send you friend request and verse versa
-- add little green status to the user avatar in friendItem and searchFriendItem
-- change the friendItem on the pending category
+- develop end point for who send you friend request and verse versa ✅
+- add little green status to the user avatar in friendItem and searchFriendItem ✅
+- change the friendItem on the pending category ✅
 -------------------
 - develop friend page where you can see their profile
 - start with acheivments page
