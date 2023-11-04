@@ -74,4 +74,4 @@ export class UserController {
 
 }
 
-//getuserprofil: take token verify jwt find user and return user 
+//get user profil: take token verify jwt find user and return user 

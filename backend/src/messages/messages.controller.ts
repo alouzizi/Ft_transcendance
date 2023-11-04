@@ -22,5 +22,4 @@ export class MessageController {
   async getUserForMsg(@Param('id') senderId: string) {
     return await this.messagesService.getMessageForList(senderId);
   }
-
 }
