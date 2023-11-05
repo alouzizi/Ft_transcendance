@@ -8,8 +8,7 @@ export default function HomeSection(prompt: {
   return (
     <div
       className="flex flex-col 
-      transition-all duration-400 ease-in-out 
-
+      transition-all duration-400 ease-in-out
         
        
         // small screen

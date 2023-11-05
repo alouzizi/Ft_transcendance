@@ -67,7 +67,7 @@ export default function DashBoard(prompt: { friend?: userDto }) {
           // small screen
           mt-12
           // Big screen
-          2xl:ml-6 2xl:mt-12 2xl:w-1/3
+          2xl:ml-6 2xl:mt-2 2xl:w-1/3
           "
           >
             <h1>{prompt.friend != null ? prompt.friend.email : user.email}</h1>
@@ -94,7 +94,6 @@ export default function DashBoard(prompt: { friend?: userDto }) {
       {/* this is the DashboardPage Sections */}
       <div
         className=" flex mx-auto
-      
       // small screen
       flex-col  h-fit mt-16 w-5/6 justify-center
       // Big screen

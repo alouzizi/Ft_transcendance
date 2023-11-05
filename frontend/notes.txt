@@ -58,5 +58,5 @@ tasks :
 - add little green status to the user avatar in friendItem and searchFriendItem ✅
 - change the friendItem on the pending category ✅
 -------------------
-- develop friend page where you can see their profile
+- develop friend page where you can see their profile✅
 - start with acheivments page
