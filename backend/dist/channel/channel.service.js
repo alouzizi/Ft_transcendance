@@ -180,7 +180,6 @@ let ChannelService = class ChannelService {
         return false;
     }
     async KickMember(senderId, channelId, userId) {
-        console.log('kicked function called');
         const admin = await this.prisma.channelMember.findUnique({
             where: {
                 Unique_userId_channelId: { channelId, userId: senderId }

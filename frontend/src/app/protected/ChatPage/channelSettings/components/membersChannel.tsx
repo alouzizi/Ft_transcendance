@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { getMembersChannel } from '../../api/fetch-users';
 import LongMenu from './alert_menu';
 import AlertsAddUserChannel from './addUser';
+import { boolean } from 'zod';
 
 
 
 export default function MembersChannel() {
 
-    const { user, geust } = useGlobalContext();
+    const { user, geust, updateInfo } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
 
@@ -25,10 +26,9 @@ export default function MembersChannel() {
                 setBannedMembers(tmp.bannedMembers);
             }
             getMemberChannel();
-            return () => {
-            };
+            console.log('---------------------------------> ', updateInfo);
         }
-    }, [geust.id, geust.lastSee]);
+    }, [geust.id, geust.lastSee, updateInfo]);
 
     const widgetUser = (member: memberChannelDto) => {
         return (
@@ -49,9 +49,10 @@ export default function MembersChannel() {
                             {member.status === "Admin" ?
                                 <Text weight='light' color='gray' className='pr-1'>{member.status}</Text> :
                                 <></>}
+
                             {member.status === "Owner" ?
                                 <Text weight='light' color='gray' className='pr-1'>{member.status}</Text> :
-                                ((user.id === geust.idUserOwner) ?
+                                ((isUserAdmin() && user.id !== member.userId) ?
                                     <LongMenu member={member}
                                         banned={isMemberExist(member, bannedmembers)} /> :
                                     <></>)
@@ -67,6 +68,13 @@ export default function MembersChannel() {
         const tmp = listMember.find((mbr) => (mbr.userId === member.userId));
         if (tmp)
             return true;
+        return false;
+    }
+    const isUserAdmin = (): boolean => {
+        for (const mbr of members) {
+            if (user.id === mbr.userId && (mbr.status === 'Admin' || mbr.status === 'Owner'))
+                return true;
+        }
         return false;
     }
     const widgetMembers = members.map((member: memberChannelDto, index) => {
@@ -96,7 +104,7 @@ export default function MembersChannel() {
             </div>
 
 
-            {bannedmembers.length !== 0 ?
+            {(bannedmembers.length !== 0 && isUserAdmin()) ?
                 <div>
                     <div className='text-white'>
                         {bannedmembers.length} banned

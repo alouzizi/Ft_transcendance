@@ -29,7 +29,7 @@ const ITEM_HEIGHT = 48;
 
 export default function LongMenu({ member, banned }: { member: memberChannelDto, banned: boolean }) {
     const [options, setOptions] = React.useState<string[]>([]);
-    const { geust, user, setGeust } = useGlobalContext();
+    const { geust, user, setGeust, socket } = useGlobalContext();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -37,9 +37,12 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
     };
 
     React.useEffect(() => {
+
         if (banned) setOptions(allOptions['banned']);
         else if (member.status === 'Admin') setOptions(allOptions['regulerAdmin']);
         else setOptions(allOptions['regulerNotAdmin']);
+
+
         return (() => { setOptions([]) })
     }, [geust.lastSee, open]);
 
@@ -59,8 +62,13 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
             setGeust((preGeust: geustDto) => {
                 return { ...preGeust, lastSee: preGeust.lastSee + 1 }
             });
-            console.log("----> ", result);
         }
+        socket?.emit('updateData', {
+            content: '',
+            senderId: user.id,
+            isDirectMessage: false,
+            receivedId: geust.id,
+        });
         setAnchorEl(null);
     };
 
@@ -79,7 +87,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                 }}
             >
                 {options.map((option, index) => (
-                    <div   >
+                    <div key={index} >
                         <MenuItem sx={{ fontSize: 16 }}
                             key={index} onClick={() => { handleClose(option) }}>
                             {option}

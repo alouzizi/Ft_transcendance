@@ -103,6 +103,12 @@ export class MessagesGateway
   @SubscribeMessage('updateData')
   async updateData(@MessageBody() ids: CreateMessageDto,) {
     this.wss.to(ids.senderId).emit('updateData', {});
+    if (ids.isDirectMessage === false) {
+      const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } })
+      for (const member of channelMembers) {
+        this.wss.to(member.userId).emit('updateData', {});
+      }
+    }
     this.wss.to(ids.receivedId).emit('updateData', {});
   }
 

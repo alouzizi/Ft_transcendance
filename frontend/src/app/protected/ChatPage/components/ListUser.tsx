@@ -8,6 +8,7 @@ import { getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users
 import { extractHoursAndM } from './widgetMsg';
 import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
+import { dir } from 'console';
 
 export function getColorStatus(status: any): string {
   if (status === "ACTIF") {
@@ -20,9 +21,12 @@ export function getColorStatus(status: any): string {
 
 
 const ListUser = () => {
-  const { setGeust, geust, socket, user } = useGlobalContext();
+  const { setGeust, geust, socket, user, updateInfo } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
+  // const [itemListDirect, setItemListDirect] = useState<messageDto[]>([]);
+  // const [itemListChannel, setItemListChannel] = useState<messageDto[]>([]);
+
 
 
   const [direct, setDirect] = useState<boolean>(true);
@@ -37,7 +41,6 @@ const ListUser = () => {
       socket.on("findMsg2UsersResponse", getListUsers);
       socket.on("updateData", getListUsers);
     }
-
   }, [socket])
 
   const getDataGeust = async (tmp: messageDto) => {
@@ -49,16 +52,16 @@ const ListUser = () => {
     setGeust(geustTemp);
   };
 
-  useEffect(() => {
-    if (geust.id === "-1" && itemList.length !== 0) {
-      getDataGeust(itemList[0]);
-    }
-    // mazal matistatx
-    // if (users.length  === 0 && geust.id !== 0) {
-    //   setUsers([geust]);
-    //   setLastMsgs([])
-    // }
-  }, [itemList])
+  // useEffect(() => {
+  //   if (geust.id === "-1" && itemList.length !== 0) {
+  //     getDataGeust(itemList[0]);
+  //   }
+  //   // mazal matistatx
+  //   // if (users.length  === 0 && geust.id !== 0) {
+  //   //   setUsers([geust]);
+  //   //   setLastMsgs([])
+  //   // }
+  // }, [itemList])
 
 
   const widgetUser = (el: messageDto, index: number) => {
@@ -106,8 +109,6 @@ const ListUser = () => {
       </Flex>)
   };
 
-
-
   const itemListDirect = itemList.filter((item: messageDto) => item.isDirectMessage);
   const itemListChannel = itemList.filter((item: messageDto) => !item.isDirectMessage);
 
@@ -120,6 +121,20 @@ const ListUser = () => {
     return widgetUser(el, index)
   }) : <Text className="flex border-b justify-center">pas user</Text>
 
+  let itemListWidget: JSX.Element | JSX.Element[] = [];
+  useEffect(() => {
+
+    if (direct && itemListDirect.length !== 0) {
+      console.log('------> ', direct);
+      itemListWidget = userWidgetDirect;
+      getDataGeust(itemListDirect[0]);
+    } else if (itemListChannel.length !== 0) {
+      console.log('------> ', direct);
+      itemListWidget = userWidgetChannel;
+      getDataGeust(itemListChannel[0]);
+    }
+
+  }, [direct, itemList])
 
   let styles: string = 'px-2 py-1 my-2 rounded-[20px] text-[#3055d8] bg-white shadow-md';
   return (

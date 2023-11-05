@@ -94,6 +94,12 @@ let MessagesGateway = class MessagesGateway {
     }
     async updateData(ids) {
         this.wss.to(ids.senderId).emit('updateData', {});
+        if (ids.isDirectMessage === false) {
+            const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } });
+            for (const member of channelMembers) {
+                this.wss.to(member.userId).emit('updateData', {});
+            }
+        }
         this.wss.to(ids.receivedId).emit('updateData', {});
     }
     async isTyping(ids) {

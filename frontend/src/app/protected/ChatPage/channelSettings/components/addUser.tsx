@@ -18,10 +18,9 @@ export default function AlertsAddUserChannel() {
     const [searsh, setSearsh] = useState('');
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
-    const { user, geust, socket, setGeust } = useGlobalContext();
+    const { user, geust, socket, setGeust, updateInfo } = useGlobalContext();
 
     const [clicked, setClicked] = useState<number>(0)
-    const [update, setUpdate] = useState<number>(0)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -39,7 +38,7 @@ export default function AlertsAddUserChannel() {
         }
         getData();
         setClicked((pre) => pre++);
-    }, [open, update, user.id]);
+    }, [open, updateInfo, user.id]);
 
     useEffect(() => {
         const tmp: userDto[] = valideUsers.filter((elm) => {
@@ -49,18 +48,7 @@ export default function AlertsAddUserChannel() {
         setUsersFilter(tmp);
     }, [searsh, valideUsers])
 
-    useEffect(() => {
-        const updateIcons = () => {
-            setUpdate((pre) => { return pre + 1 });
-        };
-        if (socket) {
-            socket.on("updateData", updateIcons);
-        }
-        return () => {
-            if (socket)
-                socket.off("updateData", updateIcons);
-        };
-    }, [socket]);
+
 
 
     const widgetItem = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
@@ -86,8 +74,11 @@ export default function AlertsAddUserChannel() {
                         onClick={async () => {
                             await addUserToChannel(user.id, geust.id, elm.id);
                             setSearsh('');
-                            setGeust((preGeust: geustDto) => {
-                                return { ...preGeust, lastSee: preGeust.lastSee + 1 }
+                            socket?.emit('updateData', {
+                                content: '',
+                                senderId: user.id,
+                                isDirectMessage: false,
+                                receivedId: geust.id,
                             });
                             handleClose();
 

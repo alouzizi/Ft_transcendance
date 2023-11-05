@@ -18,7 +18,7 @@ const BoxChat = () => {
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-    const { geust, user, socket, setGeust } = useGlobalContext();
+    const { geust, user, socket, setGeust, updateInfo } = useGlobalContext();
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -41,7 +41,8 @@ const BoxChat = () => {
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
-                if (data.senderId === geust.id || data.senderId === user.id || !geust.isUser) {
+                if ((geust.isUser && (data.senderId === geust.id || data.senderId === user.id)) ||
+                    ((!geust.isUser && (data.receivedId === geust.id || data.senderId === user.id)))) { // || !geust.isUser
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
                 }
@@ -76,12 +77,9 @@ const BoxChat = () => {
                     setIsTyping(false);
                 }
             }
-            socket.on("updateData", upDateGeust);
-            return () => {
-                socket.off("updateData", upDateGeust);
-            };
+            upDateGeust();
         }
-    }, [geust.id, user.id]);
+    }, [geust.id, user.id, updateInfo]);
 
     useEffect(() => {
         if (msg != "" && socket) {
