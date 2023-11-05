@@ -12,6 +12,8 @@ import { boolean } from 'zod';
 
 export default function MembersChannel() {
 
+    const [searsh, setSearsh] = useState('');
+
     const { user, geust, updateInfo } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
@@ -26,7 +28,6 @@ export default function MembersChannel() {
                 setBannedMembers(tmp.bannedMembers);
             }
             getMemberChannel();
-            console.log('---------------------------------> ', updateInfo);
         }
     }, [geust.id, geust.lastSee, updateInfo]);
 
@@ -64,6 +65,7 @@ export default function MembersChannel() {
             </div>
         )
     }
+
     const isMemberExist = (member: memberChannelDto, listMember: memberChannelDto[]): boolean => {
         const tmp = listMember.find((mbr) => (mbr.userId === member.userId));
         if (tmp)
@@ -85,6 +87,7 @@ export default function MembersChannel() {
     })
 
 
+
     return (
         <div className="flex flex-col items-center justify-centser pt-5">
             <div className="flex-grow flex items-between justify-between w-[450px]">
@@ -92,8 +95,8 @@ export default function MembersChannel() {
                       placeholder-gray-300 text-sm focus:border-white
                         rounded-lg block p-1.5 outline-none"
                     placeholder="Search user"
-                    // value={channelData.channleName}
-                    onChange={(e) => { }}
+                    value={searsh}
+                    onChange={(e) => { setSearsh(e.target.value) }}
                 ></input>
 
                 <AlertsAddUserChannel />

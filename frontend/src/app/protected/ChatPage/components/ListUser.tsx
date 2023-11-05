@@ -33,6 +33,7 @@ const ListUser = () => {
 
   useEffect(() => {
     const getListUsers = async () => {
+      console.log("-------------------------- *********** --------");
       const usersList = await getUserForMsg(user.id);
       setItemList(usersList)
     };
@@ -41,7 +42,16 @@ const ListUser = () => {
       socket.on("findMsg2UsersResponse", getListUsers);
       socket.on("updateData", getListUsers);
     }
-  }, [socket])
+  }, [socket, updateInfo])
+
+  useEffect(() => {
+    console.log("-------------------------- *********** ", updateInfo);
+    const getListUsers = async () => {
+      const usersList = await getUserForMsg(user.id);
+      setItemList(usersList)
+    };
+    getListUsers();
+  }, [updateInfo])
 
   const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
@@ -122,18 +132,23 @@ const ListUser = () => {
   }) : <Text className="flex border-b justify-center">pas user</Text>
 
   let itemListWidget: JSX.Element | JSX.Element[] = [];
+
   useEffect(() => {
-
-    if (direct && itemListDirect.length !== 0) {
-      console.log('------> ', direct);
-      itemListWidget = userWidgetDirect;
-      getDataGeust(itemListDirect[0]);
-    } else if (itemListChannel.length !== 0) {
-      console.log('------> ', direct);
-      itemListWidget = userWidgetChannel;
-      getDataGeust(itemListChannel[0]);
+    if (direct) {
+      if (itemListDirect.length !== 0) {
+        itemListWidget = userWidgetDirect;
+        getDataGeust(itemListDirect[0]);
+      } else if (itemListChannel.length !== 0) {
+        getDataGeust(itemListChannel[0]);
+      }
+    } else {
+      if (itemListChannel.length !== 0) {
+        itemListWidget = userWidgetChannel;
+        getDataGeust(itemListChannel[0]);
+      } else if (itemListDirect.length !== 0) {
+        getDataGeust(itemListDirect[0]);
+      }
     }
-
   }, [direct, itemList])
 
   let styles: string = 'px-2 py-1 my-2 rounded-[20px] text-[#3055d8] bg-white shadow-md';

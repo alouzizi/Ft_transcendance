@@ -48,26 +48,23 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
 
     const handleClose = async (e: any) => {
         if ('Make Group Admin' === e || 'Remove Group Admin' === e) {
-            const result = await changeStatusAdmin(user.id, geust.id, member.userId);
-            setGeust((preGeust: geustDto) => {
-                return { ...preGeust, lastSee: preGeust.lastSee + 1 }
-            });
+            await changeStatusAdmin(user.id, geust.id, member.userId);
         } else if ('ban from Group' === e || 'unban from Group' === e) {
-            const result = await ChangeStatusBanned(user.id, geust.id, member.userId);
-            setGeust((preGeust: geustDto) => {
-                return { ...preGeust, lastSee: preGeust.lastSee + 1 }
-            });
+            await ChangeStatusBanned(user.id, geust.id, member.userId);
         } else if ('kick from Group' === e) {
-            const result = await kickMember(user.id, geust.id, member.userId);
-            setGeust((preGeust: geustDto) => {
-                return { ...preGeust, lastSee: preGeust.lastSee + 1 }
-            });
+            await kickMember(user.id, geust.id, member.userId);
         }
         socket?.emit('updateData', {
             content: '',
             senderId: user.id,
             isDirectMessage: false,
             receivedId: geust.id,
+        });
+        socket?.emit('updateData', {
+            content: '',
+            senderId: user.id,
+            isDirectMessage: true,
+            receivedId: member.userId,
         });
         setAnchorEl(null);
     };

@@ -54,6 +54,8 @@ const BoxChat = () => {
         }
     }, [geust.id, user.id]);
 
+
+
     useEffect(() => {
         async function getData() {
             let msgs;
@@ -66,7 +68,7 @@ const BoxChat = () => {
         if (geust.id !== "-1" && user.id !== "-1") {
             getData();
         }
-    }, [geust.id, user.id]);
+    }, [geust.id, user.id, updateInfo]);
 
 
     useEffect(() => {
