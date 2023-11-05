@@ -1,55 +1,4 @@
 
-cardInfo:{
-    FullName: "hix coder",
-    userName: "hix",
-    avatar: "",
-    level: 6.75,
-    ranking: 15,
-    matches: 152,
-    winRate: (wins * 100)/matches
-}
-
-gameHistory:[
-    {
-        userId: 1
-        userPoints: 6
-        opponentId: 1,
-        opponentPoints: 5,
-    },
-     {
-         userId: 1
-        userPoints: 6
-        opponentId: 1,
-        opponentPoints: 5,
-    },
-     {
-          userId: 1
-        userPoints: 6
-        opponentId: 1,
-        opponentPoints: 5,
-    }
-
-]
-
-
-===========================================
-
-
-play match
-block friend
-remove friend
-
-
-friendCard: {
-    userName: 
-    avatar:
-
-}
-
-
-tasks: 
-- show online friends
-
 
 ===========================================
 tasks :
@@ -57,6 +6,7 @@ tasks :
 - develop end point for who send you friend request and verse versa ✅
 - add little green status to the user avatar in friendItem and searchFriendItem ✅
 - change the friendItem on the pending category ✅
--------------------
 - develop friend page where you can see their profile✅
-- start with acheivments page
+-------------------
+- use sockets in friends page
+- make the logic of acheivments page
