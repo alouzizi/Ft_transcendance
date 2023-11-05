@@ -110,6 +110,9 @@ export default function AlertAddChannel() {
     useEffect(() => {
         async function createCha() {
             if (isReady) {
+                console.log(channelData);
+                console.log(user.id);
+
                 const res = await createChannel(channelData, user.id);
                 if (res.status === 202)
                     setErrorName(res.error);
@@ -260,6 +263,7 @@ export default function AlertAddChannel() {
                             <TextField
                                 disabled={!protect}
                                 required={protect}
+                                // type="password"
                                 fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Key" variant="outlined"

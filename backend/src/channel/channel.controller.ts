@@ -14,7 +14,7 @@ export class ChannelController {
     console.log(typeof createChannelDto.channelType, createChannelDto.channelType);
     const channelData: CreateChannelDto = {
       ...createChannelDto,
-      channelType: (createChannelDto.channelType == '1') ? ChannelType.Private : ChannelType.Public,
+      channelType: (createChannelDto.channelType == 'Private') ? ChannelType.Private : ChannelType.Public,
     }
     return this.channelService.createChannel(channelData, senderId);
   }

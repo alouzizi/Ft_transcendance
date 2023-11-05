@@ -44,6 +44,7 @@ enum MessageStatus {
 }
 
 type messageDto = {
+  elm: any;
   isDirectMessage: Boolean;
 
   InfoMessage: Boolean;
