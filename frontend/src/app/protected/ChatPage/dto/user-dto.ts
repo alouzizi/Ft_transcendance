@@ -1,14 +1,12 @@
 type userDto = {
-  id: number;
+  id: string;
   email: string;
   username: string;
   avatar: string;
   status: Status;
   lastSee: number;
-  friendship: number
+  friendship: number;
 };
-
-
 
 type msgDto = {
   id: number;
@@ -24,9 +22,7 @@ type reqFriendsDto = {
   createdAt: number;
   senderId: number;
   receivedId: number;
-}
-
-
+};
 
 enum Status {
   ACTIF = "ACTIF",
@@ -36,5 +32,5 @@ enum Status {
 enum MessageStatus {
   NotReceived = "NotReceived",
   Received = "Received",
-  Seen = "Seen"
+  Seen = "Seen",
 }

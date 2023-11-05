@@ -27,13 +27,13 @@ let MessagesGateway = class MessagesGateway {
         this.userService = userService;
     }
     afterInit(server) {
-        console.log('Gateway Initialized');
+        console.log("Gateway Initialized");
     }
     async handleConnection(client, ...args) {
         console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
-        if (typeof client.handshake.query.senderId === 'string') {
+        if (typeof client.handshake.query.senderId === "string") {
             client.join(client.handshake.query.senderId);
-            const senderId = parseInt(client.handshake.query.senderId);
+            const senderId = client.handshake.query.senderId;
             const userExists = await this.prisma.user.findUnique({
                 where: {
                     id: senderId,
@@ -64,30 +64,30 @@ let MessagesGateway = class MessagesGateway {
                         },
                     });
                     for (const user of activeUsers) {
-                        this.wss.to(user.id.toString()).emit('updateData', {});
+                        this.wss.to(user.id.toString()).emit("updateData", {});
                     }
                 }
                 catch (error) {
-                    console.error('Error while handling connection:', error);
+                    console.error("Error while handling connection:", error);
                 }
             }
         }
     }
     async handleDisconnect(client) {
         console.log(`Client disconnected: ---> ${client.id}`);
-        if (typeof client.handshake.query.senderId === 'string') {
+        if (typeof client.handshake.query.senderId === "string") {
             await this.prisma.user.update({
                 where: {
-                    id: parseInt(client.handshake.query.senderId)
+                    id: client.handshake.query.senderId,
                 },
                 data: {
                     status: client_1.Status.INACTIF,
-                    lastSee: new Date()
-                }
+                    lastSee: new Date(),
+                },
             });
             const users = await this.prisma.user.findMany();
             for (let i = 0; i < users.length; i++) {
-                this.wss.to(users[i].id.toString()).emit('updateData', {});
+                this.wss.to(users[i].id.toString()).emit("updateData", {});
             }
         }
     }
@@ -97,11 +97,11 @@ let MessagesGateway = class MessagesGateway {
     async updateData(ids) {
         console.log("---------------------------- try to update");
         console.log(ids.senderId.toString(), ids.receivedId.toString());
-        this.wss.to(ids.senderId.toString()).emit('updateData', {});
-        this.wss.to(ids.receivedId.toString()).emit('updateData', {});
+        this.wss.to(ids.senderId.toString()).emit("updateData", {});
+        this.wss.to(ids.receivedId.toString()).emit("updateData", {});
     }
     async isTyping(ids) {
-        this.wss.to(ids.receivedId.toString()).emit('isTyping', ids);
+        this.wss.to(ids.receivedId.toString()).emit("isTyping", ids);
     }
 };
 exports.MessagesGateway = MessagesGateway;
@@ -110,21 +110,21 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], MessagesGateway.prototype, "wss", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('createMessage'),
+    (0, websockets_1.SubscribeMessage)("createMessage"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], MessagesGateway.prototype, "create", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('updateData'),
+    (0, websockets_1.SubscribeMessage)("updateData"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], MessagesGateway.prototype, "updateData", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('isTyping'),
+    (0, websockets_1.SubscribeMessage)("isTyping"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),

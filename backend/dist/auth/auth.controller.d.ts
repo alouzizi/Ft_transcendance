@@ -5,7 +5,7 @@ export declare class AuthController {
     constructor(authService: AuthService);
     signin(dto: AuthDto): Promise<{
         user: {
-            id: number;
+            id: string;
             email: string;
             username: string;
             hash: string;
@@ -21,7 +21,7 @@ export declare class AuthController {
     }>;
     signup(dto: AuthDto): Promise<{
         user: {
-            id: number;
+            id: string;
             email: string;
             username: string;
             hash: string;

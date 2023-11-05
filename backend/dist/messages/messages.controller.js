@@ -20,24 +20,20 @@ let MessageController = class MessageController {
         this.messagesService = messagesService;
     }
     async getMessages(send, rec) {
-        const r = parseInt(rec);
-        const s = parseInt(send);
-        if (isNaN(r) || isNaN(s))
-            return '';
-        return this.messagesService.getMessage(s, r);
+        return this.messagesService.getMessage(send, rec);
     }
 };
 exports.MessageController = MessageController;
 __decorate([
-    (0, common_1.Get)(':send/:rec'),
-    __param(0, (0, common_1.Param)('send')),
-    __param(1, (0, common_1.Param)('rec')),
+    (0, common_1.Get)(":send/:rec"),
+    __param(0, (0, common_1.Param)("send")),
+    __param(1, (0, common_1.Param)("rec")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "getMessages", null);
 exports.MessageController = MessageController = __decorate([
-    (0, common_1.Controller)('messages'),
+    (0, common_1.Controller)("messages"),
     __metadata("design:paramtypes", [messages_service_1.MessagesService])
 ], MessageController);
 //# sourceMappingURL=messages.controller.js.map

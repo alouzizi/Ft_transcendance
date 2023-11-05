@@ -11,8 +11,7 @@ export class HixcoderController {
   // for get all users
   @Get("/allUsers/:sender")
   async getallUsers(@Param("sender") sender: string) {
-    const senderId = parseInt(sender);
-    return this.hixcoderService.getAllUsers(senderId);
+    return this.hixcoderService.getAllUsers(sender);
   }
 
   // for get one user
@@ -24,36 +23,31 @@ export class HixcoderController {
   // for get all online friends
   @Get("/onlineFriends/:sender")
   async getOnlineFriends(@Param("sender") sender: string) {
-    const senderId = parseInt(sender);
-    return this.hixcoderService.getOnlineFriends(senderId);
+    return this.hixcoderService.getOnlineFriends(sender);
   }
 
   // for get all friends
   @Get("/allFriends/:sender")
   async getAllFriends(@Param("sender") sender: string) {
-    const senderId = parseInt(sender);
-    return this.hixcoderService.getAllFriends(senderId);
+    return this.hixcoderService.getAllFriends(sender);
   }
 
   // for get pending friends
   @Get("/pendingFriends/:sender")
   async getPendingFriends(@Param("sender") sender: string) {
-    const senderId = parseInt(sender);
-    return this.hixcoderService.getPendingFriends(senderId);
+    return this.hixcoderService.getPendingFriends(sender);
   }
 
   // for get blocked friends
   @Get("/blockedFriends/:sender")
   async getBlockedFriends(@Param("sender") sender: string) {
-    const senderId = parseInt(sender);
-    return this.hixcoderService.getBlockedFriends(senderId);
+    return this.hixcoderService.getBlockedFriends(sender);
   }
 
   // for get blocked friends
   @Get("/allPossibleFriends/:sender")
   async getAllPossibleFriends(@Param("sender") sender: string) {
-    const senderId = parseInt(sender);
-    return this.hixcoderService.getAllPossibleFriends(senderId);
+    return this.hixcoderService.getAllPossibleFriends(sender);
   }
 
   // ==========================  Posts ==========================
@@ -64,9 +58,7 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.sendFriendRequest(senderId, recieverId);
+    return this.hixcoderService.sendFriendRequest(sender, reciever);
   }
 
   // for accept Friend Request
@@ -75,9 +67,7 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.acceptFriendRequest(senderId, recieverId);
+    return this.hixcoderService.acceptFriendRequest(sender, reciever);
   }
 
   // for unsend friend request
@@ -86,9 +76,7 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.unsendFriendRequest(senderId, recieverId);
+    return this.hixcoderService.unsendFriendRequest(sender, reciever);
   }
 
   // for reject Friend Request
@@ -97,9 +85,7 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.rejectFriendRequest(senderId, recieverId);
+    return this.hixcoderService.rejectFriendRequest(sender, reciever);
   }
 
   // for block friend
@@ -108,9 +94,7 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.blockFriend(senderId, recieverId);
+    return this.hixcoderService.blockFriend(sender, reciever);
   }
 
   // for unblock friend
@@ -119,9 +103,7 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.unblockFriend(senderId, recieverId);
+    return this.hixcoderService.unblockFriend(sender, reciever);
   }
 
   // for remove friend
@@ -130,8 +112,6 @@ export class HixcoderController {
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
-    const senderId = parseInt(sender);
-    const recieverId = parseInt(reciever);
-    return this.hixcoderService.removeFriend(senderId, recieverId);
+    return this.hixcoderService.removeFriend(sender, reciever);
   }
 }

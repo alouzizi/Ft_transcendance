@@ -8,7 +8,7 @@ export class HixcoderService {
   constructor(private prisma: PrismaService) {}
 
   // ==========================  Gets ==========================
-  async getAllUsers(senderId: number) {
+  async getAllUsers(senderId: string) {
     // await this.test_createManyUsers();
     // await this.test_giveFriendsToUser(1);
     try {
@@ -41,7 +41,7 @@ export class HixcoderService {
     }
   }
 
-  async getOnlineFriends(senderId: number) {
+  async getOnlineFriends(senderId: string) {
     try {
       const allFriends = await this.getAllFriends(senderId);
       const onlineFriends = [];
@@ -58,7 +58,7 @@ export class HixcoderService {
     }
   }
 
-  async getAllFriends(senderId: number) {
+  async getAllFriends(senderId: string) {
     try {
       const [allFriendsTmp1, allFriendsTmp2] = await Promise.all([
         this.prisma.friend.findMany({
@@ -91,7 +91,7 @@ export class HixcoderService {
     }
   }
 
-  async getPendingFriends(senderId: number) {
+  async getPendingFriends(senderId: string) {
     try {
       const [pendingFriendsTmp1, pendingFriendsTmp2] = await Promise.all([
         this.prisma.friendRequest.findMany({
@@ -137,7 +137,7 @@ export class HixcoderService {
     }
   }
 
-  async getBlockedFriends(senderId: number) {
+  async getBlockedFriends(senderId: string) {
     try {
       const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
         where: {
@@ -164,7 +164,7 @@ export class HixcoderService {
     }
   }
 
-  async getAllPossibleFriends(senderId: number) {
+  async getAllPossibleFriends(senderId: string) {
     try {
       const allUsers = await this.prisma.user.findMany({
         where: {
@@ -218,7 +218,7 @@ export class HixcoderService {
 
   // ==========================  Posts ==========================
 
-  async sendFriendRequest(senderId: number, recieverId: number) {
+  async sendFriendRequest(senderId: string, recieverId: string) {
     try {
       const user = await this.prisma.friendRequest.create({
         data: {
@@ -234,7 +234,7 @@ export class HixcoderService {
     }
   }
 
-  async acceptFriendRequest(senderId: number, recieverId: number) {
+  async acceptFriendRequest(senderId: string, recieverId: string) {
     try {
       const userToAccept = await this.prisma.friendRequest.findUnique({
         where: {
@@ -271,7 +271,7 @@ export class HixcoderService {
     }
   }
 
-  async unsendFriendRequest(senderId: number, recieverId: number) {
+  async unsendFriendRequest(senderId: string, recieverId: string) {
     try {
       const user = await this.prisma.friendRequest.delete({
         where: {
@@ -288,7 +288,7 @@ export class HixcoderService {
       };
     }
   }
-  async rejectFriendRequest(senderId: number, recieverId: number) {
+  async rejectFriendRequest(senderId: string, recieverId: string) {
     try {
       const user = await this.prisma.friendRequest.delete({
         where: {
@@ -306,7 +306,7 @@ export class HixcoderService {
     }
   }
 
-  async blockFriend(senderId: number, recieverId: number) {
+  async blockFriend(senderId: string, recieverId: string) {
     try {
       await this.prisma.friend.deleteMany({
         where: {
@@ -338,7 +338,7 @@ export class HixcoderService {
     }
   }
 
-  async unblockFriend(senderId: number, recieverId: number) {
+  async unblockFriend(senderId: string, recieverId: string) {
     try {
       const user = await this.prisma.blockedUser.delete({
         where: {
@@ -356,7 +356,7 @@ export class HixcoderService {
     }
   }
 
-  async removeFriend(senderId: number, recieverId: number) {
+  async removeFriend(senderId: string, recieverId: string) {
     try {
       // Find the friend that you want to delete
       const friendToDelete = await this.prisma.friend.findMany({
@@ -392,7 +392,7 @@ export class HixcoderService {
   }
 
   // ====================== TEST FUNCTIONS ======================
-  async test_giveFriendsToUser(userId: number) {
+  async test_giveFriendsToUser(userId: string) {
     const allUsers = await this.prisma.user.findMany();
 
     for (const otherUser of allUsers) {

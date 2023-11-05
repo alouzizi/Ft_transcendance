@@ -1,5 +1,5 @@
 type friendDto = {
-  id: number;
+  id: string;
   email: string;
   username: string;
   avatar: string;

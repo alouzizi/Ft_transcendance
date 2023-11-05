@@ -3,7 +3,7 @@ import axios from "axios";
 
 // ============================ GETS ============================
 
-export async function getAllUsers(userId: number) {
+export async function getAllUsers(userId: string) {
   try {
     const response = await fetch(`${Backend_URL}/hixcoder/allUsers/${userId}`, {
       method: "GET",
@@ -35,7 +35,7 @@ export async function getOneUser(username: string) {
   }
 }
 
-export async function getOnlineFriends(userId: number) {
+export async function getOnlineFriends(userId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/onlineFriends/${userId}`,
@@ -53,7 +53,7 @@ export async function getOnlineFriends(userId: number) {
   }
 }
 
-export async function getAllFriends(userId: number) {
+export async function getAllFriends(userId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/allFriends/${userId}`,
@@ -71,7 +71,7 @@ export async function getAllFriends(userId: number) {
   }
 }
 
-export async function getPendingFriends(userId: number) {
+export async function getPendingFriends(userId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/pendingFriends/${userId}`,
@@ -89,7 +89,7 @@ export async function getPendingFriends(userId: number) {
   }
 }
 
-export async function getBlockedFriends(userId: number) {
+export async function getBlockedFriends(userId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/blockedFriends/${userId}`,
@@ -107,7 +107,7 @@ export async function getBlockedFriends(userId: number) {
   }
 }
 
-export async function getAllPossibleFriends(userId: number) {
+export async function getAllPossibleFriends(userId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/allPossibleFriends/${userId}`,
@@ -126,7 +126,7 @@ export async function getAllPossibleFriends(userId: number) {
 
 // ============================ POSTS ============================
 
-export async function removeFriend(senderId: number, recieverId: number) {
+export async function removeFriend(senderId: string, recieverId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/removeFriend/${senderId}/${recieverId}`,
@@ -144,7 +144,7 @@ export async function removeFriend(senderId: number, recieverId: number) {
   }
 }
 
-export async function blockFriend(senderId: number, recieverId: number) {
+export async function blockFriend(senderId: string, recieverId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/blockFriend/${senderId}/${recieverId}`,
@@ -162,7 +162,7 @@ export async function blockFriend(senderId: number, recieverId: number) {
   }
 }
 
-export async function unblockFriend(senderId: number, recieverId: number) {
+export async function unblockFriend(senderId: string, recieverId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/unblockFriend/${senderId}/${recieverId}`,
@@ -180,7 +180,7 @@ export async function unblockFriend(senderId: number, recieverId: number) {
   }
 }
 
-export async function sendFriendRequest(senderId: number, recieverId: number) {
+export async function sendFriendRequest(senderId: string, recieverId: string) {
   try {
     const response = await fetch(
       `${Backend_URL}/hixcoder/sendFriendRequest/${senderId}/${recieverId}`,
@@ -199,8 +199,8 @@ export async function sendFriendRequest(senderId: number, recieverId: number) {
 }
 
 export async function unsendFriendRequest(
-  senderId: number,
-  recieverId: number
+  senderId: string,
+  recieverId: string
 ) {
   try {
     const response = await fetch(
@@ -220,8 +220,8 @@ export async function unsendFriendRequest(
 }
 
 export async function rejectFriendRequest(
-  senderId: number,
-  recieverId: number
+  senderId: string,
+  recieverId: string
 ) {
   try {
     const response = await fetch(
@@ -241,8 +241,8 @@ export async function rejectFriendRequest(
 }
 
 export async function acceptFriendRequest(
-  senderId: number,
-  recieverId: number
+  senderId: string,
+  recieverId: string
 ) {
   try {
     const response = await fetch(

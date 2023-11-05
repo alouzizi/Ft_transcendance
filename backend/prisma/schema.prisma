@@ -16,7 +16,7 @@ enum Status {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   email    String  @unique
   username String?
@@ -39,40 +39,40 @@ enum MessageStatus {
 }
 
 model DirectMessage {
-  id            Int           @id @default(autoincrement())
+  id            String        @id @default(uuid())
   content       String
   createdAt     DateTime      @default(now())
   user          User          @relation(fields: [senderId], references: [id])
   showed        Boolean       @default(true)
-  senderId      Int
-  receivedId    Int
+  senderId      String
+  receivedId    String
   messageStatus MessageStatus @default(NotReceived)
 }
 
 model FriendRequest {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   user       User     @relation(fields: [senderId], references: [id])
-  senderId   Int
-  receivedId Int
+  senderId   String
+  receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }
 
 model Friend {
-  id         Int  @id @default(autoincrement())
-  user       User @relation(fields: [senderId], references: [id])
-  senderId   Int
-  receivedId Int
+  id         String @id @default(uuid())
+  user       User   @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }
 
 model BlockedUser {
-  id         Int  @id @default(autoincrement())
-  user       User @relation(fields: [senderId], references: [id])
-  senderId   Int
-  receivedId Int
+  id         String @id @default(uuid())
+  user       User   @relation(fields: [senderId], references: [id])
+  senderId   String
+  receivedId String
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }

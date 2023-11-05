@@ -20,66 +20,46 @@ let HixcoderController = class HixcoderController {
         this.hixcoderService = hixcoderService;
     }
     async getallUsers(sender) {
-        const senderId = parseInt(sender);
-        return this.hixcoderService.getAllUsers(senderId);
+        return this.hixcoderService.getAllUsers(sender);
     }
     async getOneUser(userName) {
         return this.hixcoderService.getOneUser(userName);
     }
     async getOnlineFriends(sender) {
-        const senderId = parseInt(sender);
-        return this.hixcoderService.getOnlineFriends(senderId);
+        return this.hixcoderService.getOnlineFriends(sender);
     }
     async getAllFriends(sender) {
-        const senderId = parseInt(sender);
-        return this.hixcoderService.getAllFriends(senderId);
+        return this.hixcoderService.getAllFriends(sender);
     }
     async getPendingFriends(sender) {
-        const senderId = parseInt(sender);
-        return this.hixcoderService.getPendingFriends(senderId);
+        return this.hixcoderService.getPendingFriends(sender);
     }
     async getBlockedFriends(sender) {
-        const senderId = parseInt(sender);
-        return this.hixcoderService.getBlockedFriends(senderId);
+        return this.hixcoderService.getBlockedFriends(sender);
     }
     async getAllPossibleFriends(sender) {
-        const senderId = parseInt(sender);
-        return this.hixcoderService.getAllPossibleFriends(senderId);
+        return this.hixcoderService.getAllPossibleFriends(sender);
     }
     async sendFriendRequest(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.sendFriendRequest(senderId, recieverId);
+        return this.hixcoderService.sendFriendRequest(sender, reciever);
     }
     async acceptFriendRequest(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.acceptFriendRequest(senderId, recieverId);
+        return this.hixcoderService.acceptFriendRequest(sender, reciever);
     }
     async unsendFriendRequest(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.unsendFriendRequest(senderId, recieverId);
+        return this.hixcoderService.unsendFriendRequest(sender, reciever);
     }
     async rejectFriendRequest(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.rejectFriendRequest(senderId, recieverId);
+        return this.hixcoderService.rejectFriendRequest(sender, reciever);
     }
     async blockFriend(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.blockFriend(senderId, recieverId);
+        return this.hixcoderService.blockFriend(sender, reciever);
     }
     async unblockFriend(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.unblockFriend(senderId, recieverId);
+        return this.hixcoderService.unblockFriend(sender, reciever);
     }
     async removeFriend(sender, reciever) {
-        const senderId = parseInt(sender);
-        const recieverId = parseInt(reciever);
-        return this.hixcoderService.removeFriend(senderId, recieverId);
+        return this.hixcoderService.removeFriend(sender, reciever);
     }
 };
 exports.HixcoderController = HixcoderController;

@@ -1,9 +1,9 @@
-import { UserService } from './user.service';
+import { UserService } from "./user.service";
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    getUserProfile(id: number): Promise<{
-        id: number;
+    getUserProfile(id: string): Promise<{
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -12,7 +12,7 @@ export declare class UserController {
         lastSee: Date;
     }>;
     getAllUser(): Promise<{
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -20,9 +20,9 @@ export declare class UserController {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getValideUsers(senderId: number): Promise<{
+    getValideUsers(senderId: string): Promise<{
         friendship: number;
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -30,9 +30,9 @@ export declare class UserController {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getUserForMsg(senderId: number): Promise<{
+    getUserForMsg(senderId: string): Promise<{
         usersMsgList: {
-            id: number;
+            id: string;
             email: string;
             username: string;
             hash: string;

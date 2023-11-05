@@ -5,7 +5,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class FriendshipService {
   constructor(private prisma: PrismaService) {}
 
-  async sendFriendRequist(sendId: number, recivedId: number) {
+  async sendFriendRequist(sendId: string, recivedId: string) {
     let req = await this.prisma.friendRequest.findUnique({
       where: {
         Unique_Sender_Receiver: {
@@ -25,7 +25,7 @@ export class FriendshipService {
     return req;
   }
 
-  async removeFriendRequist(sendId: number, recivedId: number) {
+  async removeFriendRequist(sendId: string, recivedId: string) {
     let req = await this.prisma.friendRequest.deleteMany({
       where: {
         senderId: sendId,
@@ -35,7 +35,7 @@ export class FriendshipService {
     return req;
   }
 
-  async accepteFriendRequest(sendId: number, recivedId: number) {
+  async accepteFriendRequest(sendId: string, recivedId: string) {
     let req = await this.prisma.friend.findUnique({
       where: {
         Unique_Sender_Receiver: {
@@ -54,7 +54,7 @@ export class FriendshipService {
     }
     return req;
   }
-  async deleteFriend(sendId: number, recivedId: number) {
+  async deleteFriend(sendId: string, recivedId: string) {
     let req = await this.prisma.friend.deleteMany({
       where: {
         OR: [
@@ -71,7 +71,7 @@ export class FriendshipService {
     });
     return req;
   }
-  async blockedUser(sendId: number, recivedId: number) {
+  async blockedUser(sendId: string, recivedId: string) {
     let req = await this.prisma.blockedUser.findUnique({
       where: {
         Unique_Sender_Receiver: {
@@ -91,7 +91,7 @@ export class FriendshipService {
     return req;
   }
 
-  async unBlockedUser(sendId: number, recivedId: number) {
+  async unBlockedUser(sendId: string, recivedId: string) {
     let req = await this.prisma.blockedUser.deleteMany({
       where: {
         senderId: sendId,
@@ -101,7 +101,7 @@ export class FriendshipService {
     return req;
   }
 
-  async getSendRequistFriends(senderId: number) {
+  async getSendRequistFriends(senderId: string) {
     const sendRequests = await this.prisma.friendRequest.findMany({
       where: {
         senderId: senderId,
@@ -110,7 +110,7 @@ export class FriendshipService {
     return sendRequests;
   }
 
-  async getRecivedRequistFriends(senderId: number) {
+  async getRecivedRequistFriends(senderId: string) {
     const sendRequests = await this.prisma.friendRequest.findMany({
       where: {
         receivedId: senderId,
@@ -119,7 +119,7 @@ export class FriendshipService {
     return sendRequests;
   }
 
-  async getFriends(senderId: number) {
+  async getFriends(senderId: string) {
     const sendRequests = await this.prisma.friend.findMany({
       where: {
         OR: [
@@ -135,7 +135,7 @@ export class FriendshipService {
     return sendRequests;
   }
 
-  async getBlockedUser(senderId: number) {
+  async getBlockedUser(senderId: string) {
     const sendRequests = await this.prisma.blockedUser.findMany({
       where: {
         OR: [

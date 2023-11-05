@@ -2,45 +2,45 @@ import { PrismaService } from "src/prisma/prisma.service";
 export declare class FriendshipService {
     private prisma;
     constructor(prisma: PrismaService);
-    sendFriendRequist(sendId: number, recivedId: number): Promise<{
-        id: number;
+    sendFriendRequist(sendId: string, recivedId: string): Promise<{
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     }>;
-    removeFriendRequist(sendId: number, recivedId: number): Promise<import(".prisma/client").Prisma.BatchPayload>;
-    accepteFriendRequest(sendId: number, recivedId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    removeFriendRequist(sendId: string, recivedId: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
+    accepteFriendRequest(sendId: string, recivedId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     }>;
-    deleteFriend(sendId: number, recivedId: number): Promise<import(".prisma/client").Prisma.BatchPayload>;
-    blockedUser(sendId: number, recivedId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    deleteFriend(sendId: string, recivedId: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
+    blockedUser(sendId: string, recivedId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     }>;
-    unBlockedUser(sendId: number, recivedId: number): Promise<import(".prisma/client").Prisma.BatchPayload>;
-    getSendRequistFriends(senderId: number): Promise<{
-        id: number;
+    unBlockedUser(sendId: string, recivedId: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
+    getSendRequistFriends(senderId: string): Promise<{
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     }[]>;
-    getRecivedRequistFriends(senderId: number): Promise<{
-        id: number;
+    getRecivedRequistFriends(senderId: string): Promise<{
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     }[]>;
-    getFriends(senderId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    getFriends(senderId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     }[]>;
-    getBlockedUser(senderId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    getBlockedUser(senderId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     }[]>;
 }

@@ -2,8 +2,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 export declare class HixcoderService {
     private prisma;
     constructor(prisma: PrismaService);
-    getAllUsers(senderId: number): Promise<{
-        id: number;
+    getAllUsers(senderId: string): Promise<{
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -14,7 +14,7 @@ export declare class HixcoderService {
         error: any;
     }>;
     getOneUser(recieverId: string): Promise<{
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -22,11 +22,11 @@ export declare class HixcoderService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
-    getOnlineFriends(senderId: number): Promise<any[] | {
+    getOnlineFriends(senderId: string): Promise<any[] | {
         error: any;
     }>;
-    getAllFriends(senderId: number): Promise<{
-        id: number;
+    getAllFriends(senderId: string): Promise<{
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -34,9 +34,9 @@ export declare class HixcoderService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getPendingFriends(senderId: number): Promise<{
+    getPendingFriends(senderId: string): Promise<{
         isYouSender: boolean;
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -44,11 +44,11 @@ export declare class HixcoderService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getBlockedFriends(senderId: number): Promise<any[] | {
+    getBlockedFriends(senderId: string): Promise<any[] | {
         error: any;
     }>;
-    getAllPossibleFriends(senderId: number): Promise<{
-        id: number;
+    getAllPossibleFriends(senderId: string): Promise<{
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -58,66 +58,66 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-    sendFriendRequest(senderId: number, recieverId: number): Promise<{
-        id: number;
+    sendFriendRequest(senderId: string, recieverId: string): Promise<{
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
-    acceptFriendRequest(senderId: number, recieverId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    acceptFriendRequest(senderId: string, recieverId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
-    unsendFriendRequest(senderId: number, recieverId: number): Promise<{
-        id: number;
+    unsendFriendRequest(senderId: string, recieverId: string): Promise<{
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
-    rejectFriendRequest(senderId: number, recieverId: number): Promise<{
-        id: number;
+    rejectFriendRequest(senderId: string, recieverId: string): Promise<{
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
-    blockFriend(senderId: number, recieverId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    blockFriend(senderId: string, recieverId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
-    unblockFriend(senderId: number, recieverId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    unblockFriend(senderId: string, recieverId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
-    removeFriend(senderId: number, recieverId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    removeFriend(senderId: string, recieverId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
-        id: number;
-        senderId: number;
-        receivedId: number;
+        id: string;
+        senderId: string;
+        receivedId: string;
     }[] | {
         error: any;
     }>;
-    test_giveFriendsToUser(userId: number): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+    test_giveFriendsToUser(userId: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
     }[]>;
     test_createManyUsers(): Promise<void>;
 }

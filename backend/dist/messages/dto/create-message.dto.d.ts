@@ -1,7 +1,7 @@
 export declare class CreateMessageDto {
     content: string;
-    senderId: number;
-    receivedId: number;
+    senderId: string;
+    receivedId: string;
 }
 export declare enum Status {
     ACTIF = 0,

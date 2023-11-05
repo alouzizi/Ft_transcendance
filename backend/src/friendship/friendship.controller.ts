@@ -1,94 +1,78 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { FriendshipService } from './friendship.service';
+import { Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { FriendshipService } from "./friendship.service";
 
-@Controller('friendship')
+@Controller("friendship")
 export class FriendshipController {
-  constructor(private readonly friendshipService: FriendshipService) { }
+  constructor(private readonly friendshipService: FriendshipService) {}
 
-  @Get('/getSendFriendRequest/:sender')
-  async getSendRequistFriends(@Param('sender') sender: string) {
-    const senderId = parseInt(sender);
-    return await this.friendshipService.getSendRequistFriends(senderId);
+  @Get("/getSendFriendRequest/:sender")
+  async getSendRequistFriends(@Param("sender") sender: string) {
+    return await this.friendshipService.getSendRequistFriends(sender);
   }
 
-  @Get('/getRecivedRequistFriends/:sender')
-  async getRecivedRequistFriends(@Param('sender') sender: string) {
-    const senderId = parseInt(sender);
-    return await this.friendshipService.getRecivedRequistFriends(senderId);
+  @Get("/getRecivedRequistFriends/:sender")
+  async getRecivedRequistFriends(@Param("sender") sender: string) {
+    return await this.friendshipService.getRecivedRequistFriends(sender);
   }
 
-  @Get('/getFriends/:sender')
-  async getFriends(@Param('sender') sender: string) {
-    const senderId = parseInt(sender);
-    return await this.friendshipService.getFriends(senderId);
+  @Get("/getFriends/:sender")
+  async getFriends(@Param("sender") sender: string) {
+    return await this.friendshipService.getFriends(sender);
   }
 
-  @Get('/getBlockedUser/:sender')
-  async getBlockedUser(@Param('sender') sender: string) {
-    const senderId = parseInt(sender);
-    return await this.friendshipService.getBlockedUser(senderId);
+  @Get("/getBlockedUser/:sender")
+  async getBlockedUser(@Param("sender") sender: string) {
+    return await this.friendshipService.getBlockedUser(sender);
   }
 
-  @Post('/sendFriendRequest/:sender/:recived')
+  @Post("/sendFriendRequest/:sender/:recived")
   async addFriendRequest(
-    @Param('sender') sender: string,
-    @Param('recived') recived: string,
+    @Param("sender") sender: string,
+    @Param("recived") recived: string
   ) {
-    const senderId = parseInt(sender);
-    const recivedId = parseInt(recived);
-    return await this.friendshipService.sendFriendRequist(senderId, recivedId);
+    return await this.friendshipService.sendFriendRequist(sender, recived);
   }
 
-  @Delete('/removeFriendRequest/:sender/:recived')
+  @Delete("/removeFriendRequest/:sender/:recived")
   async removeFriendRequest(
-    @Param('sender') sender: string,
-    @Param('recived') recived: string,
+    @Param("sender") sender: string,
+    @Param("recived") recived: string
   ) {
-    const senderId = parseInt(sender);
-    const recivedId = parseInt(recived);
-    return await this.friendshipService.removeFriendRequist(senderId, recivedId);
+    return await this.friendshipService.removeFriendRequist(sender, recived);
   }
 
-  @Post('/accepteFriendRequest/:sender/:recived')
+  @Post("/accepteFriendRequest/:sender/:recived")
   async accepteFriendRequest(
-    @Param('sender') sender: string,
-    @Param('recived') recived: string,
+    @Param("sender") sender: string,
+    @Param("recived") recived: string
   ) {
-    const senderId = parseInt(sender);
-    const recivedId = parseInt(recived);
-    await this.friendshipService.removeFriendRequist(recivedId, senderId);
-    return await this.friendshipService.accepteFriendRequest(senderId, recivedId);
+    await this.friendshipService.removeFriendRequist(recived, sender);
+    return await this.friendshipService.accepteFriendRequest(sender, recived);
   }
 
-  @Delete('/deleteFriend/:sender/:recived')
+  @Delete("/deleteFriend/:sender/:recived")
   async deleteFriend(
-    @Param('sender') sender: string,
-    @Param('recived') recived: string,
+    @Param("sender") sender: string,
+    @Param("recived") recived: string
   ) {
-    const senderId = parseInt(sender);
-    const recivedId = parseInt(recived);
-    return await this.friendshipService.deleteFriend(senderId, recivedId);
+    return await this.friendshipService.deleteFriend(sender, recived);
   }
 
-  @Post('/blockedUser/:sender/:recived')
+  @Post("/blockedUser/:sender/:recived")
   async blockedUser(
-    @Param('sender') sender: string,
-    @Param('recived') recived: string,
+    @Param("sender") sender: string,
+    @Param("recived") recived: string
   ) {
-    const senderId = parseInt(sender);
-    const recivedId = parseInt(recived);
-    await this.friendshipService.removeFriendRequist(recivedId, senderId);
-    await this.friendshipService.deleteFriend(recivedId, senderId);
-    return await this.friendshipService.blockedUser(senderId, recivedId);
+    await this.friendshipService.removeFriendRequist(recived, sender);
+    await this.friendshipService.deleteFriend(recived, sender);
+    return await this.friendshipService.blockedUser(sender, recived);
   }
 
-  @Delete('/unBlockedUser/:sender/:recived')
+  @Delete("/unBlockedUser/:sender/:recived")
   async unBlockedUser(
-    @Param('sender') sender: string,
-    @Param('recived') recived: string,
+    @Param("sender") sender: string,
+    @Param("recived") recived: string
   ) {
-    const senderId = parseInt(sender);
-    const recivedId = parseInt(recived);
-    return await this.friendshipService.unBlockedUser(senderId, recivedId);
+    return await this.friendshipService.unBlockedUser(sender, recived);
   }
 }

@@ -3,7 +3,7 @@ export declare class HixcoderController {
     private hixcoderService;
     constructor(hixcoderService: HixcoderService);
     getallUsers(sender: string): Promise<{
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -14,7 +14,7 @@ export declare class HixcoderController {
         error: any;
     }>;
     getOneUser(userName: string): Promise<{
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -26,7 +26,7 @@ export declare class HixcoderController {
         error: any;
     }>;
     getAllFriends(sender: string): Promise<{
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -36,7 +36,7 @@ export declare class HixcoderController {
     }[]>;
     getPendingFriends(sender: string): Promise<{
         isYouSender: boolean;
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -48,7 +48,7 @@ export declare class HixcoderController {
         error: any;
     }>;
     getAllPossibleFriends(sender: string): Promise<{
-        id: number;
+        id: string;
         email: string;
         username: string;
         hash: string;
@@ -59,58 +59,58 @@ export declare class HixcoderController {
         error: any;
     }>;
     sendFriendRequest(sender: string, reciever: string): Promise<{
-        id: number;
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
     acceptFriendRequest(sender: string, reciever: string): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
     unsendFriendRequest(sender: string, reciever: string): Promise<{
-        id: number;
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
     rejectFriendRequest(sender: string, reciever: string): Promise<{
-        id: number;
+        id: string;
         createdAt: Date;
-        senderId: number;
-        receivedId: number;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
     blockFriend(sender: string, reciever: string): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
     unblockFriend(sender: string, reciever: string): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
         error: any;
     }>;
     removeFriend(sender: string, reciever: string): Promise<{
-        id: number;
-        senderId: number;
-        receivedId: number;
+        id: string;
+        senderId: string;
+        receivedId: string;
     } | {
-        id: number;
-        senderId: number;
-        receivedId: number;
+        id: string;
+        senderId: string;
+        receivedId: string;
     }[] | {
         error: any;
     }>;

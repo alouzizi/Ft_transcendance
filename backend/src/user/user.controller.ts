@@ -1,33 +1,37 @@
-import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { UserService } from './user.service';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
+import { UserService } from "./user.service";
 
-@Controller('user')
+@Controller("user")
 export class UserController {
-  constructor(private userService: UserService) { }
-
+  constructor(private userService: UserService) {}
 
   // @UseGuards(JwtGuard)
-  @Get(':id')
-  async getUserProfile(@Param('id') id: number) {
+  @Get(":id")
+  async getUserProfile(@Param("id") id: string) {
     console.log("call de");
     return await this.userService.findById(id);
   }
 
   // @UseGuards(JwtGuard)
-  @Get('/all')
+  @Get("/all")
   async getAllUser() {
     return await this.userService.findAllUsers();
   }
 
-
-  @Get('/getValideUsers/:id')
-  async getValideUsers(@Param('id') senderId: number) {
+  @Get("/getValideUsers/:id")
+  async getValideUsers(@Param("id") senderId: string) {
     return await this.userService.getValideUsers(senderId);
   }
 
-
-  @Get('/getUserForMsg/:id')
-  async getUserForMsg(@Param('id') senderId: number) {
+  @Get("/getUserForMsg/:id")
+  async getUserForMsg(@Param("id") senderId: string) {
     return await this.userService.getUserForMsg(senderId);
   }
-} 
+}

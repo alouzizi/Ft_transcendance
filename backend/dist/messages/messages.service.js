@@ -24,14 +24,14 @@ let MessagesService = class MessagesService {
                 OR: [
                     {
                         senderId: createMessageDto.senderId,
-                        receivedId: createMessageDto.receivedId
+                        receivedId: createMessageDto.receivedId,
                     },
                     {
                         senderId: createMessageDto.receivedId,
-                        receivedId: createMessageDto.senderId
-                    }
-                ]
-            }
+                        receivedId: createMessageDto.senderId,
+                    },
+                ],
+            },
         });
         if (blockerUser.length) {
             showed = false;
@@ -39,7 +39,7 @@ let MessagesService = class MessagesService {
         const user = await this.prisma.user.findUnique({
             where: {
                 id: createMessageDto.receivedId,
-            }
+            },
         });
         if (user.status === "ACTIF")
             messageStatus = "Received";
@@ -47,12 +47,12 @@ let MessagesService = class MessagesService {
             data: {
                 ...createMessageDto,
                 showed,
-                messageStatus
+                messageStatus,
             },
         });
         if (showed)
-            server.to(msg.receivedId.toString()).emit('findMsg2UsersResponse', msg);
-        server.to(msg.senderId.toString()).emit('findMsg2UsersResponse', msg);
+            server.to(msg.receivedId.toString()).emit("findMsg2UsersResponse", msg);
+        server.to(msg.senderId.toString()).emit("findMsg2UsersResponse", msg);
     }
     async getMessage(senderId, receivedId) {
         const msgUserTemp = await this.prisma.directMessage.findMany({
@@ -69,10 +69,10 @@ let MessagesService = class MessagesService {
                 ],
             },
             orderBy: {
-                createdAt: 'asc',
+                createdAt: "asc",
             },
         });
-        const msgUser = msgUserTemp.filter((msg) => (msg.showed === true || senderId === msg.senderId));
+        const msgUser = msgUserTemp.filter((msg) => msg.showed === true || senderId === msg.senderId);
         return msgUser;
     }
     async getLastMessages(senderId, receivedId) {
@@ -87,18 +87,18 @@ let MessagesService = class MessagesService {
                     {
                         senderId: receivedId,
                         receivedId: senderId,
-                        showed: true
+                        showed: true,
                     },
                 ],
             },
             orderBy: {
-                createdAt: 'desc',
+                createdAt: "desc",
             },
         });
         if (!lastMessage) {
             return {
                 content: "",
-                createdAt: 5
+                createdAt: 5,
             };
         }
         return lastMessage;
