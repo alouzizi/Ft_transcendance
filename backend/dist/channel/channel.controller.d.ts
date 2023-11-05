@@ -14,6 +14,7 @@ export declare class ChannelController {
         status: number;
         error: string;
     }>;
+    addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
     getChannel(senderId: string, channelId: string): Promise<{
         channleName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
@@ -22,7 +23,10 @@ export declare class ChannelController {
         avatar: string;
         channelOwnerId: string;
     }>;
-    getMembersChannel(id: string): Promise<import("./dto/create-channel.dto").memberChannelDto[]>;
+    getMembersChannel(id: string): Promise<{
+        bannedMembers: import("./dto/create-channel.dto").memberChannelDto[];
+        regularMembres: import("./dto/create-channel.dto").memberChannelDto[];
+    }>;
     changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
     kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;

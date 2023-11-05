@@ -28,6 +28,9 @@ let ChannelController = class ChannelController {
         };
         return this.channelService.createChannel(channelData, senderId);
     }
+    addUserToChannel(senderId, channelId, userId) {
+        return this.channelService.addUserToChannel(senderId, channelId, userId);
+    }
     getChannel(senderId, channelId) {
         return this.channelService.getChannel(senderId, channelId);
     }
@@ -38,10 +41,10 @@ let ChannelController = class ChannelController {
         return this.channelService.changeStatusAdmin(senderId, channelId, userId);
     }
     kickMember(senderId, channelId, userId) {
-        return this.channelService.kickMember(senderId, channelId, userId);
+        return this.channelService.KickMember(senderId, channelId, userId);
     }
     banMember(senderId, channelId, userId) {
-        return this.channelService.banMember(senderId, channelId, userId);
+        return this.channelService.changeStatutsBanned(senderId, channelId, userId);
     }
 };
 exports.ChannelController = ChannelController;
@@ -53,6 +56,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "createChannel", null);
+__decorate([
+    (0, common_1.Get)('/addUserToChannel/:senderId/:channelId/:userId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "addUserToChannel", null);
 __decorate([
     (0, common_1.Get)('/getChannel/:senderId/:channelId'),
     __param(0, (0, common_1.Param)('senderId')),
@@ -87,7 +99,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "kickMember", null);
 __decorate([
-    (0, common_1.Get)('/kickmember/:senderId/:channelId/:userId'),
+    (0, common_1.Get)('/bannedmember/:senderId/:channelId/:userId'),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),

@@ -15,6 +15,7 @@ export declare class ChannelService {
         status: number;
         error: string;
     }>;
+    addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
     getChannel(senderId: string, channelId: string): Promise<{
         channleName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
@@ -32,8 +33,13 @@ export declare class ChannelService {
         avatar: string;
         channelOwnerId: string;
     }>;
-    getMembersChannel(id: string): Promise<memberChannelDto[]>;
+    getMembersBanned(id: string): Promise<memberChannelDto[]>;
+    getRegularMembers(id: string): Promise<memberChannelDto[]>;
+    getMembersChannel(id: string): Promise<{
+        bannedMembers: memberChannelDto[];
+        regularMembres: memberChannelDto[];
+    }>;
     changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
-    kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
-    banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    KickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean>;
 }

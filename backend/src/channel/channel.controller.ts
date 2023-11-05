@@ -20,6 +20,11 @@ export class ChannelController {
   }
 
 
+  @Get('/addUserToChannel/:senderId/:channelId/:userId')
+  addUserToChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.addUserToChannel(senderId, channelId, userId);
+  }
+
   @Get('/getChannel/:senderId/:channelId')
   getChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.getChannel(senderId, channelId);
@@ -38,12 +43,12 @@ export class ChannelController {
 
   @Get('/kickmember/:senderId/:channelId/:userId')
   kickMember(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
-    return this.channelService.kickMember(senderId, channelId, userId);
+    return this.channelService.KickMember(senderId, channelId, userId);
   }
 
-  @Get('/kickmember/:senderId/:channelId/:userId')
+  @Get('/bannedmember/:senderId/:channelId/:userId')
   banMember(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
-    return this.channelService.banMember(senderId, channelId, userId);
+    return this.channelService.changeStatutsBanned(senderId, channelId, userId);
   }
 
 }

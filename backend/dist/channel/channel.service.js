@@ -78,6 +78,22 @@ let ChannelService = class ChannelService {
             }
         }
     }
+    async addUserToChannel(senderId, channelId, userId) {
+        const admin = await this.prisma.channelMember.findUnique({
+            where: {
+                Unique_userId_channelId: { channelId, userId: senderId }
+            },
+        });
+        if (admin.isAdmin) {
+            await this.prisma.channelMember.create({
+                data: {
+                    userId: userId,
+                    isAdmin: false,
+                    channelId: channelId,
+                }
+            });
+        }
+    }
     async getChannel(senderId, channelId) {
         const channel = await this.prisma.channel.findUnique({
             where: {
@@ -100,7 +116,25 @@ let ChannelService = class ChannelService {
             },
         });
     }
-    async getMembersChannel(id) {
+    async getMembersBanned(id) {
+        let result = [];
+        const members = await this.prisma.bannedMember.findMany({ where: { channelId: id } });
+        for (const member of members) {
+            const user = await this.prisma.user.findUnique({ where: { id: member.userId } });
+            const temp = {
+                userId: member.userId,
+                nickname: user.nickname,
+                profilePic: user.profilePic,
+                status: 'banned'
+            };
+            result.push(temp);
+        }
+        result.sort((a, b) => {
+            return a.nickname.localeCompare(b.nickname);
+        });
+        return (result);
+    }
+    async getRegularMembers(id) {
         let result = [];
         const channel = await this.prisma.channel.findUnique({ where: { id } });
         const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
@@ -119,6 +153,11 @@ let ChannelService = class ChannelService {
             return a.nickname.localeCompare(b.nickname);
         });
         return (result);
+    }
+    async getMembersChannel(id) {
+        const bannedMembers = await this.getMembersBanned(id);
+        const regularMembres = await this.getRegularMembers(id);
+        return { bannedMembers, regularMembres };
     }
     async changeStatusAdmin(senderId, channelId, userId) {
         const admin = await this.prisma.channelMember.findUnique({
@@ -144,40 +183,46 @@ let ChannelService = class ChannelService {
         }
         return false;
     }
-    async kickMember(senderId, channelId, userId) {
+    async KickMember(senderId, channelId, userId) {
         const admin = await this.prisma.channelMember.findUnique({
             where: {
                 Unique_userId_channelId: { channelId, userId: senderId }
             },
         });
         if (admin.isAdmin) {
-            const update = await this.prisma.kickedMember.create({
-                data: { userId, channelId }
+            await this.prisma.kickedMember.create({
+                data: { channelId, userId }
             });
-            const deleteUser = await this.prisma.channelMember.delete({
-                where: {
-                    Unique_userId_channelId: { channelId, userId }
-                }
+            await this.prisma.channelMember.delete({
+                where: { Unique_userId_channelId: { channelId, userId } }
             });
             return true;
         }
         return false;
     }
-    async banMember(senderId, channelId, userId) {
+    async changeStatutsBanned(senderId, channelId, userId) {
         const admin = await this.prisma.channelMember.findUnique({
             where: {
                 Unique_userId_channelId: { channelId, userId: senderId }
             },
         });
         if (admin.isAdmin) {
-            const update = await this.prisma.bannedMember.create({
-                data: { userId, channelId }
+            const isEXIST = await this.prisma.bannedMember.findUnique({
+                where: { Unique_userId_channelId: { channelId, userId } },
             });
-            const deleteUser = await this.prisma.channelMember.delete({
-                where: {
-                    Unique_userId_channelId: { channelId, userId }
-                }
-            });
+            if (isEXIST) {
+                await this.prisma.bannedMember.delete({
+                    where: { Unique_userId_channelId: { channelId, userId } }
+                });
+            }
+            else {
+                await this.prisma.bannedMember.create({
+                    data: { userId, channelId }
+                });
+                await this.prisma.channelMember.delete({
+                    where: { Unique_userId_channelId: { channelId, userId } }
+                });
+            }
             return true;
         }
         return false;

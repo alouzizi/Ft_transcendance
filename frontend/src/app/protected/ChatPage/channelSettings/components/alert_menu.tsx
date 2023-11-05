@@ -5,24 +5,29 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import * as React from 'react';
-import { changeStatusAdmin, kickMember } from '../../api/fetch-channel';
+import { ChangeStatusBanned, changeStatusAdmin, kickMember } from '../../api/fetch-channel';
 
-const options1 = [
-    'Make Group Admin',
-    'kick from Group',
-    'ban from Group',
-    'Mute'
-];
-const options2 = [
-    'Remove Group Admin',
-    'kick from Group',
-    'ban from Group',
-    'Mute'
-];
 
+const allOptions = {
+    "regulerNotAdmin": [
+        'Make Group Admin',
+        'kick from Group',
+        'ban from Group',
+        'Mute'
+    ],
+    "regulerAdmin": [
+        'Remove Group Admin',
+        'kick from Group',
+        'ban from Group',
+        'Mute'
+    ],
+    "banned": [
+        'unban from Group'
+    ]
+}
 const ITEM_HEIGHT = 48;
 
-export default function LongMenu({ member }: { member: memberChannelDto }) {
+export default function LongMenu({ member, banned }: { member: memberChannelDto, banned: boolean }) {
     const [options, setOptions] = React.useState<string[]>([]);
     const { geust, user, setGeust } = useGlobalContext();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -32,23 +37,29 @@ export default function LongMenu({ member }: { member: memberChannelDto }) {
     };
 
     React.useEffect(() => {
-        console.log(member);
-        if (member.status === 'Admin') setOptions(options2);
-        else setOptions(options1);
+        if (banned) setOptions(allOptions['banned']);
+        else if (member.status === 'Admin') setOptions(allOptions['regulerAdmin']);
+        else setOptions(allOptions['regulerNotAdmin']);
         return (() => { setOptions([]) })
     }, [geust.lastSee, open]);
 
     const handleClose = async (e: any) => {
-        if (options[0] === e) {
+        if ('Make Group Admin' === e || 'Remove Group Admin' === e) {
             const result = await changeStatusAdmin(user.id, geust.id, member.userId);
             setGeust((preGeust: geustDto) => {
                 return { ...preGeust, lastSee: preGeust.lastSee + 1 }
             });
-        } else if (options[1] === e) {
+        } else if ('ban from Group' === e || 'unban from Group' === e) {
+            const result = await ChangeStatusBanned(user.id, geust.id, member.userId);
+            setGeust((preGeust: geustDto) => {
+                return { ...preGeust, lastSee: preGeust.lastSee + 1 }
+            });
+        } else if ('kick from Group' === e) {
             const result = await kickMember(user.id, geust.id, member.userId);
             setGeust((preGeust: geustDto) => {
                 return { ...preGeust, lastSee: preGeust.lastSee + 1 }
             });
+            console.log("----> ", result);
         }
         setAnchorEl(null);
     };

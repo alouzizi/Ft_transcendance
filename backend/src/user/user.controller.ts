@@ -42,6 +42,12 @@ export class UserController {
   }
 
 
+  @Get('/getUsersCanJoinChannel/:senderId/:channelId')
+  async getUsersCanJoinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return await this.userService.usersCanJoinChannel(senderId, channelId);
+  }
+
+
   @Get('getUserGeust/:id')
   async getUserGeust(@Param('id') id: string) {
     return await this.userService.getUserGeust(id);

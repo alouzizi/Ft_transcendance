@@ -59,6 +59,22 @@ export declare class UserController {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
+    getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;

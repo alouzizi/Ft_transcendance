@@ -10,6 +10,14 @@ export async function createChannel(channelData: channelDto, senderId: string) {
 
 }
 
+export async function addUserToChannel(senderId: string, channelId: string, userId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/addUserToChannel/${senderId}/${channelId}/${userId}`);
+    const data = await res.data;
+    return data;
+}
+
+
 export async function changeStatusAdmin(senderId: string, channelId: string, userId: string) {
     const res = await axios.get(
         Backend_URL + `/channel/changeStatusAdmin/${senderId}/${channelId}/${userId}`);
@@ -31,3 +39,11 @@ export async function kickMember(senderId: string, channelId: string, userId: st
     const data = await res.data;
     return data;
 }
+
+export async function ChangeStatusBanned(senderId: string, channelId: string, userId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/bannedmember/${senderId}/${channelId}/${userId}`);
+    const data = await res.data;
+    return data;
+}
+

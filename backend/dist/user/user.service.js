@@ -84,6 +84,48 @@ let UserService = class UserService {
         }));
         return result;
     }
+    async usersCanJoinChannel(senderId, channelId) {
+        const users = await this.prisma.user.findMany();
+        const blockerUsers = await this.prisma.blockedUser.findMany({
+            where: {
+                OR: [{ senderId: senderId }, { receivedId: senderId }],
+            },
+        });
+        const bannedUsersChannel = await this.prisma.bannedMember.findMany({
+            where: { channelId: channelId }
+        });
+        const membersChannel = await this.prisma.channelMember.findMany({
+            where: { channelId: channelId }
+        });
+        const cleanUser = users.filter((user) => {
+            if (user.id === senderId)
+                return false;
+            const found = blockerUsers.find((blk) => {
+                return ((senderId === blk.senderId && user.id === blk.receivedId) ||
+                    (senderId === blk.receivedId && user.id === blk.senderId));
+            });
+            if (found)
+                return false;
+            return true;
+        });
+        const cleanUser2 = cleanUser.filter((user) => {
+            const found = bannedUsersChannel.find((banned) => {
+                return (banned.userId === user.id);
+            });
+            if (found)
+                return false;
+            return true;
+        });
+        const result = cleanUser2.filter((user) => {
+            const found = membersChannel.find((banned) => {
+                return (banned.userId === user.id);
+            });
+            if (found)
+                return false;
+            return true;
+        });
+        return result;
+    }
     async getUserGeust(id) {
         const user = await this.findById(id);
         return {

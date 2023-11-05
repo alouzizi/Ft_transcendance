@@ -69,7 +69,9 @@ export async function getMembersChannel(id: string) {
     return members;
 }
 
-
-
-
-
+export async function usersCanJoinChannel(senderId: string, channelId: string) {
+    const res = await axios.get(
+        Backend_URL + `/user/getUsersCanJoinChannel/${senderId}/${channelId}`);
+    const data = await res.data;
+    return data;
+}

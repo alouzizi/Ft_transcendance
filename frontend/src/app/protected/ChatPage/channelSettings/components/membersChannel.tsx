@@ -5,6 +5,7 @@ import { Avatar, Text } from '@radix-ui/themes';
 import { useEffect, useState } from "react";
 import { getMembersChannel } from '../../api/fetch-users';
 import LongMenu from './alert_menu';
+import AlertsAddUserChannel from './addUser';
 
 
 
@@ -12,13 +13,16 @@ export default function MembersChannel() {
 
     const { user, geust } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
+    const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
 
 
     useEffect(() => {
         if (geust.id) {
             const getMemberChannel = async () => {
-                const tmp = await getMembersChannel(geust.id);
-                setMembers(tmp);
+                const tmp: { regularMembres: memberChannelDto[], bannedMembers: memberChannelDto[] }
+                    = await getMembersChannel(geust.id);
+                setMembers(tmp.regularMembres);
+                setBannedMembers(tmp.bannedMembers);
             }
             getMemberChannel();
             return () => {
@@ -26,10 +30,10 @@ export default function MembersChannel() {
         }
     }, [geust.id, geust.lastSee]);
 
-    const widgetMembers = members.map((member: memberChannelDto, index) => {
+    const widgetUser = (member: memberChannelDto) => {
         return (
-            <div key={index} className='bg-white my-1 w-[450px] h-[60px] rounded-lg
-                flex '>
+            <div key={member.userId} className='bg-white my-1 w-[450px] h-[60px] rounded-lg
+            flex '>
                 <div className='flex flex-grow  items-center justify-center pl-1.5'>
                     <Avatar
                         size="3"
@@ -48,7 +52,8 @@ export default function MembersChannel() {
                             {member.status === "Owner" ?
                                 <Text weight='light' color='gray' className='pr-1'>{member.status}</Text> :
                                 ((user.id === geust.idUserOwner) ?
-                                    <LongMenu member={member} /> :
+                                    <LongMenu member={member}
+                                        banned={isMemberExist(member, bannedmembers)} /> :
                                     <></>)
                             }
                         </div>
@@ -57,6 +62,18 @@ export default function MembersChannel() {
                 </div>
             </div>
         )
+    }
+    const isMemberExist = (member: memberChannelDto, listMember: memberChannelDto[]): boolean => {
+        const tmp = listMember.find((mbr) => (mbr.userId === member.userId));
+        if (tmp)
+            return true;
+        return false;
+    }
+    const widgetMembers = members.map((member: memberChannelDto, index) => {
+        return <div key={index}>{widgetUser(member)}</div>;
+    })
+    const widgetBannedMembers = bannedmembers.map((member: memberChannelDto, index) => {
+        return <div key={index}>{widgetUser(member)}</div>;
     })
 
 
@@ -70,6 +87,9 @@ export default function MembersChannel() {
                     // value={channelData.channleName}
                     onChange={(e) => { }}
                 ></input>
+
+                <AlertsAddUserChannel />
+
                 <button
                     className="w-fit font-meduim  py-1 rounded-md   text-white bg-green-700 hover:bg-green-600
                             text-xs px-2
@@ -77,8 +97,22 @@ export default function MembersChannel() {
                     Add User
                 </button>
             </div>
+            <div>
+                <div className='text-white'>{members.length} members</div>
+                {widgetMembers}
+            </div>
 
-            {widgetMembers}
+
+            {bannedmembers.length !== 0 ?
+                <div>
+                    <div className='text-white'>
+                        {bannedmembers.length} banned
+                    </div>
+                    {widgetBannedMembers}
+                </div> :
+                <div></div>}
+
+
 
             <hr className="border-b-[0.5px] mt-4 border-gray-600 w-3/4" />
 
