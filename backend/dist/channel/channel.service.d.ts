@@ -3,6 +3,7 @@ import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 export declare class ChannelService {
     private prisma;
     constructor(prisma: PrismaService);
+    createMessageInfoChannel(senderId: string, channelId: string, userId: string, msg: string): Promise<void>;
     createChannel(createChannelDto: CreateChannelDto, senderId: string): Promise<{
         id: string;
         channelName: string;

@@ -8,9 +8,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { GoDotFill } from "react-icons/go";
 import { IoMdAddCircle } from "react-icons/io";
-import { TbSquareRoundedPlusFilled } from "react-icons/tb";
-import { usersCanJoinChannel } from '../../api/fetch-users';
 import { addUserToChannel } from '../../api/fetch-channel';
+import { usersCanJoinChannel } from '../../api/fetch-users';
 
 
 
@@ -101,8 +100,14 @@ export default function AlertsAddUserChannel() {
     return (
         <div  >
 
-            <TbSquareRoundedPlusFilled style={{ color: 'blue', fontSize: '40px', cursor: 'pointer' }}
-                onClick={handleClickOpen} />
+            <button onClick={handleClickOpen}
+                className="w-fit font-meduim  py-1 rounded-md   text-white bg-green-700 hover:bg-green-600
+                            text-xs px-2
+                            md:text-sm lg:text-md lg:px-4">
+                Add User
+            </button>
+
+
             <Dialog
                 open={open}
                 keepMounted

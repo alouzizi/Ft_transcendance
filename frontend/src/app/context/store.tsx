@@ -11,15 +11,21 @@ enum Status {
 }
 
 interface ContextProps {
+    updateInfo: number,
+    setUpdateInfo: Dispatch<SetStateAction<number>>,
     user: ownerDto,
     setUser: Dispatch<SetStateAction<ownerDto>>,
     geust: geustDto,
     setGeust: Dispatch<SetStateAction<geustDto>>,
     socket: Socket | null, // Add the socket property
 
+
 }
 
 const GlobalContext = createContext<ContextProps>({
+    updateInfo: 1,
+    setUpdateInfo: () => { },
+
     user: {
         id: '-1',
         intra_id: '',
@@ -60,6 +66,9 @@ export const GlobalContextProvider = ({ children }: {
 }) => {
 
     const router = useRouter();
+
+    const [updateInfo, setUpdateInfo] = useState<number>(1);
+
 
     const [user, setUser] = useState<ownerDto>({
         id: '-1',
@@ -132,9 +141,21 @@ export const GlobalContextProvider = ({ children }: {
         if (user.id === "-1")
             getDataUser();
     }, []);
+
+    useEffect(() => {
+        const update = async () => {
+            setUpdateInfo(preValue => {
+                // console.log('---------> ', preValue);
+                return preValue + 1
+            });
+        };
+        if (socket) {
+            socket.on("updateData", update);
+        }
+    }, [socket]);
     console.log('----------------------------');
     return (
-        <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket }}>
+        <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket, updateInfo, setUpdateInfo }}>
             {children}
         </GlobalContext.Provider>
     )

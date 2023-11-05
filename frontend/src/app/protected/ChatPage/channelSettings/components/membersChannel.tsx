@@ -89,13 +89,6 @@ export default function MembersChannel() {
                 ></input>
 
                 <AlertsAddUserChannel />
-
-                <button
-                    className="w-fit font-meduim  py-1 rounded-md   text-white bg-green-700 hover:bg-green-600
-                            text-xs px-2
-                            md:text-sm lg:text-md lg:px-4">
-                    Add User
-                </button>
             </div>
             <div>
                 <div className='text-white'>{members.length} members</div>
