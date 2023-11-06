@@ -1,3 +1,4 @@
+import { Status } from "@prisma/client";
 declare enum ChannelType {
     Public = "Public",
     Private = "Private"
@@ -15,6 +16,7 @@ export declare class memberChannelDto {
     userId: string;
     nickname: string;
     profilePic: string;
-    status: string;
+    role: string;
+    status: Status;
 }
 export {};

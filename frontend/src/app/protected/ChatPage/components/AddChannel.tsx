@@ -114,17 +114,17 @@ export default function AlertAddChannel() {
                 console.log(user.id);
 
                 const res = await createChannel(channelData, user.id);
-                if (res.status === 202)
-                    setErrorName(res.error);
-                else {
-                    getDataGeust(res.id, false);
-                    setOpen(false);
-                    resetData();
-                }
-                // if (socket) {
-                //     socket.emit('updateData', {
-                //     });
-                // }
+
+                getDataGeust(res.id, false);
+                setOpen(false);
+                socket?.emit('updateData', {
+                    content: '',
+                    senderId: user.id,
+                    isDirectMessage: false,
+                    receivedId: res.id,
+                });
+                resetData();
+
             }
         }
         createCha();

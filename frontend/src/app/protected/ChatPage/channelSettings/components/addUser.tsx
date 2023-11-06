@@ -60,9 +60,9 @@ export default function AlertsAddUserChannel() {
                         fallback="T"
                         style={{ height: '40px', borderRadius: '40px', cursor: 'pointer' }}
                     />
-                    <div className='absolute pt-7 pl-7'>
-                        <GoDotFill size={15} />
-                        {/* color={getColorStatus(elm.status)} */}
+                    <div className='absolute pt-[20px] pl-[25px]'>
+                        <GoDotFill size={24}
+                            color={(elm.status === 'ACTIF') ? "#15ff00" : "#9b9c9b"} />
                     </div>
                     <Text size="3" weight="bold" className='pl-2'>
                         {elm.nickname}

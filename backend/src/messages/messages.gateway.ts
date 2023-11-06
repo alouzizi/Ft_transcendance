@@ -106,11 +106,10 @@ export class MessagesGateway
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } })
       for (const member of channelMembers) {
-        console.log('member id -> ', member.userId);
         this.wss.to(member.userId).emit('updateData', {});
       }
-    }
-    this.wss.to(ids.receivedId).emit('updateData', {});
+    } else
+      this.wss.to(ids.receivedId).emit('updateData', {});
   }
 
   @SubscribeMessage('isTyping')

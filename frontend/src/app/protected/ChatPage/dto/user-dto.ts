@@ -95,5 +95,6 @@ type memberChannelDto = {
   userId: string;
   nickname: string;
   profilePic: string;
-  status: string;
+  role: string;
+  status: Status;
 }

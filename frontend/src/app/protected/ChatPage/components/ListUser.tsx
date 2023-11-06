@@ -8,7 +8,7 @@ import { getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users
 import { extractHoursAndM } from './widgetMsg';
 import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
-import { dir } from 'console';
+
 
 export function getColorStatus(status: any): string {
   if (status === "ACTIF") {
@@ -24,31 +24,25 @@ const ListUser = () => {
   const { setGeust, geust, socket, user, updateInfo } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
-  // const [itemListDirect, setItemListDirect] = useState<messageDto[]>([]);
-  // const [itemListChannel, setItemListChannel] = useState<messageDto[]>([]);
-
-
 
   const [direct, setDirect] = useState<boolean>(true);
 
   useEffect(() => {
     const getListUsers = async () => {
-      console.log("-------------------------- *********** --------");
       const usersList = await getUserForMsg(user.id);
       setItemList(usersList)
     };
     getListUsers();
     if (socket) {
       socket.on("findMsg2UsersResponse", getListUsers);
-      socket.on("updateData", getListUsers);
     }
-  }, [socket, updateInfo])
+    return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
+  }, [socket])
 
   useEffect(() => {
-    console.log("-------------------------- *********** ", updateInfo);
     const getListUsers = async () => {
       const usersList = await getUserForMsg(user.id);
-      setItemList(usersList)
+      setItemList(usersList);
     };
     getListUsers();
   }, [updateInfo])
@@ -62,17 +56,23 @@ const ListUser = () => {
     setGeust(geustTemp);
   };
 
-  // useEffect(() => {
-  //   if (geust.id === "-1" && itemList.length !== 0) {
-  //     getDataGeust(itemList[0]);
-  //   }
-  //   // mazal matistatx
-  //   // if (users.length  === 0 && geust.id !== 0) {
-  //   //   setUsers([geust]);
-  //   //   setLastMsgs([])
-  //   // }
-  // }, [itemList])
-
+  useEffect(() => {
+    if (direct) {
+      if (itemListDirect.length !== 0) {
+        itemListWidget = userWidgetDirect;
+        getDataGeust(itemListDirect[0]);
+      } else if (itemListChannel.length !== 0) {
+        getDataGeust(itemListChannel[0]);
+      }
+    } else {
+      if (itemListChannel.length !== 0) {
+        itemListWidget = userWidgetChannel;
+        getDataGeust(itemListChannel[0]);
+      } else if (itemListDirect.length !== 0) {
+        getDataGeust(itemListDirect[0]);
+      }
+    }
+  }, [direct, itemList])
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
@@ -133,23 +133,7 @@ const ListUser = () => {
 
   let itemListWidget: JSX.Element | JSX.Element[] = [];
 
-  useEffect(() => {
-    if (direct) {
-      if (itemListDirect.length !== 0) {
-        itemListWidget = userWidgetDirect;
-        getDataGeust(itemListDirect[0]);
-      } else if (itemListChannel.length !== 0) {
-        getDataGeust(itemListChannel[0]);
-      }
-    } else {
-      if (itemListChannel.length !== 0) {
-        itemListWidget = userWidgetChannel;
-        getDataGeust(itemListChannel[0]);
-      } else if (itemListDirect.length !== 0) {
-        getDataGeust(itemListDirect[0]);
-      }
-    }
-  }, [direct, itemList])
+
 
   let styles: string = 'px-2 py-1 my-2 rounded-[20px] text-[#3055d8] bg-white shadow-md';
   return (

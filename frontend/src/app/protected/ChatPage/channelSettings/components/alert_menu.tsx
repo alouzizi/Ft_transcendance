@@ -39,10 +39,8 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
     React.useEffect(() => {
 
         if (banned) setOptions(allOptions['banned']);
-        else if (member.status === 'Admin') setOptions(allOptions['regulerAdmin']);
+        else if (member.role === 'Admin') setOptions(allOptions['regulerAdmin']);
         else setOptions(allOptions['regulerNotAdmin']);
-
-
         return (() => { setOptions([]) })
     }, [geust.lastSee, open]);
 

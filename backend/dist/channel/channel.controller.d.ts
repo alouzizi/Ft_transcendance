@@ -30,4 +30,5 @@ export declare class ChannelController {
     changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
     kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    leaveChannel(senderId: string, channelId: string): Promise<boolean>;
 }

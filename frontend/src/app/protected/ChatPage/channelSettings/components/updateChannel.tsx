@@ -11,6 +11,7 @@ import Radio from '@mui/material/Radio';
 import { getChannel } from "../../api/fetch-channel";
 import Checkbox from '@mui/material/Checkbox';
 import { z } from "zod";
+import { BiSolidExit } from "react-icons/bi";
 
 enum ChannelType {
     Public = 'Public',
@@ -133,6 +134,7 @@ export default function UpdateChannel() {
                     ></input>
                 </div>
 
+                <BiSolidExit color='white' size='25px' />
             </div>
             <hr className="border-b-[0.5px] border-gray-600 w-3/4" />
         </div>

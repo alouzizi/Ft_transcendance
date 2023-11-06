@@ -17,6 +17,13 @@ export async function addUserToChannel(senderId: string, channelId: string, user
     return data;
 }
 
+export async function leaveChannel(senderId: string, channelId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/leaveChannel/${senderId}/${channelId}`);
+    const data = await res.data;
+    return data;
+}
+
 
 export async function changeStatusAdmin(senderId: string, channelId: string, userId: string) {
     const res = await axios.get(

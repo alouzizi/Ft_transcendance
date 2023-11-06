@@ -59,13 +59,12 @@ model Channel {
   createdAt       DateTime    @default(now())
   avatar          String?
 
-  User           User?  @relation(fields: [channelOwnerId], references: [id])
-  channelOwnerId String
+  channelOwnerId String?
+  User           User?   @relation(fields: [channelOwnerId], references: [id])
 
   Message Message[]
 
   ChannelMember ChannelMember[]
-  KickedMember  KickedMember[]
   BannedMember  BannedMember[]
 }
 
@@ -125,18 +124,6 @@ model ChannelMember {
 
   userId  String
   isAdmin Boolean
-
-  Channel   Channel @relation(fields: [channelId], references: [id])
-  channelId String
-
-  @@unique([userId, channelId], name: "Unique_userId_channelId")
-}
-
-model KickedMember {
-  id String @id @default(uuid())
-
-  userId    String
-  kicked_at DateTime @default(now())
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String

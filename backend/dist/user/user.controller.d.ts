@@ -84,6 +84,15 @@ export declare class UserController {
         lastSee: Date;
         lenUser: number;
         idUserOwner: number;
+    } | {
+        isUser: boolean;
+        id: string;
+        nickname: string;
+        profilePic: string;
+        status: string;
+        lastSee: number;
+        lenUser: number;
+        idUserOwner: number;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;

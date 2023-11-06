@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BannedMember, ChannelMember, KickedMember, Prisma, User } from '@prisma/client';
+import { BannedMember, Channel, ChannelMember, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 
@@ -19,10 +19,11 @@ export class ChannelService {
       data: {
         senderId: senderId,
         receivedId: channelId,
-        content: user ? `${msg} ${user.nickname}` : `${msg}`,
+        content: (user) ? `${msg} ${user.nickname}` : `${msg}`,
         isDirectMessage: false,
         InfoMessage: true,
         channelId: channelId,
+
       }
     });
   }
@@ -38,6 +39,7 @@ export class ChannelService {
           avatar: "https://randomuser.me/api/portraits/women/82.jpg"
         }
       })
+      this.createMessageInfoChannel(senderId, newChannel.id, '', 'create group');
       // add Owner
       await this.prisma.channelMember.create({
         data: {
@@ -46,9 +48,8 @@ export class ChannelService {
           channelId: newChannel.id,
         }
       })
-      this.createMessageInfoChannel(senderId, newChannel.id, '', 'create group');
+      // add members
       createChannelDto.channelMember.forEach(async (item: string) => {
-        const userAdd: User = await this.prisma.user.findUnique({ where: { id: item } });
         await this.prisma.channelMember.create({
           data: {
             userId: item,
@@ -56,7 +57,7 @@ export class ChannelService {
             channelId: newChannel.id,
           }
         });
-        this.createMessageInfoChannel(senderId, newChannel.id, '', 'added');
+        this.createMessageInfoChannel(senderId, newChannel.id, item, 'added');
       });
       return newChannel;
     } catch (error) {
@@ -125,7 +126,8 @@ export class ChannelService {
         userId: member.userId,
         nickname: user.nickname,
         profilePic: user.profilePic,
-        status: 'banned'
+        role: 'banned',
+        status: user.status,
       }
       result.push(temp);
     }
@@ -145,7 +147,8 @@ export class ChannelService {
         userId: member.userId,
         nickname: user.nickname,
         profilePic: user.profilePic,
-        status: (member.userId === channel.channelOwnerId) ? "Owner"
+        status: user.status,
+        role: (member.userId === channel.channelOwnerId) ? "Owner"
           : (member.isAdmin ? 'Admin' : 'User')
       }
       result.push(temp);
@@ -183,6 +186,58 @@ export class ChannelService {
         },
       },
       )
+      return true;
+    }
+    return false;
+  }
+
+  async leaveChannel(senderId: string, channelId: string) {
+    const channel: Channel = await this.prisma.channel.findUnique({
+      where: { id: channelId }
+    })
+    const members: ChannelMember[] = await this.prisma.channelMember.findMany({
+      where: { channelId },
+    });
+    const user: ChannelMember = await this.prisma.channelMember.findUnique({
+      where: {
+        Unique_userId_channelId: { channelId, userId: senderId }
+      },
+    });
+
+    if (user) {
+      await this.prisma.channelMember.delete({
+        where: { Unique_userId_channelId: { channelId, userId: senderId } }
+      });
+      this.createMessageInfoChannel(senderId, channelId, '', 'leaved');
+      if (members.length === 1) {
+        await this.prisma.message.deleteMany({ where: { channelId } });
+        await this.prisma.bannedMember.deleteMany({ where: { channelId } });
+        await this.prisma.channel.delete({ where: { id: channelId } })
+      } else {
+        if (channel.channelOwnerId === senderId) {
+          let newOwner: ChannelMember = await this.prisma.channelMember.findFirst(
+            { where: { channelId, isAdmin: true } })
+          if (!newOwner) {
+            newOwner = await this.prisma.channelMember.findFirst(
+              { where: { channelId } })
+          }
+          if (newOwner) {
+            const user = await this.prisma.user.findUnique({ where: { id: newOwner.userId } })
+            await this.prisma.channel.update({
+              where: { id: channelId },
+              data: {
+                channelOwnerId: newOwner.userId
+              }
+            })
+            await this.prisma.channelMember.update({
+              where: { Unique_userId_channelId: { channelId, userId: newOwner.userId } },
+              data: { isAdmin: true }
+            })
+          }
+        }
+      }
+
+
       return true;
     }
     return false;

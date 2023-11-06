@@ -153,7 +153,7 @@ export const GlobalContextProvider = ({ children }: {
             socket.on("updateData", update);
         }
     }, [socket]);
-    console.log('----------------------------');
+    console.log('----------------------------> ', updateInfo);
     return (
         <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket, updateInfo, setUpdateInfo }}>
             {children}

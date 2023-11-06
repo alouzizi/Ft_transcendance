@@ -1,5 +1,7 @@
 // import { ChannelType } from "@prisma/client";
 
+import { Status } from "@prisma/client";
+
 
 
 
@@ -22,5 +24,6 @@ export class memberChannelDto {
     userId: string;
     nickname: string;
     profilePic: string;
-    status: string;
+    role: string;
+    status: Status;
 }

@@ -51,4 +51,9 @@ export class ChannelController {
     return this.channelService.changeStatutsBanned(senderId, channelId, userId);
   }
 
+
+  @Get('/leaveChannel/:senderId/:channelId')
+  leaveChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.leaveChannel(senderId, channelId);
+  }
 }

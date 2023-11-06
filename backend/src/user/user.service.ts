@@ -132,13 +132,24 @@ export class UserService {
 
   async getUserGeust(id: string) {
     const user = await this.findById(id);
+    if (user)
+      return {
+        isUser: true,
+        id: user.id,
+        nickname: user.nickname,
+        profilePic: user.profilePic,
+        status: user.status,
+        lastSee: user.lastSee,
+        lenUser: 0,
+        idUserOwner: 0,
+      };
     return {
       isUser: true,
-      id: user.id,
-      nickname: user.nickname,
-      profilePic: user.profilePic,
-      status: user.status,
-      lastSee: user.lastSee,
+      id: '-1',
+      nickname: '',
+      profilePic: '',
+      status: '',
+      lastSee: 0,
       lenUser: 0,
       idUserOwner: 0,
     };

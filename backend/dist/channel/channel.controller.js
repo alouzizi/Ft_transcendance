@@ -46,6 +46,9 @@ let ChannelController = class ChannelController {
     banMember(senderId, channelId, userId) {
         return this.channelService.changeStatutsBanned(senderId, channelId, userId);
     }
+    leaveChannel(senderId, channelId) {
+        return this.channelService.leaveChannel(senderId, channelId);
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -107,6 +110,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "banMember", null);
+__decorate([
+    (0, common_1.Get)('/leaveChannel/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "leaveChannel", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])
