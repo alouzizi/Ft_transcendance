@@ -6,11 +6,13 @@ import { UserModule } from "./user/user.module";
 import { MessagesModule } from "./messages/messages.module";
 import { FriendshipModule } from "./friendship/friendship.module";
 import { ChannelModule } from './channel/channel.module';
+import { GameModule } from "./game/game.module";
 
 
 
 @Module({
   imports: [
+    GameModule,
     AuthModule,
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,4 +22,5 @@ import { ChannelModule } from './channel/channel.module';
     ChannelModule,
   ],
 })
+
 export class AppModule { }

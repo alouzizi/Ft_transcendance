@@ -23,7 +23,6 @@ let AuthController = class AuthController {
     async loginWith42() {
     }
     async callbackWith42(req, res) {
-        console.log("profil howa niit ?? :", req.user);
         const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
         if (ret != null) {
         }

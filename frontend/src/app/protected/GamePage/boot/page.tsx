@@ -1,9 +1,7 @@
 "use client";
 
 import { Canvas, canvasContext } from "../components/interface";
-import Pong from "../components/pong";
-
-
+import Pong from "../components/Bootpong";
 
 export default function Home() {
   const canvas: Canvas = {

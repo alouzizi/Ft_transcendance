@@ -1,9 +1,9 @@
-import { OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect } from '@nestjs/websockets';
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { Server, Socket } from 'socket.io';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
+import { OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect } from "@nestjs/websockets";
+import { MessagesService } from "./messages.service";
+import { CreateMessageDto } from "./dto/create-message.dto";
+import { Server, Socket } from "socket.io";
+import { PrismaService } from "src/prisma/prisma.service";
+import { UserService } from "src/user/user.service";
 export declare class MessagesGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private messagesService;
     private prisma;

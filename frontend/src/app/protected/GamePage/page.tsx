@@ -1,6 +1,7 @@
 "use client";
+import { useEffect } from "react";
 import MyComponent from "./components/playBord";
-// import '@fontsource/fredoka-one';
+
 export default function Home() {
   return (
     <div className="mt-12 mb-8 ml-8  md:ml-24">
@@ -10,6 +11,7 @@ export default function Home() {
           Training
         </h2>
         <MyComponent
+          emit={false}
           imageSrc="/boot.jpg"
           title="pongmaster bot"
           text="Pongmaster BOT is your ultimate training partner in the game, helping you hone your skills to become a true Pong champion."
@@ -22,6 +24,7 @@ export default function Home() {
           Random
         </h2>
         <MyComponent
+          emit={true}
           imageSrc="/random.jpg"
           title="pongmaster random"
           text="Pongmaster RANDOM is when you challenge your skills against unpredictable opponents in thrilling, random-match gameplay!"

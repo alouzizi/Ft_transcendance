@@ -38,7 +38,6 @@ let AuthService = class AuthService {
         });
         const myUser = user;
         delete myUser.hash;
-        console.log("user -> ", user);
         return {
             access_token: access_token,
             refresh_token: refresh_token,
