@@ -169,6 +169,8 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
             messageTmp = `You ${message.contentMsg}`;
         else
             messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('left')) {
+        messageTmp = `${message.senderName} ${message.contentMsg}`
     }
     return (
         <div className='mt-1'>

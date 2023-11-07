@@ -14,7 +14,7 @@ export default function MembersChannel() {
 
     const [searsh, setSearsh] = useState('');
 
-    const { user, geust, updateInfo } = useGlobalContext();
+    const { user, geust, socket, updateInfo } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
@@ -157,6 +157,12 @@ export default function MembersChannel() {
 
                 <button onClick={async () => {
                     const tmp = await leaveChannel(user.id, geust.id);
+                    socket?.emit('updateData', {
+                        content: '',
+                        senderId: user.id,
+                        isDirectMessage: false,
+                        receivedId: geust.id,
+                    });
                     router.push('/protected/ChatPage');
 
                 }}
@@ -170,20 +176,5 @@ export default function MembersChannel() {
 
         </div >
 
-
-
-
-        // hover:bg-green-600
     );
 }
-
-
-{/* <div className='pt-5'>
-                <button
-                    className="mr-4 w-fit font-meduim  py-1 rounded-md bg-color-main-whith text-white
-                     hover:bg-green-600
-                            text-xs px-2
-                            md:text-sm lg:text-md lg:px-4">
-                    Save Change
-                </button>
-            </div> */}

@@ -208,7 +208,7 @@ export class ChannelService {
       await this.prisma.channelMember.delete({
         where: { Unique_userId_channelId: { channelId, userId: senderId } }
       });
-      this.createMessageInfoChannel(senderId, channelId, '', 'leaved');
+      this.createMessageInfoChannel(senderId, channelId, '', 'left');
       if (members.length === 1) {
         await this.prisma.message.deleteMany({ where: { channelId } });
         await this.prisma.bannedMember.deleteMany({ where: { channelId } });
