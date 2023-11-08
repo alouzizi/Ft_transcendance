@@ -33,7 +33,7 @@ export default function AlertSave() {
 
                             <button onClick={async () => { }}
                                 className="rounded-sm text-white bg-green-500 ml-2 px-1
-                        hover:bg-green-900   hover:">
+                        hover:bg-green-900">
                                 <Text size='2' > Save Changes</Text>
 
                             </button>

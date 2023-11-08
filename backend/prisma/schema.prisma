@@ -52,12 +52,15 @@ model User {
 }
 
 model Channel {
-  id              String      @id @default(uuid())
-  channelName     String      @unique
-  channelType     ChannelType @default(Public)
+  id          String      @id @default(uuid())
+  channelName String      @unique
+  channelType ChannelType @default(Public)
+
+  protected       Boolean @default(false)
   channelPassword String
-  createdAt       DateTime    @default(now())
-  avatar          String?
+
+  createdAt DateTime @default(now())
+  avatar    String?
 
   channelOwnerId String?
   User           User?   @relation(fields: [channelOwnerId], references: [id])

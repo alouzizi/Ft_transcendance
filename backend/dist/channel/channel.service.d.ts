@@ -8,6 +8,7 @@ export declare class ChannelService {
         id: string;
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
         channelPassword: string;
         createdAt: Date;
         avatar: string;
@@ -20,8 +21,8 @@ export declare class ChannelService {
     getChannel(senderId: string, channelId: string): Promise<{
         channleName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
-        protected: boolean;
         channlePassword: string;
+        protected: boolean;
         avatar: string;
         channelOwnerId: string;
     }>;
@@ -29,6 +30,7 @@ export declare class ChannelService {
         id: string;
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
         channelPassword: string;
         createdAt: Date;
         avatar: string;

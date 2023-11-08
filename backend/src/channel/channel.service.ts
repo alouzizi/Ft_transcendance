@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BannedMember, Channel, ChannelMember, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
+import * as bcrypt from 'bcrypt';
 
 
 
@@ -23,20 +24,23 @@ export class ChannelService {
         isDirectMessage: false,
         InfoMessage: true,
         channelId: channelId,
-
       }
     });
   }
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
-    console.log('----> ', createChannelDto);
+    const saltRounds = 10;
+    let pass: string = '';
+    if (createChannelDto.channlePassword != '')
+      pass = await bcrypt.hash("password", saltRounds);
     try {
       const newChannel = await this.prisma.channel.create({
         data: {
           channelOwnerId: senderId,
           channelName: createChannelDto.channleName,
-          channelPassword: createChannelDto.channlePassword,
+          channelPassword: pass,
           channelType: createChannelDto.channelType,
+          protected: createChannelDto.protected,
           avatar: "https://randomuser.me/api/portraits/women/82.jpg"
         }
       })
@@ -65,7 +69,6 @@ export class ChannelService {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           return { status: 202, error: 'Name is already used' };
-
         } else {
           console.error('Prisma error:', error);
         }
@@ -99,12 +102,11 @@ export class ChannelService {
         id: channelId,
       },
     });
-    console.log(channel);
     return {
       channleName: channel.channelName,
       channelType: channel.channelType,
-      protected: (channel.channelPassword === '') ? false : true,
-      channlePassword: '8888',
+      channlePassword: channel.protected ? '8989898' : '',
+      protected: channel.protected,
       avatar: channel.avatar,
       channelOwnerId: channel.channelOwnerId
     }

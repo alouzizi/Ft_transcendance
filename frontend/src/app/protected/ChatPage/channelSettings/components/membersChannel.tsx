@@ -153,8 +153,6 @@ export default function MembersChannel() {
 
             <div className='flex pt-1 items-center justify-end text-red-500  w-3/4'>
 
-
-
                 <button onClick={async () => {
                     const tmp = await leaveChannel(user.id, geust.id);
                     socket?.emit('updateData', {

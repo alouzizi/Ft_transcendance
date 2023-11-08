@@ -13,6 +13,7 @@ exports.ChannelService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
+const bcrypt = require("bcrypt");
 let ChannelService = class ChannelService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -31,14 +32,18 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
-        console.log('----> ', createChannelDto);
+        const saltRounds = 10;
+        let pass = '';
+        if (createChannelDto.channlePassword != '')
+            pass = await bcrypt.hash("password", saltRounds);
         try {
             const newChannel = await this.prisma.channel.create({
                 data: {
                     channelOwnerId: senderId,
                     channelName: createChannelDto.channleName,
-                    channelPassword: createChannelDto.channlePassword,
+                    channelPassword: pass,
                     channelType: createChannelDto.channelType,
+                    protected: createChannelDto.protected,
                     avatar: "https://randomuser.me/api/portraits/women/82.jpg"
                 }
             });
@@ -96,12 +101,11 @@ let ChannelService = class ChannelService {
                 id: channelId,
             },
         });
-        console.log(channel);
         return {
             channleName: channel.channelName,
             channelType: channel.channelType,
-            protected: (channel.channelPassword === '') ? false : true,
-            channlePassword: '8888',
+            channlePassword: channel.protected ? '8989898' : '',
+            protected: channel.protected,
             avatar: channel.avatar,
             channelOwnerId: channel.channelOwnerId
         };
