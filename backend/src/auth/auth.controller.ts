@@ -37,7 +37,7 @@ export class AuthController {
       if (ret != null){
         // res.cookie("auth",ret);
       }
-      req.cookies('intra_id', req.user.accessToken);
+      res.cookie('intra_id', req.user.accessToken);
       res.cookie('access_token', ret.access_token);
       // req.cookies(accessToken:'accessToken' ,JWT_SECRET);
     res.redirect("http://localhost:3000/protected/DashboardPage");

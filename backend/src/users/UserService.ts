@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, PrismaClient} from '@prisma/client';
+import { Prisma, PrismaClient} from '@prisma/client'; 
 import { JwtService } from '@nestjs/jwt';
 import { MessagesService } from "src/messages/messages.service";
 import { MessageItemList } from "./dto/user.dto";
@@ -30,7 +30,6 @@ export class UserService {
       },
     
     });
-    console.log("prisma user is ",user)
     return user;
   }
 
@@ -52,11 +51,24 @@ export class UserService {
       data,
     });
   }
+  async updatUserdata(intra_id: string,nickname: String,image: String){
+    const user = await this.prisma.user.update({
+      where:{
+        intra_id: intra_id,
+      },
+      data:{
+        nickname: nickname,
+        profilePic: image,
+      }
+    });
+    return user;
+  }
 async findByIntraId(intra_id: string){
+  console.log("untra id = ",intra_id);
   return this.prisma.user.findUnique({
-    where: { intra_id: intra_id },
+    where: { intra_id: intra_id }, 
     
-  });
+  }); 
 }
   async deleteUser(id: string){
     return this.prisma.user.delete({
@@ -138,7 +150,6 @@ async findByIntraId(intra_id: string){
     return result;
   }
 
-
   async getUserGeust(id: string) {
     const user = await this.findById(id);
     return {
@@ -152,7 +163,6 @@ async findByIntraId(intra_id: string){
       lenUserLive: 0,
     };
   }
-
 
   async getChannelGeust(id: string) {
     const channel = await this.channelService.findChannelById(id);
