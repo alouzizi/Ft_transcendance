@@ -15,6 +15,7 @@ const user_module_1 = require("./user/user.module");
 const messages_module_1 = require("./messages/messages.module");
 const friendship_module_1 = require("./friendship/friendship.module");
 const channel_module_1 = require("./channel/channel.module");
+const socket_module_1 = require("./socket/socket.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -28,6 +29,7 @@ exports.AppModule = AppModule = __decorate([
             messages_module_1.MessagesModule,
             friendship_module_1.FriendshipModule,
             channel_module_1.ChannelModule,
+            socket_module_1.SocketGatewayModule
         ],
     })
 ], AppModule);

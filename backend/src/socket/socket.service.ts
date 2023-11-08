@@ -1,34 +1,16 @@
-import {
-  WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayInit,
-  OnGatewayDisconnect,
-  WebSocketServer,
-} from '@nestjs/websockets';
-
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { Server, Socket } from 'socket.io';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Server, Socket } from 'socket.io';
 import { MessageStatus, Status } from '@prisma/client';
-import { UserService } from 'src/user/user.service';
+import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 
-@WebSocketGateway()
-export class MessagesGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+@Injectable()
+export class SocketGatewayService {
   constructor(
-    private messagesService: MessagesService,
-    private prisma: PrismaService,
-    private userService: UserService) { }
-  @WebSocketServer() wss: Server;
+    private prisma: PrismaService,) { }
 
-  afterInit(server: any) {
-    console.log('Gateway Initialized');
-  }
 
-  async handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, wss: Server) {
     console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
     if (typeof client.handshake.query.senderId === 'string') {
       client.join(client.handshake.query.senderId);
@@ -64,7 +46,7 @@ export class MessagesGateway
             },
           });
           for (const user of activeUsers) {
-            this.wss.to(user.id.toString()).emit('updateData', {});
+            wss.to(user.id.toString()).emit('updateData', {});
           }
         } catch (error) {
           console.error('Error while handling connection:', error);
@@ -73,8 +55,7 @@ export class MessagesGateway
     }
   }
 
-
-  async handleDisconnect(client: any) {
+  async handleDisconnect(client: Socket, wss: Server) {
     console.log(`Client disconnected: ---> ${client.id}`);
     if (typeof client.handshake.query.senderId === 'string') {
       await this.prisma.user.update({
@@ -88,32 +69,21 @@ export class MessagesGateway
       })
       const users = await this.prisma.user.findMany();
       for (let i = 0; i < users.length; i++) {
-        this.wss.to(users[i].id).emit('updateData', {});
+        wss.to(users[i].id).emit('updateData', {});
       }
     }
   }
 
-  @SubscribeMessage('createMessage')
-  async createMessage(
-    @MessageBody() createMessageDto: CreateMessageDto,
-  ) {
-    await this.messagesService.createMessage(this.wss, createMessageDto);
-  }
 
-  @SubscribeMessage('updateData')
-  async updateData(@MessageBody() ids: CreateMessageDto,) {
-    this.wss.to(ids.senderId).emit('updateData', {});
+  async updateData(ids: CreateMessageDto, wss: Server) {
+    wss.to(ids.senderId).emit('updateData', {});
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } })
       for (const member of channelMembers) {
-        this.wss.to(member.userId).emit('updateData', {});
+        wss.to(member.userId).emit('updateData', {});
       }
     } else
-      this.wss.to(ids.receivedId).emit('updateData', {});
+      wss.to(ids.receivedId).emit('updateData', {});
   }
 
-  @SubscribeMessage('isTyping')
-  async isTyping(@MessageBody() ids: CreateMessageDto,) {
-    this.wss.to(ids.receivedId).emit('isTyping', ids);
-  }
 }
