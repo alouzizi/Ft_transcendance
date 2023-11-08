@@ -49,16 +49,11 @@ const Pong = () => {
       const mouseY = e .clientY - rect.top - player.height / 2;
       player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
       // console.log("mouseY: ", player.y);
-      // socket.emit("updatePaddle", { userId: user.id, paddle: player.y});
+      socket.emit("updatePaddle", { userId: user.id, paddle: player.y});
       console.log("allo: sending paddle update!");
-    };
-
-    socket.on("connect", () => {
-      console.log("allo: sock front connected!");
-    });
-  
+    };  
     // let test: number;
-    socket.on("resivePaddle", (data: any) => {
+    socket.on("updatePaddle", (data: any) => {
       // console.log('Paddle update received --------------->');
       // console.log(data);
       computer.y =  data;

@@ -21,12 +21,12 @@ import {
   //   @WebSocketServer()
   //   server: Server;
   
-  //   onModuleInit() {
-  //     this.server.on('connection', (socket) => {
-  //       console.log({ sockId: socket.id });
-  //       console.log('connected');
-  //     });
-  //   }
+    // onModuleInit() {
+    //   this.server.on('connection', (socket) => {
+    //     console.log({ sockId: socket.id });
+    //     console.log('connected');
+    //   });
+    // }
   
   //   @SubscribeMessage('updatePaddle')
   //   onUpdatePaddle(client: Socket, data: any) {
