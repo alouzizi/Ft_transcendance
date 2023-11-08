@@ -20,11 +20,18 @@ interface ContextProps {
     socket: Socket | null, // Add the socket property
 
 
+    saveChanges: number,
+    setSaveChanges: Dispatch<SetStateAction<number>>,
+
+
 }
 
 const GlobalContext = createContext<ContextProps>({
     updateInfo: 1,
     setUpdateInfo: () => { },
+
+    saveChanges: 1,
+    setSaveChanges: () => { },
 
     user: {
         id: '-1',
@@ -68,7 +75,7 @@ export const GlobalContextProvider = ({ children }: {
     const router = useRouter();
 
     const [updateInfo, setUpdateInfo] = useState<number>(1);
-
+    const [saveChanges, setSaveChanges] = useState<number>(1);
 
     const [user, setUser] = useState<ownerDto>({
         id: '-1',
@@ -145,7 +152,6 @@ export const GlobalContextProvider = ({ children }: {
     useEffect(() => {
         const update = async () => {
             setUpdateInfo(preValue => {
-                // console.log('---------> ', preValue);
                 return preValue + 1
             });
         };
@@ -155,7 +161,10 @@ export const GlobalContextProvider = ({ children }: {
     }, [socket]);
     console.log('----------------------------> ', updateInfo);
     return (
-        <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket, updateInfo, setUpdateInfo }}>
+        <GlobalContext.Provider value={{
+            geust, setGeust, user, setUser, socket,
+            updateInfo, setUpdateInfo, saveChanges, setSaveChanges
+        }}>
             {children}
         </GlobalContext.Provider>
     )

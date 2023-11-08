@@ -1,17 +1,14 @@
 'use client';
-import TextField from '@mui/material/TextField';
-import { useEffect } from "react";
 import { useGlobalContext } from '@/app/context/store';
-import { Avatar, Text } from '@radix-ui/themes';
-import { useState } from 'react';
-import RadioGroup from '@mui/material/RadioGroup';
+import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import { getChannel } from "../../api/fetch-channel";
-import Checkbox from '@mui/material/Checkbox';
+import RadioGroup from '@mui/material/RadioGroup';
+import { Avatar, Text } from '@radix-ui/themes';
+import { useEffect, useState } from "react";
 import { z } from "zod";
-import { BiSolidExit } from "react-icons/bi";
+import { getChannel } from "../../api/fetch-channel";
 
 enum ChannelType {
     Public = 'Public',
@@ -20,13 +17,14 @@ enum ChannelType {
 
 export default function UpdateChannel() {
 
-    const { user, geust } = useGlobalContext();
+    const { user, geust, saveChanges, setSaveChanges } = useGlobalContext();
 
 
     const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
     const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
 
     const handleChannelType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSaveChanges((pre) => { return pre + 1 });
         setChannelData((prevState) => {
             return { ...prevState, channelType: ChannelType.Public };
         });
@@ -38,6 +36,7 @@ export default function UpdateChannel() {
     };
 
     const [protect, setProtected] = useState<boolean>(false);
+
     const [channelData, setChannelData] = useState<channelDto>({
         channleName: '',
         channelType: ChannelType.Public,
@@ -47,11 +46,12 @@ export default function UpdateChannel() {
         protected: false,
         channelMember: []
     })
-
+    const [channel, setChannel] = useState<channelDto>(channelData);
     useEffect(() => {
 
         const getData = async () => {
             const tmp: channelDto = await getChannel(user.id, geust.id);
+            setChannel(tmp);
             setChannelData(tmp);
         }
         if (geust.id !== '-1' && !geust.isUser) getData();
@@ -59,7 +59,23 @@ export default function UpdateChannel() {
         };
     }, []);
 
+    const isSameChannel = (channel1: channelDto, channel2: channelDto): boolean => {
+        return channel1.channleName === channel2.channleName &&
+            channel1.channelType === channel2.channelType &&
+            channel1.protected === channel2.protected
+    }
+
+    useEffect(() => {
+        if (isSameChannel(channel, channelData)) setSaveChanges(1);
+        if (saveChanges === -1) {
+            setChannelData(channel);
+            setSaveChanges(1);
+        }
+    }, [saveChanges]);
+
     if (channelData.avatar === '') return <div></div>
+
+
 
     return (
         <div className="flex flex-col items-center justify-centser">
@@ -81,6 +97,7 @@ export default function UpdateChannel() {
                         placeholder={channelData.channleName}
                         value={channelData.channleName}
                         onChange={(e) => {
+                            setSaveChanges((pre) => { return pre + 1 });
                             setChannelData((prevState) => {
                                 return { ...prevState, channleName: e.target.value };
                             })
@@ -134,7 +151,6 @@ export default function UpdateChannel() {
                     ></input>
                 </div>
 
-                <BiSolidExit color='white' size='25px' />
             </div>
             <hr className="border-b-[0.5px] border-gray-600 w-3/4" />
         </div>

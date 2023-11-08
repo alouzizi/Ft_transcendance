@@ -31,6 +31,7 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
+        console.log('----> ', createChannelDto);
         try {
             const newChannel = await this.prisma.channel.create({
                 data: {
@@ -95,6 +96,7 @@ let ChannelService = class ChannelService {
                 id: channelId,
             },
         });
+        console.log(channel);
         return {
             channleName: channel.channelName,
             channelType: channel.channelType,
