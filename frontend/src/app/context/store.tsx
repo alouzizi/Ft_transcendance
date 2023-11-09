@@ -13,10 +13,14 @@ enum Status {
 interface ContextProps {
     updateInfo: number,
     setUpdateInfo: Dispatch<SetStateAction<number>>,
+
     user: ownerDto,
     setUser: Dispatch<SetStateAction<ownerDto>>,
+
     geust: geustDto,
     setGeust: Dispatch<SetStateAction<geustDto>>,
+
+
     socket: Socket | null, // Add the socket property
 
 

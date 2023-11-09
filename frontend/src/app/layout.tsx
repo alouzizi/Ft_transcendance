@@ -13,9 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} text-white`}>
         <GlobalContextProvider>
-          <Theme className=' bg-[#151b2d]'>
+          {/*  className=' bg-[#151b2d]' */}
+          <Theme>
             {children}
           </Theme>
         </GlobalContextProvider>

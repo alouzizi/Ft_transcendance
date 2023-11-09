@@ -86,7 +86,8 @@ export default function UpdateChannel() {
         return channel1.channleName === channel2.channleName &&
             channel1.channelType === channel2.channelType &&
             channel1.protected === channel2.protected &&
-            channel1.channlePassword === channel2.channlePassword
+            channel1.channlePassword === channel2.channlePassword &&
+            channel1.avatar === channel2.avatar
     }
 
     useEffect(() => {

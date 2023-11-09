@@ -17,7 +17,6 @@ export default function login() {
           school
         </div>
       </Button>
-
     </div>
 
   );
