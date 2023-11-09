@@ -51,7 +51,7 @@ export class UserService {
       data,
     });
   }
-  async updatUserdata(intra_id: string,nickname: String,image: String){
+  async updatUserdata(intra_id: string,nickname: string,image: string){
     const user = await this.prisma.user.update({
       where:{
         intra_id: intra_id,

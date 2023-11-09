@@ -19,7 +19,6 @@ import { Response } from 'express';
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 @Controller("auth")
-@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -40,8 +39,8 @@ export class AuthController {
       res.cookie('intra_id', req.user.accessToken);
       res.cookie('access_token', ret.access_token);
       // req.cookies(accessToken:'accessToken' ,JWT_SECRET);
-    res.redirect("http://localhost:3000/protected/DashboardPage");
-    // res.redirect("http://www.google.com");
+    res.redirect("http://localhost:3000/protected/SettingsPage");
+    // res.redirect("http://www.google.com"); 
     // res.send(ret)
   }
 }
