@@ -2,9 +2,16 @@ import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
 
 export async function createChannel(channelData: channelDto, senderId: string) {
-
     const res = await axios.post(
         Backend_URL + `/channel/createChannel/${senderId}`, channelData);
+    const data = await res.data;
+    return data;
+
+}
+
+export async function updateChannel(channelData: channelDto, senderId: string, channelId: string,) {
+    const res = await axios.post(
+        Backend_URL + `/channel/updateChannel/${senderId}/${channelId}`, channelData);
     const data = await res.data;
     return data;
 
@@ -43,7 +50,6 @@ export async function getChannel(senderId: string, channelId: string) {
 export async function validePassword(senderId: string, channelId: string, password: string) {
     const res = await axios.get(
         Backend_URL + `/channel/validePassword/${senderId}/${channelId}/${password}`);
-    console.log("-----> ", res);
     const data = await res.data;
     return data;
 }

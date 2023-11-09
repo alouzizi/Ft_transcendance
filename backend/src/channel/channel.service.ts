@@ -34,7 +34,6 @@ export class ChannelService {
     let pass: string = '';
     if (createChannelDto.channlePassword != '')
       pass = await bcrypt.hash(createChannelDto.channlePassword, saltRounds);
-    console.log("== ", createChannelDto.channlePassword);
     try {
       const newChannel = await this.prisma.channel.create({
         data: {
@@ -46,6 +45,7 @@ export class ChannelService {
           avatar: "https://randomuser.me/api/portraits/women/82.jpg"
         }
       })
+
       this.createMessageInfoChannel(senderId, newChannel.id, '', 'create group');
       // add Owner
       await this.prisma.channelMember.create({
@@ -66,7 +66,7 @@ export class ChannelService {
         });
         this.createMessageInfoChannel(senderId, newChannel.id, item, 'added');
       });
-      return newChannel;
+      return { ...newChannel, status: 200 };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -76,6 +76,40 @@ export class ChannelService {
         }
       }
     }
+  }
+
+
+  async updateChannel(senderId: string, channelId: string, updateChannelDto: CreateChannelDto) {
+    const saltRounds = 10;
+    let pass: string = '';
+    if (updateChannelDto.channlePassword != '' && updateChannelDto.protected)
+      pass = await bcrypt.hash(updateChannelDto.channlePassword, saltRounds);
+    try {
+      const channelUpdate: Channel = await this.prisma.channel.update(
+        {
+          where: { id: channelId },
+          data: {
+            channelName: updateChannelDto.channleName,
+            channelPassword: pass,
+            channelType: updateChannelDto.channelType,
+            protected: updateChannelDto.protected,
+            avatar: "https://randomuser.me/api/portraits/women/82.jpg"
+          }
+        }
+      )
+      console.log('---> ', channelUpdate)
+      return { status: 200, channel: channelUpdate };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return { status: 202, error: 'Name is already used' };
+        } else {
+          console.error('Prisma error:', error);
+        }
+      }
+    }
+
+
   }
 
   async addUserToChannel(senderId: string, channelId: string, userId: string) {

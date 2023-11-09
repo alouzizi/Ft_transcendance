@@ -5,6 +5,7 @@ export declare class ChannelService {
     constructor(prisma: PrismaService);
     createMessageInfoChannel(senderId: string, channelId: string, userId: string, msg: string): Promise<void>;
     createChannel(createChannelDto: CreateChannelDto, senderId: string): Promise<{
+        status: number;
         id: string;
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
@@ -13,9 +14,28 @@ export declare class ChannelService {
         createdAt: Date;
         avatar: string;
         channelOwnerId: string;
+        error?: undefined;
     } | {
         status: number;
         error: string;
+    }>;
+    updateChannel(senderId: string, channelId: string, updateChannelDto: CreateChannelDto): Promise<{
+        status: number;
+        channel: {
+            id: string;
+            channelName: string;
+            channelType: import(".prisma/client").$Enums.ChannelType;
+            protected: boolean;
+            channelPassword: string;
+            createdAt: Date;
+            avatar: string;
+            channelOwnerId: string;
+        };
+        error?: undefined;
+    } | {
+        status: number;
+        error: string;
+        channel?: undefined;
     }>;
     addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
     getChannel(senderId: string, channelId: string): Promise<{

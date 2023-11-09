@@ -31,6 +31,8 @@ export default function AlertAddChannel() {
 
     const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
     const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+    const [errorName, setErrorName] = useState("");
+    const [errorKey, setErrorKey] = useState("");
 
 
     const [channelData, setChannelData] = useState<channelDto>({
@@ -45,8 +47,6 @@ export default function AlertAddChannel() {
 
 
     const [isReady, setIsReady] = useState(false);
-    const [errorName, setErrorName] = useState("");
-    const [errorKey, setErrorKey] = useState("");
 
     const [memberSearch, setMemberSearch] = useState('');
 
@@ -93,14 +93,16 @@ export default function AlertAddChannel() {
         async function createCha() {
             if (isReady) {
                 const res = await createChannel(channelData, user.id);
-                getDataGeust(res.id, false);
-                socket?.emit('updateData', {
-                    content: '',
-                    senderId: user.id,
-                    isDirectMessage: false,
-                    receivedId: res.id,
-                });
-                setOpen(false);
+                if (res.status === 200) {
+                    getDataGeust(res.id, false);
+                    socket?.emit('updateData', {
+                        content: '',
+                        senderId: user.id,
+                        isDirectMessage: false,
+                        receivedId: res.id,
+                    });
+                    setOpen(false);
+                } else if (res.status === 202) { setErrorName(res.error); }
 
             }
         }

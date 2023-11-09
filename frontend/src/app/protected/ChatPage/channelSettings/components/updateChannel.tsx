@@ -17,7 +17,7 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
-import { getChannel, validePassword } from "../../api/fetch-channel";
+import { getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
 
 
 enum ChannelType {
@@ -33,6 +33,8 @@ export default function UpdateChannel() {
 
     const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
     const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+    const [errorName, setErrorName] = useState("");
+    const [errorKey, setErrorKey] = useState("");
 
     const handleChannelType = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -84,14 +86,33 @@ export default function UpdateChannel() {
     }
 
     useEffect(() => {
+        const updateChan = async () => {
+            const res = await updateChannel(channelData, user.id, geust.id);
+            if (res.status === 202) {
+                setErrorName(res.error)
+
+            } else if (res.status === 200) {
+                console.log(res);
+                setSaveChanges(1);
+                setChannel(res.channel);
+                setValidToChange(res.channel.protected);
+            }
+        }
         if (isSameChannel(channel, channelData)) setSaveChanges(1);
         if (saveChanges === -1) {
             setChannelData(channel);
             setIsPasswordVisible(false);
             setSaveChanges(1);
         } else if (saveChanges === -2) {
-            console.log('---> ', channelData);
-            // setSaveChanges(1);
+            const parsName = channelNameSchema.safeParse(channelData.channleName);
+            const parskey = channelkeySchema.safeParse(channelData.channlePassword);
+            if (parsName.success && (parskey.success || !channelData.protected)) {
+                updateChan();
+            } else {
+                if (!parsName.success) setErrorName('Invalid channel name');
+                if (!parskey.success && channelData.protected) setErrorKey('Invalid channel key');
+            }
+
         }
     }, [saveChanges]);
 
@@ -107,9 +128,12 @@ export default function UpdateChannel() {
 
     useEffect(() => {
         let timerId: any;
-        if (validToChange) {
+        if (validToChange && channel.protected) {
             timerId = setTimeout(() => {
-                setValidToChange(false);
+                if (channel.protected) {
+                    setValidToChange(false);
+                    setIsPasswordVisible(false);
+                }
             }, 5000);
         }
         return () => { clearTimeout(timerId) }
@@ -136,16 +160,18 @@ export default function UpdateChannel() {
                         placeholder={channelData.channleName}
                         value={channelData.channleName}
                         onChange={(e) => {
-                            if (!validToChange) {
+                            if (validToChange === false) {
                                 setOpenConfirm(true);
                             } else {
                                 setSaveChanges((pre) => { return pre + 1 });
+                                setErrorName("");
                                 setChannelData((prevState) => {
                                     return { ...prevState, channleName: e.target.value };
                                 })
                             }
                         }}
                     ></input>
+                    <text className='text-sm text-red-600'>{errorName}</text>
                 </div>
 
                 <FormControl >
@@ -179,14 +205,26 @@ export default function UpdateChannel() {
                 <div className="flex flex-col items-start justify-start pl-6">
                     <FormControlLabel className='text-white'
                         control={<Checkbox checked={channelData.protected} onChange={(event) => {
+                            console.log(event.target.checked);
                             if (user.id === geust.idUserOwner) {
-                                if (channelData.protected && !validToChange) {
+
+                                if (channel.protected && !validToChange) {
                                     setOpenConfirm(true);
                                 }
                                 if (validToChange) {
+
                                     setChannelData((prevState) => {
                                         return { ...prevState, protected: event.target.checked };
                                     })
+                                    if (event.target.checked) {
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channlePassword: channelData.channlePassword };
+                                        })
+                                    } else {
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channlePassword: '' };
+                                        })
+                                    }
                                     setSaveChanges((pre) => { return pre + 1 });
                                 }
                             }
@@ -206,6 +244,7 @@ export default function UpdateChannel() {
                                         setOpenConfirm(true);
                                     } else {
                                         setSaveChanges((pre) => { return pre + 1 });
+                                        setErrorKey('');
                                         setChannelData((prevState) => {
                                             return { ...prevState, channlePassword: e.target.value };
                                         })
@@ -228,7 +267,9 @@ export default function UpdateChannel() {
                                 <MdVisibility size={18} color="white" />}
                         </div>
                     </div>
+                    <text className='text-sm text-red-600'>{errorKey}</text>
                 </div>
+
 
             </div>
             <hr className="border-b-[0.5px] border-gray-600 w-3/4" />

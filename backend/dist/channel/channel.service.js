@@ -36,7 +36,6 @@ let ChannelService = class ChannelService {
         let pass = '';
         if (createChannelDto.channlePassword != '')
             pass = await bcrypt.hash(createChannelDto.channlePassword, saltRounds);
-        console.log("== ", createChannelDto.channlePassword);
         try {
             const newChannel = await this.prisma.channel.create({
                 data: {
@@ -66,7 +65,37 @@ let ChannelService = class ChannelService {
                 });
                 this.createMessageInfoChannel(senderId, newChannel.id, item, 'added');
             });
-            return newChannel;
+            return { ...newChannel, status: 200 };
+        }
+        catch (error) {
+            if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    return { status: 202, error: 'Name is already used' };
+                }
+                else {
+                    console.error('Prisma error:', error);
+                }
+            }
+        }
+    }
+    async updateChannel(senderId, channelId, updateChannelDto) {
+        const saltRounds = 10;
+        let pass = '';
+        if (updateChannelDto.channlePassword != '' && updateChannelDto.protected)
+            pass = await bcrypt.hash(updateChannelDto.channlePassword, saltRounds);
+        try {
+            const channelUpdate = await this.prisma.channel.update({
+                where: { id: channelId },
+                data: {
+                    channelName: updateChannelDto.channleName,
+                    channelPassword: pass,
+                    channelType: updateChannelDto.channelType,
+                    protected: updateChannelDto.protected,
+                    avatar: "https://randomuser.me/api/portraits/women/82.jpg"
+                }
+            });
+            console.log('---> ', channelUpdate);
+            return { status: 200, channel: channelUpdate };
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {

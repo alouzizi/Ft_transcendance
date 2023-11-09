@@ -19,6 +19,16 @@ export class ChannelController {
     return this.channelService.createChannel(channelData, senderId);
   }
 
+  @Post('/updateChannel/:senderId/:channelId')
+  updateChannel(@Body() createChannelDto: any,
+    @Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    const channelData: CreateChannelDto = {
+      ...createChannelDto,
+      channelType: (createChannelDto.channelType == 'Private') ? ChannelType.Private : ChannelType.Public,
+    }
+    return this.channelService.updateChannel(senderId, channelId, channelData);
+  }
+
 
   @Get('/addUserToChannel/:senderId/:channelId/:userId')
   addUserToChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {

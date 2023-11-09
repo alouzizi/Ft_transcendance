@@ -3,6 +3,7 @@ export declare class ChannelController {
     private readonly channelService;
     constructor(channelService: ChannelService);
     createChannel(createChannelDto: any, senderId: string): Promise<{
+        status: number;
         id: string;
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
@@ -11,9 +12,28 @@ export declare class ChannelController {
         createdAt: Date;
         avatar: string;
         channelOwnerId: string;
+        error?: undefined;
     } | {
         status: number;
         error: string;
+    }>;
+    updateChannel(createChannelDto: any, senderId: string, channelId: string): Promise<{
+        status: number;
+        channel: {
+            id: string;
+            channelName: string;
+            channelType: import(".prisma/client").$Enums.ChannelType;
+            protected: boolean;
+            channelPassword: string;
+            createdAt: Date;
+            avatar: string;
+            channelOwnerId: string;
+        };
+        error?: undefined;
+    } | {
+        status: number;
+        error: string;
+        channel?: undefined;
     }>;
     addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
     getChannel(senderId: string, channelId: string): Promise<{

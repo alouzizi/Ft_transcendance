@@ -28,6 +28,13 @@ let ChannelController = class ChannelController {
         };
         return this.channelService.createChannel(channelData, senderId);
     }
+    updateChannel(createChannelDto, senderId, channelId) {
+        const channelData = {
+            ...createChannelDto,
+            channelType: (createChannelDto.channelType == 'Private') ? client_1.ChannelType.Private : client_1.ChannelType.Public,
+        };
+        return this.channelService.updateChannel(senderId, channelId, channelData);
+    }
     addUserToChannel(senderId, channelId, userId) {
         return this.channelService.addUserToChannel(senderId, channelId, userId);
     }
@@ -62,6 +69,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "createChannel", null);
+__decorate([
+    (0, common_1.Post)('/updateChannel/:senderId/:channelId'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('senderId')),
+    __param(2, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "updateChannel", null);
 __decorate([
     (0, common_1.Get)('/addUserToChannel/:senderId/:channelId/:userId'),
     __param(0, (0, common_1.Param)('senderId')),
