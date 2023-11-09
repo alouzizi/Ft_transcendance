@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 
 
 
+
 @Injectable()
 export class ChannelService {
   constructor(
@@ -32,7 +33,8 @@ export class ChannelService {
     const saltRounds = 10;
     let pass: string = '';
     if (createChannelDto.channlePassword != '')
-      pass = await bcrypt.hash("password", saltRounds);
+      pass = await bcrypt.hash(createChannelDto.channlePassword, saltRounds);
+    console.log("== ", createChannelDto.channlePassword);
     try {
       const newChannel = await this.prisma.channel.create({
         data: {
@@ -295,5 +297,20 @@ export class ChannelService {
       return true;
     }
     return false;
+  }
+
+  async validePassword(senderId: string, channelId: string, password: string) {
+    const channel: Channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (channel.channelOwnerId === senderId) {
+      const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
+      console.log(passwordMatch);
+      if (passwordMatch) {
+        return true;
+      } else {
+        return false;
+      }
+
+    }
+
   }
 }

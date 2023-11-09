@@ -35,7 +35,8 @@ let ChannelService = class ChannelService {
         const saltRounds = 10;
         let pass = '';
         if (createChannelDto.channlePassword != '')
-            pass = await bcrypt.hash("password", saltRounds);
+            pass = await bcrypt.hash(createChannelDto.channlePassword, saltRounds);
+        console.log("== ", createChannelDto.channlePassword);
         try {
             const newChannel = await this.prisma.channel.create({
                 data: {
@@ -281,6 +282,19 @@ let ChannelService = class ChannelService {
             return true;
         }
         return false;
+    }
+    async validePassword(senderId, channelId, password) {
+        const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+        if (channel.channelOwnerId === senderId) {
+            const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
+            console.log(passwordMatch);
+            if (passwordMatch) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 };
 exports.ChannelService = ChannelService;

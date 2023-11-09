@@ -49,6 +49,9 @@ let ChannelController = class ChannelController {
     leaveChannel(senderId, channelId) {
         return this.channelService.leaveChannel(senderId, channelId);
     }
+    validePassword(senderId, channelId, password) {
+        return this.channelService.validePassword(senderId, channelId, password);
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -118,6 +121,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "leaveChannel", null);
+__decorate([
+    (0, common_1.Get)('/validePassword/:senderId/:channelId/:password'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('password')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "validePassword", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

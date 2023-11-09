@@ -32,4 +32,5 @@ export declare class ChannelController {
     kickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     leaveChannel(senderId: string, channelId: string): Promise<boolean>;
+    validePassword(senderId: string, channelId: string, password: string): Promise<boolean>;
 }

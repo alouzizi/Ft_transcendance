@@ -17,7 +17,7 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
-import { getChannel } from "../../api/fetch-channel";
+import { getChannel, validePassword } from "../../api/fetch-channel";
 
 
 enum ChannelType {
@@ -35,14 +35,21 @@ export default function UpdateChannel() {
     const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
 
     const handleChannelType = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSaveChanges((pre) => { return pre + 1 });
-        setChannelData((prevState) => {
-            return { ...prevState, channelType: ChannelType.Public };
-        });
-        if (event.target.value === 'private') {
-            setChannelData((prevState) => {
-                return { ...prevState, channelType: ChannelType.Private };
-            });
+
+        if (user.id === geust.idUserOwner) {
+            if (!validToChange) {
+                setOpenConfirm(true);
+            } else {
+                setSaveChanges((pre) => { return pre + 1 });
+                setChannelData((prevState) => {
+                    return { ...prevState, channelType: ChannelType.Public };
+                });
+                if (event.target.value === 'private') {
+                    setChannelData((prevState) => {
+                        return { ...prevState, channelType: ChannelType.Private };
+                    });
+                }
+            }
         }
     };
 
@@ -72,14 +79,19 @@ export default function UpdateChannel() {
     const isSameChannel = (channel1: channelDto, channel2: channelDto): boolean => {
         return channel1.channleName === channel2.channleName &&
             channel1.channelType === channel2.channelType &&
-            channel1.protected === channel2.protected
+            channel1.protected === channel2.protected &&
+            channel1.channlePassword === channel2.channlePassword
     }
 
     useEffect(() => {
         if (isSameChannel(channel, channelData)) setSaveChanges(1);
         if (saveChanges === -1) {
             setChannelData(channel);
+            setIsPasswordVisible(false);
             setSaveChanges(1);
+        } else if (saveChanges === -2) {
+            console.log('---> ', channelData);
+            // setSaveChanges(1);
         }
     }, [saveChanges]);
 
@@ -88,10 +100,20 @@ export default function UpdateChannel() {
 
     // alert confirm password
     const [openConfirm, setOpenConfirm] = useState(false);
-
+    const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
+    const [password, setPassword] = useState('');
+    const [notMatch, setNotMatch] = useState('');
     const [validToChange, setValidToChange] = useState(false);
 
-
+    useEffect(() => {
+        let timerId: any;
+        if (validToChange) {
+            timerId = setTimeout(() => {
+                setValidToChange(false);
+            }, 5000);
+        }
+        return () => { clearTimeout(timerId) }
+    }, [validToChange]);
 
     if (channelData.avatar === '') return <div></div>
     return (
@@ -114,10 +136,14 @@ export default function UpdateChannel() {
                         placeholder={channelData.channleName}
                         value={channelData.channleName}
                         onChange={(e) => {
-                            setSaveChanges((pre) => { return pre + 1 });
-                            setChannelData((prevState) => {
-                                return { ...prevState, channleName: e.target.value };
-                            })
+                            if (!validToChange) {
+                                setOpenConfirm(true);
+                            } else {
+                                setSaveChanges((pre) => { return pre + 1 });
+                                setChannelData((prevState) => {
+                                    return { ...prevState, channleName: e.target.value };
+                                })
+                            }
                         }}
                     ></input>
                 </div>
@@ -153,14 +179,16 @@ export default function UpdateChannel() {
                 <div className="flex flex-col items-start justify-start pl-6">
                     <FormControlLabel className='text-white'
                         control={<Checkbox checked={channelData.protected} onChange={(event) => {
-                            if (channelData.protected && !validToChange) {
-                                setOpenConfirm(true);
-                            }
-                            if (validToChange) {
-                                setChannelData((prevState) => {
-                                    return { ...prevState, protected: event.target.checked };
-                                })
-                                setSaveChanges((pre) => { return pre + 1 });
+                            if (user.id === geust.idUserOwner) {
+                                if (channelData.protected && !validToChange) {
+                                    setOpenConfirm(true);
+                                }
+                                if (validToChange) {
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, protected: event.target.checked };
+                                    })
+                                    setSaveChanges((pre) => { return pre + 1 });
+                                }
                             }
                         }} />} label="Protected" />
                     <div className='flex bg-[#111623] text-white border border-[#1f3175]
@@ -173,16 +201,28 @@ export default function UpdateChannel() {
                             required={channelData.protected}
                             value={channelData.channlePassword}
                             onChange={(e) => {
-                                setSaveChanges((pre) => { return pre + 1 });
-                                setChannelData((prevState) => {
-                                    return { ...prevState, channlePassword: e.target.value };
-                                })
+                                if (user.id === geust.idUserOwner) {
+                                    if (!validToChange) {
+                                        setOpenConfirm(true);
+                                    } else {
+                                        setSaveChanges((pre) => { return pre + 1 });
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channlePassword: e.target.value };
+                                        })
+                                    }
+                                }
                             }}
-
                         >
-
                         </input>
-                        <div className='cursor-pointer' onClick={() => { setIsPasswordVisible((pre) => { return !pre }) }}>
+                        <div className='cursor-pointer' onClick={() => {
+                            if (user.id === geust.idUserOwner) {
+                                if (!validToChange) {
+                                    setOpenConfirm(true);
+                                } else {
+                                    setIsPasswordVisible((pre) => { return !pre })
+                                }
+                            }
+                        }}>
                             {!isPasswordVisible ?
                                 <MdVisibilityOff size={18} color="white" /> :
                                 <MdVisibility size={18} color="white" />}
@@ -197,39 +237,46 @@ export default function UpdateChannel() {
             <div>
                 <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
                     <DialogTitle>Confirme Action</DialogTitle>
-                    <DialogContent className='flex '>
+                    <DialogContent className='flex flex-col'>
                         <div className='flex bg-[#f1f3f8] text-black border border-[#1f3175]
                       placeholder-gray-300 text-sm focus:border-white
-                        rounded-lg  w-full p-1.5 outline-none'>
-                            <input type={isPasswordVisible ? "text" : "password"} className="bg-[#f1f3f8]
+                        rounded-lg  w-full p-1.5 outline-none'
+                            style={{ borderColor: (notMatch === '') ? '#1f3175' : 'red' }}
+                        >
+                            <input type={isPasswordVisibleAlert ? "text" : "password"} className="bg-[#f1f3f8]
                             text-black
                       placeholder-gray-300 text-sm outline-none"
-                                placeholder={channelData.channlePassword}
-                                disabled={!channelData.protected}
-                                required={channelData.protected}
-                                value={channelData.channlePassword}
+                                value={password}
                                 onChange={(e) => {
-                                    setSaveChanges((pre) => { return pre + 1 });
-                                    setChannelData((prevState) => {
-                                        return { ...prevState, channlePassword: e.target.value };
-                                    })
+                                    setPassword(e.target.value);
+                                    setNotMatch('');
                                 }}
-
                             >
-
                             </input>
-                            <div className='cursor-pointer' onClick={() => { setIsPasswordVisible((pre) => { return !pre }) }}>
-                                {!isPasswordVisible ?
+                            <div className='cursor-pointer' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
+                                {!isPasswordVisibleAlert ?
                                     <MdVisibilityOff size={18} color="black" /> :
                                     <MdVisibility size={18} color="black" />}
                             </div>
                         </div>
+                        <text className='text-sm text-red-600'>{notMatch}</text>
 
                     </DialogContent>
                     <DialogActions>
-                        <button onClick={() => {
-                            setOpenConfirm(false);
-                            setValidToChange(true);
+                        <button onClick={async () => {
+
+                            const vld = await validePassword(user.id, geust.id, password);
+                            if (vld) {
+                                setOpenConfirm(false);
+                                setValidToChange(true);
+                                setChannelData((prevState) => {
+                                    return { ...prevState, channlePassword: password };
+                                })
+                                setPassword('');
+
+                            } else {
+                                setNotMatch('Password not Match');
+                            }
                         }}
                             className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
                             text-xs px-2

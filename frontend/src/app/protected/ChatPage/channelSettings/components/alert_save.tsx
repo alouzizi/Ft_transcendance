@@ -31,7 +31,7 @@ export default function AlertSave() {
                                 Rest
                             </Text>
 
-                            <button onClick={async () => { }}
+                            <button onClick={() => { setSaveChanges(-2) }}
                                 className="rounded-sm text-white bg-green-500 ml-2 px-1
                         hover:bg-green-900">
                                 <Text size='2' > Save Changes</Text>

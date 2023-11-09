@@ -56,4 +56,11 @@ export class ChannelController {
   leaveChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.leaveChannel(senderId, channelId);
   }
+
+
+  @Get('/validePassword/:senderId/:channelId/:password')
+  validePassword(@Param('senderId') senderId: string, @Param('channelId') channelId: string
+    , @Param('password') password: string) {
+    return this.channelService.validePassword(senderId, channelId, password);
+  }
 }

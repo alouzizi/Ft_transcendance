@@ -46,4 +46,5 @@ export declare class ChannelService {
     leaveChannel(senderId: string, channelId: string): Promise<boolean>;
     KickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    validePassword(senderId: string, channelId: string, password: string): Promise<boolean>;
 }

@@ -40,6 +40,15 @@ export async function getChannel(senderId: string, channelId: string) {
 }
 
 
+export async function validePassword(senderId: string, channelId: string, password: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/validePassword/${senderId}/${channelId}/${password}`);
+    console.log("-----> ", res);
+    const data = await res.data;
+    return data;
+}
+
+
 export async function kickMember(senderId: string, channelId: string, userId: string) {
     const res = await axios.get(
         Backend_URL + `/channel/kickmember/${senderId}/${channelId}/${userId}`);
