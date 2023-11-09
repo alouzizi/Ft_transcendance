@@ -17,8 +17,11 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
-import { getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
+import Badge from "@mui/material/Badge";
+import MiniCropper from 'mini-react-cropper';
+import { IoMdPhotos } from "react-icons/io";
 
+import { getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
 
 enum ChannelType {
     Public = 'Public',
@@ -26,6 +29,7 @@ enum ChannelType {
 }
 
 export default function UpdateChannel() {
+
 
     const { user, geust, saveChanges, setSaveChanges } = useGlobalContext();
 
@@ -139,17 +143,66 @@ export default function UpdateChannel() {
         return () => { clearTimeout(timerId) }
     }, [validToChange]);
 
+
+    const handleSubmit = (croppedImage: any) => {
+        console.log('Cropped Image:', croppedImage);
+    };
+
     if (channelData.avatar === '') return <div></div>
     return (
         <div className="flex flex-col items-center justify-centser">
-            <div className="flex items-center justify-start 
-                pt-2 pb-2">
-                <Avatar
-                    size="6"
-                    src={channelData.avatar}
-                    radius="full"
-                    fallback="T"
-                />
+
+
+            {/* <Dialog open={true}>
+                <DialogTitle>Update Avatar</DialogTitle>
+                <DialogContent className='w-[30rem] h-[30rem] flex items-center justify-center'>
+                    <label>
+                        <p id="file-input">
+                            ok
+                        </p>
+
+                        <input type="file" accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={(event: any) => {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const imageURL = URL.createObjectURL(file);
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, avatar: imageURL };
+                                    })
+                                }
+                            }} />
+                    </label>
+
+                    <div>
+                        <MiniCropper image={channelData.avatar} onSubmit={handleSubmit} />
+                    </div>
+                </DialogContent>
+            </Dialog> */}
+
+            <div className="flex items-center justify-start pt-2 pb-2">
+
+                <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'>
+                    <Avatar
+                        size="6"
+                        src={channelData.avatar}
+                        radius="full"
+                        fallback="T"
+                    />
+                    <input type="file" accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={(event: any) => {
+                            const file = event.target.files[0];
+                            if (file) {
+                                const imageURL = URL.createObjectURL(file);
+                                setChannelData((prevState) => {
+                                    return { ...prevState, avatar: imageURL };
+                                })
+                            }
+                        }} />
+
+                </label>
+
 
                 <div className="flex flex-col items-start justify-start pl-6">
                     <Text as='div' className='pb-1 text-gray-400'
