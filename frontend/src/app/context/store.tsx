@@ -32,7 +32,7 @@ interface ContextProps {
 
 const GlobalContext = createContext<ContextProps>({
   user: {
-    id: -1,
+    id: "-1",
     email: "",
     username: "",
     avatar: "",
@@ -43,7 +43,7 @@ const GlobalContext = createContext<ContextProps>({
   setUser: () => {},
 
   geust: {
-    id: -1,
+    id: "-1",
     email: "",
     username: "",
     avatar: "",
@@ -63,7 +63,7 @@ export const GlobalContextProvider = ({
 }) => {
   const { data: session } = useSession();
   const [user, setUser] = useState<userDto>({
-    id: -1,
+    id: "-1",
     email: "",
     username: "",
     avatar: "",
@@ -73,7 +73,7 @@ export const GlobalContextProvider = ({
   });
 
   const [geust, setGeust] = useState<userDto>({
-    id: -1,
+    id: "-1",
     email: "",
     username: "",
     avatar: "",
@@ -93,7 +93,7 @@ export const GlobalContextProvider = ({
   useEffect(() => {
     // const socket = io('your-socket-server-url');
 
-    if (user.id != -1) {
+    if (user.id != "-1") {
       const socket = io(Backend_URL, {
         transports: ["websocket"],
         query: {

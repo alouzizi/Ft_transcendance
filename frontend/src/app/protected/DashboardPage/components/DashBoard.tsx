@@ -4,17 +4,32 @@ import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "@/app/context/store";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
+import PopoverMenuDash from "./PopoverMenuDash";
+import { getAllFriends } from "@/app/api/hixcoder/FriendsPageAPI";
 
-export default function DashBoard(prompt: { friend?: userDto }) {
+export default function DashBoard(prompt: { friend: userDto }) {
   const router = useRouter();
   const { user } = useGlobalContext();
+  const [isFriend, setIsFriend] = useState(false);
   useEffect(() => {
-    console.log("user");
-    console.log(user);
-  }, []);
+    async function getData() {
+      try {
+        const dataTmp = await getAllFriends(user.id);
+        const even = (element: userDto) =>
+          element.id === prompt.friend.id ?? user.id;
+        setIsFriend(dataTmp.some(even));
+        // console.log(dataTmp);
+        // console.log("friend id: " + prompt.friend.id);
+        // console.log("is a friend: " + isFriend);
+      } catch (error: any) {
+        console.log("getData error: " + error);
+      }
+    }
+    getData();
+  }, [prompt.friend.id, user.id]);
 
   return (
     <div className="flex flex-col h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
@@ -31,6 +46,12 @@ export default function DashBoard(prompt: { friend?: userDto }) {
         "
         style={{ backgroundImage: "url('/bg-info.png')" }}
       >
+        {user.id !== prompt.friend.id ? (
+          <PopoverMenuDash friendInfo={prompt.friend} isFriend={isFriend} />
+        ) : (
+          <div />
+        )}
+
         <LevelBar level={6} completed={75} />
         <img
           className="
@@ -45,7 +66,7 @@ export default function DashBoard(prompt: { friend?: userDto }) {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
-          src={prompt.friend != null ? prompt.friend.avatar : user.avatar}
+          src={prompt.friend.avatar}
           alt=""
         />
 
@@ -63,17 +84,15 @@ export default function DashBoard(prompt: { friend?: userDto }) {
           "
         >
           <div
-            className="
+            className=" 
           // small screen
           mt-12
           // Big screen
           2xl:ml-6 2xl:mt-2 2xl:w-1/3
           "
           >
-            <h1>{prompt.friend != null ? prompt.friend.email : user.email}</h1>
-            <p className="text-gray-400 text-sm">
-              @{prompt.friend != null ? prompt.friend.username : user.username}
-            </p>
+            <h1>{prompt.friend.email}</h1>
+            <p className="text-gray-400 text-sm">@{prompt.friend.username}</p>
           </div>
 
           <div

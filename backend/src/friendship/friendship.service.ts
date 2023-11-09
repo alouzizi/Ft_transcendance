@@ -98,6 +98,7 @@ export class FriendshipService {
         receivedId: recivedId,
       },
     });
+
     return req;
   }
 

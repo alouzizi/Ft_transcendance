@@ -105,8 +105,6 @@ export class MessagesGateway
 
   @SubscribeMessage("updateData")
   async updateData(@MessageBody() ids: CreateMessageDto) {
-    console.log("---------------------------- try to update");
-    console.log(ids.senderId.toString(), ids.receivedId.toString());
     this.wss.to(ids.senderId.toString()).emit("updateData", {});
     this.wss.to(ids.receivedId.toString()).emit("updateData", {});
   }

@@ -10,3 +10,5 @@ tasks :
 -------------------
 - use sockets in friends page
 - make the logic of acheivments page
+
+- when block friend 

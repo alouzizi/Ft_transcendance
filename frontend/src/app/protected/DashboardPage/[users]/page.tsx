@@ -4,9 +4,11 @@ import DashBoard from "../components/DashBoard";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
+import { useGlobalContext } from "@/app/context/store";
 export default function DashboardPage() {
   const pathname = usePathname();
-  const [friend, setFriend] = useState();
+  const [friend, setFriend] = useState<userDto>();
+  const { user } = useGlobalContext();
   useEffect(() => {
     const userName = pathname;
     const segments = userName.split("/");
@@ -14,9 +16,9 @@ export default function DashboardPage() {
     console.log(lastSegment);
     async function getData() {
       try {
-        const friend = await getOneUser(lastSegment);
-        setFriend(friend);
-        console.log(friend);
+        const user = await getOneUser(lastSegment);
+        setFriend(user);
+        console.log(user);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
@@ -24,5 +26,6 @@ export default function DashboardPage() {
     getData();
   }, [pathname]);
 
-  return <DashBoard friend={friend} />;
+  // return <div>hello</div>;
+  return <DashBoard friend={friend ?? user} />;
 }

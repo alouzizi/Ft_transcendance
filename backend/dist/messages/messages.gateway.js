@@ -95,8 +95,6 @@ let MessagesGateway = class MessagesGateway {
         await this.messagesService.create(this.wss, createMessageDto);
     }
     async updateData(ids) {
-        console.log("---------------------------- try to update");
-        console.log(ids.senderId.toString(), ids.receivedId.toString());
         this.wss.to(ids.senderId.toString()).emit("updateData", {});
         this.wss.to(ids.receivedId.toString()).emit("updateData", {});
     }
