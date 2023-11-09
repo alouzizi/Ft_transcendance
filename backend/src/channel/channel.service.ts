@@ -93,11 +93,10 @@ export class ChannelService {
             channelPassword: pass,
             channelType: updateChannelDto.channelType,
             protected: updateChannelDto.protected,
-            avatar: "https://randomuser.me/api/portraits/women/82.jpg"
+            avatar: updateChannelDto.avatar
           }
         }
       )
-      console.log('---> ', channelUpdate)
       return { status: 200, channel: channelUpdate };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

@@ -144,41 +144,29 @@ export default function UpdateChannel() {
     }, [validToChange]);
 
 
-    const handleSubmit = (croppedImage: any) => {
-        console.log('Cropped Image:', croppedImage);
-    };
+    const [miniCropper, setMiniCropper] = useState(false);
+
 
     if (channelData.avatar === '') return <div></div>
     return (
         <div className="flex flex-col items-center justify-centser">
 
 
-            {/* <Dialog open={true}>
+            <Dialog open={miniCropper}
+                onClose={() => setMiniCropper(false)}>
                 <DialogTitle>Update Avatar</DialogTitle>
                 <DialogContent className='w-[30rem] h-[30rem] flex items-center justify-center'>
-                    <label>
-                        <p id="file-input">
-                            ok
-                        </p>
 
-                        <input type="file" accept="image/*"
-                            style={{ display: 'none' }}
-                            onChange={(event: any) => {
-                                const file = event.target.files[0];
-                                if (file) {
-                                    const imageURL = URL.createObjectURL(file);
-                                    setChannelData((prevState) => {
-                                        return { ...prevState, avatar: imageURL };
-                                    })
-                                }
-                            }} />
-                    </label>
+                    <MiniCropper image={channelData.avatar} onSubmit={(croppedImage: any) => {
+                        setSaveChanges((pre) => { return pre + 1 });
+                        setMiniCropper(false);
+                        setChannelData((prevState) => {
+                            return { ...prevState, avatar: croppedImage };
+                        })
+                    }} />
 
-                    <div>
-                        <MiniCropper image={channelData.avatar} onSubmit={handleSubmit} />
-                    </div>
                 </DialogContent>
-            </Dialog> */}
+            </Dialog>
 
             <div className="flex items-center justify-start pt-2 pb-2">
 
@@ -194,7 +182,9 @@ export default function UpdateChannel() {
                         onChange={(event: any) => {
                             const file = event.target.files[0];
                             if (file) {
+                                console.log(file);
                                 const imageURL = URL.createObjectURL(file);
+                                setMiniCropper(true);
                                 setChannelData((prevState) => {
                                     return { ...prevState, avatar: imageURL };
                                 })
@@ -224,7 +214,7 @@ export default function UpdateChannel() {
                             }
                         }}
                     ></input>
-                    <text className='text-sm text-red-600'>{errorName}</text>
+                    <p className='text-sm text-red-600'>{errorName}</p>
                 </div>
 
                 <FormControl >
@@ -320,7 +310,7 @@ export default function UpdateChannel() {
                                 <MdVisibility size={18} color="white" />}
                         </div>
                     </div>
-                    <text className='text-sm text-red-600'>{errorKey}</text>
+                    <p className='text-sm text-red-600'>{errorKey}</p>
                 </div>
 
 
@@ -353,7 +343,7 @@ export default function UpdateChannel() {
                                     <MdVisibility size={18} color="black" />}
                             </div>
                         </div>
-                        <text className='text-sm text-red-600'>{notMatch}</text>
+                        <p className='text-sm text-red-600'>{notMatch}</p>
 
                     </DialogContent>
                     <DialogActions>
