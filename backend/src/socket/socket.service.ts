@@ -6,8 +6,10 @@ import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 
 @Injectable()
 export class SocketGatewayService {
+
   constructor(
     private prisma: PrismaService,) { }
+
 
 
   async handleConnection(client: Socket, wss: Server) {

@@ -130,6 +130,7 @@ export class HixcoderService {
           isYouSender: isYouSender1 ? true : isYouSender2 ? false : null,
         };
       });
+
       return formattedPendingFriends;
     } catch (error) {
       console.log("error: ", error);
