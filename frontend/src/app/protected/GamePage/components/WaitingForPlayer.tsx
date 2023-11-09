@@ -1,27 +1,27 @@
-// import React, { useContext, useEffect, useState } from 'react';
-// import { WebsocketContext } from '../contexts/WebsocketContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { WebsocketContext } from '../contexts/WebsocketContext';
 
-// const WaitingForPlayer = () => {
-//   const socket = useContext(WebsocketContext);
-//   const [message, setMessage] = useState('Waiting for another player...');
+const WaitingForPlayer = () => {
+  const socket = useContext(WebsocketContext);
+  const [message, setMessage] = useState('Waiting for another player...');
 
-//   socket.on('startGame', () => {
-//     // setMessage('Game started! You can play now.');
-//   console.log('Game started!');
-//   });
+  
+  useEffect(() => {
+	  socket.on('startGame', () => {
+		// setMessage('Game started! You can play now.');
+	  console.log('Game started!');
+	  });
+	  
+    return () => {
+      socket.off('startGame');
+    };
+  }, []);
 
-//   useEffect(() => {
+  return (
+    <div>
+      <p className='bg-white'>{message}</p>
+    </div>
+  );
+};
 
-//     return () => {
-//       socket.off('startGame');
-//     };
-//   }, []);
-
-//   return (
-//     <div>
-//       <p className='bg-white'>{message}</p>
-//     </div>
-//   );
-// };
-
-// export default WaitingForPlayer;
+export default WaitingForPlayer;

@@ -1,13 +1,10 @@
-import { OnGatewayConnection, OnGatewayDisconnect } from "@nestjs/websockets";
-import { Socket, Server } from "socket.io";
 import { OnModuleInit } from "@nestjs/common";
-export declare class MyGateway implements OnModuleInit, OnGatewayConnection, OnGatewayDisconnect {
+import { Socket, Server } from "socket.io";
+export declare class MyGateway implements OnModuleInit {
     server: Server;
     private clients;
     private rooms;
     onModuleInit(): void;
-    handleDisconnect(client: Socket): void;
-    handleConnection(client: Socket): void;
-    updatePaddle(data: any): void;
-    identifyClient(client: Socket, id: any): void;
+    identifyClient(client: Socket, id: string): void;
+    handleJoinRoom(client: Socket, id: string): void;
 }

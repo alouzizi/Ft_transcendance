@@ -18,40 +18,30 @@ const socket_io_1 = require("socket.io");
 let MyGateway = class MyGateway {
     constructor() {
         this.clients = new Map();
-        this.rooms = [];
+        this.rooms = new Map();
     }
-    onModuleInit() {
-    }
-    handleDisconnect(client) {
-        console.log("client is Disconnected <>");
-    }
-    handleConnection(client) {
-        console.log("client is connected <>");
-    }
-    updatePaddle(data) {
-        console.log("updatePaddle");
-        this.server.emit("updatePaddle", data);
-    }
+    onModuleInit() { }
     identifyClient(client, id) {
-        console.log({ id: id, sockId: client.id });
-        if (!this.clients.has(id)) {
-            this.clients.set(id, client);
+        console.log({ id: id, client: client.id });
+        if (this.clients.has(id)) {
+            client.emit("alreadyExist");
+            console.log("Client already exists");
         }
         else {
-            client.emit("alreadyExist");
-            console.log("alreadyExist");
+            console.log("Client identified", { id: id });
+            this.clients.set(id, client);
+            client.join(id);
         }
+    }
+    handleJoinRoom(client, id) {
+        console.log({ size: this.clients.size });
         if (this.clients.size === 2) {
-            console.log("2 clients");
-            const roomName = `room-${Date.now()}`;
-            this.rooms.push(roomName);
-            const clientsArray = Array.from(this.clients.values()).slice(0, 2);
-            clientsArray.forEach((client) => {
-                console.log({ SocketId: client.id, roomName: roomName });
-                client.join(roomName);
-                client.emit("startGame");
+            console.log("2 clients connected");
+            const clientArray = Array.from(this.clients.keys());
+            clientArray.forEach((client) => {
+                console.log({ client: client });
+                this.server.to(client).emit("startGame");
             });
-            this.server.to(roomName).emit("startGame");
             this.clients.clear();
         }
     }
@@ -62,22 +52,25 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], MyGateway.prototype, "server", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)("updatePaddle"),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], MyGateway.prototype, "updatePaddle", null);
-__decorate([
     (0, websockets_1.SubscribeMessage)("clientId"),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", void 0)
 ], MyGateway.prototype, "identifyClient", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("joinRoom"),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", void 0)
+], MyGateway.prototype, "handleJoinRoom", null);
 exports.MyGateway = MyGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(4001, {
         cors: {
-            origin: '*',
+            origin: "http://localhost:3000",
         },
     })
 ], MyGateway);
