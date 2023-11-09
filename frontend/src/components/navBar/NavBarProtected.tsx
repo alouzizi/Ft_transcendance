@@ -31,7 +31,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-row w-screen bg-color-main relative">
+      <div className="flex flex-row h-full w-screen bg-color-main relative">
         <div
           className={`
        absolute  top-0 z-20 
@@ -45,7 +45,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
           <SideBar />
         </div>
         <div
-          className={` w-screen  m-0 bg-color-main
+          className={`flex justify-center items-center w-screen  m-0 bg-color-main
        transition-all duration-300 ease-in-out overflow-hidden
          min-[0px]:pl-0
         ${show ? "md:pl-32" : "md:pl-0"} 

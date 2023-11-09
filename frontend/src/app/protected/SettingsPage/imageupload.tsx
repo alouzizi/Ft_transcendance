@@ -1,5 +1,6 @@
 "use client";
 // components/ImageUpload.tsx
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { useState } from "react";
 import Avatar from "public/DefaultAvatar.png";
 import Image from "next/image";
@@ -20,14 +21,19 @@ const ImageUpload = () => {
   };
 
   return (
-    <div>
+    <div className="border ml-4 -mt-16">
+<div className='border border-yellow-500'>
+
+      <AddPhotoAlternateIcon style={{ color: 'white' }}>
+        </AddPhotoAlternateIcon>
       <input
         type="file"
         accept="image/*"
         onChange={handleImageChange}
         id="image-upload"
         style={{ display: "none" }}
-      />
+        />
+        </div>
       <label htmlFor="image-upload">
         <div>
           <Image
@@ -36,7 +42,7 @@ const ImageUpload = () => {
             src={selectedImage || Avatar}
             alt="Preview"
             className="w-20 rounded-full"
-          />
+            />
         </div>
       </label>
     </div>
