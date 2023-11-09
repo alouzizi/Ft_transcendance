@@ -7,6 +7,7 @@ export declare class ChannelController {
         id: string;
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
         channelPassword: string;
         createdAt: Date;
         avatar: string;
@@ -20,6 +21,7 @@ export declare class ChannelController {
         id: string;
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
         channelPassword: string;
         createdAt: Date;
         avatar: string;
