@@ -5,7 +5,7 @@ import { Text } from '@radix-ui/themes';
 const PageChat = () => {
 
     return (
-        <div className=' h-screen flex flex-col justify-between'>
+        <div className=' h-screen flex flex-col justify-between text-black'>
             <div>
                 <div className="pl-4 pt-4 flex  justify-center">
                     <Text style={{ color: 'white', fontSize: 20 }}>Channel  Overview</Text>

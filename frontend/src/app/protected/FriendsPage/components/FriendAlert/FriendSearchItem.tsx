@@ -14,13 +14,21 @@ export default function FriendSearchItem(prompt: {
   pendingFriendsList: friendDto[];
 }) {
   // ================== handle Invite ==================
-  const user = useGlobalContext();
+  const { user, socket } = useGlobalContext();
   const [isPending, setIsPending] = useState(
     prompt.pendingFriendsList.some((item) => item.id === prompt.userInfo.id)
   );
   async function handleInvite(userInfo: friendDto) {
     try {
-      await sendFriendRequest(user.user.id, userInfo.id);
+      await sendFriendRequest(user.id, userInfo.id);
+
+      socket?.emit('updateData', {
+        content: '',
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: userInfo.id,
+      });
+
       setIsPending(true);
     } catch (error) {
       console.log("handleInvite: " + error);

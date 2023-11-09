@@ -153,6 +153,7 @@ export const GlobalContextProvider = ({ children }: {
             getDataUser();
     }, []);
 
+
     useEffect(() => {
         const update = async () => {
             setUpdateInfo(preValue => {
@@ -163,7 +164,9 @@ export const GlobalContextProvider = ({ children }: {
             socket.on("updateData", update);
         }
     }, [socket]);
-    console.log('----------------------------> ', updateInfo);
+
+
+
     return (
         <GlobalContext.Provider value={{
             geust, setGeust, user, setUser, socket,

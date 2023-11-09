@@ -31,7 +31,7 @@ const DataContext = createContext<ContextProps>({
 // ====================== create context ======================
 export default function FriendCategory(prompt: { itemsStatus: string }) {
   const [data, setData] = useState<friendDto[]>([]);
-  const { user } = useGlobalContext();
+  const { user, updateInfo } = useGlobalContext();
   useEffect(() => {
     async function getData() {
       console.log("prompt.itemsStatus ==> " + prompt.itemsStatus);
@@ -57,7 +57,7 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
     }
     console.log(user);
     getData();
-  }, [user.id, prompt.itemsStatus]);
+  }, [user.id, prompt.itemsStatus, updateInfo]);
   //   useEffect(() => {}, [data]);
 
   return (
