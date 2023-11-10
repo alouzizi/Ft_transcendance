@@ -10,7 +10,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { Avatar, Text } from '@radix-ui/themes';
-import MiniCropper from 'mini-react-cropper';
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
@@ -22,7 +21,7 @@ enum ChannelType {
     Public = 'Public',
     Private = 'Private'
 }
-
+// MiniCropper
 export default function UpdateChannel() {
 
     const router = useRouter();
@@ -124,7 +123,6 @@ export default function UpdateChannel() {
         } else if (saveChanges < -2) {
             const parsName = channelNameSchema.safeParse(channelData.channelName);
             const parskey = channelkeySchema.safeParse(channelData.channelPassword);
-            console.log("----------------> ", parskey, channelData.channelPassword)
             if (parsName.success && (parskey.success || !channelData.protected)) {
                 updateChan();
             } else {
@@ -160,31 +158,8 @@ export default function UpdateChannel() {
     }, [validToChange]);
 
 
-    const [miniCropper, setMiniCropper] = useState(false);
-
-
-
     return (
         <div className="flex flex-col items-center justify-centser">
-
-
-            <Dialog open={miniCropper}
-                onClose={() => setMiniCropper(false)}>
-                <DialogTitle>Update Avatar</DialogTitle>
-                <DialogContent className='w-[30rem] h-[30rem] flex items-center justify-center'>
-
-                    <MiniCropper image={channelData.avatar} onSubmit={(croppedImage: any) => {
-                        console.log('---> ', croppedImage);
-                        setSaveChanges((pre) => { return pre + 1 });
-                        setMiniCropper(false);
-                        setChannelData((prevState) => {
-                            return { ...prevState, avatar: croppedImage };
-                        })
-                    }} />
-
-                </DialogContent>
-            </Dialog>
-
             <div className="flex items-center justify-start pt-2 pb-2">
 
                 <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'>
@@ -200,14 +175,13 @@ export default function UpdateChannel() {
                         onChange={(event: any) => {
                             const file = event.target.files[0];
                             if (file) {
+                                setSaveChanges((pre) => { return pre + 1 });
                                 const imageURL = URL.createObjectURL(file);
-                                setMiniCropper(true);
                                 setChannelData((prevState) => {
                                     return { ...prevState, avatar: imageURL };
                                 })
                             }
                         }} />
-
                 </label>
 
 
