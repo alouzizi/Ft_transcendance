@@ -14,7 +14,6 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
-import { useRouter } from 'next/navigation';
 import { checkOwnerIsAdmin, getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
 
 enum ChannelType {
@@ -24,12 +23,10 @@ enum ChannelType {
 // MiniCropper
 export default function UpdateChannel() {
 
-    const router = useRouter();
 
 
     const { user, geust, saveChanges, setSaveChanges, updateInfo, socket } = useGlobalContext();
 
-    const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -79,6 +76,8 @@ export default function UpdateChannel() {
 
     }, [updateInfo]);
 
+
+    const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
     useEffect(() => {
         const getData = async () => {
             const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);

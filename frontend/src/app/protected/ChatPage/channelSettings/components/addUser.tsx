@@ -8,22 +8,37 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { GoDotFill } from "react-icons/go";
 import { IoMdAddCircle } from "react-icons/io";
-import { addUserToChannel } from '../../api/fetch-channel';
+import { addUserToChannel, checkOwnerIsAdmin, getChannel } from '../../api/fetch-channel';
 import { usersCanJoinChannel } from '../../api/fetch-users';
 
 
 
 export default function AlertsAddUserChannel() {
+
     const [open, setOpen] = React.useState(false);
     const [searsh, setSearsh] = useState('');
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
-    const { user, geust, socket, setGeust, updateInfo } = useGlobalContext();
+    const { user, geust, socket, updateInfo } = useGlobalContext();
+
+
+    const [channel, setChannel] = useState<channelDto>();
+
+    useEffect(() => {
+        const getData = async () => {
+            const tmp: channelDto = await getChannel(user.id, geust.id);
+            setChannel(tmp);
+        }
+        if (geust.id !== '-1' && !geust.isUser) getData();
+    }, [updateInfo]);
+
 
     const [clicked, setClicked] = useState<number>(0)
 
     const handleClickOpen = () => {
-        setOpen(true);
+        if (isOwnerAdmin || !channel?.protected) {
+            setOpen(true);
+        }
     };
     const handleClose = () => {
         setOpen(false);
@@ -48,7 +63,15 @@ export default function AlertsAddUserChannel() {
         setUsersFilter(tmp);
     }, [searsh, valideUsers])
 
+    const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
+    useEffect(() => {
+        const getData = async () => {
+            const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
+            setIsOwnerAdmin(tmp);
+        }
+        if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData();
 
+    }, [updateInfo]);
 
 
     const widgetItem = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
@@ -81,7 +104,6 @@ export default function AlertsAddUserChannel() {
                                 receivedId: geust.id,
                             });
                             handleClose();
-
                         }} />
                 </div>
             </Flex>

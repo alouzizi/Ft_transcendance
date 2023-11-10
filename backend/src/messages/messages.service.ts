@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
-import { Channel, Message, MessageStatus, Status, User } from '@prisma/client';
+import { BlockedUser, Channel, Message, MessageStatus, Status, User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -87,14 +87,29 @@ export class MessagesService {
         channelId: createMessageDto.receivedId,
         senderId: createMessageDto.senderId,
         isDirectMessage: false,
-        // InfoMessage: Boolean(createMessageDto.InfoMessage)
       },
     });
     const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } })
     const channelMember = await this.prisma.channelMember.findMany(
       { where: { channelId: createMessageDto.receivedId } });
     const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+
+    const usersBlocked: BlockedUser[] = await this.prisma.blockedUser.findMany({
+      where: {
+        OR: [
+          { senderId: senderUser.id },
+          { receivedId: senderUser.id },
+        ],
+      }
+    });
+
     for (const member of channelMember) {
+
+      const tmp = usersBlocked.some((elm: BlockedUser) => {
+        return ((elm.senderId === member.userId && senderUser.id !== member.userId) ||
+          (elm.receivedId === member.userId && senderUser.id !== member.userId))
+      })
+      if (tmp) continue;
       const temp: messageDto = {
         isDirectMessage: false,
 
@@ -190,8 +205,16 @@ export class MessagesService {
         createdAt: 'asc',
       },
     });
+    const usersBlocked: BlockedUser[] = await this.prisma.blockedUser.findMany({
+      where: {
+        OR: [
+          { senderId: senderId },
+          { receivedId: senderId },
+        ],
+      }
+    });
     const channel = await this.prisma.channel.findUnique({ where: { id: channelId } })
-    const result = await Promise.all(
+    const messags = await Promise.all(
       msgUserTemp.map(async (msg) => {
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
         const temp: messageDto = {
@@ -217,6 +240,13 @@ export class MessagesService {
         return temp;
       })
     )
+    const result = messags.filter((msg: messageDto) => {
+      const tmp = usersBlocked.some((elm: BlockedUser) => {
+        return ((msg.senderId === elm.senderId && elm.senderId !== senderId) ||
+          (msg.senderId === elm.receivedId && elm.receivedId !== senderId))
+      })
+      return !tmp;
+    })
     return result;
   }
 

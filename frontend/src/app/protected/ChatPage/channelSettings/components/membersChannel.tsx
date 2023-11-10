@@ -119,7 +119,6 @@ export default function MembersChannel() {
 
 
     return (
-
         <div className="flex flex-col  items-center pt-5 ">
             <div className="flex-grow flex items-between justify-between w-[450px]">
                 <input type="text" className="bg-[#111623] text-white border border-[#1f3175]

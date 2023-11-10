@@ -88,7 +88,21 @@ let MessagesService = class MessagesService {
         const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } });
         const channelMember = await this.prisma.channelMember.findMany({ where: { channelId: createMessageDto.receivedId } });
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+        const usersBlocked = await this.prisma.blockedUser.findMany({
+            where: {
+                OR: [
+                    { senderId: senderUser.id },
+                    { receivedId: senderUser.id },
+                ],
+            }
+        });
         for (const member of channelMember) {
+            const tmp = usersBlocked.some((elm) => {
+                return ((elm.senderId === member.userId && senderUser.id !== member.userId) ||
+                    (elm.receivedId === member.userId && senderUser.id !== member.userId));
+            });
+            if (tmp)
+                continue;
             const temp = {
                 isDirectMessage: false,
                 InfoMessage: false,
@@ -164,8 +178,16 @@ let MessagesService = class MessagesService {
                 createdAt: 'asc',
             },
         });
+        const usersBlocked = await this.prisma.blockedUser.findMany({
+            where: {
+                OR: [
+                    { senderId: senderId },
+                    { receivedId: senderId },
+                ],
+            }
+        });
         const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-        const result = await Promise.all(msgUserTemp.map(async (msg) => {
+        const messags = await Promise.all(msgUserTemp.map(async (msg) => {
             const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
             const temp = {
                 isDirectMessage: false,
@@ -184,6 +206,13 @@ let MessagesService = class MessagesService {
             };
             return temp;
         }));
+        const result = messags.filter((msg) => {
+            const tmp = usersBlocked.some((elm) => {
+                return ((msg.senderId === elm.senderId && elm.senderId !== senderId) ||
+                    (msg.senderId === elm.receivedId && elm.receivedId !== senderId));
+            });
+            return !tmp;
+        });
         return result;
     }
     async getLastMessages(senderId, receivedId) {
