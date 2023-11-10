@@ -46,15 +46,20 @@ export class MyGateway implements OnModuleInit {
     console.log({ size: this.clients.size });
 
     if (this.clients.size === 2) {
+
       console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
 
       const clientArray = Array.from(this.clients.keys());
       this.rooms.set(roomName, clientArray);
+      // client.emit("startGame", -1);
       clientArray.forEach((client) => {
         console.log({ client: client });
-
-        this.server.to(client).emit("startGame", roomName);
+        if (id === client) {
+        this.server.to(client).emit("startGame", roomName, true);
+        } else{
+          this.server.to(client).emit("startGame", roomName, false);
+        }
       });
       this.clients.clear();
     }
@@ -68,21 +73,23 @@ export class MyGateway implements OnModuleInit {
       }
     });
     return roomName;
-	}
+  }
 
   @SubscribeMessage("updatePaddle")
   onUpdatePaddle(client: Socket, data: any) {
     // console.log('updatePaddle', data);
-    const roomName = this.findRoomByClientId(data.id);
 
-    if (roomName) {
-      const clients = this.rooms.get(roomName);
+    if (data.room) {
+      const clientsRoom = this.rooms.get(data.room);
       //   room.emit()
-      //   const otherClient = room.find((c) => c !== client);
-      //   if (otherClient) {
-      //     console.log("other client is here");
-      //     otherClient.emit("resivePaddle", data.paddle);
-      //   }
+      if (clientsRoom) {
+        const otherClient = clientsRoom.find((c) => c !== data.userId);
+        if (otherClient) {
+          console.log({ otherClient: otherClient });
+          // otherClient.emit("resivePaddle", data.paddle);
+          this.server.to(otherClient).emit("resivePaddle", data.paddle);
+        }
+      }
     }
   }
 }

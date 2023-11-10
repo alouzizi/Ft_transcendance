@@ -7,4 +7,6 @@ export declare class MyGateway implements OnModuleInit {
     onModuleInit(): void;
     identifyClient(client: Socket, id: string): void;
     handleJoinRoom(client: Socket, id: string): void;
+    findRoomByClientId(id: string): string;
+    onUpdatePaddle(client: Socket, data: any): void;
 }

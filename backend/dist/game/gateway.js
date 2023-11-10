@@ -37,12 +37,40 @@ let MyGateway = class MyGateway {
         console.log({ size: this.clients.size });
         if (this.clients.size === 2) {
             console.log("2 clients connected");
+            const roomName = `room-${Date.now()}`;
             const clientArray = Array.from(this.clients.keys());
+            this.rooms.set(roomName, clientArray);
             clientArray.forEach((client) => {
                 console.log({ client: client });
-                this.server.to(client).emit("startGame");
+                if (id === client) {
+                    this.server.to(client).emit("startGame", roomName, true);
+                }
+                else {
+                    this.server.to(client).emit("startGame", roomName, false);
+                }
             });
             this.clients.clear();
+        }
+    }
+    findRoomByClientId(id) {
+        let roomName;
+        this.rooms.forEach((clients, room) => {
+            if (clients.includes(id)) {
+                roomName = room;
+            }
+        });
+        return roomName;
+    }
+    onUpdatePaddle(client, data) {
+        if (data.room) {
+            const clientsRoom = this.rooms.get(data.room);
+            if (clientsRoom) {
+                const otherClient = clientsRoom.find((c) => c !== data.userId);
+                if (otherClient) {
+                    console.log({ otherClient: otherClient });
+                    this.server.to(otherClient).emit("resivePaddle", data.paddle);
+                }
+            }
         }
     }
 };
@@ -67,6 +95,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", void 0)
 ], MyGateway.prototype, "handleJoinRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("updatePaddle"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], MyGateway.prototype, "onUpdatePaddle", null);
 exports.MyGateway = MyGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(4001, {
         cors: {
