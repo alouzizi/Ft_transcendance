@@ -30,7 +30,8 @@ export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
 
     const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
-    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
+
     const [errorName, setErrorName] = useState("");
     const [errorKey, setErrorKey] = useState("");
 

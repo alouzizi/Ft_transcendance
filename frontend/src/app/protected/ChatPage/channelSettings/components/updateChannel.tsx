@@ -35,7 +35,7 @@ export default function UpdateChannel() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
-    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
     const [errorName, setErrorName] = useState("");
     const [errorKey, setErrorKey] = useState("");
 
@@ -100,6 +100,7 @@ export default function UpdateChannel() {
     useEffect(() => {
         const updateChan = async () => {
             const res = await updateChannel(channelData, user.id, geust.id);
+
             if (res.status === 202) {
                 setErrorName(res.error)
             } else if (res.status === 200) {
@@ -123,9 +124,11 @@ export default function UpdateChannel() {
         } else if (saveChanges < -2) {
             const parsName = channelNameSchema.safeParse(channelData.channelName);
             const parskey = channelkeySchema.safeParse(channelData.channelPassword);
+            console.log("----------------> ", parskey, channelData.channelPassword)
             if (parsName.success && (parskey.success || !channelData.protected)) {
                 updateChan();
             } else {
+
                 if (!parsName.success) setErrorName('Invalid channel name');
                 if (!parskey.success && channelData.protected) setErrorKey('Invalid channel key');
             }
@@ -171,6 +174,7 @@ export default function UpdateChannel() {
                 <DialogContent className='w-[30rem] h-[30rem] flex items-center justify-center'>
 
                     <MiniCropper image={channelData.avatar} onSubmit={(croppedImage: any) => {
+                        console.log('---> ', croppedImage);
                         setSaveChanges((pre) => { return pre + 1 });
                         setMiniCropper(false);
                         setChannelData((prevState) => {
@@ -183,8 +187,7 @@ export default function UpdateChannel() {
 
             <div className="flex items-center justify-start pt-2 pb-2">
 
-                <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'
-                >
+                <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'>
                     <Avatar
                         size="6"
                         src={channelData.avatar}
@@ -197,7 +200,6 @@ export default function UpdateChannel() {
                         onChange={(event: any) => {
                             const file = event.target.files[0];
                             if (file) {
-                                console.log(file);
                                 const imageURL = URL.createObjectURL(file);
                                 setMiniCropper(true);
                                 setChannelData((prevState) => {
