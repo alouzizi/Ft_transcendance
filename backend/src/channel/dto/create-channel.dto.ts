@@ -11,9 +11,9 @@ enum ChannelType {
 }
 
 export class CreateChannelDto {
-    channleName: string;
+    channelName: string;
     channelType: ChannelType;
-    channlePassword: string;
+    channelPassword: string;
     channelMember: string[];
     avatar: string;
     channelOwnerId: string;

@@ -4,9 +4,9 @@ declare enum ChannelType {
     Private = "Private"
 }
 export declare class CreateChannelDto {
-    channleName: string;
+    channelName: string;
     channelType: ChannelType;
-    channlePassword: string;
+    channelPassword: string;
     channelMember: string[];
     avatar: string;
     channelOwnerId: string;

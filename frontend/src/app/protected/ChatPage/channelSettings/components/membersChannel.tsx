@@ -20,11 +20,10 @@ export default function MembersChannel() {
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
     const [bannedmembersFiltred, setBannedMembersFlitred] = useState<memberChannelDto[]>([]);
 
-
     const router = useRouter();
 
     useEffect(() => {
-        if (geust.id) {
+        if (geust.id !== '-1') {
             const getMemberChannel = async () => {
                 const tmp: { regularMembres: memberChannelDto[], bannedMembers: memberChannelDto[] }
                     = await getMembersChannel(geust.id);
@@ -117,6 +116,8 @@ export default function MembersChannel() {
         setMembersFlitred(memberFiltred);
         setBannedMembersFlitred(bannedmemberFiltred);
     }, [searsh]);
+
+
     return (
 
         <div className="flex flex-col  items-center pt-5 ">

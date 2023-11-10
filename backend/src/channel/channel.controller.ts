@@ -30,6 +30,11 @@ export class ChannelController {
   }
 
 
+  @Get('/checkOwnerIsAdmin/:senderId/:channelId')
+  checkOwnerIsAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.checkOwnerIsAdmin(senderId, channelId);
+  }
+
   @Get('/addUserToChannel/:senderId/:channelId/:userId')
   addUserToChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
     return this.channelService.addUserToChannel(senderId, channelId, userId);

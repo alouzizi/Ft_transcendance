@@ -11,7 +11,7 @@ export default function AlertSave() {
     const { user, geust, saveChanges, setSaveChanges } = useGlobalContext();
 
     useEffect(() => {
-        console.log("useEffect called from AlertSaved")
+        // console.log("useEffect called from AlertSaved")
     }, [saveChanges]);
 
     return (
@@ -31,7 +31,7 @@ export default function AlertSave() {
                                 Rest
                             </Text>
 
-                            <button onClick={() => { setSaveChanges(-2) }}
+                            <button onClick={() => { setSaveChanges((pre) => { return pre - 50000 }) }}
                                 className="rounded-sm text-white bg-green-500 ml-2 px-1
                         hover:bg-green-900">
                                 <Text size='2' > Save Changes</Text>

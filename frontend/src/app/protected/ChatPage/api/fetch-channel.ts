@@ -23,6 +23,13 @@ export async function addUserToChannel(senderId: string, channelId: string, user
     const data = await res.data;
     return data;
 }
+// 
+export async function checkOwnerIsAdmin(senderId: string, channelId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/checkOwnerIsAdmin/${senderId}/${channelId}`);
+    const data = await res.data;
+    return data;
+}
 
 export async function leaveChannel(senderId: string, channelId: string) {
     const res = await axios.get(

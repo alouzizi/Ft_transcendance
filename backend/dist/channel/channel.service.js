@@ -32,16 +32,15 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
-        const saltRounds = 10;
-        let pass = '';
-        if (createChannelDto.channlePassword != '')
-            pass = await bcrypt.hash(createChannelDto.channlePassword, saltRounds);
+        let bcryptPassword = '';
+        if (createChannelDto.channelPassword != '')
+            bcryptPassword = await bcrypt.hash(createChannelDto.channelPassword, 10);
         try {
             const newChannel = await this.prisma.channel.create({
                 data: {
                     channelOwnerId: senderId,
-                    channelName: createChannelDto.channleName,
-                    channelPassword: pass,
+                    channelName: createChannelDto.channelName,
+                    channelPassword: bcryptPassword,
                     channelType: createChannelDto.channelType,
                     protected: createChannelDto.protected,
                     avatar: "https://randomuser.me/api/portraits/women/82.jpg"
@@ -81,20 +80,22 @@ let ChannelService = class ChannelService {
     async updateChannel(senderId, channelId, updateChannelDto) {
         const saltRounds = 10;
         let pass = '';
-        if (updateChannelDto.channlePassword != '' && updateChannelDto.protected)
-            pass = await bcrypt.hash(updateChannelDto.channlePassword, saltRounds);
+        if (updateChannelDto.channelPassword != '' && updateChannelDto.protected)
+            pass = await bcrypt.hash(updateChannelDto.channelPassword, saltRounds);
         try {
             const channelUpdate = await this.prisma.channel.update({
                 where: { id: channelId },
                 data: {
-                    channelName: updateChannelDto.channleName,
+                    channelName: updateChannelDto.channelName,
                     channelPassword: pass,
                     channelType: updateChannelDto.channelType,
                     protected: updateChannelDto.protected,
                     avatar: updateChannelDto.avatar
                 }
             });
-            return { status: 200, channel: channelUpdate };
+            return {
+                status: 200, channel: { ...channelUpdate, channelPassword: channelUpdate.protected ? '****' : '' }
+            };
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
@@ -106,6 +107,14 @@ let ChannelService = class ChannelService {
                 }
             }
         }
+    }
+    async checkOwnerIsAdmin(senderId, channelId) {
+        const user = await this.prisma.channelMember.findUnique({
+            where: {
+                Unique_userId_channelId: { channelId, userId: senderId }
+            },
+        });
+        return (user.isAdmin);
     }
     async addUserToChannel(senderId, channelId, userId) {
         const admin = await this.prisma.channelMember.findUnique({
@@ -131,9 +140,9 @@ let ChannelService = class ChannelService {
             },
         });
         return {
-            channleName: channel.channelName,
+            channelName: channel.channelName,
             channelType: channel.channelType,
-            channlePassword: channel.protected ? '8989898' : '',
+            channelPassword: channel.protected ? '****' : '',
             protected: channel.protected,
             avatar: channel.avatar,
             channelOwnerId: channel.channelOwnerId
@@ -313,15 +322,13 @@ let ChannelService = class ChannelService {
     }
     async validePassword(senderId, channelId, password) {
         const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-        if (channel.channelOwnerId === senderId) {
-            const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
-            console.log(passwordMatch);
-            if (passwordMatch) {
-                return true;
-            }
-            else {
-                return false;
-            }
+        const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
+        console.log(passwordMatch);
+        if (passwordMatch) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 };

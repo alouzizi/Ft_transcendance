@@ -34,7 +34,7 @@ const GlobalContext = createContext<ContextProps>({
     updateInfo: 1,
     setUpdateInfo: () => { },
 
-    saveChanges: 1,
+    saveChanges: 0,
     setSaveChanges: () => { },
 
     user: {
@@ -79,7 +79,7 @@ export const GlobalContextProvider = ({ children }: {
     const router = useRouter();
 
     const [updateInfo, setUpdateInfo] = useState<number>(1);
-    const [saveChanges, setSaveChanges] = useState<number>(1);
+    const [saveChanges, setSaveChanges] = useState<number>(0);
 
     const [user, setUser] = useState<ownerDto>({
         id: '-1',

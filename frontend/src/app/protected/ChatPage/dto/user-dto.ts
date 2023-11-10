@@ -81,9 +81,9 @@ enum ChannelType {
 
 
 type channelDto = {
-  channleName: string;
+  channelName: string;
   channelType: ChannelType;
-  channlePassword: string;
+  channelPassword: string;
   avatar: string;
   channelOwnerId: string;
   protected: boolean;

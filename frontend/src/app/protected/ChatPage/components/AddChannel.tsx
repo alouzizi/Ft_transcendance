@@ -36,9 +36,9 @@ export default function AlertAddChannel() {
 
 
     const [channelData, setChannelData] = useState<channelDto>({
-        channleName: '',
+        channelName: '',
         channelType: ChannelType.Public,
-        channlePassword: '',
+        channelPassword: '',
         channelOwnerId: '',
         avatar: '',
         protected: false,
@@ -112,9 +112,9 @@ export default function AlertAddChannel() {
 
     useEffect(() => {
         setChannelData({
-            channleName: '',
+            channelName: '',
             channelType: ChannelType.Public,
-            channlePassword: '',
+            channelPassword: '',
             channelMember: [],
             channelOwnerId: '',
             protected: false,
@@ -236,11 +236,11 @@ export default function AlertAddChannel() {
                             <TextField required fullWidth size="small" className='mt-3'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Name" variant="outlined"
-                                value={channelData.channleName}
+                                value={channelData.channelName}
                                 onChange={(e) => {
                                     setErrorName('');
                                     setChannelData((prevState) => {
-                                        return { ...prevState, channleName: e.target.value };
+                                        return { ...prevState, channelName: e.target.value };
                                     });
 
                                 }} />
@@ -263,11 +263,11 @@ export default function AlertAddChannel() {
                                 fullWidth size="small" className='mt-1'
                                 style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
                                 label="Channel Key" variant="outlined"
-                                value={channelData.channlePassword}
+                                value={channelData.channelPassword}
                                 onChange={(e) => {
                                     setErrorKey(''),
                                         setChannelData((prevState) => {
-                                            return { ...prevState, channlePassword: e.target.value };
+                                            return { ...prevState, channelPassword: e.target.value };
                                         });
 
                                 }} />
@@ -289,8 +289,8 @@ export default function AlertAddChannel() {
                     <DialogActions style={{ justifyContent: 'center' }}>
                         <Button style={{ background: 'blue', color: "white" }}
                             onClick={() => {
-                                const parsName = channelNameSchema.safeParse(channelData.channleName);
-                                const parskey = channelkeySchema.safeParse(channelData.channlePassword);
+                                const parsName = channelNameSchema.safeParse(channelData.channelName);
+                                const parskey = channelkeySchema.safeParse(channelData.channelPassword);
                                 if (parsName.success && (parskey.success || !channelData.protected)) {
                                     for (const user of membersChannel) {
                                         setChannelData((prevState) => {

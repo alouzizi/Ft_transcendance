@@ -20,11 +20,11 @@ export declare class ChannelController {
     updateChannel(createChannelDto: any, senderId: string, channelId: string): Promise<{
         status: number;
         channel: {
+            channelPassword: string;
             id: string;
             channelName: string;
             channelType: import(".prisma/client").$Enums.ChannelType;
             protected: boolean;
-            channelPassword: string;
             createdAt: Date;
             avatar: string;
             channelOwnerId: string;
@@ -35,11 +35,12 @@ export declare class ChannelController {
         error: string;
         channel?: undefined;
     }>;
+    checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean>;
     addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
     getChannel(senderId: string, channelId: string): Promise<{
-        channleName: string;
+        channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
-        channlePassword: string;
+        channelPassword: string;
         protected: boolean;
         avatar: string;
         channelOwnerId: string;
