@@ -127,15 +127,23 @@ let UserService = class UserService {
         return result;
     }
     async checkIsBlocked(senderId, receivedId) {
-        const block = await this.prisma.blockedUser.findFirst({
+        const block1 = await this.prisma.blockedUser.findFirst({
             where: {
                 senderId: senderId,
                 receivedId: receivedId
             }
         });
-        if (block)
-            return true;
-        return false;
+        if (block1)
+            return 1;
+        const block2 = await this.prisma.blockedUser.findFirst({
+            where: {
+                senderId: receivedId,
+                receivedId: senderId
+            }
+        });
+        if (block2)
+            return 2;
+        return 0;
     }
     async getUserGeust(id) {
         const user = await this.findById(id);

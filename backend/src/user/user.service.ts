@@ -130,15 +130,26 @@ export class UserService {
   }
 
   async checkIsBlocked(senderId: string, receivedId: string) {
-    const block: BlockedUser = await this.prisma.blockedUser.findFirst({
+    // 0 if users is friend
+    // 1 if sender block received
+    // 2 if receiver block sender
+    const block1: BlockedUser = await this.prisma.blockedUser.findFirst({
       where: {
         senderId: senderId,
         receivedId: receivedId
       }
     })
-    if (block)
-      return true;
-    return false;
+    if (block1)
+      return 1;
+    const block2: BlockedUser = await this.prisma.blockedUser.findFirst({
+      where: {
+        senderId: receivedId,
+        receivedId: senderId
+      }
+    })
+    if (block2)
+      return 2;
+    return 0;
   }
 
   async getUserGeust(id: string) {

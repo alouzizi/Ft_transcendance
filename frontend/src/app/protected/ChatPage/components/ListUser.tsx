@@ -4,7 +4,7 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import { useGlobalContext } from '../../../context/store';
-import { getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
+import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import { extractHoursAndM } from './widgetMsg';
 import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
@@ -73,6 +73,17 @@ const ListUser = () => {
       }
     }
   }, [direct, itemList])
+  const [isBlocked, setIsBlocked] = useState<number>(0)
+
+  useEffect(() => {
+    if (user.id !== "-1" && geust.id !== "-1") {
+      const upDateGeust = async () => {
+        const check = await checkIsBlocked(user.id, geust.id);
+        setIsBlocked(check);
+      }
+      upDateGeust();
+    }
+  }, [geust.id, user.id, updateInfo]);
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
@@ -90,7 +101,7 @@ const ListUser = () => {
           fallback="T"
         />
         <div className='absolute pt-6 pl-7'>
-          {el.isDirectMessage ? <GoDotFill size={20} color={getColorStatus(el.receivedStatus)} /> : <></>}
+          {el.isDirectMessage ? <GoDotFill size={20} color={(geust.status === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
         </div>
         <Flex direction="column" className='items-start pl-2'>
           <Text size="2" weight="bold" className=''>

@@ -104,5 +104,5 @@ export declare class UserController {
         lenUser: number;
         idUserOwner: string;
     }>;
-    checkIsBlocked(senderId: string, receivedId: string): Promise<boolean>;
+    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2>;
 }

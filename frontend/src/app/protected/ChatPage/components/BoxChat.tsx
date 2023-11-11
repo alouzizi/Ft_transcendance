@@ -91,11 +91,11 @@ const BoxChat = () => {
     }, [geust.id, user.id, updateInfo]);
 
 
-    const [isBlocked, setIsBlocked] = useState<boolean>(false)
+    const [isBlocked, setIsBlocked] = useState<number>(0)
     const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
-
+    console.log("-----> ", isBlocked);
     useEffect(() => {
-        if (user.id !== "-1" && geust.id !== "-1") {
+        if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 setIsBlocked(check);
@@ -133,7 +133,7 @@ const BoxChat = () => {
 
     const handleSendMessage = () => {
         if (msg.trim() != '') {
-            if (isBlocked) {
+            if (isBlocked === 1) {
                 setUnblockAlert(true);
             } else {
                 if (socket) {
@@ -168,7 +168,8 @@ const BoxChat = () => {
                         fallback="T"
                     />
                     <Text className='absolute pt-6 pl-7'>
-                        {geust.isUser ? <GoDotFill size={20} color={getColorStatus(geust.status)} /> : <></>}
+                        {geust.isUser ? <GoDotFill size={20}
+                            color={(geust.status === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
                     </Text>
                     <Flex direction="column" className='flex' >
                         <Text size="2" weight="bold" className='pl-2'>
@@ -178,10 +179,12 @@ const BoxChat = () => {
                             (geust.status === 'INACTIF') ?
                                 <Text size="1" weight="light" className='pl-2'>
                                     {geust.isUser ?
-                                        formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true }) :
-                                        <>{geust.lenUser} members</>}
-                                </Text> :
-                                <></>
+                                        (isBlocked === 0) ?
+                                            formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true }) : <p></p>
+                                        : <>{geust.lenUser} members</>
+                                    }
+                                </Text>
+                                : <></>
                         }
                     </Flex>
                 </div>
@@ -240,7 +243,7 @@ const BoxChat = () => {
                             <button onClick={async () => {
                                 await unBlockedUser(user.id, geust.id);
                                 setUnblockAlert(false);
-                                setIsBlocked(false);
+                                setIsBlocked(0);
                             }}
                                 className="w-[200px] mt-2 font-meduim  py-1 rounded-md text-white bg-[#4069ff] text-sm">
                                 Unblock

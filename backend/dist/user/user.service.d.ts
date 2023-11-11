@@ -69,7 +69,7 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    checkIsBlocked(senderId: string, receivedId: string): Promise<boolean>;
+    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;
