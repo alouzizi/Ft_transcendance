@@ -4,6 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from "src/prisma/prisma.service";
 import { ConfigService } from "@nestjs/config";
 import { User } from '@prisma/client';
+import { toDataURL } from 'qrcode';
+import { authenticator } from 'otplib';
 
 const EXPIRE_TIME = 20 * 1000;
 @Injectable()
@@ -11,10 +13,10 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private UserService: UserService,
-    private prisma: PrismaService,
+    private PrismaService: PrismaService,
     private config: ConfigService,
 
-    ) {}
+  ) {}
     async signToken(user: User) {
       const payload = {
         sub: user.intra_id,
@@ -38,26 +40,26 @@ export class AuthService {
       };
     }
   
-    async refreshToken(user: User) {
-      const payload = {
-        sub: user.intra_id,
-        email: user.email,
-      };
+  async refreshToken(user: User) {
+    const payload = {
+      sub: user.intra_id,
+      email: user.email,
+    };
   
-      const access_token = await this.jwtService.signAsync(payload, {
-        expiresIn: "7d",
-        secret: this.config.get("JWT_SECRET"),
-      });
-      const refresh_token = await this.jwtService.signAsync(payload, {
-        expiresIn: "7d",
-        secret: this.config.get("JWT_RefreshTokenKey"),
-      });
-      return {
-        access_token: access_token,
-        refresh_token: refresh_token,
-        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
-      };
-    }
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: "7d",
+      secret: this.config.get("JWT_SECRET"),
+    });
+    const refresh_token = await this.jwtService.signAsync(payload, {
+      expiresIn: "7d",
+      secret: this.config.get("JWT_RefreshTokenKey"),
+    });
+    return {
+      access_token: access_token,
+      refresh_token: refresh_token,
+      expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+    };
+  }
     
   //saliha -----------------------------------------------------------------------
   async generateAccessToken(user: any){
@@ -68,7 +70,7 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-    async valiadteUserAndCreateJWT(user: User)
+  async valiadteUserAndCreateJWT(user: User)
   {
     console.log("in validate : ",user)
     try {
@@ -85,6 +87,9 @@ export class AuthService {
     }  
   }
 }
+
+
+
 
 ///check if user in db 
 //user == true => redirect profile

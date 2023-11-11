@@ -1,23 +1,18 @@
-// import { Controller, Get, Req, Res, Post, Body, UseGuards } from '@nestjs/common';
-// import { AuthGuard } from '@nestjs/passport';
-// import { Request, Response } from 'express';
-// import { Profile} from 'passport-42';
-// import { AuthService } from './auth.service';
 import {
-  Body,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
-  Post,
+  Body,
   Req,
+  Post,
   Res,
   UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from 'express';
 import { AuthService } from "./auth.service";
+import { UserService } from "src/users/UserService";
 import { AuthDto } from "./dto";
+import { async } from "rxjs";
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -44,6 +39,20 @@ export class AuthController {
     // res.send(ret)
   }
 }
+
+@Post('enable-2fa')
+@UseGuards(AuthGuard('jwt'))
+
+async enableTwoFactorAuthentication(@Req() req: any) {
+  const user = Req.user; // Assuming you have a user object in the JWT payload
+  const { secret, otpauthUrl } = await this.authService.generateTwoFactorAuthenticationSecret(user);
+  const qrCodeDataUrl = await this.authService.generateQrCodeDataURL(otpauthUrl);
+  
+  // Return the secret and QR code URL to the client
+  return { secret, qrCodeDataUrl };
+}
+
+// Other authentication-related endpoints...
 
 
 //prisma
