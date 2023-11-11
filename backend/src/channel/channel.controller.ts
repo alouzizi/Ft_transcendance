@@ -78,4 +78,15 @@ export class ChannelController {
     , @Param('password') password: string) {
     return this.channelService.validePassword(senderId, channelId, password);
   }
+
+
+  @Get('/getValideChannels/:senderId')
+  getValideChannels(@Param('senderId') senderId: string) {
+    return this.channelService.getValideChannels(senderId);
+  }
+
+  @Get('/joinChannel/:senderId/:channelId/')
+  joinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.joinChannel(senderId, channelId);
+  }
 }

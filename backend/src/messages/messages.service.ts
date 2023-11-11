@@ -77,6 +77,7 @@ export class MessagesService {
       receivedStatus: receivedUser.status,
 
       OwnerChannelId: '', // no matter
+
     }
     if (notSendTo === "")
       server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
@@ -143,6 +144,7 @@ export class MessagesService {
 
         OwnerChannelId: channel.channelOwnerId,
 
+
       }
       server.to(member.userId).emit('findMsg2UsersResponse', temp);
     }
@@ -200,6 +202,7 @@ export class MessagesService {
           OwnerChannelId: '', // no matter
 
 
+
         }
         return temp;
       })
@@ -246,6 +249,8 @@ export class MessagesService {
             receivedStatus: Status.INACTIF, // not matter
 
             OwnerChannelId: channel.channelOwnerId,
+
+
           }
           return temp;
         })

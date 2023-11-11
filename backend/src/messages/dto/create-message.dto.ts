@@ -36,6 +36,8 @@ export class messageDto {
 
   OwnerChannelId: String;
 
+  // status: Status;
+
 }
 
 

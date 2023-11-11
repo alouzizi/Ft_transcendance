@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { BannedMember, Channel, ChannelMember, Prisma, User } from '@prisma/client';
+import { BannedMember, Channel, ChannelMember, ChannelType, MutedMember, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 import * as bcrypt from 'bcrypt';
+import { async } from 'rxjs';
 
 
 
@@ -21,7 +22,9 @@ export class ChannelService {
       data: {
         senderId: senderId,
         receivedId: channelId,
-        content: (user) ? `${msg} ${user.nickname}` : `${msg}`,
+        content: (user) ?
+          (msg.includes('join') ? `${user.nickname} ${msg}` : `${msg} ${user.nickname}`)
+          : `${msg}`,
         isDirectMessage: false,
         InfoMessage: true,
         channelId: channelId,
@@ -286,8 +289,6 @@ export class ChannelService {
           }
         }
       }
-
-
       return true;
     }
     return false;
@@ -352,6 +353,59 @@ export class ChannelService {
     } else {
       return false;
     }
+  }
 
+  async checkIsBanner(senderId: string, channelId: string) {
+    const bannedUser: BannedMember = await this.prisma.bannedMember.findFirst({
+      where: { userId: senderId, channelId: channelId }
+    })
+    if (bannedUser)
+      return true;
+    return false
+  }
+
+  async getValideChannels(senderId: string) {
+    const publicChannels: Channel[] = await this.prisma.channel.findMany(
+      { where: { channelType: ChannelType.Public } }
+    );
+    const result = await Promise.all(
+      publicChannels
+        .filter(async (channel: Channel) => {
+          const test1 = await this.checkIsBanner(senderId, channel.id);
+          return !test1;
+        })
+        .map(async (channel: Channel) => {
+          let status: string = '';
+          const member: ChannelMember = await this.prisma.channelMember.findFirst({
+            where: { userId: senderId, channelId: channel.id }
+          })
+          if (member)
+            status = "member"
+          const muted: MutedMember = await this.prisma.mutedMember.findFirst({
+            where: { userId: senderId, channelId: channel.id }
+          })
+          if (muted)
+            status = "muted"
+          return {
+            id: channel.id,
+            channelName: channel.channelName,
+            avatar: channel.avatar,
+            protected: channel.protected,
+            Status: status
+          }
+        })
+    );
+    return result;
+  }
+
+  async joinChannel(senderId: string, channelId: string) {
+    await this.prisma.channelMember.create({
+      data: {
+        userId: senderId,
+        isAdmin: false,
+        channelId: channelId,
+      }
+    });
+    this.createMessageInfoChannel(senderId, channelId, senderId, "join Channel");
   }
 }

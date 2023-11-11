@@ -5,12 +5,20 @@ enum Status {
 
 type userDto = {
   id: string;
-  email: string;
   nickname: string;
   profilePic: string;
   status: Status;
   lastSee: number;
-  friendship: number
+  friendship: number;
+};
+
+
+type validChannelDto = {
+  id: string;
+  channelName: string;
+  avatar: string;
+  protected: boolean;
+  Status: string;
 };
 
 type ownerDto = {

@@ -62,6 +62,12 @@ let ChannelController = class ChannelController {
     validePassword(senderId, channelId, password) {
         return this.channelService.validePassword(senderId, channelId, password);
     }
+    getValideChannels(senderId) {
+        return this.channelService.getValideChannels(senderId);
+    }
+    joinChannel(senderId, channelId) {
+        return this.channelService.joinChannel(senderId, channelId);
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -157,6 +163,21 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "validePassword", null);
+__decorate([
+    (0, common_1.Get)('/getValideChannels/:senderId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "getValideChannels", null);
+__decorate([
+    (0, common_1.Get)('/joinChannel/:senderId/:channelId/'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "joinChannel", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

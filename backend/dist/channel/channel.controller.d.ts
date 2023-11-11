@@ -54,4 +54,12 @@ export declare class ChannelController {
     banMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     leaveChannel(senderId: string, channelId: string): Promise<boolean>;
     validePassword(senderId: string, channelId: string, password: string): Promise<boolean>;
+    getValideChannels(senderId: string): Promise<{
+        id: string;
+        channelName: string;
+        avatar: string;
+        protected: boolean;
+        Status: string;
+    }[]>;
+    joinChannel(senderId: string, channelId: string): Promise<void>;
 }

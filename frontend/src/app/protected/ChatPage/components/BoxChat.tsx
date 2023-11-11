@@ -93,7 +93,6 @@ const BoxChat = () => {
 
     const [isBlocked, setIsBlocked] = useState<number>(0)
     const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
-    console.log("-----> ", isBlocked);
     useEffect(() => {
         if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
             const upDateGeust = async () => {

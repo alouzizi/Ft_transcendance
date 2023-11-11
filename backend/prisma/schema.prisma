@@ -69,6 +69,7 @@ model Channel {
 
   ChannelMember ChannelMember[]
   BannedMember  BannedMember[]
+  MutedMember   MutedMember[]
 }
 
 model Message {
@@ -141,6 +142,18 @@ model BannedMember {
 
   userId    String
   banned_at DateTime @default(now())
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+model MutedMember {
+  id String @id @default(uuid())
+
+  userId   String
+  muted_at DateTime @default(now())
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String

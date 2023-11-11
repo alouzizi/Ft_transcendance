@@ -57,22 +57,29 @@ const ListUser = () => {
   };
 
   useEffect(() => {
-    if (direct) {
-      if (itemListDirect.length !== 0) {
-        itemListWidget = userWidgetDirect;
-        getDataGeust(itemListDirect[0]);
-      } else if (itemListChannel.length !== 0) {
-        getDataGeust(itemListChannel[0]);
-      }
-    } else {
-      if (itemListChannel.length !== 0) {
-        itemListWidget = userWidgetChannel;
-        getDataGeust(itemListChannel[0]);
-      } else if (itemListDirect.length !== 0) {
-        getDataGeust(itemListDirect[0]);
+    if (geust.id === '-1') {
+      if (direct) {
+        if (itemListDirect.length !== 0) {
+          itemListWidget = userWidgetDirect;
+          getDataGeust(itemListDirect[0]);
+        } else if (itemListChannel.length !== 0) {
+          getDataGeust(itemListChannel[0]);
+        }
+      } else {
+        if (itemListChannel.length !== 0) {
+          itemListWidget = userWidgetChannel;
+          getDataGeust(itemListChannel[0]);
+        } else if (itemListDirect.length !== 0) {
+          getDataGeust(itemListDirect[0]);
+        }
       }
     }
   }, [direct, itemList])
+
+  useEffect(() => {
+    if (geust.id !== '-1')
+      setDirect(geust.isUser);
+  }, [geust.id]);
   const [isBlocked, setIsBlocked] = useState<number>(0)
 
   useEffect(() => {
@@ -101,7 +108,8 @@ const ListUser = () => {
           fallback="T"
         />
         <div className='absolute pt-6 pl-7'>
-          {el.isDirectMessage ? <GoDotFill size={20} color={(geust.status === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
+          {el.isDirectMessage ? <GoDotFill size={20}
+            color={(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
         </div>
         <Flex direction="column" className='items-start pl-2'>
           <Text size="2" weight="bold" className=''>

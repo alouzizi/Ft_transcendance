@@ -76,3 +76,9 @@ export async function ChangeStatusBanned(senderId: string, channelId: string, us
     return data;
 }
 
+export async function joinChannel(senderId: string, channelId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/joinChannel/${senderId}/${channelId}`);
+    const data = await res.data;
+    return data;
+}

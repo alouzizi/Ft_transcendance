@@ -68,4 +68,13 @@ export declare class ChannelService {
     KickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean>;
     validePassword(senderId: string, channelId: string, password: string): Promise<boolean>;
+    checkIsBanner(senderId: string, channelId: string): Promise<boolean>;
+    getValideChannels(senderId: string): Promise<{
+        id: string;
+        channelName: string;
+        avatar: string;
+        protected: boolean;
+        Status: string;
+    }[]>;
+    joinChannel(senderId: string, channelId: string): Promise<void>;
 }

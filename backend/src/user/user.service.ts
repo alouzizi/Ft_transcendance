@@ -27,8 +27,8 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
   async getValideUsers(senderId: string) {
-    const users = await this.prisma.user.findMany();
 
+    const users = await this.prisma.user.findMany();
     const blockerUsers = await this.prisma.blockedUser.findMany({
       where: {
         OR: [{ senderId: senderId }, { receivedId: senderId }],
@@ -52,32 +52,23 @@ export class UserService {
         let friends = await this.prisma.friend.findFirst({
           where: {
             OR: [
-              {
-                senderId: senderId,
-                receivedId: user.id,
-              },
-              {
-                senderId: user.id,
-                receivedId: senderId,
-              },
+              { senderId: senderId, receivedId: user.id },
+              { senderId: user.id, receivedId: senderId },
             ],
           },
         });
         if (friends) return { ...user, friendship: 1 }; // friends
+
         let freiReq = await this.prisma.friendRequest.findFirst({
-          where: {
-            senderId: user.id,
-            receivedId: senderId,
-          },
+          where: { senderId: user.id, receivedId: senderId, },
         });
         if (freiReq) return { ...user, friendship: 2 }; //  user that I sent a friend request
+
         let sendReq = await this.prisma.friendRequest.findFirst({
-          where: {
-            senderId: senderId,
-            receivedId: user.id,
-          },
+          where: { senderId: senderId, receivedId: user.id, },
         });
         if (sendReq) return { ...user, friendship: 3 };  // user who sent a friend request 
+
         return { ...user, friendship: 0 }; // user
       })
     );
@@ -129,10 +120,11 @@ export class UserService {
     return result;
   }
 
+
+  // 0 if users is friend
+  // 1 if sender block received
+  // 2 if receiver block sender
   async checkIsBlocked(senderId: string, receivedId: string) {
-    // 0 if users is friend
-    // 1 if sender block received
-    // 2 if receiver block sender
     const block1: BlockedUser = await this.prisma.blockedUser.findFirst({
       where: {
         senderId: senderId,
@@ -178,12 +170,13 @@ export class UserService {
   }
 
 
+
   async getChannelGeust(id: string) {
     const channel = await this.channelService.findChannelById(id);
     const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
     return {
       isUser: false,
-      id: channel.id,
+      id: id,
       nickname: channel.channelName,
       profilePic: channel.avatar,
       status: Status.INACTIF,

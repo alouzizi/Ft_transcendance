@@ -24,7 +24,9 @@ let ChannelService = class ChannelService {
             data: {
                 senderId: senderId,
                 receivedId: channelId,
-                content: (user) ? `${msg} ${user.nickname}` : `${msg}`,
+                content: (user) ?
+                    (msg.includes('join') ? `${user.nickname} ${msg}` : `${msg} ${user.nickname}`)
+                    : `${msg}`,
                 isDirectMessage: false,
                 InfoMessage: true,
                 channelId: channelId,
@@ -330,6 +332,53 @@ let ChannelService = class ChannelService {
         else {
             return false;
         }
+    }
+    async checkIsBanner(senderId, channelId) {
+        const bannedUser = await this.prisma.bannedMember.findFirst({
+            where: { userId: senderId, channelId: channelId }
+        });
+        if (bannedUser)
+            return true;
+        return false;
+    }
+    async getValideChannels(senderId) {
+        const publicChannels = await this.prisma.channel.findMany({ where: { channelType: client_1.ChannelType.Public } });
+        const result = await Promise.all(publicChannels
+            .filter(async (channel) => {
+            const test1 = await this.checkIsBanner(senderId, channel.id);
+            return !test1;
+        })
+            .map(async (channel) => {
+            let status = '';
+            const member = await this.prisma.channelMember.findFirst({
+                where: { userId: senderId, channelId: channel.id }
+            });
+            if (member)
+                status = "member";
+            const muted = await this.prisma.mutedMember.findFirst({
+                where: { userId: senderId, channelId: channel.id }
+            });
+            if (muted)
+                status = "muted";
+            return {
+                id: channel.id,
+                channelName: channel.channelName,
+                avatar: channel.avatar,
+                protected: channel.protected,
+                Status: status
+            };
+        }));
+        return result;
+    }
+    async joinChannel(senderId, channelId) {
+        await this.prisma.channelMember.create({
+            data: {
+                userId: senderId,
+                isAdmin: false,
+                channelId: channelId,
+            }
+        });
+        this.createMessageInfoChannel(senderId, channelId, senderId, "join Channel");
     }
 };
 exports.ChannelService = ChannelService;

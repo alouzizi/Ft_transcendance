@@ -36,6 +36,15 @@ export async function getValideUsers(id: string) {
     return users;
 }
 
+
+export async function getValideChannels(id: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/getValideChannels/${id}`,
+    );
+    const users = await res.data;
+    return users;
+}
+
 export async function getUserForMsg(senderId: string) {
     const res = await axios.get(
         Backend_URL + `/messages/getUserForMsg/${senderId}`,

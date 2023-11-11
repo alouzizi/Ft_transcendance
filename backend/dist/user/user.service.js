@@ -51,32 +51,20 @@ let UserService = class UserService {
             let friends = await this.prisma.friend.findFirst({
                 where: {
                     OR: [
-                        {
-                            senderId: senderId,
-                            receivedId: user.id,
-                        },
-                        {
-                            senderId: user.id,
-                            receivedId: senderId,
-                        },
+                        { senderId: senderId, receivedId: user.id },
+                        { senderId: user.id, receivedId: senderId },
                     ],
                 },
             });
             if (friends)
                 return { ...user, friendship: 1 };
             let freiReq = await this.prisma.friendRequest.findFirst({
-                where: {
-                    senderId: user.id,
-                    receivedId: senderId,
-                },
+                where: { senderId: user.id, receivedId: senderId, },
             });
             if (freiReq)
                 return { ...user, friendship: 2 };
             let sendReq = await this.prisma.friendRequest.findFirst({
-                where: {
-                    senderId: senderId,
-                    receivedId: user.id,
-                },
+                where: { senderId: senderId, receivedId: user.id, },
             });
             if (sendReq)
                 return { ...user, friendship: 3 };
@@ -174,7 +162,7 @@ let UserService = class UserService {
         const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
         return {
             isUser: false,
-            id: channel.id,
+            id: id,
             nickname: channel.channelName,
             profilePic: channel.avatar,
             status: client_1.Status.INACTIF,
