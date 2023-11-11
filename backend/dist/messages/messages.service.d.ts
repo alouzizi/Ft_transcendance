@@ -1,11 +1,9 @@
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
-import { UserService } from 'src/user/user.service';
 export declare class MessagesService {
     private prisma;
-    private userService;
-    constructor(prisma: PrismaService, userService: UserService);
+    constructor(prisma: PrismaService);
     createDirectMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
     createChannelMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
     createMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
@@ -17,7 +15,7 @@ export declare class MessagesService {
         senderId: string;
         content: string;
         createdAt: Date;
-        showed: boolean;
+        notSendTo: string;
         messageStatus: import(".prisma/client").$Enums.MessageStatus;
         receivedId: string;
         channelId: string;

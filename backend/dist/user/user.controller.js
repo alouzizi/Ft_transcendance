@@ -50,6 +50,9 @@ let UserController = class UserController {
     async getChannelGeust(id) {
         return await this.userService.getChannelGeust(id);
     }
+    async checkIsBlocked(senderId, receivedId) {
+        return await this.userService.checkIsBlocked(senderId, receivedId);
+    }
 };
 exports.UserController = UserController;
 __decorate([
@@ -102,6 +105,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getChannelGeust", null);
+__decorate([
+    (0, common_1.Get)('checkIsBlocked/:senderId/:receivedId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('receivedId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "checkIsBlocked", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

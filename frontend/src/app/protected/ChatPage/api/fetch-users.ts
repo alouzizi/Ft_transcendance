@@ -44,6 +44,15 @@ export async function getUserForMsg(senderId: string) {
     return users;
 }
 
+
+export async function checkIsBlocked(senderId: string, receivedId: string) {
+    const res = await axios.get(
+        Backend_URL + `/user/checkIsBlocked/${senderId}/${receivedId}`,
+    );
+    const check = await res.data;
+    return check;
+}
+
 export async function getUserGeust(id: string) {
     const res = await axios.get(
         Backend_URL + `/user/getUserGeust/${id}`,

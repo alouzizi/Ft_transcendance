@@ -3,20 +3,20 @@ import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
 import { BlockedUser, Channel, Message, MessageStatus, Status, User } from '@prisma/client';
-import { UserService } from 'src/user/user.service';
+// import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     private prisma: PrismaService,
-    private userService: UserService,
+    // private userService: UserService,
   ) { }
 
   async createDirectMessage(server: Server, createMessageDto: CreateMessageDto) {
-    let showed: boolean = true;
+    let notSendTo: string = "";
     let messageStatus: MessageStatus = "NotReceived"
 
-    const blockerUser = await this.prisma.blockedUser.findMany({
+    const blockerUser: BlockedUser[] = await this.prisma.blockedUser.findMany({
       where: {
         OR: [
           {
@@ -32,7 +32,10 @@ export class MessagesService {
     })
 
     if (blockerUser.length) {
-      showed = false;
+      if (blockerUser[0].senderId === createMessageDto.senderId)
+        notSendTo += blockerUser[0].receivedId;
+      else
+        notSendTo += blockerUser[0].senderId;
     }
 
     const user = await this.prisma.user.findUnique({
@@ -40,14 +43,14 @@ export class MessagesService {
         id: createMessageDto.receivedId,
       }
     })
-    if (user.status === "ACTIF")
+    if (user.status === "ACTIF" && notSendTo === "")
       messageStatus = "Received"
 
     const msg = await this.prisma.message.create({
       data: {
         ...createMessageDto,
         receivedId: createMessageDto.receivedId,
-        showed,
+        notSendTo,
         messageStatus,
         InfoMessage: false
       },
@@ -75,7 +78,7 @@ export class MessagesService {
 
       OwnerChannelId: '', // no matter
     }
-    if (showed)
+    if (notSendTo === "")
       server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
     server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
   }
@@ -161,7 +164,7 @@ export class MessagesService {
         createdAt: 'asc',
       },
     });
-    const msgUser = msgUserTemp.filter((msg) => (msg.showed === true || senderId === msg.senderId));
+    const msgUser = msgUserTemp.filter((msg) => (msg.notSendTo === "" || msg.senderId === senderId));
     const result = await Promise.all(
       msgUser.map(async (msg) => {
         const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });

@@ -36,6 +36,7 @@ export class SocketGatewayService {
             where: {
               receivedId: senderId,
               messageStatus: MessageStatus.NotReceived,
+              senderId: ""
             },
             data: {
               messageStatus: MessageStatus.Received,

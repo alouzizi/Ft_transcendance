@@ -127,13 +127,8 @@ let FriendshipService = class FriendshipService {
     async getFriends(senderId) {
         const sendRequests = await this.prisma.friend.findMany({
             where: {
-                OR: [
-                    {
-                        senderId: senderId,
-                    },
-                    {
-                        receivedId: senderId,
-                    }
+                OR: [{ senderId: senderId },
+                    { receivedId: senderId }
                 ]
             },
         });
@@ -142,13 +137,8 @@ let FriendshipService = class FriendshipService {
     async getBlockedUser(senderId) {
         const sendRequests = await this.prisma.blockedUser.findMany({
             where: {
-                OR: [
-                    {
-                        senderId: senderId,
-                    },
-                    {
-                        receivedId: senderId,
-                    }
+                OR: [{ senderId: senderId, },
+                    { receivedId: senderId, }
                 ]
             },
         });

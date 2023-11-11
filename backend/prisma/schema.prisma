@@ -76,10 +76,12 @@ model Message {
 
   isDirectMessage Boolean @default(true)
 
-  senderId      String
-  content       String
-  createdAt     DateTime      @default(now())
-  showed        Boolean       @default(true)
+  senderId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  notSendTo String @default("")
+
   messageStatus MessageStatus @default(NotReceived)
 
   user User? @relation(fields: [senderId], references: [id])

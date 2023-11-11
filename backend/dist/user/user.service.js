@@ -126,6 +126,17 @@ let UserService = class UserService {
         });
         return result;
     }
+    async checkIsBlocked(senderId, receivedId) {
+        const block = await this.prisma.blockedUser.findFirst({
+            where: {
+                senderId: senderId,
+                receivedId: receivedId
+            }
+        });
+        if (block)
+            return true;
+        return false;
+    }
     async getUserGeust(id) {
         const user = await this.findById(id);
         if (user)

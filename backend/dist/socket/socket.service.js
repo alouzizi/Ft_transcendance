@@ -39,6 +39,7 @@ let SocketGatewayService = class SocketGatewayService {
                         where: {
                             receivedId: senderId,
                             messageStatus: client_1.MessageStatus.NotReceived,
+                            senderId: ""
                         },
                         data: {
                             messageStatus: client_1.MessageStatus.Received,

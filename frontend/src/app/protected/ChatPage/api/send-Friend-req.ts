@@ -20,9 +20,15 @@ export async function accepteRequistFriend(senderId: string, recivedId: string) 
     );
 }
 
-export async function deleteFriend(senderId: string, recivedId: string) {
+// export async function deleteFriend(senderId: string, recivedId: string) {
+//     await axios.delete(
+//         Backend_URL + `/friendship/deleteFriend/${senderId}/${recivedId}`,
+//     );
+// }
+
+export async function unBlockedUser(senderId: string, recivedId: string) {
     await axios.delete(
-        Backend_URL + `/friendship/deleteFriend/${senderId}/${recivedId}`,
+        Backend_URL + `/friendship/unBlockedUser/${senderId}/${recivedId}`,
     );
 }
 

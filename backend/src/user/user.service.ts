@@ -3,7 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 import { MessagesService } from "src/messages/messages.service";
 import { MessageItemList } from "./dto/user.dto";
-import { Channel, Message, Status } from "@prisma/client";
+import { BlockedUser, Channel, Message, Status } from "@prisma/client";
 import { ChannelService } from "src/channel/channel.service";
 
 
@@ -129,6 +129,17 @@ export class UserService {
     return result;
   }
 
+  async checkIsBlocked(senderId: string, receivedId: string) {
+    const block: BlockedUser = await this.prisma.blockedUser.findFirst({
+      where: {
+        senderId: senderId,
+        receivedId: receivedId
+      }
+    })
+    if (block)
+      return true;
+    return false;
+  }
 
   async getUserGeust(id: string) {
     const user = await this.findById(id);

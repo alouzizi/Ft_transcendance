@@ -1,16 +1,23 @@
 'use client';
-import { TextField, Avatar, ScrollArea, Box, Text, Flex } from '@radix-ui/themes';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Avatar, Box, Flex, ScrollArea, Text, TextField } from '@radix-ui/themes';
+import { formatDistance } from 'date-fns';
+import Link from 'next/link';
+import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { BsFillSendFill, } from "react-icons/bs";
-import { IoSettingsSharp } from "react-icons/io5";
-import { useGlobalContext } from '../../../context/store';
-import { IsTypingMsg, ShowMessages } from './widgetMsg';
-import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { GoDotFill } from "react-icons/go";
+import { IoSettingsSharp } from "react-icons/io5";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { useGlobalContext } from '../../../context/store';
+import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
+import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
-import { formatDistance } from 'date-fns'
-import { getVueGeust } from '../api/fetch-users';
-import Link from 'next/link';
+import { IsTypingMsg, ShowMessages } from './widgetMsg';
+import { unBlockedUser } from '../api/send-Friend-req';
 
 const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -83,6 +90,20 @@ const BoxChat = () => {
         }
     }, [geust.id, user.id, updateInfo]);
 
+
+    const [isBlocked, setIsBlocked] = useState<boolean>(false)
+    const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (user.id !== "-1" && geust.id !== "-1") {
+            const upDateGeust = async () => {
+                const check = await checkIsBlocked(user.id, geust.id);
+                setIsBlocked(check);
+            }
+            upDateGeust();
+        }
+    }, [geust.id, user.id, updateInfo]);
+
     useEffect(() => {
         if (msg != "" && socket) {
             socket.emit('isTyping', {
@@ -111,15 +132,22 @@ const BoxChat = () => {
     }, [geust.id, user.id]);
 
     const handleSendMessage = () => {
-        if (msg.trim() != '' && socket) {
-            socket.emit('createMessage', {
-                isDirectMessage: geust.isUser,
-                content: msg.trim(),
-                senderId: user.id,
-                receivedId: geust.id,
-            });
+        if (msg.trim() != '') {
+            if (isBlocked) {
+                setUnblockAlert(true);
+            } else {
+                if (socket) {
+                    socket.emit('createMessage', {
+                        isDirectMessage: geust.isUser,
+                        content: msg.trim(),
+                        senderId: user.id,
+                        receivedId: geust.id,
+                    });
+                }
+                setMsg('');
+            }
         }
-        setMsg('');
+
     }
 
 
@@ -129,6 +157,7 @@ const BoxChat = () => {
                 width: 500, height: 600,
                 borderRadius: 10, background: "#f1f3f9", marginLeft: 3
             }}>
+
 
             <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-lg">
                 <div className="flex items-center pl-3">
@@ -194,6 +223,40 @@ const BoxChat = () => {
                     </TextField.Root>
                 </form>
             </div>
+
+
+            <div>
+                <Dialog open={showUnblockAlert} >
+                    {/* <DialogTitle>Confirme Action</DialogTitle> */}
+                    <DialogContent className='flex flex-col p-0'>
+                        <div className='flex text-black text-sm rounded-lg pt-3 px-6'>
+                            Unblock contact to send a message
+                        </div>
+
+                        <hr className="border-b-1 border-gray-100 mt-0.5" />
+                    </DialogContent>
+                    <DialogActions>
+                        <div className='flex flex-col flex-grow items-center mt-3'>
+                            <button onClick={async () => {
+                                await unBlockedUser(user.id, geust.id);
+                                setUnblockAlert(false);
+                                setIsBlocked(false);
+                            }}
+                                className="w-[200px] mt-2 font-meduim  py-1 rounded-md text-white bg-[#4069ff] text-sm">
+                                Unblock
+                            </button>
+                            <button onClick={async () => {
+                                setUnblockAlert(false);
+                            }}
+                                className="w-[200px] mt-2 font-meduim  py-1 rounded-md text-white bg-[#4069ff] text-sm">
+                                Cancel
+                            </button>
+                        </div>
+                    </DialogActions>
+                </Dialog>
+            </div>
+
+
         </Box>
     ) : <></>
 }
