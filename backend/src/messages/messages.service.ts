@@ -16,7 +16,7 @@ export class MessagesService {
     let notSendTo: string = "";
     let messageStatus: MessageStatus = "NotReceived"
 
-    const blockerUser: BlockedUser[] = await this.prisma.blockedUser.findMany({
+    const blockerUser: BlockedUser = await this.prisma.blockedUser.findFirst({
       where: {
         OR: [
           {
@@ -31,11 +31,11 @@ export class MessagesService {
       }
     })
 
-    if (blockerUser.length) {
-      if (blockerUser[0].senderId === createMessageDto.senderId)
-        notSendTo += blockerUser[0].receivedId;
+    if (blockerUser) {
+      if (blockerUser.senderId === createMessageDto.senderId)
+        notSendTo += blockerUser.receivedId;
       else
-        notSendTo += blockerUser[0].senderId;
+        notSendTo += blockerUser.senderId;
     }
 
     const user = await this.prisma.user.findUnique({
@@ -84,18 +84,14 @@ export class MessagesService {
   }
 
   async createChannelMessage(server: Server, createMessageDto: CreateMessageDto) {
-    const msg = await this.prisma.message.create({
-      data: {
-        ...createMessageDto,
-        channelId: createMessageDto.receivedId,
-        senderId: createMessageDto.senderId,
-        isDirectMessage: false,
-      },
-    });
+    let notSendTo: string = "";
+
     const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } })
+
     const channelMember = await this.prisma.channelMember.findMany(
       { where: { channelId: createMessageDto.receivedId } });
-    const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+
+    const senderUser = await this.prisma.user.findUnique({ where: { id: createMessageDto.senderId } });
 
     const usersBlocked: BlockedUser[] = await this.prisma.blockedUser.findMany({
       where: {
@@ -106,13 +102,27 @@ export class MessagesService {
       }
     });
 
+    for (const block of usersBlocked) {
+      if (block.senderId === createMessageDto.senderId)
+        notSendTo = notSendTo + block.receivedId + ";";
+      else
+        notSendTo = notSendTo + block.senderId + ";";
+    }
+
+    const msg = await this.prisma.message.create({
+      data: {
+        ...createMessageDto,
+        channelId: createMessageDto.receivedId,
+        senderId: createMessageDto.senderId,
+        isDirectMessage: false,
+        notSendTo,
+      },
+    });
+
     for (const member of channelMember) {
 
-      const tmp = usersBlocked.some((elm: BlockedUser) => {
-        return ((elm.senderId === member.userId && senderUser.id !== member.userId) ||
-          (elm.receivedId === member.userId && senderUser.id !== member.userId))
-      })
-      if (tmp) continue;
+      if (msg.notSendTo.includes(member.userId)) continue;
+
       const temp: messageDto = {
         isDirectMessage: false,
 
@@ -199,7 +209,8 @@ export class MessagesService {
 
 
   async getChannelMessage(senderId: string, channelId: string) {
-    const msgUserTemp = await this.prisma.message.findMany({
+
+    const msgUserTemp: Message[] = await this.prisma.message.findMany({
       where: {
         isDirectMessage: false,
         channelId,
@@ -208,48 +219,37 @@ export class MessagesService {
         createdAt: 'asc',
       },
     });
-    const usersBlocked: BlockedUser[] = await this.prisma.blockedUser.findMany({
-      where: {
-        OR: [
-          { senderId: senderId },
-          { receivedId: senderId },
-        ],
-      }
-    });
+
     const channel = await this.prisma.channel.findUnique({ where: { id: channelId } })
-    const messags = await Promise.all(
-      msgUserTemp.map(async (msg) => {
-        const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-        const temp: messageDto = {
-          isDirectMessage: false,
 
-          InfoMessage: msg.InfoMessage,
+    const result = await Promise.all(
+      msgUserTemp
+        .filter((msg: Message) => !msg.notSendTo.includes(senderId))
+        .map(async (msg: Message) => {
+          const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+          const temp: messageDto = {
+            isDirectMessage: false,
 
-          senderId: msg.senderId,
-          senderName: senderUser.nickname,
-          senderPic: senderUser.profilePic,
+            InfoMessage: msg.InfoMessage,
 
-          contentMsg: msg.content,
-          createdAt: msg.createdAt,
-          messageStatus: MessageStatus.NotReceived, // not yet
+            senderId: msg.senderId,
+            senderName: senderUser.nickname,
+            senderPic: senderUser.profilePic,
 
-          receivedId: msg.receivedId,
-          receivedName: channel.channelName,
-          receivedPic: channel.avatar,
-          receivedStatus: Status.INACTIF, // not matter
+            contentMsg: msg.content,
+            createdAt: msg.createdAt,
+            messageStatus: MessageStatus.NotReceived, // not yet
 
-          OwnerChannelId: channel.channelOwnerId,
-        }
-        return temp;
-      })
+            receivedId: msg.receivedId,
+            receivedName: channel.channelName,
+            receivedPic: channel.avatar,
+            receivedStatus: Status.INACTIF, // not matter
+
+            OwnerChannelId: channel.channelOwnerId,
+          }
+          return temp;
+        })
     )
-    const result = messags.filter((msg: messageDto) => {
-      const tmp = usersBlocked.some((elm: BlockedUser) => {
-        return ((msg.senderId === elm.senderId && elm.senderId !== senderId) ||
-          (msg.senderId === elm.receivedId && elm.receivedId !== senderId))
-      })
-      return !tmp;
-    })
     return result;
   }
 
