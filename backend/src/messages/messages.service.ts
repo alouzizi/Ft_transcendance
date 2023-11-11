@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
-import { BlockedUser, Channel, Message, MessageStatus, Status, User } from '@prisma/client';
+import { BlockedUser, Channel, ChannelMember, Message, MessageStatus, Status, User } from '@prisma/client';
 // import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -224,38 +224,46 @@ export class MessagesService {
     });
 
     const channel = await this.prisma.channel.findUnique({ where: { id: channelId } })
+    const user: ChannelMember = await this.prisma.channelMember.findFirst({ where: { userId: senderId, channelId } })
+    if (user) {
+      const result = await Promise.all(
+        msgUserTemp
+          .filter((msg: Message) => {
+            return (!msg.notSendTo.includes(senderId) && user.createdAt < msg.createdAt)
+              || (msg.content.includes('create') ||
+                msg.content.includes('add') ||
+                (msg.content.includes('create'))
+                && msg.InfoMessage == true)
+          })
+          .map(async (msg: Message) => {
+            const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+            const temp: messageDto = {
+              isDirectMessage: false,
 
-    const result = await Promise.all(
-      msgUserTemp
-        .filter((msg: Message) => !msg.notSendTo.includes(senderId))
-        .map(async (msg: Message) => {
-          const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-          const temp: messageDto = {
-            isDirectMessage: false,
+              InfoMessage: msg.InfoMessage,
 
-            InfoMessage: msg.InfoMessage,
+              senderId: msg.senderId,
+              senderName: senderUser.nickname,
+              senderPic: senderUser.profilePic,
 
-            senderId: msg.senderId,
-            senderName: senderUser.nickname,
-            senderPic: senderUser.profilePic,
+              contentMsg: msg.content,
+              createdAt: msg.createdAt,
+              messageStatus: MessageStatus.NotReceived, // not yet
 
-            contentMsg: msg.content,
-            createdAt: msg.createdAt,
-            messageStatus: MessageStatus.NotReceived, // not yet
+              receivedId: msg.receivedId,
+              receivedName: channel.channelName,
+              receivedPic: channel.avatar,
+              receivedStatus: Status.INACTIF, // not matter
 
-            receivedId: msg.receivedId,
-            receivedName: channel.channelName,
-            receivedPic: channel.avatar,
-            receivedStatus: Status.INACTIF, // not matter
-
-            OwnerChannelId: channel.channelOwnerId,
+              OwnerChannelId: channel.channelOwnerId,
 
 
-          }
-          return temp;
-        })
-    )
-    return result;
+            }
+            return temp;
+          })
+      )
+      return result;
+    }
   }
 
   async getLastMessages(senderId: string, receivedId: string) {

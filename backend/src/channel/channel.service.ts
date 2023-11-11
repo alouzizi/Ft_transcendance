@@ -3,7 +3,6 @@ import { BannedMember, Channel, ChannelMember, ChannelType, MutedMember, Prisma,
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 import * as bcrypt from 'bcrypt';
-import { async } from 'rxjs';
 
 
 
@@ -22,9 +21,7 @@ export class ChannelService {
       data: {
         senderId: senderId,
         receivedId: channelId,
-        content: (user) ?
-          (msg.includes('join') ? `${user.nickname} ${msg}` : `${msg} ${user.nickname}`)
-          : `${msg}`,
+        content: (user) ? `${msg} ${user.nickname}` : `${msg}`,
         isDirectMessage: false,
         InfoMessage: true,
         channelId: channelId,
@@ -121,7 +118,8 @@ export class ChannelService {
         Unique_userId_channelId: { channelId, userId: senderId }
       },
     })
-    return (user.isAdmin);
+    if (user)
+      return (user.isAdmin);
   }
 
 
@@ -151,14 +149,15 @@ export class ChannelService {
         id: channelId,
       },
     });
-    return {
-      channelName: channel.channelName,
-      channelType: channel.channelType,
-      channelPassword: channel.protected ? '****' : '',
-      protected: channel.protected,
-      avatar: channel.avatar,
-      channelOwnerId: channel.channelOwnerId
-    }
+    if (channel)
+      return {
+        channelName: channel.channelName,
+        channelType: channel.channelType,
+        channelPassword: channel.protected ? '****' : '',
+        protected: channel.protected,
+        avatar: channel.avatar,
+        channelOwnerId: channel.channelOwnerId
+      }
   }
 
 
@@ -375,7 +374,7 @@ export class ChannelService {
           return !test1;
         })
         .map(async (channel: Channel) => {
-          let status: string = '';
+          let status: string = 'user';
           const member: ChannelMember = await this.prisma.channelMember.findFirst({
             where: { userId: senderId, channelId: channel.id }
           })
@@ -406,6 +405,6 @@ export class ChannelService {
         channelId: channelId,
       }
     });
-    this.createMessageInfoChannel(senderId, channelId, senderId, "join Channel");
+    this.createMessageInfoChannel(senderId, channelId, '', "join Channel");
   }
 }

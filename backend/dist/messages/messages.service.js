@@ -184,28 +184,37 @@ let MessagesService = class MessagesService {
             },
         });
         const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-        const result = await Promise.all(msgUserTemp
-            .filter((msg) => !msg.notSendTo.includes(senderId))
-            .map(async (msg) => {
-            const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-            const temp = {
-                isDirectMessage: false,
-                InfoMessage: msg.InfoMessage,
-                senderId: msg.senderId,
-                senderName: senderUser.nickname,
-                senderPic: senderUser.profilePic,
-                contentMsg: msg.content,
-                createdAt: msg.createdAt,
-                messageStatus: client_1.MessageStatus.NotReceived,
-                receivedId: msg.receivedId,
-                receivedName: channel.channelName,
-                receivedPic: channel.avatar,
-                receivedStatus: client_1.Status.INACTIF,
-                OwnerChannelId: channel.channelOwnerId,
-            };
-            return temp;
-        }));
-        return result;
+        const user = await this.prisma.channelMember.findFirst({ where: { userId: senderId, channelId } });
+        if (user) {
+            const result = await Promise.all(msgUserTemp
+                .filter((msg) => {
+                return (!msg.notSendTo.includes(senderId) && user.createdAt < msg.createdAt)
+                    || (msg.content.includes('create') ||
+                        msg.content.includes('add') ||
+                        (msg.content.includes('create'))
+                            && msg.InfoMessage == true);
+            })
+                .map(async (msg) => {
+                const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+                const temp = {
+                    isDirectMessage: false,
+                    InfoMessage: msg.InfoMessage,
+                    senderId: msg.senderId,
+                    senderName: senderUser.nickname,
+                    senderPic: senderUser.profilePic,
+                    contentMsg: msg.content,
+                    createdAt: msg.createdAt,
+                    messageStatus: client_1.MessageStatus.NotReceived,
+                    receivedId: msg.receivedId,
+                    receivedName: channel.channelName,
+                    receivedPic: channel.avatar,
+                    receivedStatus: client_1.Status.INACTIF,
+                    OwnerChannelId: channel.channelOwnerId,
+                };
+                return temp;
+            }));
+            return result;
+        }
     }
     async getLastMessages(senderId, receivedId) {
         const lastMessage = await this.prisma.message.findFirst({

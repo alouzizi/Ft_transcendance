@@ -85,8 +85,7 @@ model Message {
 
   messageStatus MessageStatus @default(NotReceived)
 
-  user User? @relation(fields: [senderId], references: [id])
-
+  user       User?   @relation(fields: [senderId], references: [id])
   receivedId String?
 
   Channel   Channel? @relation(fields: [channelId], references: [id])
@@ -130,6 +129,9 @@ model ChannelMember {
 
   userId  String
   isAdmin Boolean
+
+  // test      String   @default("88")
+  createdAt DateTime @default(now())
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String

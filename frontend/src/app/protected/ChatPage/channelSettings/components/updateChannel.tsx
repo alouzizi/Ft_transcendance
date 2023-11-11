@@ -84,7 +84,6 @@ export default function UpdateChannel() {
             setIsOwnerAdmin(tmp);
         }
         if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData();
-
     }, [updateInfo]);
 
     const isSameChannel = (channel1: channelDto, channel2: channelDto): boolean => {

@@ -24,9 +24,7 @@ let ChannelService = class ChannelService {
             data: {
                 senderId: senderId,
                 receivedId: channelId,
-                content: (user) ?
-                    (msg.includes('join') ? `${user.nickname} ${msg}` : `${msg} ${user.nickname}`)
-                    : `${msg}`,
+                content: (user) ? `${msg} ${user.nickname}` : `${msg}`,
                 isDirectMessage: false,
                 InfoMessage: true,
                 channelId: channelId,
@@ -116,7 +114,8 @@ let ChannelService = class ChannelService {
                 Unique_userId_channelId: { channelId, userId: senderId }
             },
         });
-        return (user.isAdmin);
+        if (user)
+            return (user.isAdmin);
     }
     async addUserToChannel(senderId, channelId, userId) {
         const admin = await this.prisma.channelMember.findUnique({
@@ -141,14 +140,15 @@ let ChannelService = class ChannelService {
                 id: channelId,
             },
         });
-        return {
-            channelName: channel.channelName,
-            channelType: channel.channelType,
-            channelPassword: channel.protected ? '****' : '',
-            protected: channel.protected,
-            avatar: channel.avatar,
-            channelOwnerId: channel.channelOwnerId
-        };
+        if (channel)
+            return {
+                channelName: channel.channelName,
+                channelType: channel.channelType,
+                channelPassword: channel.protected ? '****' : '',
+                protected: channel.protected,
+                avatar: channel.avatar,
+                channelOwnerId: channel.channelOwnerId
+            };
     }
     async findChannelById(id) {
         return await this.prisma.channel.findUnique({
@@ -349,7 +349,7 @@ let ChannelService = class ChannelService {
             return !test1;
         })
             .map(async (channel) => {
-            let status = '';
+            let status = 'user';
             const member = await this.prisma.channelMember.findFirst({
                 where: { userId: senderId, channelId: channel.id }
             });
@@ -378,7 +378,7 @@ let ChannelService = class ChannelService {
                 channelId: channelId,
             }
         });
-        this.createMessageInfoChannel(senderId, channelId, senderId, "join Channel");
+        this.createMessageInfoChannel(senderId, channelId, '', "join Channel");
     }
 };
 exports.ChannelService = ChannelService;

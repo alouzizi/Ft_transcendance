@@ -1,23 +1,25 @@
 'use client'
-import * as React from 'react';
 import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { Avatar, Flex, Text, Box, ScrollArea } from '@radix-ui/themes';
+import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { useGlobalContext } from '../../../context/store';
+import { Avatar, Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { AiFillMessage } from "react-icons/ai";
+import { BiUserCheck } from "react-icons/bi";
 import { BsPersonFillAdd, } from "react-icons/bs";
 import { FaUserTimes, } from "react-icons/fa";
-import { BiUserCheck } from "react-icons/bi";
 import { GoDotFill } from "react-icons/go";
-import { useEffect, useState } from 'react';
-import { getValideChannels, getValideUsers, getVueGeust } from '../api/fetch-users';
+import { IoMdAddCircle } from "react-icons/io";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
+import { useGlobalContext } from '../../../context/store';
+import { joinChannel, validePassword } from '../api/fetch-channel';
+import { getValideChannels, getValideUsers, getVueGeust } from '../api/fetch-users';
 import { accepteRequistFriend, removeRequistFriend, sendRequistFriend } from '../api/send-Friend-req';
 import { getColorStatus } from './ListUser';
-import { IoMdAddCircle } from "react-icons/io";
-import { joinChannel } from '../api/fetch-channel';
-
 
 
 
@@ -77,6 +79,12 @@ export default function AlertDialogFind() {
         const temp = await getVueGeust(id, isUser);
         setGeust(temp);
     };
+
+    const [idChannel, setIdChannel] = useState("");
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
+    const [password, setPassword] = useState('');
+    const [notMatch, setNotMatch] = useState('');
 
     const widgetItemUser = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
         return <Box p="1" pr="3" key={index} className='mx-5'>
@@ -141,9 +149,13 @@ export default function AlertDialogFind() {
         </Box>
     }) : <div ></div>
 
+
+
+
     const widgetItemChannels = (channelsFilter.length !== 0) ?
         channelsFilter.map((channel: validChannelDto, index) => {
             return <Box p="1" pr="3" key={index} className='mx-5'>
+
                 <Flex align="center" justify="between" className='py-2'>
                     <div className='flex items-center relative'>
                         <Avatar
@@ -159,16 +171,26 @@ export default function AlertDialogFind() {
 
                         {channel.Status === "member" ? <></>
                             : <IoMdAddCircle color="blue" size='20'
-                                className="mr-4" style={{ cursor: 'pointer' }}
+                                className="mr-2" style={{ cursor: 'pointer' }}
                                 onClick={async () => {
-                                    await joinChannel(user.id, channel.id);
+                                    if (!channel.protected) {
+                                        await joinChannel(user.id, channel.id);
+                                        handleClose();
+                                        getDataGeust(channel.id, false);
+                                    } else {
+                                        setIdChannel(channel.id);
+                                        setOpenConfirm(true);
+                                        console.log("------------");
+                                    }
                                 }} />}
 
-                        <AiFillMessage size='20' style={{ cursor: 'pointer' }}
-                            onClick={() => {
-                                handleClose();
-                                getDataGeust(channel.id, false); // proble
-                            }} />
+                        {channel.Status === "user" ? <></>
+                            : <AiFillMessage size='20' style={{ cursor: 'pointer' }}
+                                className="mr-2"
+                                onClick={() => {
+                                    handleClose();
+                                    getDataGeust(channel.id, false);
+                                }} />}
                     </div>
                 </Flex>
             </Box>
@@ -219,6 +241,60 @@ export default function AlertDialogFind() {
 
                 </DialogContent>
             </Dialog>
+
+
+            <div>
+                <Dialog open={openConfirm} onClose={() => { setOpenConfirm(false) }}>
+                    <DialogTitle>Confirme Action</DialogTitle>
+                    <DialogContent className='flex flex-col'>
+                        <div className='flex bg-[#f1f3f8] text-black border border-[#1f3175]
+                  placeholder-gray-300 text-sm focus:border-white
+                    rounded-lg  w-full p-1.5 outline-none'
+                            style={{ borderColor: (notMatch === '') ? '#1f3175' : 'red' }}
+                        >
+                            <input type={isPasswordVisibleAlert ? "text" : "password"} className="bg-[#f1f3f8]
+                        text-black
+                  placeholder-gray-300 text-sm outline-none"
+                                value={password}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    setNotMatch('');
+                                }}
+                            >
+                            </input>
+                            <div className='cursor-pointer' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
+                                {!isPasswordVisibleAlert ?
+                                    <MdVisibilityOff size={18} color="black" /> :
+                                    <MdVisibility size={18} color="black" />}
+                            </div>
+                        </div>
+                        <p className='text-sm text-red-600'>{notMatch}</p>
+
+                    </DialogContent>
+                    <DialogActions>
+                        <button onClick={async () => {
+                            let vld = false;
+                            if (password !== '')
+                                vld = await validePassword(user.id, idChannel, password);
+                            if (vld) {
+                                setOpenConfirm(false);
+                                await joinChannel(user.id, idChannel);
+                                handleClose();
+                                getDataGeust(idChannel, false);
+                                setPassword('');
+                            } else {
+                                setNotMatch('Password not Match');
+                            }
+                        }}
+                            className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
+                        text-xs px-2
+                        md:text-sm lg:text-md lg:px-4">
+                            Confirm
+                        </button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+
         </Box >
     );
 }

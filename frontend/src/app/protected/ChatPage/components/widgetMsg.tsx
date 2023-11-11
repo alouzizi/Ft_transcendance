@@ -172,6 +172,9 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
     } else if (message.contentMsg.includes('left')) {
         messageTmp = `${message.senderName} ${message.contentMsg}`
     }
+    else if (message.contentMsg.includes('join')) {
+        messageTmp = `${message.senderName} ${message.contentMsg}`
+    }
     return (
         <div className='mt-1'>
             <div style={cardStyles} >
