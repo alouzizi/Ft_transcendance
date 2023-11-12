@@ -41,8 +41,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  twoFactorAuthenticationSecret String
-
   status       Status          @default(INACTIF)
   lastSee      DateTime        @default(now())
   message      Message[]

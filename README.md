@@ -169,3 +169,17 @@ Be mindful of security considerations, such as securing your JWTs, using HTTPS, 
 Deploy your NestJS application to a production server, considering security best practices and scalability.
 
 <p>This is a high-level overview of how to build an authentication project with NestJS, Prisma, PostgreSQL, JWT, and cookies. The specific implementation details and code will depend on your project's requirements and your familiarity with these technologies.</p>
+
+
+
+# Two factor authentication
+## Here's the login flow for 2fa authentication:
+
+1. The user logs in with his email and password
+2. If the 2fa is not enabled, he can enable it using the turn-on route. This will generate a QrCode that the user will scan with the google authenticator app.
+3. The use then uses the random code the app has generated to authenticate
+
+
+# Creating the 2fa system
+First we have to create a unique secret for every user that turns on 2fa, but we'll also need a special otp authentication url that we'll be using later to create a QrCode. The otplib package is a good match, so let's install it.
+

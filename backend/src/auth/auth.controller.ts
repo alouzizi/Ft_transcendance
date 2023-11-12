@@ -25,9 +25,9 @@ export class AuthController {
   @Get('42-intranet/callback')
   @UseGuards(AuthGuard('42-intranet'))
   async callbackWith42(@Req() req: any,@Res() res: Response) { 
-    console.log("profil howa niit ?? :",req.user);
+    // console.log("profil howa niit ?? :",req.user);
     const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
-      console.log(ret);
+      // console.log(ret);
       if (ret != null){
         // res.cookie("auth",ret);
       }
@@ -40,17 +40,6 @@ export class AuthController {
   }
 }
 
-@Post('enable-2fa')
-@UseGuards(AuthGuard('jwt'))
-
-async enableTwoFactorAuthentication(@Req() req: any) {
-  const user = Req.user; // Assuming you have a user object in the JWT payload
-  const { secret, otpauthUrl } = await this.authService.generateTwoFactorAuthenticationSecret(user);
-  const qrCodeDataUrl = await this.authService.generateQrCodeDataURL(otpauthUrl);
-  
-  // Return the secret and QR code URL to the client
-  return { secret, qrCodeDataUrl };
-}
 
 // Other authentication-related endpoints...
 

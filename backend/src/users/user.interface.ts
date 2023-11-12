@@ -1,5 +1,5 @@
 export interface User {
-    userId: number;
+    Id: string;
     email: string;
     twoFactorAuthenticationSecret: string;
     isTwoFactorAuthenticationEnabled: boolean;

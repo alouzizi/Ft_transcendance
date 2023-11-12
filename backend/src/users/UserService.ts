@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, PrismaClient} from '@prisma/client'; 
+import { Prisma, PrismaClient, User} from '@prisma/client'; 
 import { JwtService } from '@nestjs/jwt';
 import { MessagesService } from "src/messages/messages.service";
 import { MessageItemList } from "./dto/user.dto";
@@ -12,6 +12,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
+    private user: User[] = [],
   ){}
 
   async createUser(user1:any){
@@ -25,8 +26,6 @@ export class UserService {
         last_name: user1.last_name,
         first_name: user1.first_name,
         hash: user1.hash,
-        // level:parseFloat(user1.level.toString()),
-        // grade:user1.grade.toString()
       },
     
     });
@@ -45,12 +44,12 @@ export class UserService {
       where: { intra_id: id },
     });
   }
-  async updateUser(id: string, data: Prisma.UserUpdateInput){
-    return this.prisma.user.update({
-      where: { id: id },
-      data,
-    });
-  }
+  // async updateUser(id: string, data: Prisma.UserUpdateInput){
+  //   return this.prisma.user.update({
+  //     where: { id: id },
+  //     data,
+  //   });
+  // }
   async updatUserdata(intra_id: string,nickname: string,image: string){
     const user = await this.prisma.user.update({
       where:{
@@ -75,8 +74,6 @@ async findByIntraId(intra_id: string){
       where: { id: id },
     });
   }
-
-
   //houssine ------
 
   async findById(id: string) {
