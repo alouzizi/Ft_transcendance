@@ -20,13 +20,13 @@ const allOptions = {
         'Make Group Admin',
         'kick from Group',
         'ban from Group',
-        'Mute'
+        'Timeout'
     ],
     "regulerAdmin": [
         'Remove Group Admin',
         'kick from Group',
         'ban from Group',
-        'Mute'
+        'Timeout'
     ],
     "banned": [
         'unban from Group'
@@ -46,33 +46,36 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
     React.useEffect(() => {
 
         if (banned) setOptions(allOptions['banned']);
-        else if (member.role === 'Admin') setOptions(allOptions['regulerAdmin']);
+        else if (member.role.includes('Admin')) setOptions(allOptions['regulerAdmin']);
         else setOptions(allOptions['regulerNotAdmin']);
         return (() => { setOptions([]) })
     }, [geust.lastSee, open]);
 
     const handleClose = async (e: any) => {
-        if ('Make Group Admin' === e || 'Remove Group Admin' === e) {
-            await changeStatusAdmin(user.id, geust.id, member.userId);
-        } else if ('ban from Group' === e || 'unban from Group' === e) {
-            await ChangeStatusBanned(user.id, geust.id, member.userId);
-        } else if ('kick from Group' === e) {
-            await kickMember(user.id, geust.id, member.userId);
-        } else {
-            setOpenTimeout(true);
+        console.log(typeof e, e);
+        if (typeof e === "string") {
+            if ('Make Group Admin' === e || 'Remove Group Admin' === e) {
+                await changeStatusAdmin(user.id, geust.id, member.userId);
+            } else if ('ban from Group' === e || 'unban from Group' === e) {
+                await ChangeStatusBanned(user.id, geust.id, member.userId);
+            } else if ('kick from Group' === e) {
+                await kickMember(user.id, geust.id, member.userId);
+            } else if ('Timeout' === e) {
+                setOpenTimeout(true);
+            }
+            socket?.emit('updateData', {
+                content: '',
+                senderId: user.id,
+                isDirectMessage: false,
+                receivedId: geust.id,
+            });
+            socket?.emit('updateData', {
+                content: '',
+                senderId: user.id,
+                isDirectMessage: true,
+                receivedId: member.userId,
+            });
         }
-        socket?.emit('updateData', {
-            content: '',
-            senderId: user.id,
-            isDirectMessage: false,
-            receivedId: geust.id,
-        });
-        socket?.emit('updateData', {
-            content: '',
-            senderId: user.id,
-            isDirectMessage: true,
-            receivedId: member.userId,
-        });
         setAnchorEl(null);
     };
 
@@ -112,8 +115,6 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                     </div>
                 ))}
             </Menu>
-
-
 
             <div>
                 <Dialog open={openTimeout} >
@@ -160,7 +161,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                 </div>
                                 :
                                 timeout.map((tm: string, index: number) =>
-                                    <Text className='border border-black text-[14px] p-1 cursor-pointer m-2'
+                                    <Text key={index} className='border border-black text-[14px] p-1 cursor-pointer m-2'
                                         style={{ background: (index === timeSelected) ? '#0077b6' : "" }}
                                         onClick={() => setTimeSelected(index)}
                                     >{tm}</Text>

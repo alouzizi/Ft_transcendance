@@ -78,5 +78,6 @@ export declare class ChannelService {
     }[]>;
     joinChannel(senderId: string, channelId: string): Promise<void>;
     muteUserChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<void>;
+    deleteMuted(senderId: string, channelId: string): Promise<void>;
     checkIsMuted(senderId: string, channelId: string): Promise<number>;
 }

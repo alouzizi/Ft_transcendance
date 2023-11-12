@@ -168,6 +168,7 @@ let ChannelService = class ChannelService {
                 profilePic: user.profilePic,
                 role: 'banned',
                 status: user.status,
+                unmuted_at: 0,
             };
             result.push(temp);
         }
@@ -181,15 +182,22 @@ let ChannelService = class ChannelService {
         const channel = await this.prisma.channel.findUnique({ where: { id } });
         const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
         for (const member of members) {
-            let mutes = "";
+            this.deleteMuted(member.userId, channel.id);
+            let unmuted_at = 0;
             const user = await this.prisma.user.findUnique({ where: { id: member.userId } });
+            const muted = await this.prisma.mutedMember.findFirst({ where: { userId: member.userId, channelId: channel.id } });
+            const now = new Date();
+            if (muted) {
+                unmuted_at = (muted.unmuted_at.getTime() - now.getTime());
+            }
             const temp = {
                 userId: member.userId,
                 nickname: user.nickname,
                 profilePic: user.profilePic,
                 status: user.status,
                 role: (member.userId === channel.channelOwnerId) ? "Owner"
-                    : (member.isAdmin ? 'Admin' : 'User')
+                    : (member.isAdmin ? 'Admin' : 'User'),
+                unmuted_at,
             };
             result.push(temp);
         }
@@ -394,6 +402,20 @@ let ChannelService = class ChannelService {
                         channelId: channelId,
                     }
                 });
+            }
+        }
+    }
+    async deleteMuted(senderId, channelId) {
+        const muted = await this.prisma.mutedMember.findFirst({
+            where: {
+                userId: senderId,
+                channelId,
+            }
+        });
+        if (muted) {
+            const dt = new Date();
+            if (muted.unmuted_at < new Date()) {
+                await this.prisma.mutedMember.delete({ where: { id: muted.id } });
             }
         }
     }

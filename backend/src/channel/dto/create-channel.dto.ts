@@ -26,4 +26,5 @@ export class memberChannelDto {
     profilePic: string;
     role: string;
     status: Status;
+    unmuted_at: number;
 }

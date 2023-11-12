@@ -14,7 +14,7 @@ export default function MembersChannel() {
 
     const [searsh, setSearsh] = useState('');
 
-    const { user, geust, socket, updateInfo } = useGlobalContext();
+    const { user, geust, socket, updateInfo, setUpdateInfo } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
@@ -24,6 +24,7 @@ export default function MembersChannel() {
 
     useEffect(() => {
         if (geust.id !== '-1') {
+            console.log("-----> getMembersChannel called")
             const getMemberChannel = async () => {
                 const tmp: { regularMembres: memberChannelDto[], bannedMembers: memberChannelDto[] }
                     = await getMembersChannel(geust.id);
@@ -35,6 +36,27 @@ export default function MembersChannel() {
             getMemberChannel();
         }
     }, [geust.id, geust.lastSee, updateInfo]);
+
+    const [timer, setTimer] = useState(0);
+    let lengthMembers = 0;
+    useEffect(() => {
+        console.log("---------------+++--------");
+        if (user.id !== "-1" && geust.id !== "-1") {
+            const checkUserIsMuted = () => {
+                console.log("----------------**--------");
+                const timeoutId = setTimeout(() => {
+                    console.log("------------------------", timer);
+                    setUpdateInfo(preValue => {
+                        return preValue + 1
+                    });
+                }, timer);
+                return () => clearTimeout(timeoutId);
+
+            }
+            if (timer !== 0 && lengthMembers === members.length)
+                checkUserIsMuted();
+        }
+    }, [timer]);
 
     const widgetUser = (member: memberChannelDto) => {
         return (
@@ -48,22 +70,14 @@ export default function MembersChannel() {
                             radius="full"
                             fallback="T"
                         />
-                        {(member.userId === user.id) ? <></> :
-                            <div className='absolute pt-[20px] pl-[25px]'>
-                                <GoDotFill size={24}
-                                    color={(member.status === 'ACTIF') ? "#15ff00" : "#9b9c9b"} />
-                            </div>
-                        }
-
-
-
                     </div>
                     <div className='flex-grow flex items-center justify-between pr-2'>
                         <Text weight='medium' className='pl-2'>
                             {member.userId === user.id ? "You" : member.nickname}
                         </Text>
                         <div className='flex items-center justify-center'>
-                            {member.role === "Admin" ?
+
+                            {member.role.includes("Admin") ?
                                 <Text weight='light' color='gray' className='pr-1'>{member.role}</Text> :
                                 <></>}
 
@@ -90,12 +104,19 @@ export default function MembersChannel() {
     }
     const isUserAdmin = (): boolean => {
         for (const mbr of members) {
-            if (user.id === mbr.userId && (mbr.role === 'Admin' || mbr.role === 'Owner'))
+            if (user.id === mbr.userId && (mbr.role.includes("Admin") || mbr.role === 'Owner'))
                 return true;
         }
         return false;
     }
+    console.log('0000000000000000000000000000000000000000000000000000000000000');
     const widgetMembers = membersFiltred.map((member: memberChannelDto, index) => {
+        lengthMembers++;
+        console.log('==============', lengthMembers);
+        if (member.unmuted_at !== 0 && (timer === 0 || member.unmuted_at < timer)) {
+            console.log("-----> timer ", timer)
+            setTimer(member.unmuted_at);
+        }
         return <div key={index}>{widgetUser(member)}</div>;
     })
     const widgetBannedMembers = bannedmembersFiltred.map((member: memberChannelDto, index) => {
@@ -120,6 +141,7 @@ export default function MembersChannel() {
 
     return (
         <div className="flex flex-col  items-center pt-5 ">
+            <button onClick={() => { console.log("----> ", timer) }}>***</button>
             <div className="flex-grow flex items-between justify-between w-[450px]">
                 <input type="text" className="bg-[#111623] text-white border border-[#1f3175]
                       placeholder-gray-300 text-sm focus:border-white
