@@ -2,11 +2,18 @@
 
 import { useGlobalContext } from '@/app/context/store';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import * as React from 'react';
-import { ChangeStatusBanned, changeStatusAdmin, kickMember } from '../../api/fetch-channel';
-
+import { ChangeStatusBanned, changeStatusAdmin, kickMember, validePassword } from '../../api/fetch-channel';
+import { Text } from '@radix-ui/themes';
+import { MdOutlineCancel } from "react-icons/md";
+import { LiaEdit } from "react-icons/lia";
+import { useState } from 'react';
+import { z } from 'zod';
 
 const allOptions = {
     "regulerNotAdmin": [
@@ -29,7 +36,7 @@ const ITEM_HEIGHT = 48;
 
 export default function LongMenu({ member, banned }: { member: memberChannelDto, banned: boolean }) {
     const [options, setOptions] = React.useState<string[]>([]);
-    const { geust, user, setGeust, socket } = useGlobalContext();
+    const { geust, user, socket } = useGlobalContext();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -51,6 +58,8 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
             await ChangeStatusBanned(user.id, geust.id, member.userId);
         } else if ('kick from Group' === e) {
             await kickMember(user.id, geust.id, member.userId);
+        } else {
+            setOpenTimeout(true);
         }
         socket?.emit('updateData', {
             content: '',
@@ -66,6 +75,19 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
         });
         setAnchorEl(null);
     };
+
+
+    const [showInput, setShowInput] = useState(false);
+
+    const [timerInput, setTimerInput] = useState<string>('');
+    const [errorInput, setErrorInput] = useState<string>('');
+    const timerSchema = z.string().refine((timer) => /^[1-9][0-9]*$/.test(timer));
+
+    const [openTimeout, setOpenTimeout] = useState(false);
+    const [timeSelected, setTimeSelected] = useState(0);
+    const timeout: string[] = ["60 SECS", "5 MINS", "10 MINS", "1 HOUR", "1 DAY", "1 WEEK"];
+    const timeInSecond: number[] = [60, 300, 600, 3600, 86400, 604800];
+
 
     return (
         <div >
@@ -90,6 +112,94 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                     </div>
                 ))}
             </Menu>
+
+
+
+            <div>
+                <Dialog open={openTimeout} >
+                    <DialogContent style={{ padding: 0, margin: 0 }} className=''>
+                        <div className='flex items-center justify-between px-[10px] pt-2 pb-3'>
+                            <Text className='text-xl'>Timeout {member.nickname}</Text>
+                            <MdOutlineCancel className="cursor-pointer" onClick={() => {
+                                setOpenTimeout(false)
+                            }} />
+                        </div>
+
+                        <div className='flex flex-grow items-center justify-center px-[10px] w-[22rem]'>
+                            <Text as="div" className='text-sm'>Members who are in time-out are
+                                temporarily not allowed to chat or react in text channels.</Text>
+                        </div>
+                    </DialogContent>
+                    <DialogContent className='flex flex-col w-[25rem]'
+                        style={{ padding: 10, margin: 0 }}>
+
+                        <div className='flex items-center pb-2'>
+                            <Text className='text-lg'>Duration</Text>
+                            <LiaEdit size="18" className="cursor-pointer ml-1.5" onClick={() => {
+                                setShowInput((pre) => !pre)
+                            }} />
+                        </div>
+                        <div className='flex justify-center'>
+
+                            {showInput ?
+                                <div >
+                                    <div className='bg-[#111623]   border border-[#1f3175]
+                                     text-sm text-black rounded-lg '>
+
+                                        < input type="text" className="text-sm w-[10rem] h-[30px] rounded-lg bg-gray-200 pl-1"
+                                            placeholder='Timer in minutes'
+                                            value={timerInput}
+                                            onChange={(e) => {
+                                                setTimerInput(e.target.value);
+                                                setErrorInput("");
+                                            }}
+                                        />
+
+                                    </div>
+                                    <p className='text-sm text-red-600'>{errorInput}</p>
+                                </div>
+                                :
+                                timeout.map((tm: string, index: number) =>
+                                    <Text className='border border-black text-[14px] p-1 cursor-pointer m-2'
+                                        style={{ background: (index === timeSelected) ? '#0077b6' : "" }}
+                                        onClick={() => setTimeSelected(index)}
+                                    >{tm}</Text>
+                                )
+                            }
+                        </div>
+
+                    </DialogContent>
+                    <DialogActions className='  bg-gray-300 mt-3' >
+                        <button onClick={() => { setOpenTimeout(false) }}
+                            className="w-fit font-meduim py-1 rounded-md text-white  text-xs px-2
+                        md:text-sm lg:text-md hover:underline underline-offset-3">
+                            Cancel
+                        </button>
+
+                        <button onClick={async () => {
+                            if (showInput) {
+                                const parsTimer = timerSchema.safeParse(timerInput);
+                                if (!parsTimer.success) {
+                                    setErrorInput("Enter a valid Timer");
+                                } else {
+                                    let integerValue: number = parseInt(timerInput);
+                                    console.log(integerValue);
+                                }
+                            } else {
+                                console.log(timeInSecond[timeSelected])
+                            }
+                        }}
+                            className="w-fit font-meduim  py-1 rounded-md text-white bg-[#0077b6]
+                            text-xs  
+                                md:text-sm lg:text-md px-2">
+                            Time-out
+                        </button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+
+
+
         </div>
     );
 }
