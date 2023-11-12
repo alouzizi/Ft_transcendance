@@ -2,17 +2,18 @@
 import DashBoard from "../components/DashBoard";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
+import {
+  getBlockedFriends,
+  getIsBlocked,
+  getOneUser,
+} from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
 import ErrorPage from "../components/ErrorPage";
+import { CircularProgress } from "@mui/material";
 export default function DashboardPage() {
   const pathname = usePathname();
-<<<<<<< HEAD
-  const [friend, setFriend] = useState<userDto>();
-=======
   const [friend, setFriend] = useState<ownerDto>();
->>>>>>> implement the sockets successfully
-  const { user } = useGlobalContext();
+  const { user, updateInfo } = useGlobalContext();
 
   useEffect(() => {
     const userName = pathname;
@@ -21,25 +22,29 @@ export default function DashboardPage() {
     console.log(lastSegment);
     async function getData() {
       try {
-<<<<<<< HEAD
-        const user = await getOneUser(lastSegment);
-        setFriend(user);
-        console.log(user);
-=======
-        const usr: ownerDto = await getOneUser(lastSegment);
+        const usr = await getOneUser(lastSegment);
+        console.log("-----usr", usr);
+
+        const isBlocked = await getIsBlocked(user.id, usr.id);
+        console.log(isBlocked);
+        if (isBlocked.isBlocked) {
+          setFriend(undefined);
+          console.log("blocked-=--=-");
+          return;
+        }
         setFriend(usr);
-        console.log(usr);
->>>>>>> implement the sockets successfully
+        // console.log(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
     }
     getData();
-  }, [pathname]);
+  }, [pathname, updateInfo]);
 
   if (friend) {
     return <DashBoard friend={friend} />;
   } else {
     return <ErrorPage />;
   }
+  // return <CircularProgress />;
 }

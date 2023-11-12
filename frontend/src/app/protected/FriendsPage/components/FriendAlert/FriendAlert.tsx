@@ -1,33 +1,5 @@
 "use client";
 
-<<<<<<< HEAD
-import * as React from "react";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
-import Typography from "@mui/material/Typography";
-import { blue } from "@mui/material/colors";
-import TextField from "@mui/material/TextField";
-import FriendSearchItem from "./FriendSearchItem";
-import {
-  getOnlineFriends,
-  getAllFriends,
-  getPendingFriends,
-  getBlockedFriends,
-  getAllUsers,
-  getAllPossibleFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
-import Link from "next/link";
-import { ImCross } from "react-icons/im";
-import { ChangeEvent, useState } from "react";
-=======
 import {
   getAllPossibleFriends,
   getPendingFriends,
@@ -39,7 +11,6 @@ import * as React from "react";
 import { ChangeEvent, useState } from "react";
 import { ImCross } from "react-icons/im";
 import FriendSearchItem from "./FriendSearchItem";
->>>>>>> implement the sockets successfully
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -60,33 +31,20 @@ export function FriendAlert(props: SimpleDialogProps) {
   const [PendingFriendsList, setPendingFriendsList] = React.useState<
     friendDto[]
   >([]);
-<<<<<<< HEAD
-  const { user } = useGlobalContext();
-=======
   const { updateInfo, user } = useGlobalContext();
->>>>>>> implement the sockets successfully
   React.useEffect(() => {
     async function getData() {
       try {
         const AllPossibleFriendsDataTmp = await getAllPossibleFriends(user.id);
-<<<<<<< HEAD
-        const pendingFriendsList = await getPendingFriends(user.id);
-        setPendingFriendsList(pendingFriendsList);
-=======
         const pendingFriendsListTmp = await getPendingFriends(user.id);
         setPendingFriendsList(pendingFriendsListTmp);
->>>>>>> implement the sockets successfully
         setData(AllPossibleFriendsDataTmp);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
     }
     getData();
-<<<<<<< HEAD
-  }, [open]);
-=======
   }, [open, updateInfo]);
->>>>>>> implement the sockets successfully
   // ================== /fetch users ==================
 
   // ================== handle search ==================
@@ -96,11 +54,7 @@ export function FriendAlert(props: SimpleDialogProps) {
   }
   const filteredData = data.filter((user) => {
     return (
-<<<<<<< HEAD
-      user.username.toLowerCase().includes(inputSearch.toLowerCase()) &&
-=======
       user.nickname.toLowerCase().includes(inputSearch.toLowerCase()) &&
->>>>>>> implement the sockets successfully
       inputSearch !== ""
     );
   });

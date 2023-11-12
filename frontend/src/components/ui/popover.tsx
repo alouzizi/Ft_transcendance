@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import * as React from "react"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
-
-import { cn } from "@/lib/utils"
-
-const Popover = PopoverPrimitive.Root
-
-const PopoverTrigger = PopoverPrimitive.Trigger
-=======
 import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
@@ -16,7 +6,6 @@ import { cn } from "../../../lib/utils";
 const Popover = PopoverPrimitive.Root;
 
 const PopoverTrigger = PopoverPrimitive.Trigger;
->>>>>>> implement the sockets successfully
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
@@ -34,14 +23,7 @@ const PopoverContent = React.forwardRef<
       {...props}
     />
   </PopoverPrimitive.Portal>
-<<<<<<< HEAD
-))
-PopoverContent.displayName = PopoverPrimitive.Content.displayName
-
-export { Popover, PopoverTrigger, PopoverContent }
-=======
 ));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
 export { Popover, PopoverTrigger, PopoverContent };
->>>>>>> implement the sockets successfully

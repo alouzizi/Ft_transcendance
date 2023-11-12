@@ -1,41 +1,3 @@
-<<<<<<< HEAD
-type userDto = {
-  id: string;
-  email: string;
-  username: string;
-  avatar: string;
-  status: Status;
-  lastSee: number;
-  friendship: number;
-};
-
-type msgDto = {
-  id: number;
-  content: string;
-  createdAt: number;
-  senderId: number;
-  receivedId: number;
-  messageStatus: MessageStatus;
-};
-
-type reqFriendsDto = {
-  id: number;
-  createdAt: number;
-  senderId: number;
-  receivedId: number;
-};
-
-enum Status {
-  ACTIF = "ACTIF",
-  INACTIF = "INACTIF",
-}
-
-enum MessageStatus {
-  NotReceived = "NotReceived",
-  Received = "Received",
-  Seen = "Seen",
-}
-=======
 enum Status {
   ACTIF = "ACTIF",
   INACTIF = "INACTIF",
@@ -48,7 +10,7 @@ type userDto = {
   profilePic: string;
   status: Status;
   lastSee: number;
-  friendship: number
+  friendship: number;
 };
 
 type ownerDto = {
@@ -58,6 +20,7 @@ type ownerDto = {
   last_name: string;
   nickname: string;
   profilePic: string;
+  level: string;
 };
 
 type geustDto = {
@@ -78,7 +41,7 @@ type geustDto = {
 enum MessageStatus {
   NotReceived = "NotReceived",
   Received = "Received",
-  Seen = "Seen"
+  Seen = "Seen",
 }
 
 type messageDto = {
@@ -89,7 +52,7 @@ type messageDto = {
 
   senderId: string; // in channle or direct Msg
   senderName: string; // in channle or direct Msg
-  senderPic: string;  // in channle or direct Msg
+  senderPic: string; // in channle or direct Msg
 
   contentMsg: string; // lastMsg or simpleMsg
   createdAt: number;
@@ -101,22 +64,19 @@ type messageDto = {
   receivedStatus: Status; // in DirectMsg
 
   OwnerChannelId: String;
-
-
-}
+};
 
 type reqFriendsDto = {
   id: string;
   createdAt: number;
   senderId: string;
   receivedId: string;
-}
+};
 
 enum ChannelType {
-  Public = 'Public',
-  Private = 'Private'
+  Public = "Public",
+  Private = "Private",
 }
-
 
 type channelDto = {
   channleName: string;
@@ -126,7 +86,7 @@ type channelDto = {
   channelOwnerId: string;
   protected: boolean;
   channelMember: string[];
-}
+};
 
 type memberChannelDto = {
   userId: string;
@@ -134,5 +94,4 @@ type memberChannelDto = {
   profilePic: string;
   role: string;
   status: Status;
-}
->>>>>>> implement the sockets successfully
+};

@@ -12,27 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-<<<<<<< HEAD
-const messages_service_1 = require("../messages/messages.service");
-let UserService = class UserService {
-    constructor(prisma, messagesService) {
-        this.prisma = prisma;
-        this.messagesService = messagesService;
-    }
-    async findByEmail(email) {
-        return await this.prisma.user.findUnique({
-            where: {
-                email: email,
-            },
-        });
-=======
 const client_1 = require("@prisma/client");
 const channel_service_1 = require("../channel/channel.service");
 let UserService = class UserService {
     constructor(prisma, channelService) {
         this.prisma = prisma;
         this.channelService = channelService;
->>>>>>> implement the sockets successfully
     }
     async findById(id) {
         return await this.prisma.user.findUnique({
@@ -99,35 +84,6 @@ let UserService = class UserService {
         }));
         return result;
     }
-<<<<<<< HEAD
-    async getUserForMsg(senderId) {
-        const users = await this.prisma.user.findMany();
-        const usersMsg = await this.prisma.directMessage.findMany({
-            where: {
-                OR: [{ senderId: senderId }, { receivedId: senderId }],
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
-        const distinctUserIds = new Set();
-        for (const msg of usersMsg) {
-            if (msg.senderId === senderId) {
-                distinctUserIds.add(msg.receivedId);
-            }
-            else {
-                distinctUserIds.add(msg.senderId);
-            }
-        }
-        const idUsersArray = Array.from(distinctUserIds);
-        const usersMsgList = idUsersArray.map((id) => users.find((user) => user.id === id));
-        let lastMsgs = [];
-        for (let i = 0; i < usersMsgList.length; i++) {
-            const temp = await this.messagesService.getLastMessages(senderId, usersMsgList[i].id);
-            lastMsgs.push(temp);
-        }
-        return { usersMsgList, lastMsgs };
-=======
     async usersCanJoinChannel(senderId, channelId) {
         const users = await this.prisma.user.findMany();
         const blockerUsers = await this.prisma.blockedUser.findMany({
@@ -227,17 +183,12 @@ let UserService = class UserService {
         return this.prisma.user.findUnique({
             where: { intra_id: intra_id },
         });
->>>>>>> implement the sockets successfully
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-<<<<<<< HEAD
-        messages_service_1.MessagesService])
-=======
         channel_service_1.ChannelService])
->>>>>>> implement the sockets successfully
 ], UserService);
 //# sourceMappingURL=user.service.js.map

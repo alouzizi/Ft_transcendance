@@ -7,8 +7,6 @@ export declare class CreateUserDto {
     status: Status;
     lastSee: Date;
 }
-<<<<<<< HEAD
-=======
 export declare class MessageItemList {
     isDirectMessage: Boolean;
     name: string;
@@ -19,4 +17,3 @@ export declare class MessageItemList {
     id: string;
     nameSenderChannel: string;
 }
->>>>>>> implement the sockets successfully

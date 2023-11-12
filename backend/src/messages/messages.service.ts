@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-import { Injectable } from "@nestjs/common";
-import { CreateMessageDto } from "./dto/create-message.dto";
-import { PrismaService } from "src/prisma/prisma.service";
-import { Server } from "socket.io";
-import { MessageStatus } from "@prisma/client";
-
-@Injectable()
-export class MessagesService {
-  constructor(private prisma: PrismaService) {}
-
-  async create(server: Server, createMessageDto: CreateMessageDto) {
-    let showed: boolean = true;
-    let messageStatus: MessageStatus = "NotReceived";
-=======
 import { Injectable } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -30,24 +15,12 @@ export class MessagesService {
   async createDirectMessage(server: Server, createMessageDto: CreateMessageDto) {
     let showed: boolean = true;
     let messageStatus: MessageStatus = "NotReceived"
->>>>>>> implement the sockets successfully
 
     const blockerUser = await this.prisma.blockedUser.findMany({
       where: {
         OR: [
           {
             senderId: createMessageDto.senderId,
-<<<<<<< HEAD
-            receivedId: createMessageDto.receivedId,
-          },
-          {
-            senderId: createMessageDto.receivedId,
-            receivedId: createMessageDto.senderId,
-          },
-        ],
-      },
-    });
-=======
             receivedId: createMessageDto.receivedId
           },
           {
@@ -57,33 +30,10 @@ export class MessagesService {
         ]
       }
     })
->>>>>>> implement the sockets successfully
 
     if (blockerUser.length) {
       showed = false;
     }
-<<<<<<< HEAD
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: createMessageDto.receivedId,
-      },
-    });
-    if (user.status === "ACTIF") messageStatus = "Received";
-    const msg = await this.prisma.directMessage.create({
-      data: {
-        ...createMessageDto,
-        showed,
-        messageStatus,
-      },
-    });
-    if (showed)
-      server.to(msg.receivedId.toString()).emit("findMsg2UsersResponse", msg);
-    server.to(msg.senderId.toString()).emit("findMsg2UsersResponse", msg);
-  }
-
-  async getMessage(senderId: string, receivedId: string) {
-    const msgUserTemp = await this.prisma.directMessage.findMany({
-=======
 
     const user = await this.prisma.user.findUnique({
       where: {
@@ -180,7 +130,6 @@ export class MessagesService {
 
   async getDirectMessage(senderId: string, receivedId: string) {
     const msgUserTemp = await this.prisma.message.findMany({
->>>>>>> implement the sockets successfully
       where: {
         OR: [
           {
@@ -194,19 +143,6 @@ export class MessagesService {
         ],
       },
       orderBy: {
-<<<<<<< HEAD
-        createdAt: "asc",
-      },
-    });
-    const msgUser = msgUserTemp.filter(
-      (msg) => msg.showed === true || senderId === msg.senderId
-    );
-    return msgUser;
-  }
-
-  async getLastMessages(senderId: string, receivedId: string) {
-    const lastMessage = await this.prisma.directMessage.findFirst({
-=======
         createdAt: 'asc',
       },
     });
@@ -286,40 +222,19 @@ export class MessagesService {
 
   async getLastMessages(senderId: string, receivedId: string) {
     const lastMessage = await this.prisma.message.findFirst({
->>>>>>> implement the sockets successfully
       where: {
         OR: [
           {
             senderId,
             receivedId,
-<<<<<<< HEAD
-            showed: true,
-=======
->>>>>>> implement the sockets successfully
           },
           {
             senderId: receivedId,
             receivedId: senderId,
-<<<<<<< HEAD
-            showed: true,
-=======
->>>>>>> implement the sockets successfully
           },
         ],
       },
       orderBy: {
-<<<<<<< HEAD
-        createdAt: "desc",
-      },
-    });
-    if (!lastMessage) {
-      return {
-        content: "",
-        createdAt: 5,
-      };
-    }
-    return lastMessage;
-=======
         createdAt: 'desc',
       },
     });
@@ -441,6 +356,5 @@ export class MessagesService {
       return myDate2.getTime() - myDate1.getTime();
     });
     return result;
->>>>>>> implement the sockets successfully
   }
 }

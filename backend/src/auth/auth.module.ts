@@ -1,18 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-<<<<<<< HEAD
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './strategy';
-
-@Module({
-  imports: [JwtModule.register({})],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-})
-export class AuthModule {}
-=======
 import { JwtModule } from '@nestjs/jwt';
 import { FortyTwoIntranetStrategy } from './42-intranet.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -37,4 +25,3 @@ import { SocketGatewayService } from 'src/socket/socket.service';
 })
 
 export class AuthModule { }
->>>>>>> implement the sockets successfully

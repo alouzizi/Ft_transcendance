@@ -15,9 +15,18 @@ export class HixcoderController {
   }
 
   // for get one user
-  @Get("/oneUser/:reciever")
-  async getOneUser(@Param("reciever") reciever: string) {
+  @Get("/oneUser/:recieverUsr")
+  async getOneUser(@Param("recieverUsr") reciever: string) {
     return this.hixcoderService.getOneUser(reciever);
+  }
+
+  // for is Bolcked
+  @Get("/isBlocked/:sender/:reciever")
+  async getIsBlocked(
+    @Param("sender") sender: string,
+    @Param("reciever") reciever: string
+  ) {
+    return this.hixcoderService.getIsBlocked(sender, reciever);
   }
 
   // for get all online friends
@@ -119,5 +128,57 @@ export class HixcoderController {
     @Param("reciever") reciever: string
   ) {
     return this.hixcoderService.removeFriend(sender, reciever);
+  }
+
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================  Game Gets ==========================
+  // for get gameHistory
+  @Get("/gameHistory/:senderUsr")
+  async getGameHistory(@Param("senderUsr") sender: string) {
+    console.log("Received request for game history for sender:", sender);
+    return this.hixcoderService.getGameHistory(sender);
+  }
+  // for get globalInfos for acheivments making
+  @Get("/globalInfos/:recieverUsr")
+  async getGlobalInfos(@Param("recieverUsr") recieverUsr: string) {
+    return this.hixcoderService.getGlobalInfos(recieverUsr);
+  }
+
+  // for getUserRanking
+  @Get("/userRanking/:senderUsr")
+  async getUserRanking(@Param("senderUsr") senderUsr: string) {
+    return this.hixcoderService.getUserRanking(senderUsr);
+  }
+
+  // ==========================  Game Posts =========================
+
+  // for updateLevel
+  @Post("/updateLevel/:senderUsr/:newLevel")
+  async updateLevel(
+    @Param("senderUsr") sender: string,
+    @Param("newLevel") newLevel: string
+  ) {
+    return this.hixcoderService.updateLevel(sender, newLevel);
+  }
+  // for updateGameHistory
+  @Post("/updateGameHistory/:senderUsr/:recieverUsr/:senderPt/:recieverPt")
+  async updateGameHistory(
+    @Param("senderUsr") senderUsr: string,
+    @Param("recieverUsr") recieverUsr: string,
+    @Param("senderPt") senderPt: string,
+    @Param("recieverPt") recieverPt: string
+  ) {
+    return this.hixcoderService.updateGameHistory(
+      senderUsr,
+      recieverUsr,
+      senderPt,
+      recieverPt
+    );
   }
 }

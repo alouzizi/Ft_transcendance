@@ -8,46 +8,77 @@ import { useEffect, useState } from "react";
 import { useGlobalContext } from "@/app/context/store";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import PopoverMenuDash from "./PopoverMenuDash";
-import { getAllFriends } from "@/app/api/hixcoder/FriendsPageAPI";
+import {
+  getAchievmentsData,
+  getAllFriends,
+  getGameHistory,
+  getGlobalInfos,
+  getUserRanking,
+} from "@/app/api/hixcoder/FriendsPageAPI";
 
-<<<<<<< HEAD
-export default function DashBoard(prompt: { friend: userDto }) {
-  const router = useRouter();
-  const { user } = useGlobalContext();
-=======
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
   const { user, updateInfo } = useGlobalContext();
->>>>>>> implement the sockets successfully
   const [isFriend, setIsFriend] = useState(false);
+  const [gameHistory, setGameHistory] = useState<gameHistoryDto[]>([]);
+  const [globalInfo, setGlobalInfo] = useState<globalInfoDto>({
+    NbrOfAllMatches: 0,
+    NbrOfWinnedMatches: 0,
+    NbrOfLosedMatches: 0,
+    NbrOfFriends: 0,
+    NbrOfBlockedFriends: 0,
+    NbrOfInvitedFriends: 0,
+  });
+  const [rank, setRank] = useState(0);
+  let achievementsList = getAchievmentsData(globalInfo).filter(
+    (acheiv) => acheiv.isUnlocked
+  );
+  const [level, setLevel] = useState([0, 0]);
   useEffect(() => {
     async function getData() {
       try {
-        const dataTmp = await getAllFriends(user.id);
-        const even = (element: userDto) =>
-          element.id === prompt.friend.id ?? user.id;
-        setIsFriend(dataTmp.some(even));
-        // console.log(dataTmp);
-        // console.log("friend id: " + prompt.friend.id);
-        // console.log("is a friend: " + isFriend);
+        // for fetch the ranking
+        const rankTmp = await getUserRanking(prompt.friend.nickname);
+        setRank(rankTmp.rank);
+
+        // for fetch the level
+        const levelTmp = prompt.friend.level.split(".");
+        setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
+
+        // for fetch the gameHistory
+        const gameHistoryTmp: gameHistoryDto[] = await getGameHistory(
+          prompt.friend.nickname
+        );
+        if (gameHistoryTmp.length !== 0) {
+          setGameHistory(gameHistoryTmp);
+        }
+
+        // for fetch the friends
+        const dataTmp = await getAllFriends(prompt.friend.id);
+        setIsFriend(
+          dataTmp.some((element: userDto) => element.id === prompt.friend.id)
+        );
+
+        // for fetch the globalInfoTmp
+        const globalInfoTmp = await getGlobalInfos(prompt.friend.nickname);
+        setGlobalInfo(globalInfoTmp);
       } catch (error: any) {
         console.log("getData error: " + error);
       }
     }
     getData();
-<<<<<<< HEAD
-  }, [prompt.friend.id, user.id]);
-=======
-  }, [prompt.friend.id, user.id, updateInfo]);
->>>>>>> implement the sockets successfully
+    achievementsList = getAchievmentsData(globalInfo).filter(
+      (acheiv) => acheiv.isUnlocked
+    );
+  }, [updateInfo]);
 
   return (
     <div className="flex flex-col h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
 
       <div
-        className="bg-slate-100  bg-cover bg-center rounded-3xl  relative
-        transition-all duration-100 ease-in-out overflow-hidden
+        className=" bg-cover bg-center rounded-3xl  relative 
+        transition-all duration-100 ease-in-out overflow-hidden 
        
         // small screen
         h-[26rem] w-5/6 mx-auto
@@ -62,7 +93,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           <div />
         )}
 
-        <LevelBar level={6} completed={75} />
+        <LevelBar level={level[0]} completed={level[1]} />
         <img
           className="
          border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] 
@@ -76,11 +107,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
-<<<<<<< HEAD
-          src={prompt.friend.avatar}
-=======
           src={prompt.friend.profilePic}
->>>>>>> implement the sockets successfully
           alt=""
         />
 
@@ -105,15 +132,10 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           2xl:ml-6 2xl:mt-2 2xl:w-1/3
           "
           >
-<<<<<<< HEAD
-            <h1>{prompt.friend.email}</h1>
-            <p className="text-gray-400 text-sm">@{prompt.friend.username}</p>
-=======
             <h1 className="text-white text-sm">
               {prompt.friend.first_name} {prompt.friend.last_name}
             </h1>
             <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
->>>>>>> implement the sockets successfully
           </div>
 
           <div
@@ -124,9 +146,24 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
            2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
           "
           >
-            <CardInfo cardImg="/ranking.png" cardName="Ranking" value="15" />
-            <CardInfo cardImg="/matches.png" cardName="Matches" value="152" />
-            <CardInfo cardImg="/win-rate.png" cardName="Win Rate" value="80%" />
+            <CardInfo
+              cardImg="/ranking.png"
+              cardName="Ranking"
+              value={`${rank}`}
+            />
+            <CardInfo
+              cardImg="/matches.png"
+              cardName="Matches"
+              value={`${gameHistory.length}`}
+            />
+            <CardInfo
+              cardImg="/win-rate.png"
+              cardName="Win Rate"
+              value={`${Math.round(
+                (globalInfo.NbrOfWinnedMatches * 100) /
+                  globalInfo.NbrOfAllMatches
+              )}%`}
+            />
           </div>
         </div>
       </div>
@@ -141,64 +178,61 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
       "
       >
+        {/* ========================= Game Section =========================*/}
         <HomeSection
-          sectionName="Game History"
+          sectionName="Last Games"
           btnName="See All History"
           btnClicked={() => {
-            router.push("/protected/HistoryPage");
+            router.push("/protected/HistoryPage/" + prompt.friend.nickname);
           }}
         >
-          <HistoryItem
-            firstPlayerName="hamza boumahdi"
-            firstPlayerPoints={12}
-            secondPlayerName="jalal motaya"
-            secondPlayerPoints={5}
-            firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
-            secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
-          />
-          <HistoryItem
-            firstPlayerName="hamza boumahdi"
-            firstPlayerPoints={12}
-            secondPlayerName="jalal motaya"
-            secondPlayerPoints={5}
-            firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
-            secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
-          />
-          <HistoryItem
-            firstPlayerName="hamza boumahdi"
-            firstPlayerPoints={12}
-            secondPlayerName="jalal motaya"
-            secondPlayerPoints={5}
-            firstPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
-            secondPlayerImg="https://images.alphacoders.com/129/1294445.jpg"
-          />
+          {gameHistory.length !== 0 ? (
+            gameHistory
+              .slice(-3)
+              .reverse()
+              .map((record) => (
+                <HistoryItem
+                  key={record.id}
+                  firstPlayerName={record.senderUsr}
+                  firstPlayerPoints={record.senderPoints}
+                  secondPlayerName={record.receiverUsr}
+                  secondPlayerPoints={record.receiverPoints}
+                  firstPlayerImg={record.senderAvatar}
+                  secondPlayerImg={record.receiverAvatar}
+                />
+              ))
+          ) : (
+            <p className="mx-auto my-3 text-gray-500 text-lg">
+              No Matches here!
+            </p>
+          )}
         </HomeSection>
+        {/* ========================= /Game Section =========================*/}
+        {/* ========================= Achievement Section =========================*/}
         <HomeSection
-          sectionName="Last Achievements"
+          sectionName="Your Achievements"
           btnName="See All Achievements"
           btnClicked={() => {
-            router.push("/protected/AchievementsPage");
+            router.push(
+              "/protected/AchievementsPage/" + prompt.friend.nickname
+            );
           }}
         >
-          <AchievementItem
-            image="/achiev1.png"
-            title="Novice"
-            mission="Win 10 matches"
-            type="selver"
-          />
-          <AchievementItem
-            image="/achiev1.png"
-            title="Novice"
-            mission="Win 10 matches"
-            type="bronz"
-          />
-          <AchievementItem
-            image="/achiev1.png"
-            title="Novice"
-            mission="Win 10 matches"
-            type="gold"
-          />
+          {achievementsList
+            .slice(-3)
+            .reverse()
+            .map((achiev, index) => (
+              <AchievementItem
+                key={`achievDash-${index}`}
+                isUnlocked={achiev.isUnlocked}
+                image={achiev.image}
+                title={achiev.title}
+                mission={achiev.mission}
+                type={achiev.type}
+              />
+            ))}
         </HomeSection>
+        {/* ========================= /Achievement Section =========================*/}
       </div>
     </div>
   );

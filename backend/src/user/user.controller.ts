@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   Controller,
   Delete,
@@ -8,6 +7,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
+import { JwtGuard } from "src/auth/guard";
 
 @Controller("user")
 export class UserController {
@@ -16,32 +16,12 @@ export class UserController {
   // @UseGuards(JwtGuard)
   @Get(":id")
   async getUserProfile(@Param("id") id: string) {
-    console.log("call de");
     return await this.userService.findById(id);
   }
-
-  // @UseGuards(JwtGuard)
-  @Get("/all")
-=======
-import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { UserService } from './user.service';
-import { JwtGuard } from 'src/auth/guard';
-
-@Controller('user')
-export class UserController {
-  constructor(private userService: UserService) { }
-
-
-  // @UseGuards(JwtGuard)
-  @Get(':id')
-  async getUserProfile(@Param('id') id: string) {
-    return await this.userService.findById(id);
-  }
-
 
   @UseGuards(JwtGuard)
-  @Get('/intra/:id_intra')
-  async getUserByIdintr(@Param('id_intra') id_intra: string) {
+  @Get("/intra/:id_intra")
+  async getUserByIdintr(@Param("id_intra") id_intra: string) {
     const user = await this.userService.findByIntraId(id_intra);
     const temp = {
       id: user.id,
@@ -49,51 +29,38 @@ export class UserController {
       first_name: user.first_name,
       last_name: user.last_name,
       nickname: user.nickname,
-      profilePic: user.profilePic
-    }
+      profilePic: user.profilePic,
+      level: user.level,
+    };
     return temp;
   }
 
   // @UseGuards(JwtGuard)
-  @Get('/all')
->>>>>>> implement the sockets successfully
+  @Get("/all")
   async getAllUser() {
     return await this.userService.findAllUsers();
   }
 
-<<<<<<< HEAD
   @Get("/getValideUsers/:id")
   async getValideUsers(@Param("id") senderId: string) {
     return await this.userService.getValideUsers(senderId);
   }
 
-  @Get("/getUserForMsg/:id")
-  async getUserForMsg(@Param("id") senderId: string) {
-    return await this.userService.getUserForMsg(senderId);
-  }
-}
-=======
-
-  @Get('/getValideUsers/:id')
-  async getValideUsers(@Param('id') senderId: string) {
-    return await this.userService.getValideUsers(senderId);
-  }
-
-
-  @Get('/getUsersCanJoinChannel/:senderId/:channelId')
-  async getUsersCanJoinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+  @Get("/getUsersCanJoinChannel/:senderId/:channelId")
+  async getUsersCanJoinChannel(
+    @Param("senderId") senderId: string,
+    @Param("channelId") channelId: string
+  ) {
     return await this.userService.usersCanJoinChannel(senderId, channelId);
   }
 
-
-  @Get('getUserGeust/:id')
-  async getUserGeust(@Param('id') id: string) {
+  @Get("getUserGeust/:id")
+  async getUserGeust(@Param("id") id: string) {
     return await this.userService.getUserGeust(id);
   }
 
-  @Get('getChannelGeust/:id')
-  async getChannelGeust(@Param('id') id: string) {
+  @Get("getChannelGeust/:id")
+  async getChannelGeust(@Param("id") id: string) {
     return await this.userService.getChannelGeust(id);
   }
-} 
->>>>>>> implement the sockets successfully
+}

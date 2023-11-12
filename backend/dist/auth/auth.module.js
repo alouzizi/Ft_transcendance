@@ -11,9 +11,6 @@ const common_1 = require("@nestjs/common");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const jwt_1 = require("@nestjs/jwt");
-<<<<<<< HEAD
-const strategy_1 = require("./strategy");
-=======
 const _42_intranet_strategy_1 = require("./42-intranet.strategy");
 const passport_1 = require("@nestjs/passport");
 const prisma_service_1 = require("../prisma/prisma.service");
@@ -21,17 +18,11 @@ const user_service_1 = require("../user/user.service");
 const messages_service_1 = require("../messages/messages.service");
 const channel_service_1 = require("../channel/channel.service");
 const socket_service_1 = require("../socket/socket.service");
->>>>>>> implement the sockets successfully
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-<<<<<<< HEAD
-        imports: [jwt_1.JwtModule.register({})],
-        controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, strategy_1.JwtStrategy],
-=======
         imports: [
             passport_1.PassportModule,
             jwt_1.JwtModule,
@@ -42,7 +33,6 @@ exports.AuthModule = AuthModule = __decorate([
             channel_service_1.ChannelService,
             socket_service_1.SocketGatewayService
         ],
->>>>>>> implement the sockets successfully
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

@@ -19,10 +19,6 @@ let MessageController = class MessageController {
     constructor(messagesService) {
         this.messagesService = messagesService;
     }
-<<<<<<< HEAD
-    async getMessages(send, rec) {
-        return this.messagesService.getMessage(send, rec);
-=======
     async getDirectMessage(send, rec) {
         return this.messagesService.getDirectMessage(send, rec);
     }
@@ -31,22 +27,10 @@ let MessageController = class MessageController {
     }
     async getUserForMsg(senderId) {
         return await this.messagesService.getMessageForList(senderId);
->>>>>>> implement the sockets successfully
     }
 };
 exports.MessageController = MessageController;
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Get)(":send/:rec"),
-    __param(0, (0, common_1.Param)("send")),
-    __param(1, (0, common_1.Param)("rec")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], MessageController.prototype, "getMessages", null);
-exports.MessageController = MessageController = __decorate([
-    (0, common_1.Controller)("messages"),
-=======
     (0, common_1.Get)('getDirectMessage/:send/:rec'),
     __param(0, (0, common_1.Param)('send')),
     __param(1, (0, common_1.Param)('rec')),
@@ -71,7 +55,6 @@ __decorate([
 ], MessageController.prototype, "getUserForMsg", null);
 exports.MessageController = MessageController = __decorate([
     (0, common_1.Controller)('messages'),
->>>>>>> implement the sockets successfully
     __metadata("design:paramtypes", [messages_service_1.MessagesService])
 ], MessageController);
 //# sourceMappingURL=messages.controller.js.map

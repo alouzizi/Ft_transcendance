@@ -55,143 +55,83 @@ let FriendshipController = class FriendshipController {
 };
 exports.FriendshipController = FriendshipController;
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Get)("/getSendFriendRequest/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-=======
     (0, common_1.Get)('/getSendFriendRequest/:sender'),
     __param(0, (0, common_1.Param)('sender')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "getSendRequistFriends", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Get)("/getRecivedRequistFriends/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-=======
     (0, common_1.Get)('/getRecivedRequistFriends/:sender'),
     __param(0, (0, common_1.Param)('sender')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "getRecivedRequistFriends", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Get)("/getFriends/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-=======
     (0, common_1.Get)('/getFriends/:sender'),
     __param(0, (0, common_1.Param)('sender')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "getFriends", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Get)("/getBlockedUser/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-=======
     (0, common_1.Get)('/getBlockedUser/:sender'),
     __param(0, (0, common_1.Param)('sender')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "getBlockedUser", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Post)("/sendFriendRequest/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-=======
     (0, common_1.Post)('/sendFriendRequest/:sender/:recived'),
     __param(0, (0, common_1.Param)('sender')),
     __param(1, (0, common_1.Param)('recived')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "addFriendRequest", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Delete)("/removeFriendRequest/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-=======
     (0, common_1.Delete)('/removeFriendRequest/:sender/:recived'),
     __param(0, (0, common_1.Param)('sender')),
     __param(1, (0, common_1.Param)('recived')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "removeFriendRequest", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Post)("/accepteFriendRequest/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-=======
     (0, common_1.Post)('/accepteFriendRequest/:sender/:recived'),
     __param(0, (0, common_1.Param)('sender')),
     __param(1, (0, common_1.Param)('recived')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "accepteFriendRequest", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Delete)("/deleteFriend/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-=======
     (0, common_1.Delete)('/deleteFriend/:sender/:recived'),
     __param(0, (0, common_1.Param)('sender')),
     __param(1, (0, common_1.Param)('recived')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "deleteFriend", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Post)("/blockedUser/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-=======
     (0, common_1.Post)('/blockedUser/:sender/:recived'),
     __param(0, (0, common_1.Param)('sender')),
     __param(1, (0, common_1.Param)('recived')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "blockedUser", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Delete)("/unBlockedUser/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-=======
     (0, common_1.Delete)('/unBlockedUser/:sender/:recived'),
     __param(0, (0, common_1.Param)('sender')),
     __param(1, (0, common_1.Param)('recived')),
->>>>>>> implement the sockets successfully
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "unBlockedUser", null);
 exports.FriendshipController = FriendshipController = __decorate([
-<<<<<<< HEAD
-    (0, common_1.Controller)("friendship"),
-=======
     (0, common_1.Controller)('friendship'),
->>>>>>> implement the sockets successfully
     __metadata("design:paramtypes", [friendship_service_1.FriendshipService])
 ], FriendshipController);
 //# sourceMappingURL=friendship.controller.js.map

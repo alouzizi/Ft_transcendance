@@ -12,13 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-<<<<<<< HEAD
-let MessagesService = class MessagesService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async create(server, createMessageDto) {
-=======
 const client_1 = require("@prisma/client");
 const user_service_1 = require("../user/user.service");
 let MessagesService = class MessagesService {
@@ -27,7 +20,6 @@ let MessagesService = class MessagesService {
         this.userService = userService;
     }
     async createDirectMessage(server, createMessageDto) {
->>>>>>> implement the sockets successfully
         let showed = true;
         let messageStatus = "NotReceived";
         const blockerUser = await this.prisma.blockedUser.findMany({
@@ -35,16 +27,6 @@ let MessagesService = class MessagesService {
                 OR: [
                     {
                         senderId: createMessageDto.senderId,
-<<<<<<< HEAD
-                        receivedId: createMessageDto.receivedId,
-                    },
-                    {
-                        senderId: createMessageDto.receivedId,
-                        receivedId: createMessageDto.senderId,
-                    },
-                ],
-            },
-=======
                         receivedId: createMessageDto.receivedId
                     },
                     {
@@ -53,7 +35,6 @@ let MessagesService = class MessagesService {
                     }
                 ]
             }
->>>>>>> implement the sockets successfully
         });
         if (blockerUser.length) {
             showed = false;
@@ -61,25 +42,6 @@ let MessagesService = class MessagesService {
         const user = await this.prisma.user.findUnique({
             where: {
                 id: createMessageDto.receivedId,
-<<<<<<< HEAD
-            },
-        });
-        if (user.status === "ACTIF")
-            messageStatus = "Received";
-        const msg = await this.prisma.directMessage.create({
-            data: {
-                ...createMessageDto,
-                showed,
-                messageStatus,
-            },
-        });
-        if (showed)
-            server.to(msg.receivedId.toString()).emit("findMsg2UsersResponse", msg);
-        server.to(msg.senderId.toString()).emit("findMsg2UsersResponse", msg);
-    }
-    async getMessage(senderId, receivedId) {
-        const msgUserTemp = await this.prisma.directMessage.findMany({
-=======
             }
         });
         if (user.status === "ACTIF")
@@ -153,7 +115,6 @@ let MessagesService = class MessagesService {
     }
     async getDirectMessage(senderId, receivedId) {
         const msgUserTemp = await this.prisma.message.findMany({
->>>>>>> implement the sockets successfully
             where: {
                 OR: [
                     {
@@ -167,16 +128,6 @@ let MessagesService = class MessagesService {
                 ],
             },
             orderBy: {
-<<<<<<< HEAD
-                createdAt: "asc",
-            },
-        });
-        const msgUser = msgUserTemp.filter((msg) => msg.showed === true || senderId === msg.senderId);
-        return msgUser;
-    }
-    async getLastMessages(senderId, receivedId) {
-        const lastMessage = await this.prisma.directMessage.findFirst({
-=======
                 createdAt: 'asc',
             },
         });
@@ -237,40 +188,19 @@ let MessagesService = class MessagesService {
     }
     async getLastMessages(senderId, receivedId) {
         const lastMessage = await this.prisma.message.findFirst({
->>>>>>> implement the sockets successfully
             where: {
                 OR: [
                     {
                         senderId,
                         receivedId,
-<<<<<<< HEAD
-                        showed: true,
-=======
->>>>>>> implement the sockets successfully
                     },
                     {
                         senderId: receivedId,
                         receivedId: senderId,
-<<<<<<< HEAD
-                        showed: true,
-=======
->>>>>>> implement the sockets successfully
                     },
                 ],
             },
             orderBy: {
-<<<<<<< HEAD
-                createdAt: "desc",
-            },
-        });
-        if (!lastMessage) {
-            return {
-                content: "",
-                createdAt: 5,
-            };
-        }
-        return lastMessage;
-=======
                 createdAt: 'desc',
             },
         });
@@ -371,17 +301,12 @@ let MessagesService = class MessagesService {
             return myDate2.getTime() - myDate1.getTime();
         });
         return result;
->>>>>>> implement the sockets successfully
     }
 };
 exports.MessagesService = MessagesService;
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
-<<<<<<< HEAD
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-=======
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         user_service_1.UserService])
->>>>>>> implement the sockets successfully
 ], MessagesService);
 //# sourceMappingURL=messages.service.js.map

@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import { Injectable, ConflictException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateUserDto } from "./dto/user.dto";
-import { hash as dd } from "bcrypt";
-import { MessagesService } from "src/messages/messages.service";
-=======
 import { Injectable, } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 
@@ -13,28 +6,14 @@ import { MessageItemList } from "./dto/user.dto";
 import { Channel, Message, Status } from "@prisma/client";
 import { ChannelService } from "src/channel/channel.service";
 
->>>>>>> implement the sockets successfully
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
-<<<<<<< HEAD
-    private messagesService: MessagesService
-  ) {}
-
-  async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-  }
-=======
     private channelService: ChannelService,
   ) { }
 
->>>>>>> implement the sockets successfully
 
   async findById(id: string) {
     return await this.prisma.user.findUnique({
@@ -47,24 +26,15 @@ export class UserService {
   async findAllUsers() {
     return await this.prisma.user.findMany();
   }
-<<<<<<< HEAD
-
-  async getValideUsers(senderId: string) {
-    const users = await this.prisma.user.findMany();
-=======
   async getValideUsers(senderId: string) {
     const users = await this.prisma.user.findMany();
 
->>>>>>> implement the sockets successfully
     const blockerUsers = await this.prisma.blockedUser.findMany({
       where: {
         OR: [{ senderId: senderId }, { receivedId: senderId }],
       },
     });
-<<<<<<< HEAD
-=======
 
->>>>>>> implement the sockets successfully
     const temp = users.filter((user) => {
       if (user.id === senderId) return false;
       const found = blockerUsers.find((elm) => {
@@ -76,10 +46,7 @@ export class UserService {
       if (found) return false;
       return true;
     });
-<<<<<<< HEAD
-=======
 
->>>>>>> implement the sockets successfully
     const result = await Promise.all(
       temp.map(async (user) => {
         let friends = await this.prisma.friend.findFirst({
@@ -96,74 +63,27 @@ export class UserService {
             ],
           },
         });
-<<<<<<< HEAD
-        if (friends) return { ...user, friendship: 1 };
-=======
         if (friends) return { ...user, friendship: 1 }; // friends
->>>>>>> implement the sockets successfully
         let freiReq = await this.prisma.friendRequest.findFirst({
           where: {
             senderId: user.id,
             receivedId: senderId,
           },
         });
-<<<<<<< HEAD
-        if (freiReq) return { ...user, friendship: 2 };
-=======
         if (freiReq) return { ...user, friendship: 2 }; //  user that I sent a friend request
->>>>>>> implement the sockets successfully
         let sendReq = await this.prisma.friendRequest.findFirst({
           where: {
             senderId: senderId,
             receivedId: user.id,
           },
         });
-<<<<<<< HEAD
-        if (sendReq) return { ...user, friendship: 3 };
-        return { ...user, friendship: 0 };
-=======
         if (sendReq) return { ...user, friendship: 3 };  // user who sent a friend request 
         return { ...user, friendship: 0 }; // user
->>>>>>> implement the sockets successfully
       })
     );
     return result;
   }
 
-<<<<<<< HEAD
-  async getUserForMsg(senderId: string) {
-    const users = await this.prisma.user.findMany();
-    const usersMsg = await this.prisma.directMessage.findMany({
-      where: {
-        OR: [{ senderId: senderId }, { receivedId: senderId }],
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    const distinctUserIds = new Set<string>();
-    for (const msg of usersMsg) {
-      if (msg.senderId === senderId) {
-        distinctUserIds.add(msg.receivedId);
-      } else {
-        distinctUserIds.add(msg.senderId);
-      }
-    }
-    const idUsersArray = Array.from(distinctUserIds);
-    const usersMsgList = idUsersArray.map((id) =>
-      users.find((user) => user.id === id)
-    );
-    let lastMsgs = [];
-    for (let i = 0; i < usersMsgList.length; i++) {
-      const temp = await this.messagesService.getLastMessages(
-        senderId,
-        usersMsgList[i].id
-      );
-      lastMsgs.push(temp);
-    }
-    return { usersMsgList, lastMsgs };
-  }
-=======
 
   async usersCanJoinChannel(senderId: string, channelId: string) {
     const users = await this.prisma.user.findMany();
@@ -276,5 +196,4 @@ export class UserService {
     });
   }
 
->>>>>>> implement the sockets successfully
 }

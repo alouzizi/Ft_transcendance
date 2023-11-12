@@ -6,11 +6,7 @@ import {
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
 import Link from "next/link";
-<<<<<<< HEAD
-import React, { useState } from "react";
-=======
 import React, { useEffect, useState } from "react";
->>>>>>> implement the sockets successfully
 import { FaMessage } from "react-icons/fa6";
 
 export default function FriendSearchItem(prompt: {
@@ -18,16 +14,6 @@ export default function FriendSearchItem(prompt: {
   pendingFriendsList: friendDto[];
 }) {
   // ================== handle Invite ==================
-<<<<<<< HEAD
-  const user = useGlobalContext();
-  const [isPending, setIsPending] = useState(
-    prompt.pendingFriendsList.some((item) => item.id === prompt.userInfo.id)
-  );
-  async function handleInvite(userInfo: friendDto) {
-    try {
-      await sendFriendRequest(user.user.id, userInfo.id);
-      setIsPending(true);
-=======
   const { user, socket } = useGlobalContext();
   const [isPending, setIsPending] = useState(false);
   useEffect(() => {
@@ -45,11 +31,9 @@ export default function FriendSearchItem(prompt: {
         isDirectMessage: true,
         receivedId: userInfo.id,
       });
->>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleInvite: " + error);
     }
-    // console.log("handleInvite: " + userInfo.username);
   }
   // ================== /handle Invite ==================
 
@@ -58,11 +42,7 @@ export default function FriendSearchItem(prompt: {
       className=" my-2  flex flex-row justify-between border-b-2 border-gray-300 bg-white
      hover:border-color-main transition ease-in-out delay-50 py-2 px-2  mx-8"
     >
-<<<<<<< HEAD
-      <Link href={`/protected/DashboardPage/${prompt.userInfo.username}`}>
-=======
       <Link href={`/protected/DashboardPage/${prompt.userInfo.nickname}`}>
->>>>>>> implement the sockets successfully
         <div className=" cursor-pointer flex flex-row ">
           <img
             className="object-cover mx-auto  rounded-full 
@@ -72,11 +52,7 @@ export default function FriendSearchItem(prompt: {
         // Big screen
         md:w-12 md:h-12
         "
-<<<<<<< HEAD
-            src={prompt.userInfo.avatar}
-=======
             src={prompt.userInfo.profilePic}
->>>>>>> implement the sockets successfully
             alt=""
           />
           <p
@@ -88,11 +64,7 @@ export default function FriendSearchItem(prompt: {
         md:text-sm
         "
           >
-<<<<<<< HEAD
-            {prompt.userInfo.username}
-=======
             {prompt.userInfo.nickname}
->>>>>>> implement the sockets successfully
           </p>
         </div>
       </Link>

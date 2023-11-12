@@ -10,11 +10,7 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-<<<<<<< HEAD
-import { cn } from "@/lib/utils";
-=======
 import { cn } from "../../../lib/utils";
->>>>>>> implement the sockets successfully
 import { Label } from "@/components/ui/label";
 
 const Form = FormProvider;

@@ -1,22 +1,6 @@
 'use client';
 import { TextField, Avatar, ScrollArea, Box, Text, Flex } from '@radix-ui/themes';
 import { useEffect, useRef, useState } from 'react';
-<<<<<<< HEAD
-import { BsFillSendFill } from "react-icons/bs";
-import { useGlobalContext } from '../../../context/store';
-import { IsTypingMsg, ShowMessages } from './widgetMsg';
-import { getMessageTwoUsers } from '../api/fetch-msg';
-import { GoDotFill } from "react-icons/go";
-import { getColorStatus } from './ListUser';
-import { formatDistance } from 'date-fns'
-
-const BoxChat = () => {
-    const [msg, setMsg] = useState('');
-    const [Allmsg, setAllMessage] = useState<msgDto[]>([]);
-    const { geust, user, socket, setGeust } = useGlobalContext();
-    const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-    const [isTyping, setIsTyping] = useState<boolean>(false)
-=======
 import { BsFillSendFill, } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useGlobalContext } from '../../../context/store';
@@ -38,7 +22,6 @@ const BoxChat = () => {
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
->>>>>>> implement the sockets successfully
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {
             scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
@@ -50,12 +33,6 @@ const BoxChat = () => {
         scrollToBottom();
     }, [Allmsg, isTyping, user.id, geust.id])
 
-<<<<<<< HEAD
-    useEffect(() => {
-        if (user.id !== -1 && socket) {
-            const handleReceivedMessage = (data: msgDto) => {
-                if (data.senderId === geust.id || data.senderId === user.id) {
-=======
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);
         setGeust(temp);
@@ -66,7 +43,6 @@ const BoxChat = () => {
             const handleReceivedMessage = (data: messageDto) => {
                 if ((geust.isUser && (data.senderId === geust.id || data.senderId === user.id)) ||
                     ((!geust.isUser && (data.receivedId === geust.id || data.senderId === user.id)))) { // || !geust.isUser
->>>>>>> implement the sockets successfully
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
                 }
@@ -78,35 +54,6 @@ const BoxChat = () => {
         }
     }, [geust.id, user.id]);
 
-<<<<<<< HEAD
-    useEffect(() => {
-        async function getData() {
-            const msgs = await getMessageTwoUsers(user.id, geust.id);
-            setAllMessage(msgs);
-        }
-        if (geust.id !== -1 && user.id !== -1) {
-            getData();
-        }
-    }, [geust.id, user.id]);
-
-
-    // axhad l fake
-    // useEffect(() => {
-    //     if (user.id !== -1) {
-    //         const upDateGeust = async () => {
-    //             if (geust.id !== -1) {
-    //                 const temp = await getUser(geust.id);
-    //                 setGeust(temp);
-    //                 setIsTyping(false);
-    //             }
-    //         }
-    //         socket.on("updateData", upDateGeust);
-    //         return () => {
-    //             socket.off("updateData", upDateGeust);
-    //         };
-    //     }
-    // }, [geust.id, user.id]);
-=======
 
 
     useEffect(() => {
@@ -135,7 +82,6 @@ const BoxChat = () => {
             upDateGeust();
         }
     }, [geust.id, user.id, updateInfo]);
->>>>>>> implement the sockets successfully
 
     useEffect(() => {
         if (msg != "" && socket) {
@@ -148,13 +94,8 @@ const BoxChat = () => {
     }, [msg])
 
     useEffect(() => {
-<<<<<<< HEAD
-        if (user.id !== -1 && socket) {
-            const updateIsTyping = (data: msgDto) => {
-=======
         if (user.id !== "-1" && socket) {
             const updateIsTyping = (data: messageDto) => {
->>>>>>> implement the sockets successfully
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
                     setTimeout(() => {
@@ -172,10 +113,7 @@ const BoxChat = () => {
     const handleSendMessage = () => {
         if (msg.trim() != '' && socket) {
             socket.emit('createMessage', {
-<<<<<<< HEAD
-=======
                 isDirectMessage: geust.isUser,
->>>>>>> implement the sockets successfully
                 content: msg.trim(),
                 senderId: user.id,
                 receivedId: geust.id,
@@ -185,41 +123,13 @@ const BoxChat = () => {
     }
 
 
-<<<<<<< HEAD
-    return (geust.id != -1) ? (
-=======
     return (geust.id != "-1") ? (
->>>>>>> implement the sockets successfully
         <Box
             style={{
                 width: 500, height: 600,
                 borderRadius: 10, background: "#f1f3f9", marginLeft: 3
             }}>
 
-<<<<<<< HEAD
-            <div className="flex border-b items-center justify-start  bg-white pl-2 pt-2 pb-2 rounded-t-lg">
-                <Avatar
-                    size="3"
-                    src={geust.avatar}
-                    radius="full"
-                    fallback="T"
-                />
-                <Text className='absolute pt-6 pl-7'>
-                    <GoDotFill size={20} color={getColorStatus(geust.status)} />
-                </Text>
-                <Flex direction="column" className='flex' >
-                    <Text size="2" weight="bold" className='pl-2'>
-                        {geust.username}
-                    </Text>
-                    {
-                        (geust.status === 'INACTIF') ?
-                            <Text size="1" weight="light" className='pl-2'>
-                                {formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true })}
-                            </Text> :
-                            <></>
-                    }
-                </Flex>
-=======
             <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-lg">
                 <div className="flex items-center pl-3">
                     <Avatar
@@ -252,19 +162,13 @@ const BoxChat = () => {
                     </Link> :
                         <></>}
                 </div>
->>>>>>> implement the sockets successfully
             </div >
 
             <div   >
                 <ScrollArea scrollbars="vertical" style={{ height: 500 }} ref={scrollAreaRef}>
                     <Box p="1" pr="3">
-<<<<<<< HEAD
-                        <ShowMessages messages={Allmsg} geust={geust} />
-                        {isTyping ? <IsTypingMsg geust={geust} /> : <></>}
-=======
                         <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}
->>>>>>> implement the sockets successfully
                     </Box>
                 </ScrollArea>
 

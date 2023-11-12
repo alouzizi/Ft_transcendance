@@ -1,15 +1,11 @@
 import { PrismaService } from "src/prisma/prisma.service";
+import { globalInfoDto } from "./dto";
+import { GameHistory, User } from "@prisma/client";
 export declare class HixcoderService {
     private prisma;
     constructor(prisma: PrismaService);
     getAllUsers(senderId: string): Promise<{
         id: string;
-<<<<<<< HEAD
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-=======
         intra_id: string;
         first_name: string;
         last_name: string;
@@ -17,24 +13,18 @@ export declare class HixcoderService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
->>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[] | {
         error: any;
     }>;
-    getOneUser(recieverId: string): Promise<{
+    getOneUser(recieverUsr: string): Promise<{
         id: string;
-<<<<<<< HEAD
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-=======
         intra_id: string;
         first_name: string;
         last_name: string;
@@ -42,25 +32,22 @@ export declare class HixcoderService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
->>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    }>;
+    getIsBlocked(recieverId: string, senderId: string): Promise<{
+        isBlocked: boolean;
     }>;
     getOnlineFriends(senderId: string): Promise<any[] | {
         error: any;
     }>;
     getAllFriends(senderId: string): Promise<{
         id: string;
-<<<<<<< HEAD
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-=======
         intra_id: string;
         first_name: string;
         last_name: string;
@@ -68,23 +55,17 @@ export declare class HixcoderService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
->>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
     getPendingFriends(senderId: string): Promise<{
         isYouSender: boolean;
         id: string;
-<<<<<<< HEAD
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-=======
         intra_id: string;
         first_name: string;
         last_name: string;
@@ -92,25 +73,17 @@ export declare class HixcoderService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
->>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getBlockedFriends(senderId: string): Promise<any[] | {
-        error: any;
-    }>;
+    getBlockedFriends(senderId: string): Promise<any[]>;
     getAllPossibleFriends(senderId: string): Promise<{
         id: string;
-<<<<<<< HEAD
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-=======
         intra_id: string;
         first_name: string;
         last_name: string;
@@ -118,11 +91,11 @@ export declare class HixcoderService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
->>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[] | {
@@ -137,6 +110,7 @@ export declare class HixcoderService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -202,13 +176,76 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-<<<<<<< HEAD
-    test_giveFriendsToUser(userId: string): Promise<{
+    getGameHistory(senderUsr: string): Promise<{
+        receiverAvatar: string;
+        senderAvatar: string;
         id: string;
-        senderId: string;
-        receivedId: string;
+        createdAt: Date;
+        senderUsr: string;
+        receiverUsr: string;
+        senderPoints: string;
+        receiverPoints: string;
     }[]>;
-    test_createManyUsers(): Promise<void>;
-=======
->>>>>>> implement the sockets successfully
+    isWined(record: GameHistory, isWined: boolean, user: User): boolean;
+    getNbrOfMatches(recieverUsr: string, isWined: number): Promise<number>;
+    catch(error: any): {
+        error: any;
+    };
+    getGlobalInfos(recieverUsr: string): Promise<globalInfoDto | {
+        error: any;
+    }>;
+    getUserRanking(senderUsr: string): Promise<{
+        userName: string;
+        rank: number;
+    } | {
+        error: any;
+    }>;
+    updateGameHistory(senderUsr: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
+        id: string;
+        createdAt: Date;
+        senderUsr: string;
+        receiverUsr: string;
+        senderPoints: string;
+        receiverPoints: string;
+    } | {
+        error: any;
+    }>;
+    updateLevel(senderUsr: string, newLevel: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        level: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    } | {
+        error: any;
+    }>;
+    updateLevelAfterGame(senderUsr: string, incrLevelBy: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        level: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    } | {
+        error: any;
+    }>;
 }

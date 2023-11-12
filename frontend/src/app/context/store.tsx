@@ -1,10 +1,5 @@
 "use client";
-<<<<<<< HEAD
-import { Backend_URL } from "@/lib/Constants";
-import { useSession } from "next-auth/react";
-=======
 import { Backend_URL } from "../../../lib/Constants";
->>>>>>> implement the sockets successfully
 import {
   createContext,
   useContext,
@@ -14,42 +9,14 @@ import {
   useEffect,
 } from "react";
 import { io, Socket } from "Socket.IO-client";
-<<<<<<< HEAD
-=======
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
->>>>>>> implement the sockets successfully
 
 enum Status {
   ACTIF = "ACTIF",
   INACTIF = "INACTIF",
 }
 
-<<<<<<< HEAD
-enum MessageStatus {
-  NotReceived = "NotReceived",
-  Received = "Received",
-  Seen = "Seen",
-}
-
-interface ContextProps {
-  user: userDto;
-  setUser: Dispatch<SetStateAction<userDto>>;
-  geust: userDto;
-  setGeust: Dispatch<SetStateAction<userDto>>;
-  socket: Socket | null; // Add the socket property
-}
-
-const GlobalContext = createContext<ContextProps>({
-  user: {
-    id: "-1",
-    email: "",
-    username: "",
-    avatar: "",
-    status: Status.INACTIF,
-    lastSee: 0,
-    friendship: -1,
-=======
 interface ContextProps {
   updateInfo: number;
   setUpdateInfo: Dispatch<SetStateAction<number>>;
@@ -80,20 +47,11 @@ const GlobalContext = createContext<ContextProps>({
     last_name: "",
     nickname: "",
     profilePic: "",
->>>>>>> implement the sockets successfully
+    level: "0.0",
   },
   setUser: () => {},
 
   geust: {
-<<<<<<< HEAD
-    id: "-1",
-    email: "",
-    username: "",
-    avatar: "",
-    status: Status.INACTIF,
-    lastSee: 0,
-    friendship: -1,
-=======
     isUser: true,
     id: "-1",
     nickname: "",
@@ -102,15 +60,12 @@ const GlobalContext = createContext<ContextProps>({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
->>>>>>> implement the sockets successfully
   },
   setGeust: () => {},
 
   socket: null, // Initialize socket as null
 });
 
-<<<<<<< HEAD
-=======
 // id: string;
 // intra_id: string;
 // first_name: string;
@@ -118,33 +73,11 @@ const GlobalContext = createContext<ContextProps>({
 // nickname: string;
 // profilePic: string;
 
->>>>>>> implement the sockets successfully
 export const GlobalContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-<<<<<<< HEAD
-  const { data: session } = useSession();
-  const [user, setUser] = useState<userDto>({
-    id: "-1",
-    email: "",
-    username: "",
-    avatar: "",
-    status: Status.INACTIF,
-    lastSee: 0,
-    friendship: -1,
-  });
-
-  const [geust, setGeust] = useState<userDto>({
-    id: "-1",
-    email: "",
-    username: "",
-    avatar: "",
-    status: Status.INACTIF,
-    lastSee: 0,
-    friendship: -1,
-=======
   const router = useRouter();
 
   const [updateInfo, setUpdateInfo] = useState<number>(1);
@@ -157,6 +90,7 @@ export const GlobalContextProvider = ({
     last_name: "",
     nickname: "",
     profilePic: "",
+    level: "0.0",
   });
 
   const [geust, setGeust] = useState<geustDto>({
@@ -168,26 +102,12 @@ export const GlobalContextProvider = ({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
->>>>>>> implement the sockets successfully
   });
 
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (session) {
-      setUser(session.user);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    // const socket = io('your-socket-server-url');
-
-    if (user.id != "-1") {
-=======
     if (user.id && user.id != "-1") {
-      console.log("socket ---------------------> ", user.id);
->>>>>>> implement the sockets successfully
       const socket = io(Backend_URL, {
         transports: ["websocket"],
         query: {
@@ -195,17 +115,12 @@ export const GlobalContextProvider = ({
         },
       });
       setSocket(socket);
-<<<<<<< HEAD
-      socket.on("connect", () => {});
-      socket.on("disconnect", () => {});
-=======
       socket.on("connect", () => {
         console.log("socket --> user connected");
       });
       socket.on("disconnect", () => {
         console.log("socket --> user disconnected");
       });
->>>>>>> implement the sockets successfully
     }
 
     return () => {
@@ -215,10 +130,6 @@ export const GlobalContextProvider = ({
     };
   }, [user.id]);
 
-<<<<<<< HEAD
-  return (
-    <GlobalContext.Provider value={{ geust, setGeust, user, setUser, socket }}>
-=======
   useEffect(() => {
     const getDataUser = async () => {
       const id_intra = Cookies.get("intra_id");
@@ -251,7 +162,6 @@ export const GlobalContextProvider = ({
       socket.on("updateData", update);
     }
   }, [socket]);
-  console.log("----------------------------> ", updateInfo);
   return (
     <GlobalContext.Provider
       value={{
@@ -266,7 +176,6 @@ export const GlobalContextProvider = ({
         setSaveChanges,
       }}
     >
->>>>>>> implement the sockets successfully
       {children}
     </GlobalContext.Provider>
   );

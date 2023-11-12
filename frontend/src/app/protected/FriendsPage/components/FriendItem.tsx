@@ -30,60 +30,41 @@ export default function FriendItem(prompt: {
   itemsStatus: string;
 }) {
   // ==================== handleUnblock =====================
-<<<<<<< HEAD
-  const user = useGlobalContext();
-  const contxt = useGlobalDataContext();
-  async function handleUnblock(): Promise<void> {
-    try {
-      await unblockFriend(user.user.id, prompt.friendInfo.id);
-=======
   const { user, socket } = useGlobalContext();
   const contxt = useGlobalDataContext();
   async function handleUnblock(): Promise<void> {
     try {
       await unblockFriend(user.id, prompt.friendInfo.id);
->>>>>>> implement the sockets successfully
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-<<<<<<< HEAD
-=======
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
->>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleBlockFriend: " + error);
     }
-    console.log("handleUnblock" + prompt.friendInfo.id);
   }
   // ==================== /handleUnblock =====================
 
   // ==================== handleReject =====================
   async function handleReject(): Promise<void> {
     try {
-<<<<<<< HEAD
-      await rejectFriendRequest(user.user.id, prompt.friendInfo.id);
-=======
       await rejectFriendRequest(user.id, prompt.friendInfo.id);
->>>>>>> implement the sockets successfully
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-<<<<<<< HEAD
-=======
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
->>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleReject: " + error);
     }
@@ -93,24 +74,17 @@ export default function FriendItem(prompt: {
   // ==================== handleAccept =====================
   async function handleAccept(): Promise<void> {
     try {
-<<<<<<< HEAD
-      await acceptFriendRequest(user.user.id, prompt.friendInfo.id);
-=======
       await acceptFriendRequest(user.id, prompt.friendInfo.id);
->>>>>>> implement the sockets successfully
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-<<<<<<< HEAD
-=======
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
->>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleAccept: " + error);
     }
@@ -120,39 +94,25 @@ export default function FriendItem(prompt: {
   // ==================== handleCancel =====================
   async function handleCancel(): Promise<void> {
     try {
-<<<<<<< HEAD
-      await unsendFriendRequest(user.user.id, prompt.friendInfo.id);
-=======
       await unsendFriendRequest(user.id, prompt.friendInfo.id);
->>>>>>> implement the sockets successfully
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-<<<<<<< HEAD
-=======
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
->>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleCancel: " + error);
     }
   }
   // ==================== /handleCancel =====================
-<<<<<<< HEAD
-
-  return (
-    <div className=" my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
-      <Link href={`/protected/DashboardPage/${prompt.friendInfo.username}`}>
-=======
   return (
     <div className=" my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
       <Link href={`/protected/DashboardPage/${prompt.friendInfo.nickname}`}>
->>>>>>> implement the sockets successfully
         <div className="flex flex-row cursor-pointer">
           {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
           <Badge
@@ -182,11 +142,7 @@ export default function FriendItem(prompt: {
         // Big screen
         md:w-14 md:h-14
         "
-<<<<<<< HEAD
-              src={prompt.friendInfo.avatar}
-=======
               src={prompt.friendInfo.profilePic}
->>>>>>> implement the sockets successfully
               alt=""
             />
           </Badge>
@@ -199,11 +155,7 @@ export default function FriendItem(prompt: {
         md:text-md
         "
           >
-<<<<<<< HEAD
-            {prompt.friendInfo.username}
-=======
             {prompt.friendInfo.nickname}
->>>>>>> implement the sockets successfully
           </p>
         </div>
       </Link>

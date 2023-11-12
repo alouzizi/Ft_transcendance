@@ -15,42 +15,6 @@ enum Status {
   INACTIF
 }
 
-<<<<<<< HEAD
-model User {
-  id String @id @default(uuid())
-
-  email    String  @unique
-  username String?
-  hash     String
-  avatar   String?
-
-  status  Status   @default(INACTIF)
-  lastSee DateTime @default(now())
-
-  directMessage DirectMessage[]
-  frienRequest  FriendRequest[]
-  Friend        Friend[]
-  BlockedUser   BlockedUser[]
-}
-
-enum MessageStatus {
-  NotReceived
-  Received
-  Seen
-}
-
-model DirectMessage {
-  id            String        @id @default(uuid())
-  content       String
-  createdAt     DateTime      @default(now())
-  user          User          @relation(fields: [senderId], references: [id])
-  showed        Boolean       @default(true)
-  senderId      String
-  receivedId    String
-  messageStatus MessageStatus @default(NotReceived)
-}
-
-=======
 enum MessageStatus {
   NotReceived
   Received
@@ -71,6 +35,7 @@ model User {
   email      String? @unique
   profilePic String?
   hash       String?
+  level      String  @default("0.0")
 
   twoFactorAuth Boolean @default(false)
   AsciiSecretQr String?
@@ -85,6 +50,7 @@ model User {
   Friend       Friend[]
   BlockedUser  BlockedUser[]
   Channel      Channel[]
+  GameHistory  GameHistory[]
 }
 
 model Channel {
@@ -130,7 +96,6 @@ model Message {
 
 // friendship
 
->>>>>>> implement the sockets successfully
 model FriendRequest {
   id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
@@ -158,8 +123,6 @@ model BlockedUser {
 
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }
-<<<<<<< HEAD
-=======
 
 model ChannelMember {
   id String @id @default(uuid())
@@ -184,4 +147,16 @@ model BannedMember {
 
   @@unique([userId, channelId], name: "Unique_userId_channelId")
 }
->>>>>>> implement the sockets successfully
+
+// game history
+model GameHistory {
+  id String @id @default(uuid())
+
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [senderUsr], references: [nickname])
+  senderUsr   String
+  receiverUsr String
+
+  senderPoints   String
+  receiverPoints String
+}

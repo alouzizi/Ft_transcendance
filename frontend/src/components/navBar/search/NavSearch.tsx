@@ -54,15 +54,9 @@ export default function SerachNav(prompt: { show: boolean }) {
 
     // handleClick;
   }
-<<<<<<< HEAD
-  const filteredData = data.filter((user) => {
-    return (
-      user.username.toLowerCase().includes(inputSearch.toLowerCase()) &&
-=======
   const filteredData = data.filter((user: friendDto) => {
     return (
       user.nickname.toLowerCase().includes(inputSearch.toLowerCase()) &&
->>>>>>> implement the sockets successfully
       inputSearch !== ""
     );
   });
@@ -93,20 +87,9 @@ export default function SerachNav(prompt: { show: boolean }) {
         value={inputSearch}
         className={`block  px-6 text-gray-900 my-auto rounded-full bg-[#F1F3F9]  
         md:py-3 md:mx-8 md:pr-20 md:text-md py-2 mx-4 pr-16 text-sm md:w-96 w-52
-<<<<<<< HEAD
-<<<<<<< HEAD
         placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${
           open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
         }`}
-=======
-        placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
-          }`}
->>>>>>> implement the sockets successfully
-=======
-        placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${
-          open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
-        }`}
->>>>>>> fixing errors
         placeholder="Search..."
         onChange={handleSearch}
         onBlur={() => {
@@ -129,11 +112,7 @@ export default function SerachNav(prompt: { show: boolean }) {
                 userInfo={element}
                 pendingFriendsList={PendingFriendsList}
                 onClick={() => {
-<<<<<<< HEAD
-                  router.push(`/protected/DashboardPage/${element?.username}`);
-=======
                   router.push(`/protected/DashboardPage/${element?.nickname}`);
->>>>>>> implement the sockets successfully
                   setInputSearch("");
                 }}
               />

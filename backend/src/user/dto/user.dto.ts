@@ -1,11 +1,8 @@
 import { Status } from "@prisma/client";
 import { IsEmail, IsString } from "class-validator";
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> implement the sockets successfully
 export class CreateUserDto {
   @IsString()
   name: string;
@@ -23,8 +20,6 @@ export class CreateUserDto {
 
   lastSee: Date;
 }
-<<<<<<< HEAD
-=======
 
 
 
@@ -44,4 +39,3 @@ export class MessageItemList {
   nameSenderChannel: string;
 }
 
->>>>>>> implement the sockets successfully

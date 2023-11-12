@@ -1,59 +1,4 @@
 import { PrismaService } from "src/prisma/prisma.service";
-<<<<<<< HEAD
-import { MessagesService } from "src/messages/messages.service";
-export declare class UserService {
-    private prisma;
-    private messagesService;
-    constructor(prisma: PrismaService, messagesService: MessagesService);
-    findByEmail(email: string): Promise<{
-        id: string;
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    }>;
-    findById(id: string): Promise<{
-        id: string;
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    }>;
-    findAllUsers(): Promise<{
-        id: string;
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    }[]>;
-    getValideUsers(senderId: string): Promise<{
-        friendship: number;
-        id: string;
-        email: string;
-        username: string;
-        hash: string;
-        avatar: string;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    }[]>;
-    getUserForMsg(senderId: string): Promise<{
-        usersMsgList: {
-            id: string;
-            email: string;
-            username: string;
-            hash: string;
-            avatar: string;
-            status: import(".prisma/client").$Enums.Status;
-            lastSee: Date;
-        }[];
-        lastMsgs: any[];
-=======
 import { ChannelService } from "src/channel/channel.service";
 export declare class UserService {
     private prisma;
@@ -68,6 +13,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -84,6 +30,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -101,6 +48,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -117,6 +65,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -162,6 +111,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -178,12 +128,12 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
->>>>>>> implement the sockets successfully
     }>;
 }
