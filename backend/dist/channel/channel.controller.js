@@ -68,6 +68,12 @@ let ChannelController = class ChannelController {
     joinChannel(senderId, channelId) {
         return this.channelService.joinChannel(senderId, channelId);
     }
+    muteUserChannel(senderId, channelId, userId, timer) {
+        return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+    }
+    checkIsMuted(senderId, channelId) {
+        return this.channelService.checkIsMuted(senderId, channelId);
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -178,6 +184,24 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "joinChannel", null);
+__decorate([
+    (0, common_1.Get)('/muteUserChannel/:senderId/:channelId/:userId/:timer'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('userId')),
+    __param(3, (0, common_1.Param)('timer')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "muteUserChannel", null);
+__decorate([
+    (0, common_1.Get)('/checkIsMuted/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "checkIsMuted", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

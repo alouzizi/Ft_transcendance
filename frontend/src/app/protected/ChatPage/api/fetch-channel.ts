@@ -82,3 +82,17 @@ export async function joinChannel(senderId: string, channelId: string) {
     const data = await res.data;
     return data;
 }
+
+export async function muteUserChannel(senderId: string, channelId: string, userId: string, timer: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/muteUserChannel/${senderId}/${channelId}/${userId}/${timer}`);
+    const data = await res.data;
+    return data;
+}
+
+export async function checkIsMuted(senderId: string, channelId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/checkIsMuted/${senderId}/${channelId}`);
+    const data = await res.data;
+    return data;
+}

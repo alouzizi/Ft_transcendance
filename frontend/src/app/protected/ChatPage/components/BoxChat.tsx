@@ -18,6 +18,7 @@ import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import { unBlockedUser } from '../api/send-Friend-req';
+import { checkIsMuted } from '../api/fetch-channel';
 
 const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -94,6 +95,7 @@ const BoxChat = () => {
     const [isBlocked, setIsBlocked] = useState<number>(0)
     const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
     useEffect(() => {
+        setIsMuted(false);
         if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
@@ -118,6 +120,7 @@ const BoxChat = () => {
             const updateIsTyping = (data: messageDto) => {
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
+                    setMsg('');
                     setTimeout(() => {
                         setIsTyping(false);
                     }, 2000);
@@ -129,6 +132,26 @@ const BoxChat = () => {
             };
         }
     }, [geust.id, user.id]);
+
+
+
+    const [isMuted, setIsMuted] = useState(false);
+    useEffect(() => {
+        if (user.id !== "-1" && geust.id !== "-1"
+            && !geust.isUser) {
+            const checkUserIsMuted = async () => {
+                const timer = await checkIsMuted(user.id, geust.id);
+                if (timer !== -1) {
+                    setIsMuted(true);
+                    const timeoutId = setTimeout(() => {
+                        setIsMuted(false);
+                    }, timer);
+                    return () => clearTimeout(timeoutId);
+                }
+            }
+            checkUserIsMuted();
+        }
+    }, [geust.id, user.id, updateInfo]);
 
     const handleSendMessage = () => {
         if (msg.trim() != '') {
@@ -208,21 +231,22 @@ const BoxChat = () => {
                     handleSendMessage();
                 }}>
                     <TextField.Root className="ml-2 mr-2" style={{ width: 480 }} >
-                        <TextField.Input radius="full" placeholder="  Type your message" size="2"
+                        <TextField.Input radius="full"
+                            placeholder={!isMuted ? "  Type your message" : " Your muted from this channel"}
+                            size="2"
                             value={msg}
-
+                            disabled={isMuted}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setMsg(event.target.value);
                             }} />
-
                         <TextField.Slot>
-
                             <BsFillSendFill color='blue'
                                 onClick={() =>
                                     handleSendMessage()} />
 
                         </TextField.Slot>
                     </TextField.Root>
+
                 </form>
             </div>
 

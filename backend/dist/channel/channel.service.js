@@ -181,6 +181,7 @@ let ChannelService = class ChannelService {
         const channel = await this.prisma.channel.findUnique({ where: { id } });
         const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
         for (const member of members) {
+            let mutes = "";
             const user = await this.prisma.user.findUnique({ where: { id: member.userId } });
             const temp = {
                 userId: member.userId,
@@ -379,6 +380,41 @@ let ChannelService = class ChannelService {
             }
         });
         this.createMessageInfoChannel(senderId, channelId, '', "join Channel");
+    }
+    async muteUserChannel(senderId, channelId, userId, timer) {
+        const admin = await this.prisma.channelMember.findFirst({ where: { userId: senderId, channelId: channelId } });
+        if (admin && admin.isAdmin) {
+            const user = await this.prisma.channelMember.findFirst({ where: { userId: userId, channelId: channelId } });
+            if (user) {
+                const tm = parseInt(timer);
+                const mute = await this.prisma.mutedMember.create({
+                    data: {
+                        userId,
+                        unmuted_at: new Date((new Date()).getTime() + tm),
+                        channelId: channelId,
+                    }
+                });
+            }
+        }
+    }
+    async checkIsMuted(senderId, channelId) {
+        const muted = await this.prisma.mutedMember.findFirst({
+            where: {
+                userId: senderId,
+                channelId,
+            }
+        });
+        if (muted) {
+            const dt = new Date();
+            if (muted.unmuted_at < new Date()) {
+                await this.prisma.mutedMember.delete({ where: { id: muted.id } });
+                return -1;
+            }
+            const now = new Date();
+            const result = (muted.unmuted_at.getTime() - now.getTime());
+            return result;
+        }
+        return -1;
     }
 };
 exports.ChannelService = ChannelService;

@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import * as React from 'react';
-import { ChangeStatusBanned, changeStatusAdmin, kickMember, validePassword } from '../../api/fetch-channel';
+import { ChangeStatusBanned, changeStatusAdmin, kickMember, muteUserChannel, validePassword } from '../../api/fetch-channel';
 import { Text } from '@radix-ui/themes';
 import { MdOutlineCancel } from "react-icons/md";
 import { LiaEdit } from "react-icons/lia";
@@ -86,7 +86,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
     const [openTimeout, setOpenTimeout] = useState(false);
     const [timeSelected, setTimeSelected] = useState(0);
     const timeout: string[] = ["60 SECS", "5 MINS", "10 MINS", "1 HOUR", "1 DAY", "1 WEEK"];
-    const timeInSecond: number[] = [60, 300, 600, 3600, 86400, 604800];
+    const timeInSecond: string[] = ["60000", "300000", "600000", "3600000", "86400000", "604800000"];
 
 
     return (
@@ -182,11 +182,26 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                 if (!parsTimer.success) {
                                     setErrorInput("Enter a valid Timer");
                                 } else {
-                                    let integerValue: number = parseInt(timerInput);
-                                    console.log(integerValue);
+                                    const integerValue: number = parseInt(timerInput) * 60 * 1000;
+                                    const timer: string = integerValue.toString();
+                                    await muteUserChannel(user.id, geust.id, member.userId, timer);
+                                    setOpenTimeout(false);
+                                    socket?.emit('updateData', {
+                                        content: '',
+                                        senderId: user.id,
+                                        isDirectMessage: true,
+                                        receivedId: member.userId,
+                                    });
                                 }
                             } else {
-                                console.log(timeInSecond[timeSelected])
+                                await muteUserChannel(user.id, geust.id, member.userId, timeInSecond[timeSelected]);
+                                setOpenTimeout(false);
+                                socket?.emit('updateData', {
+                                    content: '',
+                                    senderId: user.id,
+                                    isDirectMessage: true,
+                                    receivedId: member.userId,
+                                });
                             }
                         }}
                             className="w-fit font-meduim  py-1 rounded-md text-white bg-[#0077b6]

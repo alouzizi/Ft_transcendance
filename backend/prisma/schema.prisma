@@ -154,8 +154,8 @@ model BannedMember {
 model MutedMember {
   id String @id @default(uuid())
 
-  userId   String
-  muted_at DateTime @default(now())
+  userId     String
+  unmuted_at DateTime
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String

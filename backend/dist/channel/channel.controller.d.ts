@@ -62,4 +62,6 @@ export declare class ChannelController {
         Status: string;
     }[]>;
     joinChannel(senderId: string, channelId: string): Promise<void>;
+    muteUserChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<void>;
+    checkIsMuted(senderId: string, channelId: string): Promise<number>;
 }

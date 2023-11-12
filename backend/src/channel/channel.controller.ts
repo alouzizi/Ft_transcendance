@@ -89,4 +89,16 @@ export class ChannelController {
   joinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.joinChannel(senderId, channelId);
   }
+
+  @Get('/muteUserChannel/:senderId/:channelId/:userId/:timer')
+  muteUserChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string,
+    @Param('userId') userId: string, @Param('timer') timer: string) {
+    return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+  }
+
+
+  @Get('/checkIsMuted/:senderId/:channelId')
+  checkIsMuted(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.checkIsMuted(senderId, channelId);
+  }
 }
