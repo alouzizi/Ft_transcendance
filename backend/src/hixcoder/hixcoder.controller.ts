@@ -15,9 +15,9 @@ export class HixcoderController {
   }
 
   // for get one user
-  @Get("/oneUser/:recieverUsername")
-  async getOneUser(@Param("recieverUsername") userName: string) {
-    return this.hixcoderService.getOneUser(userName);
+  @Get("/oneUser/:reciever")
+  async getOneUser(@Param("reciever") reciever: string) {
+    return this.hixcoderService.getOneUser(reciever);
   }
 
   // for get all online friends
@@ -44,10 +44,16 @@ export class HixcoderController {
     return this.hixcoderService.getBlockedFriends(sender);
   }
 
-  // for get blocked friends
+  // for get allPossibleFriends
   @Get("/allPossibleFriends/:sender")
   async getAllPossibleFriends(@Param("sender") sender: string) {
     return this.hixcoderService.getAllPossibleFriends(sender);
+  }
+
+  // for get navSearchUsers
+  @Get("/navSearchUsers/:sender")
+  async getNavSearchUsers(@Param("sender") sender: string) {
+    return this.hixcoderService.getNavSearchUsers(sender);
   }
 
   // ==========================  Posts ==========================

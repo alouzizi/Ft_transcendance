@@ -19,6 +19,13 @@ tasks :
 
 errors:
 - when using 2 alert friend at same time not realtime✅
+<<<<<<< HEAD
 - when block friend I can find it in the nav search
 - when request friend from both sides
 >>>>>>> implement the sockets successfully
+=======
+- when block friend I can find it in the nav search ✅
+- when block friend I can find it in its route using direct link
+
+- when request friend from both sides
+>>>>>>> fixing errors

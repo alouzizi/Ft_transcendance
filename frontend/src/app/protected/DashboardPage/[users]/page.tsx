@@ -1,10 +1,10 @@
 "use client";
-import { useRouter } from "next/navigation";
 import DashBoard from "../components/DashBoard";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
+import ErrorPage from "../components/ErrorPage";
 export default function DashboardPage() {
   const pathname = usePathname();
 <<<<<<< HEAD
@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const [friend, setFriend] = useState<ownerDto>();
 >>>>>>> implement the sockets successfully
   const { user } = useGlobalContext();
+
   useEffect(() => {
     const userName = pathname;
     const segments = userName.split("/");
@@ -36,6 +37,9 @@ export default function DashboardPage() {
     getData();
   }, [pathname]);
 
-  // return <div>hello</div>;
-  return <DashBoard friend={friend ?? user} />;
+  if (friend) {
+    return <DashBoard friend={friend} />;
+  } else {
+    return <ErrorPage />;
+  }
 }

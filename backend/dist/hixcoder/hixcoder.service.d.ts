@@ -128,6 +128,24 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
+    getNavSearchUsers(senderId: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
     sendFriendRequest(senderId: string, recieverId: string): Promise<{
         id: string;
         createdAt: Date;

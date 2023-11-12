@@ -6,10 +6,14 @@ import { isEmpty } from "class-validator";
 @Injectable()
 export class HixcoderService {
 <<<<<<< HEAD
+<<<<<<< HEAD
   constructor(private prisma: PrismaService) {}
 =======
   constructor(private prisma: PrismaService) { }
 >>>>>>> implement the sockets successfully
+=======
+  constructor(private prisma: PrismaService) {}
+>>>>>>> fixing errors
 
   // ==========================  Gets ==========================
   async getAllUsers(senderId: string) {
@@ -146,9 +150,12 @@ export class HixcoderService {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> implement the sockets successfully
+=======
+>>>>>>> fixing errors
   async getBlockedFriends(senderId: string) {
     try {
       const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
@@ -219,6 +226,43 @@ export class HixcoderService {
             blocked.senderId === user.id || blocked.receivedId === user.id
         );
         return !isFriend && !isBlocked;
+      });
+      return possibleFriends;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  async getNavSearchUsers(senderId: string) {
+    try {
+      const allUsers = await this.prisma.user.findMany({
+        where: {
+          NOT: {
+            id: senderId,
+          },
+        },
+      });
+
+      const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
+        where: {
+          OR: [
+            {
+              senderId: senderId,
+            },
+            {
+              receivedId: senderId,
+            },
+          ],
+        },
+      });
+      const possibleFriends = allUsers.filter((user) => {
+        const isBlocked = blockedFriendsTmp.some(
+          (blocked) =>
+            blocked.senderId === user.id || blocked.receivedId === user.id
+        );
+        return !isBlocked;
       });
       return possibleFriends;
     } catch (error) {
@@ -403,6 +447,7 @@ export class HixcoderService {
     }
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   // ====================== TEST FUNCTIONS ======================
   async test_giveFriendsToUser(userId: string) {
@@ -504,3 +549,6 @@ export class HixcoderService {
 =======
 }
 >>>>>>> implement the sockets successfully
+=======
+}
+>>>>>>> fixing errors

@@ -22,11 +22,28 @@ export async function getAllUsers(userId: string) {
   }
 }
 
-export async function getOneUser(username: string) {
+export async function getNavSearchUsers(userId: string) {
   try {
-    console.log(`${Backend_URL}/hixcoder/oneUser/${username}`);
     const response = await fetch(
-      `${Backend_URL}/hixcoder/oneUser/${username}`,
+      `${Backend_URL}/hixcoder/navSearchUsers/${userId}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.log("getNavSearchUsers error: " + error);
+    return null;
+  }
+}
+
+export async function getOneUser(recieverId: string) {
+  try {
+    console.log(`${Backend_URL}/hixcoder/oneUser/${recieverId}`);
+    const response = await fetch(
+      `${Backend_URL}/hixcoder/oneUser/${recieverId}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },

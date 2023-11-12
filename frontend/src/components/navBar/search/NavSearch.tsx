@@ -2,6 +2,7 @@
 import {
   getAllPossibleFriends,
   getAllUsers,
+  getNavSearchUsers,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
@@ -32,7 +33,7 @@ export default function SerachNav(prompt: { show: boolean }) {
   React.useEffect(() => {
     async function getData() {
       try {
-        const AllPossibleFriendsDataTmp = await getAllUsers(user.id);
+        const AllPossibleFriendsDataTmp = await getNavSearchUsers(user.id);
         const pendingFriendsList = await getPendingFriends(user.id);
         setPendingFriendsList(pendingFriendsList);
         setData(AllPossibleFriendsDataTmp);
@@ -93,6 +94,7 @@ export default function SerachNav(prompt: { show: boolean }) {
         className={`block  px-6 text-gray-900 my-auto rounded-full bg-[#F1F3F9]  
         md:py-3 md:mx-8 md:pr-20 md:text-md py-2 mx-4 pr-16 text-sm md:w-96 w-52
 <<<<<<< HEAD
+<<<<<<< HEAD
         placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${
           open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
         }`}
@@ -100,6 +102,11 @@ export default function SerachNav(prompt: { show: boolean }) {
         placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
           }`}
 >>>>>>> implement the sockets successfully
+=======
+        placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${
+          open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
+        }`}
+>>>>>>> fixing errors
         placeholder="Search..."
         onChange={handleSearch}
         onBlur={() => {

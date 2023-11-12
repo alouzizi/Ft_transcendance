@@ -27,7 +27,7 @@ export declare class HixcoderController {
     }[] | {
         error: any;
     }>;
-    getOneUser(userName: string): Promise<{
+    getOneUser(reciever: string): Promise<{
         id: string;
 <<<<<<< HEAD
         email: string;
@@ -123,6 +123,24 @@ export declare class HixcoderController {
         createdAt: Date;
         updatedAt: Date;
 >>>>>>> implement the sockets successfully
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
+    getNavSearchUsers(sender: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[] | {

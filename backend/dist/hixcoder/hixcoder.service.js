@@ -218,6 +218,39 @@ let HixcoderService = class HixcoderService {
             };
         }
     }
+    async getNavSearchUsers(senderId) {
+        try {
+            const allUsers = await this.prisma.user.findMany({
+                where: {
+                    NOT: {
+                        id: senderId,
+                    },
+                },
+            });
+            const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
+                where: {
+                    OR: [
+                        {
+                            senderId: senderId,
+                        },
+                        {
+                            receivedId: senderId,
+                        },
+                    ],
+                },
+            });
+            const possibleFriends = allUsers.filter((user) => {
+                const isBlocked = blockedFriendsTmp.some((blocked) => blocked.senderId === user.id || blocked.receivedId === user.id);
+                return !isBlocked;
+            });
+            return possibleFriends;
+        }
+        catch (error) {
+            return {
+                error: error,
+            };
+        }
+    }
     async sendFriendRequest(senderId, recieverId) {
         try {
             const user = await this.prisma.friendRequest.create({

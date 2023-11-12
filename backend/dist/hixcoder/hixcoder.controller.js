@@ -22,8 +22,8 @@ let HixcoderController = class HixcoderController {
     async getallUsers(sender) {
         return this.hixcoderService.getAllUsers(sender);
     }
-    async getOneUser(userName) {
-        return this.hixcoderService.getOneUser(userName);
+    async getOneUser(reciever) {
+        return this.hixcoderService.getOneUser(reciever);
     }
     async getOnlineFriends(sender) {
         return this.hixcoderService.getOnlineFriends(sender);
@@ -39,6 +39,9 @@ let HixcoderController = class HixcoderController {
     }
     async getAllPossibleFriends(sender) {
         return this.hixcoderService.getAllPossibleFriends(sender);
+    }
+    async getNavSearchUsers(sender) {
+        return this.hixcoderService.getNavSearchUsers(sender);
     }
     async sendFriendRequest(sender, reciever) {
         return this.hixcoderService.sendFriendRequest(sender, reciever);
@@ -71,8 +74,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getallUsers", null);
 __decorate([
-    (0, common_1.Get)("/oneUser/:recieverUsername"),
-    __param(0, (0, common_1.Param)("recieverUsername")),
+    (0, common_1.Get)("/oneUser/:reciever"),
+    __param(0, (0, common_1.Param)("reciever")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -112,6 +115,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getAllPossibleFriends", null);
+__decorate([
+    (0, common_1.Get)("/navSearchUsers/:sender"),
+    __param(0, (0, common_1.Param)("sender")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getNavSearchUsers", null);
 __decorate([
     (0, common_1.Post)("/sendFriendRequest/:sender/:reciever"),
     __param(0, (0, common_1.Param)("sender")),
