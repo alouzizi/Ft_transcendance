@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { socket } from "../contexts/WebsocketContext";
+import { socket } from "../random/contexts/WebsocketContext";
 import { useGlobalContext } from "@/app/context/store";
 
 type MyComponentProps = {
@@ -12,7 +12,13 @@ type MyComponentProps = {
   link: string;
 };
 
-const MyComponent = ({ imageSrc, text, title, link, emit }: MyComponentProps) => {
+const MyComponent = ({
+  imageSrc,
+  text,
+  title,
+  link,
+  emit,
+}: MyComponentProps) => {
   const { user } = useGlobalContext();
   const router = useRouter();
   return (
@@ -34,16 +40,22 @@ const MyComponent = ({ imageSrc, text, title, link, emit }: MyComponentProps) =>
           </p>
         </div>
 
-      <button
-        className="uppercase bg-blue-500 hover:bg-blue-700 text-[#F1F3F9]  font-bold font-outfit py-2 px-4 rounded-full self-end"
-        onClick={() => {
-          if(emit)
-            socket.emit('clientId', user.id);
-          router.push(link) 
-        }}
-      >
-        Play
-      </button>
+        <button
+          className="uppercase bg-blue-500 hover:bg-blue-700 text-[#F1F3F9]  font-bold font-outfit py-2 px-4 rounded-full self-end"
+          onClick={() => {
+            if (emit) 
+            {
+              if (socket.connected)
+                socket.emit("clientId", user.id);
+              else{
+                alert("Refresh the page and try again!");
+              }
+            }
+            router.push(link);
+          }}
+        >
+          Play
+        </button>
       </div>
     </div>
   );

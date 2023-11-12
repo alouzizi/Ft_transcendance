@@ -84,7 +84,7 @@ export const GlobalContextProvider = ({ children }: {
 
     useEffect(() => {
         if ((user.id && user.id != '-1')) {
-            console.log("socket ---------------------> ", user.id);
+            // console.log("socket ---------------------> ", user.id);
             const socket = io(Backend_URL, {
                 transports: ['websocket'],
                 query: {
@@ -93,10 +93,10 @@ export const GlobalContextProvider = ({ children }: {
             });
             setSocket(socket);
             socket.on('connect', () => {
-                console.log('socket --> user connected');
+                // console.log('socket --> user connected');
             });
             socket.on('disconnect', () => {
-                console.log('socket --> user disconnected');
+                // console.log('socket --> user disconnected');
             });
         }
 

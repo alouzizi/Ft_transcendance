@@ -120,7 +120,7 @@ export function drawRect(ctx: any, p: Padlle) {
 }
 
 export function drawCircle(ctx: any, b: Ball) {
-  ctx.fillStyle = "RED";
+  ctx.fillStyle = b.color;
   ctx.beginPath();
   ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2, false);
   ctx.closePath();

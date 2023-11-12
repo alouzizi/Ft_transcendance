@@ -9,12 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameModule = void 0;
 const common_1 = require("@nestjs/common");
 const gateway_1 = require("./gateway");
+const game_service_1 = require("./game.service");
 let GameModule = class GameModule {
 };
 exports.GameModule = GameModule;
 exports.GameModule = GameModule = __decorate([
     (0, common_1.Module)({
-        providers: [gateway_1.MyGateway],
+        providers: [gateway_1.MyGateway, game_service_1.PongServise],
     })
 ], GameModule);
 //# sourceMappingURL=game.module.js.map
