@@ -11,7 +11,11 @@ import { FaUserTimes, } from "react-icons/fa";
 import { BiUserCheck } from "react-icons/bi";
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
+<<<<<<< HEAD
 import { getValideUsers } from '../api/fetch-users';
+=======
+import { getValideUsers, getVueGeust } from '../api/fetch-users';
+>>>>>>> implement the sockets successfully
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 import { accepteRequistFriend, removeRequistFriend, sendRequistFriend } from '../api/send-Friend-req';
 import { getColorStatus } from './ListUser';
@@ -24,7 +28,11 @@ export default function AlertDialogFind() {
     const [searsh, setSearsh] = useState('');
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
+<<<<<<< HEAD
     const { user, setGeust, socket } = useGlobalContext();
+=======
+    const { user, setGeust, socket, updateInfo } = useGlobalContext();
+>>>>>>> implement the sockets successfully
 
     const [clicked, setClicked] = useState<number>(0)
     const [update, setUpdate] = useState<number>(0)
@@ -38,7 +46,11 @@ export default function AlertDialogFind() {
 
     useEffect(() => {
         async function getData() {
+<<<<<<< HEAD
             if (user.id !== -1) {
+=======
+            if (user.id !== "-1") {
+>>>>>>> implement the sockets successfully
                 const temp = await getValideUsers(user.id);
                 setValideUsers(temp);
             }
@@ -49,7 +61,11 @@ export default function AlertDialogFind() {
 
     useEffect(() => {
         const tmp: userDto[] = valideUsers.filter((elm) => {
+<<<<<<< HEAD
             const username = elm.username;
+=======
+            const username = elm.nickname;
+>>>>>>> implement the sockets successfully
             return ((username.includes(searsh) && searsh != '') || searsh === "*");
         })
         setUsersFilter(tmp);
@@ -59,6 +75,7 @@ export default function AlertDialogFind() {
         const updateIcons = () => {
             setUpdate((pre) => { return pre + 1 });
         };
+<<<<<<< HEAD
         if (socket) {
             socket.on("updateData", updateIcons);
         }
@@ -67,13 +84,26 @@ export default function AlertDialogFind() {
                 socket.off("updateData", updateIcons);
         };
     }, [socket]);
+=======
+        updateIcons();
+    }, [updateInfo]);
+
+    const getDataGeust = async (id: string, isUser: Boolean) => {
+        const temp = await getVueGeust(id, isUser);
+        setGeust(temp);
+    };
+>>>>>>> implement the sockets successfully
 
     const widgetItem = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
         return <Box p="1" pr="3" key={index}>
             <Flex align="center" justify="between" className='border-b py-2'>
                 <div className='flex items-center relative'>
                     <Avatar
+<<<<<<< HEAD
                         src={elm.avatar}
+=======
+                        src={elm.profilePic}
+>>>>>>> implement the sockets successfully
                         fallback="T"
                         style={{ height: '40px', borderRadius: '40px', cursor: 'pointer' }}
                     />
@@ -81,7 +111,11 @@ export default function AlertDialogFind() {
                         <GoDotFill size={15} color={getColorStatus(elm.status)} />
                     </div>
                     <Text size="3" weight="bold" className='pl-2'>
+<<<<<<< HEAD
                         {elm.username}
+=======
+                        {elm.nickname}
+>>>>>>> implement the sockets successfully
                     </Text>
                 </div>
                 <div className='flex items-center'>
@@ -127,7 +161,11 @@ export default function AlertDialogFind() {
                     <AiFillMessage size='20' style={{ cursor: 'pointer' }}
                         onClick={() => {
                             handleClose();
+<<<<<<< HEAD
                             setGeust(elm);
+=======
+                            getDataGeust(elm.id, true); // proble
+>>>>>>> implement the sockets successfully
                         }} />
                 </div>
             </Flex>

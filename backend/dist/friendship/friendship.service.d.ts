@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { PrismaService } from "src/prisma/prisma.service";
+=======
+import { PrismaService } from 'src/prisma/prisma.service';
+>>>>>>> implement the sockets successfully
 export declare class FriendshipService {
     private prisma;
     constructor(prisma: PrismaService);

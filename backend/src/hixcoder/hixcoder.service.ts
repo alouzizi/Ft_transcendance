@@ -5,7 +5,11 @@ import { isEmpty } from "class-validator";
 
 @Injectable()
 export class HixcoderService {
+<<<<<<< HEAD
   constructor(private prisma: PrismaService) {}
+=======
+  constructor(private prisma: PrismaService) { }
+>>>>>>> implement the sockets successfully
 
   // ==========================  Gets ==========================
   async getAllUsers(senderId: string) {
@@ -31,7 +35,11 @@ export class HixcoderService {
     try {
       const oneUser = await this.prisma.user.findFirst({
         where: {
+<<<<<<< HEAD
           username: recieverId,
+=======
+          nickname: recieverId,
+>>>>>>> implement the sockets successfully
         },
       });
       return oneUser;
@@ -137,6 +145,10 @@ export class HixcoderService {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> implement the sockets successfully
   async getBlockedFriends(senderId: string) {
     try {
       const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
@@ -390,6 +402,7 @@ export class HixcoderService {
       };
     }
   }
+<<<<<<< HEAD
 
   // ====================== TEST FUNCTIONS ======================
   async test_giveFriendsToUser(userId: string) {
@@ -488,3 +501,6 @@ export class HixcoderService {
     console.log(users);
   }
 }
+=======
+}
+>>>>>>> implement the sockets successfully

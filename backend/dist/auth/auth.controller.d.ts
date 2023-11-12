@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 export declare class AuthController {
@@ -42,4 +43,13 @@ export declare class AuthController {
             expiresIn: number;
         };
     }>;
+=======
+import { Response } from 'express';
+import { AuthService } from "./auth.service";
+export declare class AuthController {
+    private authService;
+    constructor(authService: AuthService);
+    loginWith42(): Promise<void>;
+    callbackWith42(req: any, res: Response): Promise<void>;
+>>>>>>> implement the sockets successfully
 }

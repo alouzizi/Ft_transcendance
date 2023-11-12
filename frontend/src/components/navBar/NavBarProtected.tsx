@@ -9,6 +9,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
   const [show, setShow] = useState(false);
 
   return (
+<<<<<<< HEAD
     <div className="flex flex-col h-screen">
       {/* ================== NAV BAR ================== */}
       <div className={` md:h-20 h-16  bg-color-main-dark z-1 w-screen`}>
@@ -16,6 +17,14 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
           className={` flex flex-row justify-items-start  my-auto  md:h-20 h-16  w-full bg-color-main-dark z-30  ${
             show ? " pl-28" : ""
           }
+=======
+    <div className="flex flex-col h-screen  text-white">
+      {/* ================== NAV BAR ================== */}
+      <div className={` md:h-20 h-16  bg-color-main-dark z-1 w-screen`}>
+        <div
+          className={` flex flex-row justify-items-start  my-auto  md:h-20 h-16  w-full bg-color-main-dark z-30  ${show ? " pl-28" : ""
+            }
+>>>>>>> implement the sockets successfully
           transition-all duration-300 ease-in-out 
         `}
         >
@@ -23,9 +32,14 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
             onClick={() => {
               setShow((prev) => !prev);
             }}
+<<<<<<< HEAD
             className={`${
               show ? "ml-4" : "ml-12"
             }  transition-all duration-300 ease-in-out  my-auto md:w-8 md:h-8 h-7 w-7 text-gray-400 cursor-pointer  hover:text-white  block 2xl:hidden `}
+=======
+            className={`${show ? "ml-4" : "ml-12"
+              }  transition-all duration-300 ease-in-out  my-auto md:w-8 md:h-8 h-7 w-7 text-gray-400 cursor-pointer  hover:text-white  block 2xl:hidden `}
+>>>>>>> implement the sockets successfully
           />
 
           <SerachNav show={show} />

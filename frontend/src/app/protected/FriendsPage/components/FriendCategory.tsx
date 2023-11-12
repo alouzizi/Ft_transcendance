@@ -1,7 +1,11 @@
 "use client";
 
 import { useGlobalContext } from "@/app/context/store";
+<<<<<<< HEAD
 import { Backend_URL } from "@/lib/Constants";
+=======
+import { Backend_URL } from "../../../../../lib/Constants";
+>>>>>>> implement the sockets successfully
 import {
   useState,
   useEffect,
@@ -31,7 +35,11 @@ const DataContext = createContext<ContextProps>({
 // ====================== create context ======================
 export default function FriendCategory(prompt: { itemsStatus: string }) {
   const [data, setData] = useState<friendDto[]>([]);
+<<<<<<< HEAD
   const { user } = useGlobalContext();
+=======
+  const { updateInfo, user } = useGlobalContext();
+>>>>>>> implement the sockets successfully
   useEffect(() => {
     async function getData() {
       console.log("prompt.itemsStatus ==> " + prompt.itemsStatus);
@@ -57,7 +65,11 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
     }
     console.log(user);
     getData();
+<<<<<<< HEAD
   }, [user.id, prompt.itemsStatus]);
+=======
+  }, [user.id, prompt.itemsStatus, updateInfo]);
+>>>>>>> implement the sockets successfully
   //   useEffect(() => {}, [data]);
 
   return (

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { FriendshipService } from "./friendship.service";
+=======
+import { FriendshipService } from './friendship.service';
+>>>>>>> implement the sockets successfully
 export declare class FriendshipController {
     private readonly friendshipService;
     constructor(friendshipService: FriendshipService);

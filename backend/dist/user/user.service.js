@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+<<<<<<< HEAD
 const messages_service_1 = require("../messages/messages.service");
 let UserService = class UserService {
     constructor(prisma, messagesService) {
@@ -24,6 +25,14 @@ let UserService = class UserService {
                 email: email,
             },
         });
+=======
+const client_1 = require("@prisma/client");
+const channel_service_1 = require("../channel/channel.service");
+let UserService = class UserService {
+    constructor(prisma, channelService) {
+        this.prisma = prisma;
+        this.channelService = channelService;
+>>>>>>> implement the sockets successfully
     }
     async findById(id) {
         return await this.prisma.user.findUnique({
@@ -90,6 +99,7 @@ let UserService = class UserService {
         }));
         return result;
     }
+<<<<<<< HEAD
     async getUserForMsg(senderId) {
         const users = await this.prisma.user.findMany();
         const usersMsg = await this.prisma.directMessage.findMany({
@@ -117,12 +127,117 @@ let UserService = class UserService {
             lastMsgs.push(temp);
         }
         return { usersMsgList, lastMsgs };
+=======
+    async usersCanJoinChannel(senderId, channelId) {
+        const users = await this.prisma.user.findMany();
+        const blockerUsers = await this.prisma.blockedUser.findMany({
+            where: {
+                OR: [{ senderId: senderId }, { receivedId: senderId }],
+            },
+        });
+        const bannedUsersChannel = await this.prisma.bannedMember.findMany({
+            where: { channelId: channelId }
+        });
+        const membersChannel = await this.prisma.channelMember.findMany({
+            where: { channelId: channelId }
+        });
+        const cleanUser = users.filter((user) => {
+            if (user.id === senderId)
+                return false;
+            const found = blockerUsers.find((blk) => {
+                return ((senderId === blk.senderId && user.id === blk.receivedId) ||
+                    (senderId === blk.receivedId && user.id === blk.senderId));
+            });
+            if (found)
+                return false;
+            return true;
+        });
+        const cleanUser2 = cleanUser.filter((user) => {
+            const found = bannedUsersChannel.find((banned) => {
+                return (banned.userId === user.id);
+            });
+            if (found)
+                return false;
+            return true;
+        });
+        const result = cleanUser2.filter((user) => {
+            const found = membersChannel.find((banned) => {
+                return (banned.userId === user.id);
+            });
+            if (found)
+                return false;
+            return true;
+        });
+        return result;
+    }
+    async getUserGeust(id) {
+        const user = await this.findById(id);
+        if (user)
+            return {
+                isUser: true,
+                id: user.id,
+                nickname: user.nickname,
+                profilePic: user.profilePic,
+                status: user.status,
+                lastSee: user.lastSee,
+                lenUser: 0,
+                idUserOwner: 0,
+            };
+        return {
+            isUser: true,
+            id: '-1',
+            nickname: '',
+            profilePic: '',
+            status: '',
+            lastSee: 0,
+            lenUser: 0,
+            idUserOwner: 0,
+        };
+    }
+    async getChannelGeust(id) {
+        const channel = await this.channelService.findChannelById(id);
+        const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
+        return {
+            isUser: false,
+            id: channel.id,
+            nickname: channel.channelName,
+            profilePic: channel.avatar,
+            status: client_1.Status.INACTIF,
+            lastSee: channel.createdAt,
+            lenUser: members.length,
+            idUserOwner: channel.channelOwnerId
+        };
+    }
+    async createUser(user1) {
+        console.log("my user iss", user1.intra_id);
+        const user = await this.prisma.user.create({
+            data: {
+                intra_id: user1.intra_id.toString(),
+                nickname: user1.login42.toString(),
+                email: user1.email.toString(),
+                profilePic: user1.profilePicture.toString(),
+                last_name: user1.last_name,
+                first_name: user1.first_name
+            },
+        });
+        console.log("prisma user is ", user);
+        return user;
+    }
+    async findByIntraId(intra_id) {
+        return this.prisma.user.findUnique({
+            where: { intra_id: intra_id },
+        });
+>>>>>>> implement the sockets successfully
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+<<<<<<< HEAD
         messages_service_1.MessagesService])
+=======
+        channel_service_1.ChannelService])
+>>>>>>> implement the sockets successfully
 ], UserService);
 //# sourceMappingURL=user.service.js.map

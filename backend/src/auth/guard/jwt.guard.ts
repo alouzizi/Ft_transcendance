@@ -25,14 +25,28 @@ export class JwtGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+<<<<<<< HEAD
     const token = this.extractTokenFromHeader(request);
+=======
+
+    const token = this.extractTokenFromHeader(request);
+
+>>>>>>> implement the sockets successfully
     if (!token) {
       throw new UnauthorizedException();
     }
     try {
+<<<<<<< HEAD
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.config.get("JWT_SECRET"),
       });
+=======
+
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.config.get("JWT_SECRET"),
+      });
+      console.log("payload --> ", payload);
+>>>>>>> implement the sockets successfully
       request["user"] = payload;
     } catch {
       throw new UnauthorizedException();

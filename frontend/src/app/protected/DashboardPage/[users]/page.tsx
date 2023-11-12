@@ -7,7 +7,11 @@ import { getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
 export default function DashboardPage() {
   const pathname = usePathname();
+<<<<<<< HEAD
   const [friend, setFriend] = useState<userDto>();
+=======
+  const [friend, setFriend] = useState<ownerDto>();
+>>>>>>> implement the sockets successfully
   const { user } = useGlobalContext();
   useEffect(() => {
     const userName = pathname;
@@ -16,9 +20,15 @@ export default function DashboardPage() {
     console.log(lastSegment);
     async function getData() {
       try {
+<<<<<<< HEAD
         const user = await getOneUser(lastSegment);
         setFriend(user);
         console.log(user);
+=======
+        const usr: ownerDto = await getOneUser(lastSegment);
+        setFriend(usr);
+        console.log(usr);
+>>>>>>> implement the sockets successfully
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }

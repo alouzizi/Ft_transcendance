@@ -10,7 +10,11 @@ export function extractHoursAndM(time: number): string {
     return `${hours}:${minutes}`;
 }
 
+<<<<<<< HEAD
 export function IsTypingMsg({ geust }: { geust: userDto }) {
+=======
+export function IsTypingMsg() {
+>>>>>>> implement the sockets successfully
     const cardStyles = {
         width: 50,
         borderRadius: 20,
@@ -30,7 +34,11 @@ export function IsTypingMsg({ geust }: { geust: userDto }) {
     );
 }
 
+<<<<<<< HEAD
 export function MessageRight({ message, geust }: { message: msgDto, geust: userDto }) {
+=======
+export function MessageRight({ message }: { message: messageDto }) {
+>>>>>>> implement the sockets successfully
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 0,
@@ -43,7 +51,11 @@ export function MessageRight({ message, geust }: { message: msgDto, geust: userD
     };
     return (
         <div style={cardStyles} className='relative mb-2 mt-2'>
+<<<<<<< HEAD
             <div className='mb-4 text-sm'> {message.content}</div>
+=======
+            <div className='mb-4 text-sm'> {message.contentMsg}</div>
+>>>>>>> implement the sockets successfully
             <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
                 <Text size="1" className='pr-1'>
                     {extractHoursAndM(message.createdAt)}
@@ -55,7 +67,12 @@ export function MessageRight({ message, geust }: { message: msgDto, geust: userD
         </div>
     );
 }
+<<<<<<< HEAD
 export function MessageLeft({ message, geust }: { message: msgDto, geust: userDto }) {
+=======
+
+export function MessageLeft({ message }: { message: messageDto }) {
+>>>>>>> implement the sockets successfully
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 10,
@@ -71,16 +88,27 @@ export function MessageLeft({ message, geust }: { message: msgDto, geust: userDt
         <div className='flex'>
             <Avatar
                 size="1"
+<<<<<<< HEAD
                 src={geust.avatar}
+=======
+                src={message.senderPic}
+>>>>>>> implement the sockets successfully
                 radius="full"
                 fallback="T"
             />
             <div className='pl-2'>
                 <Text as="span" size="2" weight="bold">
+<<<<<<< HEAD
                     {geust.username}
                 </Text>
                 <div style={cardStyles} className='relative'>
                     <div className='mb-4  text-sm'> {message.content}</div>
+=======
+                    {message.senderName}
+                </Text>
+                <div style={cardStyles} className='relative'>
+                    <div className='mb-4  text-sm'> {message.contentMsg}</div>
+>>>>>>> implement the sockets successfully
                     <Text size="1" className='absolute bottom-1 right-2 mt-2'>
                         {extractHoursAndM(message.createdAt)}
                     </Text>
@@ -129,14 +157,75 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
+<<<<<<< HEAD
 export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: userDto }) {
+=======
+
+// $owner create group $channelName 
+// You created group $channelName
+
+// $owner add $userName
+// You add $userName
+
+// You Block this contact. Tap to unblock
+// You unblocked this contact
+export function MessageCenterInfo({ message, user }: { message: messageDto, user: ownerDto }) {
+    const cardStyles = {
+        width: 200,
+        padding: 5,
+        borderRadius: 10,
+        margin: 'auto',
+        background: "#fefae0",
+    };
+
+    let messageTmp: string = "";
+    if (message.contentMsg.includes('create')) {
+        if (message.senderId === user.id)
+            messageTmp = `You created group ${message.receivedName}`;
+        else
+            messageTmp = `${message.senderName} create group ${message.receivedName}`
+    } else if (message.contentMsg.includes('added')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('bann')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('kicked')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('left')) {
+        messageTmp = `${message.senderName} ${message.contentMsg}`
+    }
+    return (
+        <div className='mt-1'>
+            <div style={cardStyles} >
+                <Text className='flex items-center justify-center text-sm text-center'>
+                    {messageTmp}
+                </Text>
+            </div>
+        </div>
+
+    );
+}
+
+export function ShowMessages({ messages, user }: { messages: messageDto[], user: ownerDto }) {
+>>>>>>> implement the sockets successfully
     const currentDate = Date.now();
     lastPrint = 0;
     return messages.map((elm, index) => {
         const temp = showDays(currentDate, elm.createdAt);
         const tag =
             <div key={index}>
+<<<<<<< HEAD
 
+=======
+>>>>>>> implement the sockets successfully
                 {
                     temp.show ?
                         (
@@ -149,13 +238,29 @@ export function ShowMessages({ messages, geust }: { messages: msgDto[], geust: u
                         : (<></>)
                 }
 
+<<<<<<< HEAD
                 {elm.receivedId == geust.id ? (
                     <MessageRight message={elm} geust={geust} />
                 ) : (
                     <MessageLeft message={elm} geust={geust} />
                 )}
+=======
+                {
+                    (elm.InfoMessage === true) ?
+                        <MessageCenterInfo message={elm} user={user} />
+                        : ((elm.senderId == user.id) ? (
+                            <MessageRight message={elm} />
+                        ) : (
+                            <MessageLeft message={elm} />
+                        ))
+                }
+>>>>>>> implement the sockets successfully
             </div>
         return tag;
     })
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> implement the sockets successfully

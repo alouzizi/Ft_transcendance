@@ -1,4 +1,5 @@
 "use client";
+<<<<<<< HEAD
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
@@ -16,11 +17,34 @@ const DropdownMenuPortal = DropdownMenuPrimitive.Portal
 const DropdownMenuSub = DropdownMenuPrimitive.Sub
 
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+=======
+import * as React from "react";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import { Check, ChevronRight, Circle } from "lucide-react";
+
+import { cn } from "../../../lib/utils";
+
+const DropdownMenu = DropdownMenuPrimitive.Root;
+
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+
+const DropdownMenuGroup = DropdownMenuPrimitive.Group;
+
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
+
+const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuSubTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
+<<<<<<< HEAD
     inset?: boolean
+=======
+    inset?: boolean;
+>>>>>>> implement the sockets successfully
   }
 >(({ className, inset, children, ...props }, ref) => (
   <DropdownMenuPrimitive.SubTrigger
@@ -35,9 +59,15 @@ const DropdownMenuSubTrigger = React.forwardRef<
     {children}
     <ChevronRight className="ml-auto h-4 w-4" />
   </DropdownMenuPrimitive.SubTrigger>
+<<<<<<< HEAD
 ))
 DropdownMenuSubTrigger.displayName =
   DropdownMenuPrimitive.SubTrigger.displayName
+=======
+));
+DropdownMenuSubTrigger.displayName =
+  DropdownMenuPrimitive.SubTrigger.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuSubContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
@@ -51,9 +81,15 @@ const DropdownMenuSubContent = React.forwardRef<
     )}
     {...props}
   />
+<<<<<<< HEAD
 ))
 DropdownMenuSubContent.displayName =
   DropdownMenuPrimitive.SubContent.displayName
+=======
+));
+DropdownMenuSubContent.displayName =
+  DropdownMenuPrimitive.SubContent.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
@@ -70,13 +106,22 @@ const DropdownMenuContent = React.forwardRef<
       {...props}
     />
   </DropdownMenuPrimitive.Portal>
+<<<<<<< HEAD
 ))
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
+=======
+));
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+<<<<<<< HEAD
     inset?: boolean
+=======
+    inset?: boolean;
+>>>>>>> implement the sockets successfully
   }
 >(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
@@ -88,8 +133,13 @@ const DropdownMenuItem = React.forwardRef<
     )}
     {...props}
   />
+<<<<<<< HEAD
 ))
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+=======
+));
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
@@ -111,9 +161,15 @@ const DropdownMenuCheckboxItem = React.forwardRef<
     </span>
     {children}
   </DropdownMenuPrimitive.CheckboxItem>
+<<<<<<< HEAD
 ))
 DropdownMenuCheckboxItem.displayName =
   DropdownMenuPrimitive.CheckboxItem.displayName
+=======
+));
+DropdownMenuCheckboxItem.displayName =
+  DropdownMenuPrimitive.CheckboxItem.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuRadioItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
@@ -134,13 +190,22 @@ const DropdownMenuRadioItem = React.forwardRef<
     </span>
     {children}
   </DropdownMenuPrimitive.RadioItem>
+<<<<<<< HEAD
 ))
 DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName
+=======
+));
+DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuLabel = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
+<<<<<<< HEAD
     inset?: boolean
+=======
+    inset?: boolean;
+>>>>>>> implement the sockets successfully
   }
 >(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
@@ -152,8 +217,13 @@ const DropdownMenuLabel = React.forwardRef<
     )}
     {...props}
   />
+<<<<<<< HEAD
 ))
 DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName
+=======
+));
+DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuSeparator = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
@@ -164,8 +234,13 @@ const DropdownMenuSeparator = React.forwardRef<
     className={cn("-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800", className)}
     {...props}
   />
+<<<<<<< HEAD
 ))
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
+=======
+));
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
+>>>>>>> implement the sockets successfully
 
 const DropdownMenuShortcut = ({
   className,
@@ -176,9 +251,15 @@ const DropdownMenuShortcut = ({
       className={cn("ml-auto text-xs tracking-widest opacity-60", className)}
       {...props}
     />
+<<<<<<< HEAD
   )
 }
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
+=======
+  );
+};
+DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
+>>>>>>> implement the sockets successfully
 
 export {
   DropdownMenu,
@@ -196,4 +277,8 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> implement the sockets successfully

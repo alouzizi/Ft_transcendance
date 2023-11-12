@@ -8,7 +8,17 @@ tasks :
 - change the friendItem on the pending category ✅
 - develop friend page where you can see their profile✅
 -------------------
+<<<<<<< HEAD
 - use sockets in friends page
 - make the logic of acheivments page
 
 - when block friend 
+=======
+- use sockets in friends page✅
+- make the logic of acheivments page
+
+errors:
+- when using 2 alert friend at same time not realtime✅
+- when block friend I can find it in the nav search
+- when request friend from both sides
+>>>>>>> implement the sockets successfully

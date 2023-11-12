@@ -14,6 +14,11 @@ const config_1 = require("@nestjs/config");
 const user_module_1 = require("./user/user.module");
 const messages_module_1 = require("./messages/messages.module");
 const friendship_module_1 = require("./friendship/friendship.module");
+<<<<<<< HEAD
+=======
+const channel_module_1 = require("./channel/channel.module");
+const socket_module_1 = require("./socket/socket.module");
+>>>>>>> implement the sockets successfully
 const hixcoder_module_1 = require("./hixcoder/hixcoder.module");
 let AppModule = class AppModule {
 };
@@ -27,6 +32,11 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             messages_module_1.MessagesModule,
             friendship_module_1.FriendshipModule,
+<<<<<<< HEAD
+=======
+            channel_module_1.ChannelModule,
+            socket_module_1.SocketGatewayModule,
+>>>>>>> implement the sockets successfully
             hixcoder_module_1.HixcoderModule,
         ],
     })

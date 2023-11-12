@@ -12,7 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HixcoderService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+<<<<<<< HEAD
 const argon = require("argon2");
+=======
+>>>>>>> implement the sockets successfully
 const class_validator_1 = require("class-validator");
 let HixcoderService = class HixcoderService {
     constructor(prisma) {
@@ -39,7 +42,11 @@ let HixcoderService = class HixcoderService {
         try {
             const oneUser = await this.prisma.user.findFirst({
                 where: {
+<<<<<<< HEAD
                     username: recieverId,
+=======
+                    nickname: recieverId,
+>>>>>>> implement the sockets successfully
                 },
             });
             return oneUser;
@@ -380,6 +387,7 @@ let HixcoderService = class HixcoderService {
             };
         }
     }
+<<<<<<< HEAD
     async test_giveFriendsToUser(userId) {
         const allUsers = await this.prisma.user.findMany();
         for (const otherUser of allUsers) {
@@ -472,6 +480,8 @@ let HixcoderService = class HixcoderService {
         });
         console.log(users);
     }
+=======
+>>>>>>> implement the sockets successfully
 };
 exports.HixcoderService = HixcoderService;
 exports.HixcoderService = HixcoderService = __decorate([

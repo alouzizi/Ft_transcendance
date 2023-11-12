@@ -19,7 +19,10 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+<<<<<<< HEAD
   /* color: #9b9c9b; */
+=======
+>>>>>>> implement the sockets successfully
   background: linear-gradient(
       to bottom,
       transparent,

@@ -74,8 +74,13 @@ let FriendshipService = class FriendshipService {
                     {
                         senderId: recivedId,
                         receivedId: sendId,
+<<<<<<< HEAD
                     },
                 ],
+=======
+                    }
+                ]
+>>>>>>> implement the sockets successfully
             },
         });
         return req;
@@ -133,8 +138,13 @@ let FriendshipService = class FriendshipService {
                     },
                     {
                         receivedId: senderId,
+<<<<<<< HEAD
                     },
                 ],
+=======
+                    }
+                ]
+>>>>>>> implement the sockets successfully
             },
         });
         return sendRequests;
@@ -148,8 +158,13 @@ let FriendshipService = class FriendshipService {
                     },
                     {
                         receivedId: senderId,
+<<<<<<< HEAD
                     },
                 ],
+=======
+                    }
+                ]
+>>>>>>> implement the sockets successfully
             },
         });
         return sendRequests;

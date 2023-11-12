@@ -21,7 +21,11 @@ export default function NavSearchItem(prompt: {
         // Big screen
         md:w-10 md:h-10
         "
+<<<<<<< HEAD
         src={prompt.userInfo.avatar}
+=======
+        src={prompt.userInfo.profilePic}
+>>>>>>> implement the sockets successfully
         alt=""
       />
       <p
@@ -33,7 +37,11 @@ export default function NavSearchItem(prompt: {
         md:text-sm
         "
       >
+<<<<<<< HEAD
         {prompt.userInfo.username}
+=======
+        {prompt.userInfo.nickname}
+>>>>>>> implement the sockets successfully
       </p>
     </div>
   );

@@ -13,7 +13,11 @@ import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategor
 import { useState } from "react";
 
 export default function PopoverMenuDash(prompt: {
+<<<<<<< HEAD
   friendInfo: userDto;
+=======
+  friendInfo: ownerDto;
+>>>>>>> implement the sockets successfully
   isFriend: boolean;
 }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -21,7 +25,11 @@ export default function PopoverMenuDash(prompt: {
   );
 
   // ==================== popover configs =====================
+<<<<<<< HEAD
   const user = useGlobalContext();
+=======
+  const { user, socket } = useGlobalContext();
+>>>>>>> implement the sockets successfully
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -38,17 +46,34 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
+<<<<<<< HEAD
     console.log("play match with friend: " + prompt.friendInfo.username);
+=======
+    console.log("play match with friend: " + prompt.friendInfo.nickname);
+>>>>>>> implement the sockets successfully
     handleClose();
   }
 
   async function handleRemoveFriend() {
     try {
+<<<<<<< HEAD
       await removeFriend(user.user.id, prompt.friendInfo.id);
+=======
+      await removeFriend(user.id, prompt.friendInfo.id);
+>>>>>>> implement the sockets successfully
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+<<<<<<< HEAD
+=======
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
+>>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleRemoveFriend: " + error);
     }
@@ -57,11 +82,24 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleBlockFriend() {
     try {
+<<<<<<< HEAD
       await blockFriend(user.user.id, prompt.friendInfo.id);
+=======
+      await blockFriend(user.id, prompt.friendInfo.id);
+>>>>>>> implement the sockets successfully
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+<<<<<<< HEAD
+=======
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
+>>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleBlockFriend: " + error);
     }
@@ -70,7 +108,17 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleInvite() {
     try {
+<<<<<<< HEAD
       await sendFriendRequest(user.user.id, prompt.friendInfo.id);
+=======
+      await sendFriendRequest(user.id, prompt.friendInfo.id);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
+>>>>>>> implement the sockets successfully
     } catch (error) {
       console.log("handleInvite: " + error);
     }

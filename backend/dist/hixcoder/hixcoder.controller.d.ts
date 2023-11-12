@@ -4,10 +4,24 @@ export declare class HixcoderController {
     constructor(hixcoderService: HixcoderService);
     getallUsers(sender: string): Promise<{
         id: string;
+<<<<<<< HEAD
         email: string;
         username: string;
         hash: string;
         avatar: string;
+=======
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+>>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[] | {
@@ -15,10 +29,24 @@ export declare class HixcoderController {
     }>;
     getOneUser(userName: string): Promise<{
         id: string;
+<<<<<<< HEAD
         email: string;
         username: string;
         hash: string;
         avatar: string;
+=======
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+>>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
@@ -27,20 +55,48 @@ export declare class HixcoderController {
     }>;
     getAllFriends(sender: string): Promise<{
         id: string;
+<<<<<<< HEAD
         email: string;
         username: string;
         hash: string;
         avatar: string;
+=======
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+>>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
     getPendingFriends(sender: string): Promise<{
         isYouSender: boolean;
         id: string;
+<<<<<<< HEAD
         email: string;
         username: string;
         hash: string;
         avatar: string;
+=======
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+>>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
@@ -49,10 +105,24 @@ export declare class HixcoderController {
     }>;
     getAllPossibleFriends(sender: string): Promise<{
         id: string;
+<<<<<<< HEAD
         email: string;
         username: string;
         hash: string;
         avatar: string;
+=======
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+>>>>>>> implement the sockets successfully
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[] | {

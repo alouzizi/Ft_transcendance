@@ -10,9 +10,15 @@ import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import PopoverMenuDash from "./PopoverMenuDash";
 import { getAllFriends } from "@/app/api/hixcoder/FriendsPageAPI";
 
+<<<<<<< HEAD
 export default function DashBoard(prompt: { friend: userDto }) {
   const router = useRouter();
   const { user } = useGlobalContext();
+=======
+export default function DashBoard(prompt: { friend: ownerDto }) {
+  const router = useRouter();
+  const { user, updateInfo } = useGlobalContext();
+>>>>>>> implement the sockets successfully
   const [isFriend, setIsFriend] = useState(false);
   useEffect(() => {
     async function getData() {
@@ -29,7 +35,11 @@ export default function DashBoard(prompt: { friend: userDto }) {
       }
     }
     getData();
+<<<<<<< HEAD
   }, [prompt.friend.id, user.id]);
+=======
+  }, [prompt.friend.id, user.id, updateInfo]);
+>>>>>>> implement the sockets successfully
 
   return (
     <div className="flex flex-col h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
@@ -66,7 +76,11 @@ export default function DashBoard(prompt: { friend: userDto }) {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
+<<<<<<< HEAD
           src={prompt.friend.avatar}
+=======
+          src={prompt.friend.profilePic}
+>>>>>>> implement the sockets successfully
           alt=""
         />
 
@@ -91,8 +105,15 @@ export default function DashBoard(prompt: { friend: userDto }) {
           2xl:ml-6 2xl:mt-2 2xl:w-1/3
           "
           >
+<<<<<<< HEAD
             <h1>{prompt.friend.email}</h1>
             <p className="text-gray-400 text-sm">@{prompt.friend.username}</p>
+=======
+            <h1 className="text-white text-sm">
+              {prompt.friend.first_name} {prompt.friend.last_name}
+            </h1>
+            <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
+>>>>>>> implement the sockets successfully
           </div>
 
           <div
