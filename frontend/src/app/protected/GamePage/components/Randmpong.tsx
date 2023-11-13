@@ -3,6 +3,7 @@ import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
 import { WebsocketContext } from "../random/contexts/WebsocketContext";
 import { useGlobalContext } from "@/app/context/store";
+import { set } from "date-fns";
 
 interface PongProps {
   room: string;
@@ -10,6 +11,8 @@ interface PongProps {
 }
 
 const Pong = ({ room, isLeft }: PongProps) => {
+
+  const ROUND_LIMIT = 6;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
   const { user } = useGlobalContext();
@@ -52,12 +55,14 @@ const Pong = ({ room, isLeft }: PongProps) => {
       const rect = canvas.getBoundingClientRect();
       if (!isLeft) {
         const mouseY = e.clientY - rect.top - computer.height / 2;
+        computer.color = "red";
         computer.y = Math.min(
           Math.max(mouseY, 0),
           canvas.height - computer.height
         );
       } else {
         const mouseY = e.clientY - rect.top - player.height / 2;
+        player.color = "red";
         player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
       }
       // console.log("mouseY: ", player.y);
@@ -119,7 +124,27 @@ const Pong = ({ room, isLeft }: PongProps) => {
           canvasCtx.height / 5,
           computer.score
         );
+      });
 
+      socket.on("gameOver", (state: string) => {
+        // drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
+        // drawText(
+        //   ctx,
+        //   (3 * canvasCtx.width) / 4,
+        //   canvasCtx.height / 5,
+        //   computer.score
+        // );
+        setTimeout(() => {
+        if (state === "win") {
+          alert("You win!");
+        }
+        if (state === "lose") {
+          alert("You lose!");
+        }
+        if (state === "draw") {
+          alert("Draw!");
+        }
+      }, 1000);
       });
       // animationFrameId1 = window.requestAnimationFrame(update);
     // }
