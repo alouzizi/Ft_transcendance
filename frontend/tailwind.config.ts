@@ -15,6 +15,14 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      'fredoka' : ['Fredoka'],
+      'outfit': ['Outfit'],
+    },
+    fontWeight: {
+      '400': 400,
+      '700': 700,
+    },
     extend: {
       colors: {
         'color-main': '#151B2D',
