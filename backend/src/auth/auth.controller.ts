@@ -13,7 +13,6 @@ import { AuthGuard } from "@nestjs/passport";
 import { Response } from 'express';
 import { AuthService } from "./auth.service";
 import { UserService } from "src/users/user.service";
-import { AuthDto } from "./dto";
 import { JwtGuard } from "./guard";
 import { Jwt2faAuthGuard } from "./2FA/jwt-2fa-auth.guard";
 import { User } from "@prisma/client";
@@ -59,14 +58,12 @@ export class AuthController {
     }
     await this.userService.turnOnTwoFactorAuth(req.user.id);
   }
-
   @Post('2fa/authenticate')
   @HttpCode(200)
   @UseGuards(AuthGuard)
-  async authenticate(@Req() req,@Body() body) {
+  async authenticate(@Req() req, @Body() body) {
     const isCodeValid = this.authService.isTwoFactorAuthCodeValid(
       body.twoFactorAuthenticationCode,
-
       req.user,
     );
     if (!isCodeValid) {
@@ -86,11 +83,10 @@ export class AuthController {
       res.cookie('intra_id', req.user.accessToken);
       res.cookie('access_token', ret.access_token);
       // req.cookies(accessToken:'accessToken' ,JWT_SECRET);
-    res.redirect("http://localhost:3000/protected/SettingsPage");
+    res.redirect("http://localhost:3000/auth/profil");
     // res.redirect("http://www.google.com"); 
     // res.send(ret)
   }
-
 }
 
 //prisma

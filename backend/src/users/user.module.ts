@@ -6,15 +6,15 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { ChannelService } from 'src/channel/channel.service';
 
 @Module({
-imports:[
-  AuthModule,
-  PrismaModule,
-],
+  imports:[
+    AuthModule,
+    PrismaModule,
+    ],
   
-  providers: [
+  providers:[
     UserService,
     ChannelService,
-  ],
+    ],
   controllers: [UserController],
 })
 export class UserModule {}

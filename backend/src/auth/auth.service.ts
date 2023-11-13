@@ -54,7 +54,6 @@ export class AuthService {
       isTwoFactorAuthEnabled: !!userWithoutPsw.isTwoFactorAuthEnabled,
       isTwoFactorAuthenticated: true,
     };
-
     return {
       email: payload.email,
       access_token: this.jwtService.sign(payload),
@@ -74,13 +73,11 @@ export class AuthService {
       secret,
       user.id,
     );
-
     return {
       secret,
       otpAuthUrl,
     };
   }
-
   async generateQrCodeDataURL(otpAuthUrl: string) {
     return toDataURL(otpAuthUrl);
   }
