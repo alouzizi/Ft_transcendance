@@ -182,14 +182,8 @@ let ChannelService = class ChannelService {
         const channel = await this.prisma.channel.findUnique({ where: { id } });
         const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
         for (const member of members) {
-            this.deleteMuted(member.userId, channel.id);
-            let unmuted_at = 0;
             const user = await this.prisma.user.findUnique({ where: { id: member.userId } });
-            const muted = await this.prisma.mutedMember.findFirst({ where: { userId: member.userId, channelId: channel.id } });
-            const now = new Date();
-            if (muted) {
-                unmuted_at = (muted.unmuted_at.getTime() - now.getTime());
-            }
+            const unmuted_at = await this.cancelTimeOut(member.userId, channel.id);
             const temp = {
                 userId: member.userId,
                 nickname: user.nickname,
@@ -405,7 +399,23 @@ let ChannelService = class ChannelService {
             }
         }
     }
-    async deleteMuted(senderId, channelId) {
+    async cancelTimeOutByAdmin(senderId, channelId, userId) {
+        const admin = await this.prisma.channelMember.findFirst({
+            where: {
+                userId: senderId,
+                channelId,
+            }
+        });
+        if (admin && admin.isAdmin) {
+            const muted = await this.prisma.mutedMember.findFirst({
+                where: { userId, channelId }
+            });
+            if (muted) {
+                await this.prisma.mutedMember.delete({ where: { id: muted.id } });
+            }
+        }
+    }
+    async cancelTimeOut(senderId, channelId) {
         const muted = await this.prisma.mutedMember.findFirst({
             where: {
                 userId: senderId,
@@ -414,10 +424,13 @@ let ChannelService = class ChannelService {
         });
         if (muted) {
             const dt = new Date();
-            if (muted.unmuted_at < new Date()) {
+            if (muted.unmuted_at <= new Date()) {
                 await this.prisma.mutedMember.delete({ where: { id: muted.id } });
+                return 0;
             }
+            return (muted.unmuted_at.getTime() - dt.getTime());
         }
+        return 0;
     }
     async checkIsMuted(senderId, channelId) {
         const muted = await this.prisma.mutedMember.findFirst({

@@ -190,22 +190,16 @@ export class ChannelService {
     return (result);
   }
 
+
   async getRegularMembers(id: string) {
 
     let result: memberChannelDto[] = [];
     const channel = await this.prisma.channel.findUnique({ where: { id } });
     const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
     for (const member of members) {
-      this.deleteMuted(member.userId, channel.id);
-      let unmuted_at: number = 0;
       const user: User = await this.prisma.user.findUnique({ where: { id: member.userId } })
-      const muted: MutedMember = await this.prisma.mutedMember.findFirst(
-        { where: { userId: member.userId, channelId: channel.id } })
 
-      const now = new Date();
-      if (muted) {
-        unmuted_at = (muted.unmuted_at.getTime() - now.getTime());
-      }
+      const unmuted_at: number = await this.cancelTimeOut(member.userId, channel.id);
 
       const temp = {
         userId: member.userId,
@@ -438,7 +432,24 @@ export class ChannelService {
     }
   }
 
-  async deleteMuted(senderId: string, channelId: string) {
+  async cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string) {
+    const admin = await this.prisma.channelMember.findFirst({
+      where: {
+        userId: senderId,
+        channelId,
+      }
+    })
+    if (admin && admin.isAdmin) {
+      const muted: MutedMember = await this.prisma.mutedMember.findFirst({
+        where: { userId, channelId }
+      })
+      if (muted) {
+        await this.prisma.mutedMember.delete({ where: { id: muted.id } });
+      }
+    }
+  }
+
+  async cancelTimeOut(senderId: string, channelId: string) {
     const muted: MutedMember = await this.prisma.mutedMember.findFirst({
       where: {
         userId: senderId,
@@ -447,10 +458,13 @@ export class ChannelService {
     })
     if (muted) {
       const dt = new Date();
-      if (muted.unmuted_at < new Date()) {
+      if (muted.unmuted_at <= new Date()) {
         await this.prisma.mutedMember.delete({ where: { id: muted.id } });
+        return 0;
       }
+      return (muted.unmuted_at.getTime() - dt.getTime())
     }
+    return 0;
   }
 
   async checkIsMuted(senderId: string, channelId: string) {

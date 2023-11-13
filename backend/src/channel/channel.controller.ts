@@ -101,4 +101,10 @@ export class ChannelController {
   checkIsMuted(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.checkIsMuted(senderId, channelId);
   }
+
+  @Get('/cancelTimeOutByAdmin/:senderId/:channelId/:userId')
+  cancelTimeOutByAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string
+    , @Param('userId') userId: string) {
+    return this.channelService.cancelTimeOutByAdmin(senderId, channelId, userId);
+  }
 }

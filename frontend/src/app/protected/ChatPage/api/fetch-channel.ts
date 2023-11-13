@@ -69,6 +69,13 @@ export async function kickMember(senderId: string, channelId: string, userId: st
     return data;
 }
 
+export async function cancelTimeOut(senderId: string, channelId: string, userId: string) {
+    const res = await axios.get(
+        Backend_URL + `/channel/cancelTimeOutByAdmin/${senderId}/${channelId}/${userId}`);
+    const data = await res.data;
+    return data;
+}
+
 export async function ChangeStatusBanned(senderId: string, channelId: string, userId: string) {
     const res = await axios.get(
         Backend_URL + `/channel/bannedmember/${senderId}/${channelId}/${userId}`);
