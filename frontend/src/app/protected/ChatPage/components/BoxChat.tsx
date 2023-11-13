@@ -2,7 +2,6 @@
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Box, Flex, ScrollArea, Text, TextField } from '@radix-ui/themes';
 import { formatDistance } from 'date-fns';
 import Link from 'next/link';
@@ -11,14 +10,12 @@ import { useEffect, useRef, useState } from 'react';
 import { BsFillSendFill, } from "react-icons/bs";
 import { GoDotFill } from "react-icons/go";
 import { IoSettingsSharp } from "react-icons/io5";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../../context/store';
+import { checkIsMuted } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
-import { getColorStatus } from './ListUser';
-import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import { unBlockedUser } from '../api/send-Friend-req';
-import { checkIsMuted } from '../api/fetch-channel';
+import { IsTypingMsg, ShowMessages } from './widgetMsg';
 
 const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -26,7 +23,7 @@ const BoxChat = () => {
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-    const { geust, user, socket, setGeust, updateInfo } = useGlobalContext();
+    const { geust, user, socket, setGeust, updateInfo, setOpenAlertError } = useGlobalContext();
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -43,7 +40,8 @@ const BoxChat = () => {
 
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);
-        setGeust(temp);
+        if (temp !== undefined) setGeust(temp);
+        else setOpenAlertError(true);
     };
 
     useEffect(() => {
@@ -71,7 +69,8 @@ const BoxChat = () => {
                 msgs = await getMessageTwoUsers(user.id, geust.id);
             else
                 msgs = await getMessagesChannel(user.id, geust.id);
-            setAllMessage(msgs);
+            if (msgs !== undefined) setAllMessage(msgs);
+            else setOpenAlertError(true);
         }
         if (geust.id !== "-1" && user.id !== "-1") {
             getData();
@@ -99,7 +98,9 @@ const BoxChat = () => {
         if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
-                setIsBlocked(check);
+                if (check !== undefined) setIsBlocked(check);
+                else setOpenAlertError(true);
+
             }
             upDateGeust();
         }
@@ -141,13 +142,15 @@ const BoxChat = () => {
             && !geust.isUser) {
             const checkUserIsMuted = async () => {
                 const timer = await checkIsMuted(user.id, geust.id);
-                if (timer !== -1) {
-                    setIsMuted(true);
-                    const timeoutId = setTimeout(() => {
-                        setIsMuted(false);
-                    }, timer);
-                    return () => clearTimeout(timeoutId);
-                }
+                if (timer !== undefined) {
+                    if (timer !== -1) {
+                        setIsMuted(true);
+                        const timeoutId = setTimeout(() => {
+                            setIsMuted(false);
+                        }, timer);
+                        return () => clearTimeout(timeoutId);
+                    }
+                } else setOpenAlertError(true);
             }
             checkUserIsMuted();
         }

@@ -21,7 +21,7 @@ export function getColorStatus(status: any): string {
 
 
 const ListUser = () => {
-  const { setGeust, geust, socket, user, updateInfo } = useGlobalContext();
+  const { setGeust, geust, socket, user, updateInfo, setOpenAlertError } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
 
@@ -30,8 +30,10 @@ const ListUser = () => {
   useEffect(() => {
     const getListUsers = async () => {
       const usersList = await getUserForMsg(user.id);
-      setItemList(usersList)
+      if (usersList !== undefined) setItemList(usersList);
+      else setOpenAlertError(true);
     };
+
     getListUsers();
     if (socket) {
       socket.on("findMsg2UsersResponse", getListUsers);
@@ -42,7 +44,8 @@ const ListUser = () => {
   useEffect(() => {
     const getListUsers = async () => {
       const usersList = await getUserForMsg(user.id);
-      setItemList(usersList);
+      if (usersList !== undefined) setItemList(usersList);
+      else setOpenAlertError(true);
     };
     getListUsers();
   }, [updateInfo])
@@ -53,7 +56,9 @@ const ListUser = () => {
       geustTemp = await getUserGeust(tmp.receivedId);
     else
       geustTemp = await getChannelGeust(tmp.receivedId);
-    setGeust(geustTemp);
+
+    if (geustTemp !== undefined) setGeust(geustTemp);
+    else setOpenAlertError(true);
   };
 
   useEffect(() => {
@@ -86,8 +91,8 @@ const ListUser = () => {
     if (user.id !== "-1" && geust.id !== "-1") {
       const upDateGeust = async () => {
         const check = await checkIsBlocked(user.id, geust.id);
-        console.log('-----> check', check);
-        setIsBlocked(check);
+        if (check !== undefined) setIsBlocked(check);
+        else setOpenAlertError(true);
       }
       upDateGeust();
     }

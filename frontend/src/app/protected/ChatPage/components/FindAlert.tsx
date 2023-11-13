@@ -24,7 +24,7 @@ import { getColorStatus } from './ListUser';
 
 
 export default function AlertDialogFind() {
-    const { user, setGeust, socket, updateInfo } = useGlobalContext();
+    const { user, setGeust, socket, updateInfo, setOpenAlertError } = useGlobalContext();
 
     const [open, setOpen] = React.useState(false);
 
@@ -50,11 +50,13 @@ export default function AlertDialogFind() {
         async function getData() {
             if (user.id !== "-1") {
                 const temp = await getValideUsers(user.id);
-                setValideUsers(temp);
+                if (temp !== undefined) setValideUsers(temp);
+                else setOpenAlertError(true);
             }
             if (user.id !== "-1") {
                 const temp = await getValideChannels(user.id);
-                setValideChannels(temp);
+                if (temp !== undefined) setValideChannels(temp);
+                else setOpenAlertError(true);
             }
         }
         getData();
@@ -77,7 +79,8 @@ export default function AlertDialogFind() {
 
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);
-        setGeust(temp);
+        if (temp !== undefined) setGeust(temp);
+        else setOpenAlertError(true);
     };
 
     const [idChannel, setIdChannel] = useState("");
@@ -180,7 +183,6 @@ export default function AlertDialogFind() {
                                     } else {
                                         setIdChannel(channel.id);
                                         setOpenConfirm(true);
-                                        console.log("------------");
                                     }
                                 }} />}
 

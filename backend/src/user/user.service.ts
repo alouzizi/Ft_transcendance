@@ -201,7 +201,7 @@ export class UserService {
 
   async getChannelGeust(id: string) {
     try {
-      const channel = await this.channelService.findChannelById(id);
+      const channel = await this.prisma.channel.findUnique({ where: { id } });
       const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
       return {
         isUser: false,

@@ -4,6 +4,11 @@ import { createContext, useContext, Dispatch, SetStateAction, useState, useEffec
 import { io, Socket } from 'Socket.IO-client';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import * as React from 'react';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
 
 enum Status {
     ACTIF = "ACTIF",
@@ -13,6 +18,10 @@ enum Status {
 interface ContextProps {
     updateInfo: number,
     setUpdateInfo: Dispatch<SetStateAction<number>>,
+
+    openAlertErro: boolean,
+    setOpenAlertError: Dispatch<SetStateAction<boolean>>,
+
 
     user: ownerDto,
     setUser: Dispatch<SetStateAction<ownerDto>>,
@@ -33,6 +42,11 @@ interface ContextProps {
 const GlobalContext = createContext<ContextProps>({
     updateInfo: 1,
     setUpdateInfo: () => { },
+
+
+    openAlertErro: false,
+    setOpenAlertError: () => { },
+
 
     saveChanges: 0,
     setSaveChanges: () => { },
@@ -78,6 +92,7 @@ export const GlobalContextProvider = ({ children }: {
 
     const router = useRouter();
 
+    const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
     const [updateInfo, setUpdateInfo] = useState<number>(1);
     const [saveChanges, setSaveChanges] = useState<number>(0);
 
@@ -170,9 +185,15 @@ export const GlobalContextProvider = ({ children }: {
     return (
         <GlobalContext.Provider value={{
             geust, setGeust, user, setUser, socket,
-            updateInfo, setUpdateInfo, saveChanges, setSaveChanges
+            updateInfo, setUpdateInfo, saveChanges, setSaveChanges, openAlertErro, setOpenAlertError
         }}>
+            <Stack spacing={2} sx={{ width: '100%' }}>
+                <Snackbar open={openAlertErro} autoHideDuration={6000}>
+                    <Alert severity="error" onClose={() => { setOpenAlertError(false) }}>This is an error message!</Alert>
+                </Snackbar>
+            </Stack>
             {children}
+
         </GlobalContext.Provider>
     )
 }

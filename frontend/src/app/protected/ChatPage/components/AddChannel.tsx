@@ -51,7 +51,7 @@ export default function AlertAddChannel() {
 
     const [memberSearch, setMemberSearch] = useState('');
 
-    const { user, setGeust, socket } = useGlobalContext();
+    const { user, setGeust, socket, setOpenAlertError } = useGlobalContext();
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
     const [membersChannel, setMembersChannel] = useState<userDto[]>([]);
@@ -71,7 +71,10 @@ export default function AlertAddChannel() {
         async function getData() {
             if (user.id !== '-1') {
                 const temp = await getValideUsers(user.id);
-                setValideUsers(temp);
+                if (temp !== undefined)
+                    setValideUsers(temp);
+                else
+                    setOpenAlertError(true);
             }
         }
         getData();
@@ -82,28 +85,35 @@ export default function AlertAddChannel() {
             const username = elm.nickname;
             return ((username.includes(memberSearch) && memberSearch != '') || memberSearch === "*");
         })
-        setUsersFilter(tmp);
+        if (valideUsers.length)
+            setUsersFilter(tmp);
     }, [memberSearch, valideUsers])
 
 
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);
-        setGeust(temp);
+        if (temp !== undefined)
+            setGeust(temp);
+        else
+            setOpenAlertError(true);
     };
     useEffect(() => {
         async function createCha() {
             if (isReady) {
                 const res = await createChannel(channelData, user.id);
-                if (res.status === 200) {
-                    getDataGeust(res.id, false);
-                    socket?.emit('updateData', {
-                        content: '',
-                        senderId: user.id,
-                        isDirectMessage: false,
-                        receivedId: res.id,
-                    });
-                    setOpen(false);
-                } else if (res.status === 202) { setErrorName(res.error); }
+                if (res !== undefined) {
+                    if (res.status === 200) {
+                        getDataGeust(res.id, false);
+                        socket?.emit('updateData', {
+                            content: '',
+                            senderId: user.id,
+                            isDirectMessage: false,
+                            receivedId: res.id,
+                        });
+                        setOpen(false);
+                    } else if (res.status === 202) { setErrorName(res.error); }
+                } else
+                    setOpenAlertError(true);
 
             }
         }
@@ -133,6 +143,7 @@ export default function AlertAddChannel() {
         if (fonud) return true;
         return false;
     }
+
     const widgetSearsh = usersFilter.map((elm) => {
         return <Box p="1" pr="3" className='mx-2' key={elm.id}>
             <Flex align="center" justify="between" className='border-b py-2'>

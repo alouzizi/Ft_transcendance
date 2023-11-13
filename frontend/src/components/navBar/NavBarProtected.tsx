@@ -11,7 +11,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
   return (
     <div className="flex flex-col h-screen  text-white">
       {/* ================== NAV BAR ================== */}
-      <div className={` md:h-20 h-16  bg-color-main-dark z-1 w-screen`}>
+      <div className={`md:h-20 h-16  bg-color-main-dark z-1 w-screen`}>
         <div
           className={` flex flex-row justify-items-start  my-auto  md:h-20 h-16  w-full bg-color-main-dark z-30  ${show ? " pl-28" : ""
             }
