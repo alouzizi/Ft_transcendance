@@ -52,3 +52,4 @@ to do :
 - fix the all history and acheivments for other users✅
 - fix the level✅
 - fix fetching errors✅
+- add loader✅
