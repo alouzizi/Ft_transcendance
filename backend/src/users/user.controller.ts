@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Res} from '@nestjs/common';
+import {
+  Controller, 
+  Get,
+  Req,
+  Post, 
+  Body, 
+  Param, 
+  Delete, 
+  Put, 
+  UseGuards, 
+  Res,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './UserService';
 import { JwtGuard } from 'src/auth/guard';
@@ -9,7 +20,6 @@ export class UserController {
     private readonly userService: UserService) {}
 
   //houssin ----------
-
   @Get(':id')
   async getUserProfile(@Param('id') id: string) {
     return await this.userService.findById(id);
@@ -31,47 +41,36 @@ export class UserController {
     return temp;
   }
 
-  // @UseGuards(JwtGuard)
   @Get('/all')
   async getAllUser() {
     return await this.userService.findAllUsers();
   }
-
-
   @Get('/getValideUsers/:id')
   async getValideUsers(@Param('id') senderId: string) {
     return await this.userService.getValideUsers(senderId);
   }
-
-
-  @Get('getUserGeust/:id')
-  async getUserGeust(@Param('id') id: string) {
-    return await this.userService.getUserGeust(id);
-  }
-
+  // @Get('getUserGeust/:id')
+  // async getUserGeust(@Param('id') id: string) {
+  //   return await this.userService.getUserGeust(id);
+  // }
   @Get('getChannelGeust/:id')
   async getChannelGeust(@Param('id') id: string) {
     return await this.userService.getChannelGeust(id);
   }
   @UseGuards(AuthGuard('42-intranet'))
   @Get('42-intranet/login')
-  async loginWith42() {}
+  async loginWith42(@Req() req) {
+
+  }
 
   @Get(':id')
   async getUser(@Param('id') id: string) {
     return this.userService.getUserById(id);
   }
-
-  // @Put(':id')
-  // async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.updateUser(id, updateUserDto);
-  // }
-
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     return this.userService.deleteUser(id);
   }
 
 }
-
 //get user profil: take token verify jwt find user and return user 

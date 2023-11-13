@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, PrismaClient, User} from '@prisma/client'; 
 import { JwtService } from '@nestjs/jwt';
@@ -14,7 +14,6 @@ export class UserService {
     private channelService: ChannelService,
     private user: User[] = [],
   ){}
-
   async createUser(user1:any){
     console.log("my user iss",user1.intra_id);
     const user = await this.prisma.user.create({
@@ -26,12 +25,23 @@ export class UserService {
         last_name: user1.last_name,
         first_name: user1.first_name,
         hash: user1.hash,
+        isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false, // Assuming it's a boolean property
       },
-    
     });
     return user;
   }
+  async findOne(email: string): Promise<User | undefined> {
+    return this.user.find(user => user.email === email);
+  }
 
+  async setTwoFactorAuthSecret(secret: string, id: string) {
+    const userToUpdate = await this.user.find(user => user.id === id);
+    userToUpdate.twoFactorAuth = secret === 'true';
+  }
+
+  async turnOnTwoFactorAuthentication(id: string) {
+    this.user.find(user => user.id === id).isTwoFactorAuthEnabled = true;
+  }
     async getUsers() {
     return this.prisma.user.findMany();
   }
@@ -44,12 +54,6 @@ export class UserService {
       where: { intra_id: id },
     });
   }
-  // async updateUser(id: string, data: Prisma.UserUpdateInput){
-  //   return this.prisma.user.update({
-  //     where: { id: id },
-  //     data,
-  //   });
-  // }
   async updatUserdata(intra_id: string,nickname: string,image: string){
     const user = await this.prisma.user.update({
       where:{
@@ -75,20 +79,9 @@ async findByIntraId(intra_id: string){
     });
   }
   //houssine ------
-
-  async findById(id: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-    });
-  }
-
   async findAllUsers() {
     return await this.prisma.user.findMany();
   }
-
-
   async getValideUsers(senderId: string) {
     const users = await this.prisma.user.findMany();
 
@@ -147,18 +140,21 @@ async findByIntraId(intra_id: string){
     return result;
   }
 
-  async getUserGeust(id: string) {
-    const user = await this.findById(id);
-    return {
-      isUser: true,
-      id: user.id,
-      nickname: user.nickname,
-      profilePic: user.profilePic,
-      status: user.status,
-      lastSee: user.lastSee,
-      lenUser: 0,
-      lenUserLive: 0,
-    };
+  // async getUserGeust(id: string){
+  //   const user = this.findById(id);
+  //   return {
+  //     isUser: true,
+  //     id: user.id,
+  //     nickname: user.nickname,
+  //     profilePic: user.profilePic,
+  //     status: user.status,
+  //     lastSee: user.lastSee,
+  //     lenUser: 0,
+  //     lenUserLive: 0,
+  //   };
+  // }
+  findById(id: string) {
+    throw new Error('Method not implemented.');
   }
 
   async getChannelGeust(id: string) {

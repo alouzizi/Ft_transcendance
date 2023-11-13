@@ -8,6 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { FortyTwoIntranetStrategy } from './42-intranet.strategy';
 import { MessagesService } from 'src/messages/messages.service';
 import { ChannelService } from 'src/channel/channel.service';
+import { Jwt2faStrategy } from './2FA/jwt-2fa.strategy';
 
 @Module({
   imports:[
@@ -19,7 +20,7 @@ import { ChannelService } from 'src/channel/channel.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,FortyTwoIntranetStrategy,
+  providers: [AuthService,FortyTwoIntranetStrategy,Jwt2faStrategy,
     UserService,PrismaService,ChannelService,MessagesService],
 })
 export class AuthModule {}

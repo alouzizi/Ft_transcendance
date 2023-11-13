@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/users/UserService';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from "src/prisma/prisma.service";
-import { ConfigService } from "@nestjs/config";
 import { User } from '@prisma/client';
 import { toDataURL } from 'qrcode';
 import { authenticator } from 'otplib';
@@ -13,7 +12,6 @@ export class AuthService {
     private jwtService: JwtService,
     private UserService: UserService,
     private PrismaService: PrismaService,
-    private config: ConfigService,
 
   ) {}
   async generateAccessToken(user: any){
@@ -40,12 +38,64 @@ export class AuthService {
       return null;//res.redirect('https://github.com/');
     }  
   }
-}
-  // async checkTwoFA(id: string)
-  //     {
-  //        return (await this.userService.findOneById(intra_id)).twoFactorAuth;
-  //     }
+  async login(userWithoutPsw: Partial<User>) {
+    const payload = {
+      email: userWithoutPsw.email,
+    };
 
-///check if user in db 
-//user == true => redirect profile
-//user create => signup
+    return {
+      email: payload.email,
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async loginWith2fa(userWithoutPsw: Partial<User>) {
+    const payload = {
+      email: userWithoutPsw.email,
+      isTwoFactorAuthEnabled: !!userWithoutPsw.isTwoFactorAuthEnabled,
+      isTwoFactorAuthenticated: true,
+    };
+
+    return {
+      email: payload.email,
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async generateTwoFactorAuthSecret(user: User) {
+    const secret = authenticator.generateSecret();
+
+    const otpAuthUrl = authenticator.keyuri(
+      user.email,
+      'ft_tranc',
+      secret,
+    );
+
+    await this.UserService.setTwoFactorAuthSecret(
+      secret,
+      user.id,
+    );
+
+    return {
+      secret,
+      otpAuthUrl,
+    };
+  }
+
+  async generateQrCodeDataURL(otpAuthUrl: string) {
+    return toDataURL(otpAuthUrl);
+  }
+
+  isTwoFactorAuthCodeValid(twoFactorAuthCode: string, user: User) {
+    if (user.twoFactorAuth){
+      // If two-factor authentication is enabled, use the actual secret (string)
+      return authenticator.verify({
+        token: twoFactorAuthCode,
+        secret: user.twoFactorAuthSecret, // Replace with the actual property name for the secret
+    });
+  }else {
+    // If two-factor authentication is not enabled, you might handle it differently
+    return false;  // Or whatever makes sense for your application
+  }
+}
+}

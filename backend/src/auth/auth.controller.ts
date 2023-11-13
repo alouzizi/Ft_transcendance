@@ -6,22 +6,76 @@ import {
   Post,
   Res,
   UseGuards,
+  UnauthorizedException,
+  HttpCode,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from 'express';
 import { AuthService } from "./auth.service";
 import { UserService } from "src/users/UserService";
 import { AuthDto } from "./dto";
-import { async } from "rxjs";
+import { JwtGuard } from "./guard";
+import { Jwt2faAuthGuard } from "./2FA/jwt-2fa-auth.guard";
+import { User } from "@prisma/client";
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  userService: any;
+  constructor(
+    private authService: AuthService,
+
+    ) {}
 
   @Get('login42')
   @UseGuards(AuthGuard('42-intranet'))
-  async loginWith42() {
-    // console.log("login here")
+  @HttpCode(200)
+  async loginWith42(@Req() req) {
+  // console.log("login here")
+    const userWithoutPsw: Partial<User> = req.user;
+
+    return this.authService.loginWith2fa(userWithoutPsw); 
   }
+  @Post('2fa/generate')
+  @UseGuards(AuthGuard)
+  async register(@Res() Res, @Req() req) {
+    const { otpAuthUrl } =
+      await this.authService.generateTwoFactorAuthSecret(
+        req.user,
+      );
+
+    return Res.json(
+      await this.authService.generateQrCodeDataURL(otpAuthUrl),
+    );
+  }
+
+  @Post('2fa/turn-on')
+  @UseGuards(AuthGuard)
+  async turnOnTwoFactorAuthentication(@Req() req, @Body() body) {
+    const isCodeValid =
+      this.authService.isTwoFactorAuthCodeValid(
+        body.twoFactorAuthCode,
+        req.user,
+      );
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
+    await this.userService.turnOnTwoFactorAuthentication(req.user.id);
+  }
+
+  @Post('2fa/authenticate')
+  @HttpCode(200)
+  @UseGuards(AuthGuard)
+  async authenticate(@Req() req, @Body() body) {
+    const isCodeValid = this.authService.isTwoFactorAuthCodeValid(
+      body.twoFactorAuthenticationCode,
+      req.user,
+    );
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
+
+    return this.authService.loginWith2fa(req.user);
+  }
+
   @Get('42-intranet/callback')
   @UseGuards(AuthGuard('42-intranet'))
   async callbackWith42(@Req() req: any,@Res() res: Response) { 
@@ -38,11 +92,8 @@ export class AuthController {
     // res.redirect("http://www.google.com"); 
     // res.send(ret)
   }
+
 }
-
-
-// Other authentication-related endpoints...
-
 
 //prisma
 //dto

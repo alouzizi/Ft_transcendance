@@ -36,6 +36,8 @@ model User {
   hash          String?
 
   twoFactorAuth Boolean @default(false)
+  isTwoFactorAuthEnabled Boolean
+  twoFactorAuthSecret String?
   AsciiSecretQr String?
 
   createdAt DateTime @default(now())
@@ -49,7 +51,7 @@ model User {
   BlockedUser  BlockedUser[]
   Channel      Channel[]
 }
-
+  
 model Channel {
   id              String      @id @default(uuid())
   channelName     String      @unique
