@@ -45,6 +45,9 @@ export declare class ChannelController {
     checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
         error: boolean;
     }>;
+    checkUserIsInChannel(senderId: string, channelId: string): Promise<boolean | {
+        error: boolean;
+    }>;
     addUserToChannel(senderId: string, channelId: string, userId: string): Promise<{
         error: boolean;
     }>;

@@ -83,10 +83,10 @@ export class SocketGatewayService {
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } })
       for (const member of channelMembers) {
-        wss.to(member.userId).emit('updateData', {});
+        wss.to(member.userId).emit('updateData', ids.content);
       }
     } else
-      wss.to(ids.receivedId).emit('updateData', {});
+      wss.to(ids.receivedId).emit('updateData', ids.content);
   }
 
 }

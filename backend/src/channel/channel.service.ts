@@ -351,6 +351,17 @@ export class ChannelService {
     }
   }
 
+  async checkUserIsInChannel(senderId: string, channelId: string) {
+    try {
+      const check = await this.prisma.channelMember.findFirst({ where: { userId: senderId, channelId } });
+      if (check)
+        return true
+      return false;
+    } catch (error) {
+      return { error: true }
+    }
+  }
+
   async changeStatutsBanned(senderId: string, channelId: string, userId: string) {
     try {
       const admin: ChannelMember = await this.prisma.channelMember.findUnique({

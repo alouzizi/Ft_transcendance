@@ -10,11 +10,16 @@ import AlertsAddUserChannel from './addUser';
 import LongMenu from './alert_menu';
 import { useRouter } from 'next/navigation';
 
+enum Status {
+    ACTIF = "ACTIF",
+    INACTIF = "INACTIF",
+}
+
 export default function MembersChannel() {
 
     const [searsh, setSearsh] = useState('');
 
-    const { user, geust, socket, updateInfo, setUpdateInfo } = useGlobalContext();
+    const { user, geust, socket, updateInfo, setUpdateInfo, setGeust } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
@@ -170,6 +175,16 @@ export default function MembersChannel() {
             <div className='flex pt-1 items-center justify-end text-red-500  w-3/4'>
 
                 <button onClick={async () => {
+                    setGeust({
+                        isUser: true,
+                        id: '-1',
+                        nickname: '',
+                        profilePic: '',
+                        status: Status.INACTIF,
+                        lastSee: 0,
+                        lenUser: 0,
+                        idUserOwner: ''
+                    });
                     const tmp = await leaveChannel(user.id, geust.id);
                     socket?.emit('updateData', {
                         content: '',

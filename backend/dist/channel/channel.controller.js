@@ -38,6 +38,9 @@ let ChannelController = class ChannelController {
     checkOwnerIsAdmin(senderId, channelId) {
         return this.channelService.checkOwnerIsAdmin(senderId, channelId);
     }
+    checkUserIsInChannel(senderId, channelId) {
+        return this.channelService.checkUserIsInChannel(senderId, channelId);
+    }
     addUserToChannel(senderId, channelId, userId) {
         return this.channelService.addUserToChannel(senderId, channelId, userId);
     }
@@ -104,6 +107,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "checkOwnerIsAdmin", null);
+__decorate([
+    (0, common_1.Get)('/checkUserIsInChannel/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "checkUserIsInChannel", null);
 __decorate([
     (0, common_1.Get)('/addUserToChannel/:senderId/:channelId/:userId'),
     __param(0, (0, common_1.Param)('senderId')),

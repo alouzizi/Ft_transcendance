@@ -8,6 +8,7 @@ import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '..
 import { extractHoursAndM } from './widgetMsg';
 import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
+import { checkUserIsInChannel } from '../api/fetch-channel';
 
 
 export function getColorStatus(status: any): string {
@@ -56,13 +57,21 @@ const ListUser = () => {
       geustTemp = await getUserGeust(tmp.receivedId);
     else
       geustTemp = await getChannelGeust(tmp.receivedId);
-
     if (geustTemp !== undefined) setGeust(geustTemp);
     else setOpenAlertError(true);
   };
 
+
+  const [check, setCheck] = useState(false);
   useEffect(() => {
-    if (geust.id === '-1') {
+
+    const checked = async () => {
+      const temp = await checkUserIsInChannel(user.id, geust.id);
+      if (temp !== undefined && !temp) setCheck(true);
+      if (temp === undefined) setOpenAlertError(true);
+    }
+    if (geust.id != '-1' && !geust.isUser) checked();
+    if (geust.id === '-1' || check) {
       if (direct) {
         if (itemListDirect.length !== 0) {
           itemListWidget = userWidgetDirect;
@@ -78,8 +87,9 @@ const ListUser = () => {
           getDataGeust(itemListDirect[0]);
         }
       }
+      setCheck(false);
     }
-  }, [direct, itemList])
+  }, [direct, itemList, updateInfo, check])
 
   useEffect(() => {
     if (geust.id !== '-1')

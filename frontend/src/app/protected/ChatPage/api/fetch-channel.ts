@@ -125,6 +125,18 @@ export async function ChangeStatusBanned(senderId: string, channelId: string, us
     } catch (error) { }
 }
 
+export async function checkUserIsInChannel(senderId: string, channelId: string) {
+    try {
+        const res = await axios.get(
+            Backend_URL + `/channel/checkUserIsInChannel/${senderId}/${channelId}`);
+        const data = await res.data;
+        if (data.error)
+            throw Error
+        return data;
+    } catch (error) { }
+}
+
+
 export async function joinChannel(senderId: string, channelId: string) {
     try {
         const res = await axios.get(

@@ -35,6 +35,6 @@ export class AuthController {
     }
     res.cookie('intra_id', req.user.intra_id);
     res.cookie('access_token', ret.access_token);
-    res.redirect("http://localhost:3000/protected/DashboardPage");
+    res.redirect("http://10.11.4.2:3000/protected/DashboardPage");
   }
 }

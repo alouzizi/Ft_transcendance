@@ -99,6 +99,9 @@ export declare class ChannelService {
     KickMember(senderId: string, channelId: string, userId: string): Promise<boolean | {
         error: boolean;
     }>;
+    checkUserIsInChannel(senderId: string, channelId: string): Promise<boolean | {
+        error: boolean;
+    }>;
     changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean | {
         error: boolean;
     }>;

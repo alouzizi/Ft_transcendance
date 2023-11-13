@@ -190,33 +190,34 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
 export function ShowMessages({ messages, user }: { messages: messageDto[], user: ownerDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
-    return messages.map((elm, index) => {
-        const temp = showDays(currentDate, elm.createdAt);
-        const tag =
-            <div key={index}>
-                {
-                    temp.show ?
-                        (
-                            <div className="flex items-center pt-2 pb-2">
-                                <div className="flex-grow h-px bg-gray-400 mx-4"></div>
-                                <h2 className="text-sm">{temp.data}</h2>
-                                <div className="flex-grow h-px bg-gray-400 mx-4"></div>
-                            </div>
-                        )
-                        : (<></>)
-                }
+    if (messages.length)
+        return messages.map((elm, index) => {
+            const temp = showDays(currentDate, elm.createdAt);
+            const tag =
+                <div key={index}>
+                    {
+                        temp.show ?
+                            (
+                                <div className="flex items-center pt-2 pb-2">
+                                    <div className="flex-grow h-px bg-gray-400 mx-4"></div>
+                                    <h2 className="text-sm">{temp.data}</h2>
+                                    <div className="flex-grow h-px bg-gray-400 mx-4"></div>
+                                </div>
+                            )
+                            : (<></>)
+                    }
 
-                {
-                    (elm.InfoMessage === true) ?
-                        <MessageCenterInfo message={elm} user={user} />
-                        : ((elm.senderId == user.id) ? (
-                            <MessageRight message={elm} />
-                        ) : (
-                            <MessageLeft message={elm} />
-                        ))
-                }
-            </div>
-        return tag;
-    })
+                    {
+                        (elm.InfoMessage === true) ?
+                            <MessageCenterInfo message={elm} user={user} />
+                            : ((elm.senderId == user.id) ? (
+                                <MessageRight message={elm} />
+                            ) : (
+                                <MessageLeft message={elm} />
+                            ))
+                    }
+                </div>
+            return tag;
+        })
 
 }

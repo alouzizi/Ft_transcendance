@@ -11,19 +11,26 @@ import { BsFillSendFill, } from "react-icons/bs";
 import { GoDotFill } from "react-icons/go";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useGlobalContext } from '../../../context/store';
-import { checkIsMuted } from '../api/fetch-channel';
+import { checkIsMuted, checkUserIsInChannel } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 
+
+enum Status {
+    ACTIF = "ACTIF",
+    INACTIF = "INACTIF",
+}
+
 const BoxChat = () => {
+
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-    const { geust, user, socket, setGeust, updateInfo, setOpenAlertError } = useGlobalContext();
+    const { geust, user, socket, setGeust, updateInfo, setOpenAlertError, setUpdateInfo } = useGlobalContext();
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -63,6 +70,7 @@ const BoxChat = () => {
 
 
     useEffect(() => {
+        console.log("object")
         async function getData() {
             let msgs;
             if (geust.isUser)
@@ -121,7 +129,7 @@ const BoxChat = () => {
             const updateIsTyping = (data: messageDto) => {
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
-                    setMsg('');
+                    // setMsg('');
                     setTimeout(() => {
                         setIsTyping(false);
                     }, 2000);
@@ -144,6 +152,7 @@ const BoxChat = () => {
                 const timer = await checkIsMuted(user.id, geust.id);
                 if (timer !== undefined) {
                     if (timer !== -1) {
+                        setMsg('');
                         setIsMuted(true);
                         const timeoutId = setTimeout(() => {
                             setIsMuted(false);
@@ -182,10 +191,9 @@ const BoxChat = () => {
                 width: 500, height: 600,
                 borderRadius: 10, background: "#f1f3f9", marginLeft: 3
             }}>
-
-
             <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-lg">
                 <div className="flex items-center pl-3">
+
                     <Avatar
                         size="3"
                         src={geust.profilePic}

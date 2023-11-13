@@ -56,7 +56,6 @@ let MessagesService = class MessagesService {
                 messageStatus = "Received";
             const msg = await this.prisma.message.create({
                 data: {
-                    id: '88',
                     ...createMessageDto,
                     receivedId: createMessageDto.receivedId,
                     notSendTo,

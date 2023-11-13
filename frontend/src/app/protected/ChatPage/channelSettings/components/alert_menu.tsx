@@ -60,6 +60,12 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                 await ChangeStatusBanned(user.id, geust.id, member.userId);
             } else if ('kick from Group' === e) {
                 await kickMember(user.id, geust.id, member.userId);
+                socket?.emit('updateData', {
+                    content: 'kick',
+                    senderId: user.id,
+                    isDirectMessage: true,
+                    receivedId: member.userId,
+                });
             } else if ('Cancel Timeout' === e) {
                 await cancelTimeOut(user.id, geust.id, member.userId);
             } else if ('Timeout' === e) {
@@ -71,12 +77,6 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                     senderId: user.id,
                     isDirectMessage: false,
                     receivedId: geust.id,
-                });
-                socket?.emit('updateData', {
-                    content: '',
-                    senderId: user.id,
-                    isDirectMessage: true,
-                    receivedId: member.userId,
                 });
             }
         }

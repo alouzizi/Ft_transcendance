@@ -57,7 +57,6 @@ export class MessagesService {
 
       const msg = await this.prisma.message.create({
         data: {
-          id: '88',
           ...createMessageDto,
           receivedId: createMessageDto.receivedId,
           notSendTo,

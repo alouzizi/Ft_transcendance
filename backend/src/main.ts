@@ -17,19 +17,15 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: "http://localhost:3000",
+    origin: "http://10.11.4.2:3000",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   });
 
-  // app.enableCors({
-  //   origin: 'http://localhost:3000',
-  //   methods: ['GET', 'POST', 'DELETE'],
-  //   credentials: true,
-  // });
   app.use(cookieParser());
 
-  await app.listen(4000);
+  // await app.listen(4000);
+  await app.listen(4000, '10.11.4.2');
 }
 
 bootstrap();
