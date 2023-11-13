@@ -1,18 +1,14 @@
 "use client";
 import {
-  getAllPossibleFriends,
-  getAllUsers,
   getNavSearchUsers,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "@/app/context/store";
 import { Popper } from "@mui/material";
-import React, { ChangeEvent } from "react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { ChangeEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import NavSearchItem from "./NavSearchItem";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function SerachNav(prompt: { show: boolean }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -29,6 +25,7 @@ export default function SerachNav(prompt: { show: boolean }) {
   const [PendingFriendsList, setPendingFriendsList] = React.useState<
     friendDto[]
   >([]);
+  let filteredData: friendDto[] = [];
   const { user } = useGlobalContext();
   React.useEffect(() => {
     async function getData() {
@@ -51,17 +48,16 @@ export default function SerachNav(prompt: { show: boolean }) {
   function handleSearch(event: ChangeEvent<HTMLInputElement>): void {
     setInputSearch(event.target.value);
     setAnchorEl(event.currentTarget);
-
-    // handleClick;
   }
-  const filteredData = data.filter((user: friendDto) => {
-    return (
-      user.nickname.toLowerCase().includes(inputSearch.toLowerCase()) &&
-      inputSearch !== ""
-    );
-  });
+  if (data) {
+    filteredData = data.filter((user: friendDto) => {
+      return (
+        user.nickname.toLowerCase().includes(inputSearch.toLowerCase()) &&
+        inputSearch !== ""
+      );
+    });
+  }
   const router = useRouter();
-  // const [userSearched, setUserSearched] = useState("");
   function onSearch(userSearched: string) {
     router.push(`/protected/DashboardPage/${userSearched}`);
     setInputSearch("");

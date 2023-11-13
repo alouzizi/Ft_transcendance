@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();
   const { user, updateInfo } = useGlobalContext();
+  const [isBlocked, setIsBlocked] = useState(true);
 
   useEffect(() => {
     const userName = pathname;
@@ -28,7 +29,7 @@ export default function DashboardPage() {
         const isBlocked = await getIsBlocked(user.id, usr.id);
         console.log(isBlocked);
         if (isBlocked.isBlocked) {
-          setFriend(undefined);
+          setIsBlocked(false);
           console.log("blocked-=--=-");
           return;
         }
@@ -41,7 +42,7 @@ export default function DashboardPage() {
     getData();
   }, [pathname, updateInfo]);
 
-  if (friend) {
+  if (isBlocked && friend) {
     return <DashBoard friend={friend} />;
   } else {
     return <ErrorPage />;

@@ -15,6 +15,8 @@ import {
   getGlobalInfos,
   getUserRanking,
 } from "@/app/api/hixcoder/FriendsPageAPI";
+import { promise } from "zod";
+import { resolve } from "path";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
@@ -30,6 +32,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     NbrOfInvitedFriends: 0,
   });
   const [rank, setRank] = useState(0);
+  const [winRate, setWinRate] = useState(0);
   let achievementsList = getAchievmentsData(globalInfo).filter(
     (acheiv) => acheiv.isUnlocked
   );
@@ -62,6 +65,15 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         // for fetch the globalInfoTmp
         const globalInfoTmp = await getGlobalInfos(prompt.friend.nickname);
         setGlobalInfo(globalInfoTmp);
+
+        //for set the win rate
+        if (globalInfo.NbrOfAllMatches > 0) {
+          setWinRate(
+            Math.round(
+              (globalInfo.NbrOfWinnedMatches * 100) / globalInfo.NbrOfAllMatches
+            )
+          );
+        }
       } catch (error: any) {
         console.log("getData error: " + error);
       }
@@ -73,17 +85,17 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
   }, [updateInfo]);
 
   return (
-    <div className="flex flex-col h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
+    <div className="flex flex-col min-h-screen h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
 
       <div
         className=" bg-cover bg-center rounded-3xl  relative 
-        transition-all duration-100 ease-in-out overflow-hidden 
+        transition-all duration-100 ease-in-out 
        
         // small screen
-        h-[26rem] w-5/6 mx-auto
+        w-5/6 mx-auto h-96
         // big screen 
-        2xl:h-96 2xl:w-5/6 2xl:mx-auto
+        2xl:w-5/6 2xl:mx-auto
         "
         style={{ backgroundImage: "url('/bg-info.png')" }}
       >
@@ -159,10 +171,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             <CardInfo
               cardImg="/win-rate.png"
               cardName="Win Rate"
-              value={`${Math.round(
-                (globalInfo.NbrOfWinnedMatches * 100) /
-                  globalInfo.NbrOfAllMatches
-              )}%`}
+              value={`${winRate}%`}
             />
           </div>
         </div>
@@ -202,15 +211,13 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
                 />
               ))
           ) : (
-            <p className="mx-auto my-3 text-gray-500 text-lg">
-              No Matches here!
-            </p>
+            <p className="mx-auto  my-12 text-gray-500 text-lg">No Matches!</p>
           )}
         </HomeSection>
         {/* ========================= /Game Section =========================*/}
         {/* ========================= Achievement Section =========================*/}
         <HomeSection
-          sectionName="Your Achievements"
+          sectionName="Achievements"
           btnName="See All Achievements"
           btnClicked={() => {
             router.push(
@@ -218,19 +225,25 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             );
           }}
         >
-          {achievementsList
-            .slice(-3)
-            .reverse()
-            .map((achiev, index) => (
-              <AchievementItem
-                key={`achievDash-${index}`}
-                isUnlocked={achiev.isUnlocked}
-                image={achiev.image}
-                title={achiev.title}
-                mission={achiev.mission}
-                type={achiev.type}
-              />
-            ))}
+          {achievementsList.length !== 0 ? (
+            achievementsList
+              .slice(-3)
+              .reverse()
+              .map((achiev, index) => (
+                <AchievementItem
+                  key={`achievDash-${index}`}
+                  isUnlocked={achiev.isUnlocked}
+                  image={achiev.image}
+                  title={achiev.title}
+                  mission={achiev.mission}
+                  type={achiev.type}
+                />
+              ))
+          ) : (
+            <p className="mx-auto my-12 text-gray-500 text-lg ">
+              No Achievements!
+            </p>
+          )}
         </HomeSection>
         {/* ========================= /Achievement Section =========================*/}
       </div>

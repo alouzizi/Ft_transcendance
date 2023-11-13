@@ -27,6 +27,7 @@
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "js-cookie": "^3.0.5",
+    "lottie-react": "^2.4.0",
     "lucide-react": "^0.284.0",
     "mini-react-cropper": "^1.0.4",
     "next": "^13.5.4",

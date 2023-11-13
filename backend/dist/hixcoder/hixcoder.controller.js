@@ -68,7 +68,6 @@ let HixcoderController = class HixcoderController {
         return this.hixcoderService.removeFriend(sender, reciever);
     }
     async getGameHistory(sender) {
-        console.log("Received request for game history for sender:", sender);
         return this.hixcoderService.getGameHistory(sender);
     }
     async getGlobalInfos(recieverUsr) {

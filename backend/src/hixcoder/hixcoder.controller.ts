@@ -141,7 +141,6 @@ export class HixcoderController {
   // for get gameHistory
   @Get("/gameHistory/:senderUsr")
   async getGameHistory(@Param("senderUsr") sender: string) {
-    console.log("Received request for game history for sender:", sender);
     return this.hixcoderService.getGameHistory(sender);
   }
   // for get globalInfos for acheivments making
