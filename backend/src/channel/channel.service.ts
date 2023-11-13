@@ -41,7 +41,7 @@ export class ChannelService {
           channelPassword: bcryptPassword,
           channelType: createChannelDto.channelType,
           protected: createChannelDto.protected,
-          avatar: "https://randomuser.me/api/portraits/women/82.jpg"
+          avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png"
         }
       })
 

@@ -20,9 +20,8 @@ enum ChannelType {
     Public = 'Public',
     Private = 'Private'
 }
-// MiniCropper
-export default function UpdateChannel() {
 
+export default function UpdateChannel() {
 
 
     const { user, geust, saveChanges, setSaveChanges, updateInfo, socket } = useGlobalContext();
@@ -167,7 +166,7 @@ export default function UpdateChannel() {
                         radius="full"
                         fallback="T"
                     />
-                    <input type="file" accept="image/*"
+                    {/* <input type="file" accept="image/*"
                         disabled={!(isOwnerAdmin || !channel.protected)}
                         style={{ display: 'none' }}
                         onChange={(event: any) => {
@@ -179,7 +178,7 @@ export default function UpdateChannel() {
                                     return { ...prevState, avatar: imageURL };
                                 })
                             }
-                        }} />
+                        }} /> */}
                 </label>
 
 
