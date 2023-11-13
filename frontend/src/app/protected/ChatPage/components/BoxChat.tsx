@@ -129,7 +129,6 @@ const BoxChat = () => {
             const updateIsTyping = (data: messageDto) => {
                 if (data.senderId === geust.id) {
                     setIsTyping(true);
-                    // setMsg('');
                     setTimeout(() => {
                         setIsTyping(false);
                     }, 2000);

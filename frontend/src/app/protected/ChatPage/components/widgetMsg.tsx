@@ -1,6 +1,8 @@
 import { Text, Avatar, Flex } from '@radix-ui/themes';
 import { ThreeDots } from 'react-loader-spinner'
 import { BsCheck2, BsCheck2All } from "react-icons/bs";
+import { MdOutlineEditNote } from "react-icons/md";
+import { useState } from 'react';
 
 export function extractHoursAndM(time: number): string {
 
@@ -31,6 +33,8 @@ export function IsTypingMsg() {
 }
 
 export function MessageRight({ message }: { message: messageDto }) {
+    const [isHovered, setIsHovered] = useState(false);
+
     const cardStyles = {
         width: 200,
         borderTopRightRadius: 0,
@@ -48,9 +52,16 @@ export function MessageRight({ message }: { message: messageDto }) {
                 <Text size="1" className='pr-1'>
                     {extractHoursAndM(message.createdAt)}
                 </Text>
-                {message.messageStatus === 'NotReceived' ?
-                    <BsCheck2 /> :
-                    <BsCheck2All />}
+                <div onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}>
+
+                    {!isHovered ?
+                        (message.messageStatus === 'NotReceived') ?
+                            <BsCheck2 /> :
+                            <BsCheck2All />
+                        : <MdOutlineEditNote />}
+
+                </div>
             </Flex>
         </div>
     );
