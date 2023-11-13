@@ -3,7 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 import { MessagesService } from "src/messages/messages.service";
 import { MessageItemList } from "./dto/user.dto";
-import { BlockedUser, Channel, Message, Status } from "@prisma/client";
+import { BlockedUser, Channel, Message, Status, User } from "@prisma/client";
 import { ChannelService } from "src/channel/channel.service";
 
 
@@ -16,174 +16,206 @@ export class UserService {
 
 
   async findById(id: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-    });
+    try {
+      const user: User = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      return user;
+    } catch (error) {
+      return { error: true }
+    }
   }
 
   async findAllUsers() {
-    return await this.prisma.user.findMany();
+    try {
+      return await this.prisma.user.findMany();
+    } catch (error) {
+      return { error: true }
+    }
   }
+
   async getValideUsers(senderId: string) {
+    try {
+      const users = await this.prisma.user.findMany();
 
-    const users = await this.prisma.user.findMany();
-    const blockerUsers = await this.prisma.blockedUser.findMany({
-      where: {
-        OR: [{ senderId: senderId }, { receivedId: senderId }],
-      },
-    });
-
-    const temp = users.filter((user) => {
-      if (user.id === senderId) return false;
-      const found = blockerUsers.find((elm) => {
-        return (
-          (senderId === elm.senderId && user.id === elm.receivedId) ||
-          (senderId === elm.receivedId && user.id === elm.senderId)
-        );
+      const blockerUsers = await this.prisma.blockedUser.findMany({
+        where: {
+          OR: [{ senderId: senderId }, { receivedId: senderId }],
+        },
       });
-      if (found) return false;
-      return true;
-    });
 
-    const result = await Promise.all(
-      temp.map(async (user) => {
-        let friends = await this.prisma.friend.findFirst({
-          where: {
-            OR: [
-              { senderId: senderId, receivedId: user.id },
-              { senderId: user.id, receivedId: senderId },
-            ],
-          },
+      const temp = users.filter((user) => {
+        if (user.id === senderId) return false;
+        const found = blockerUsers.find((elm) => {
+          return (
+            (senderId === elm.senderId && user.id === elm.receivedId) ||
+            (senderId === elm.receivedId && user.id === elm.senderId)
+          );
         });
-        if (friends) return { ...user, friendship: 1 }; // friends
+        if (found) return false;
+        return true;
+      });
 
-        let freiReq = await this.prisma.friendRequest.findFirst({
-          where: { senderId: user.id, receivedId: senderId, },
-        });
-        if (freiReq) return { ...user, friendship: 2 }; //  user that I sent a friend request
+      const result = await Promise.all(
+        temp.map(async (user) => {
+          let friends = await this.prisma.friend.findFirst({
+            where: {
+              OR: [
+                { senderId: senderId, receivedId: user.id },
+                { senderId: user.id, receivedId: senderId },
+              ],
+            },
+          });
+          if (friends) return { ...user, friendship: 1 }; // friends
 
-        let sendReq = await this.prisma.friendRequest.findFirst({
-          where: { senderId: senderId, receivedId: user.id, },
-        });
-        if (sendReq) return { ...user, friendship: 3 };  // user who sent a friend request 
+          let freiReq = await this.prisma.friendRequest.findFirst({
+            where: { senderId: user.id, receivedId: senderId, },
+          });
+          if (freiReq) return { ...user, friendship: 2 }; //  user that I sent a friend request
 
-        return { ...user, friendship: 0 }; // user
-      })
-    );
-    return result;
+          let sendReq = await this.prisma.friendRequest.findFirst({
+            where: { senderId: senderId, receivedId: user.id, },
+          });
+          if (sendReq) return { ...user, friendship: 3 };  // user who sent a friend request 
+
+          return { ...user, friendship: 0 }; // user
+        })
+      );
+      return result;
+    } catch (error) {
+      return { error: true }
+    }
   }
-
 
   async usersCanJoinChannel(senderId: string, channelId: string) {
-    const users = await this.prisma.user.findMany();
-    const blockerUsers = await this.prisma.blockedUser.findMany({
-      where: {
-        OR: [{ senderId: senderId }, { receivedId: senderId }],
-      },
-    });
-    const bannedUsersChannel = await this.prisma.bannedMember.findMany({
-      where: { channelId: channelId }
-    })
-    const membersChannel = await this.prisma.channelMember.findMany({
-      where: { channelId: channelId }
-    })
-
-    const cleanUser = users.filter((user) => {
-      if (user.id === senderId) return false;
-      const found = blockerUsers.find((blk) => {
-        return (
-          (senderId === blk.senderId && user.id === blk.receivedId) ||
-          (senderId === blk.receivedId && user.id === blk.senderId)
-        );
+    try {
+      const users = await this.prisma.user.findMany();
+      const blockerUsers = await this.prisma.blockedUser.findMany({
+        where: {
+          OR: [{ senderId: senderId }, { receivedId: senderId }],
+        },
       });
-      if (found) return false;
-      return true;
-    });
+      const bannedUsersChannel = await this.prisma.bannedMember.findMany({
+        where: { channelId: channelId }
+      })
+      const membersChannel = await this.prisma.channelMember.findMany({
+        where: { channelId: channelId }
+      })
 
-    const cleanUser2 = cleanUser.filter((user) => {
-      const found = bannedUsersChannel.find((banned) => {
-        return (banned.userId === user.id);
+      const cleanUser = users.filter((user) => {
+        if (user.id === senderId) return false;
+        const found = blockerUsers.find((blk) => {
+          return (
+            (senderId === blk.senderId && user.id === blk.receivedId) ||
+            (senderId === blk.receivedId && user.id === blk.senderId)
+          );
+        });
+        if (found) return false;
+        return true;
       });
-      if (found) return false;
-      return true;
-    });
 
-    const result = cleanUser2.filter((user) => {
-      const found = membersChannel.find((banned) => {
-        return (banned.userId === user.id);
+      const cleanUser2 = cleanUser.filter((user) => {
+        const found = bannedUsersChannel.find((banned) => {
+          return (banned.userId === user.id);
+        });
+        if (found) return false;
+        return true;
       });
-      if (found) return false;
-      return true;
-    });
-    return result;
+
+      const result = cleanUser2.filter((user) => {
+        const found = membersChannel.find((banned) => {
+          return (banned.userId === user.id);
+        });
+        if (found) return false;
+        return true;
+      });
+      return result;
+    } catch {
+      return { error: true }
+    }
   }
-
 
   // 0 if users is friend
   // 1 if sender block received
   // 2 if receiver block sender
   async checkIsBlocked(senderId: string, receivedId: string) {
-    const block1: BlockedUser = await this.prisma.blockedUser.findFirst({
-      where: {
-        senderId: senderId,
-        receivedId: receivedId
-      }
-    })
-    if (block1)
-      return 1;
-    const block2: BlockedUser = await this.prisma.blockedUser.findFirst({
-      where: {
-        senderId: receivedId,
-        receivedId: senderId
-      }
-    })
-    if (block2)
-      return 2;
-    return 0;
+    try {
+      const block1: BlockedUser = await this.prisma.blockedUser.findFirst({
+        where: {
+          senderId: senderId,
+          receivedId: receivedId
+        }
+      })
+      if (block1)
+        return 1;
+      const block2: BlockedUser = await this.prisma.blockedUser.findFirst({
+        where: {
+          senderId: receivedId,
+          receivedId: senderId
+        }
+      })
+      if (block2)
+        return 2;
+      return 0;
+    } catch (error) {
+      return { error: true }
+    }
   }
 
   async getUserGeust(id: string) {
-    const user = await this.findById(id);
-    if (user)
+    try {
+      const user: User = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      if (user)
+        return {
+          isUser: true,
+          id: user.id,
+          nickname: user.nickname,
+          profilePic: user.profilePic,
+          status: user.status,
+          lastSee: user.lastSee,
+          lenUser: 0,
+          idUserOwner: 0,
+        };
       return {
         isUser: true,
-        id: user.id,
-        nickname: user.nickname,
-        profilePic: user.profilePic,
-        status: user.status,
-        lastSee: user.lastSee,
+        id: '-1',
+        nickname: '',
+        profilePic: '',
+        status: '',
+        lastSee: 0,
         lenUser: 0,
         idUserOwner: 0,
       };
-    return {
-      isUser: true,
-      id: '-1',
-      nickname: '',
-      profilePic: '',
-      status: '',
-      lastSee: 0,
-      lenUser: 0,
-      idUserOwner: 0,
-    };
+    } catch {
+      return { error: true }
+    }
   }
 
 
 
   async getChannelGeust(id: string) {
-    const channel = await this.channelService.findChannelById(id);
-    const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
-    return {
-      isUser: false,
-      id: id,
-      nickname: channel.channelName,
-      profilePic: channel.avatar,
-      status: Status.INACTIF,
-      lastSee: channel.createdAt,
-      lenUser: members.length,
-      idUserOwner: channel.channelOwnerId
-    };
+    try {
+      const channel = await this.channelService.findChannelById(id);
+      const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
+      return {
+        isUser: false,
+        id: id,
+        nickname: channel.channelName,
+        profilePic: channel.avatar,
+        status: Status.INACTIF,
+        lastSee: channel.createdAt,
+        lenUser: members.length,
+        idUserOwner: channel.channelOwnerId
+      };
+    } catch {
+      return { error: true }
+    }
   }
 
   // saliha -------------------

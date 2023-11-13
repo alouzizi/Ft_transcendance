@@ -4,11 +4,19 @@ import { Server } from 'socket.io';
 export declare class MessagesService {
     private prisma;
     constructor(prisma: PrismaService);
-    createDirectMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
-    createChannelMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
     createMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
-    getDirectMessage(senderId: string, receivedId: string): Promise<messageDto[]>;
-    getChannelMessage(senderId: string, channelId: string): Promise<messageDto[]>;
+    createDirectMessage(server: Server, createMessageDto: CreateMessageDto): Promise<{
+        error: boolean;
+    }>;
+    createChannelMessage(server: Server, createMessageDto: CreateMessageDto): Promise<{
+        error: boolean;
+    }>;
+    getDirectMessage(senderId: string, receivedId: string): Promise<messageDto[] | {
+        error: boolean;
+    }>;
+    getChannelMessage(senderId: string, channelId: string): Promise<messageDto[] | {
+        error: boolean;
+    }>;
     getLastMessages(senderId: string, receivedId: string): Promise<{
         id: string;
         isDirectMessage: boolean;
@@ -22,5 +30,7 @@ export declare class MessagesService {
         InfoMessage: boolean;
     }>;
     getChannleForMsg(senderId: string): Promise<messageDto[]>;
-    getMessageForList(senderId: string): Promise<messageDto[]>;
+    getMessageForList(senderId: string): Promise<messageDto[] | {
+        error: boolean;
+    }>;
 }

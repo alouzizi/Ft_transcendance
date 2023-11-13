@@ -17,132 +17,176 @@ let FriendshipService = class FriendshipService {
         this.prisma = prisma;
     }
     async sendFriendRequist(sendId, recivedId) {
-        let req = await this.prisma.friendRequest.findUnique({
-            where: {
-                Unique_Sender_Receiver: {
-                    senderId: sendId,
-                    receivedId: recivedId,
-                },
-            },
-        });
-        if (!req) {
-            req = await this.prisma.friendRequest.create({
-                data: {
-                    senderId: sendId,
-                    receivedId: recivedId,
-                },
-            });
-        }
-        return req;
-    }
-    async removeFriendRequist(sendId, recivedId) {
-        let req = await this.prisma.friendRequest.deleteMany({
-            where: {
-                senderId: sendId,
-                receivedId: recivedId,
-            },
-        });
-        return req;
-    }
-    async accepteFriendRequest(sendId, recivedId) {
-        let req = await this.prisma.friend.findUnique({
-            where: {
-                Unique_Sender_Receiver: {
-                    senderId: sendId,
-                    receivedId: recivedId,
-                },
-            },
-        });
-        if (!req) {
-            req = await this.prisma.friend.create({
-                data: {
-                    senderId: sendId,
-                    receivedId: recivedId,
-                },
-            });
-        }
-        return req;
-    }
-    async deleteFriend(sendId, recivedId) {
-        let req = await this.prisma.friend.deleteMany({
-            where: {
-                OR: [
-                    {
+        try {
+            let req = await this.prisma.friendRequest.findUnique({
+                where: {
+                    Unique_Sender_Receiver: {
                         senderId: sendId,
                         receivedId: recivedId,
                     },
-                    {
-                        senderId: recivedId,
-                        receivedId: sendId,
-                    }
-                ]
-            },
-        });
-        return req;
-    }
-    async blockedUser(sendId, recivedId) {
-        let req = await this.prisma.blockedUser.findUnique({
-            where: {
-                Unique_Sender_Receiver: {
-                    senderId: sendId,
-                    receivedId: recivedId,
                 },
-            },
-        });
-        if (!req) {
-            req = await this.prisma.blockedUser.create({
-                data: {
+            });
+            if (!req) {
+                req = await this.prisma.friendRequest.create({
+                    data: {
+                        senderId: sendId,
+                        receivedId: recivedId,
+                    },
+                });
+            }
+            return req;
+        }
+        catch (error) {
+            return { error: true };
+        }
+    }
+    async removeFriendRequist(sendId, recivedId) {
+        try {
+            let req = await this.prisma.friendRequest.deleteMany({
+                where: {
                     senderId: sendId,
                     receivedId: recivedId,
                 },
             });
+            return req;
         }
-        return req;
+        catch (error) {
+            return { error: true };
+        }
+    }
+    async accepteFriendRequest(sendId, recivedId) {
+        try {
+            let req = await this.prisma.friend.findUnique({
+                where: {
+                    Unique_Sender_Receiver: {
+                        senderId: sendId,
+                        receivedId: recivedId,
+                    },
+                },
+            });
+            if (!req) {
+                req = await this.prisma.friend.create({
+                    data: {
+                        senderId: sendId,
+                        receivedId: recivedId,
+                    },
+                });
+            }
+            return req;
+        }
+        catch (error) {
+            return { error: true };
+        }
+    }
+    async deleteFriend(sendId, recivedId) {
+        try {
+            let req = await this.prisma.friend.deleteMany({
+                where: {
+                    OR: [
+                        { senderId: sendId, receivedId: recivedId },
+                        { senderId: recivedId, receivedId: sendId }
+                    ]
+                },
+            });
+            return req;
+        }
+        catch (error) {
+            return { error: true };
+        }
+    }
+    async blockedUser(sendId, recivedId) {
+        try {
+            let req = await this.prisma.blockedUser.findUnique({
+                where: {
+                    Unique_Sender_Receiver: {
+                        senderId: sendId,
+                        receivedId: recivedId,
+                    },
+                },
+            });
+            if (!req) {
+                req = await this.prisma.blockedUser.create({
+                    data: {
+                        senderId: sendId,
+                        receivedId: recivedId,
+                    },
+                });
+            }
+            return req;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async unBlockedUser(sendId, recivedId) {
-        let req = await this.prisma.blockedUser.deleteMany({
-            where: {
-                senderId: sendId,
-                receivedId: recivedId,
-            },
-        });
-        return req;
+        try {
+            let req = await this.prisma.blockedUser.deleteMany({
+                where: {
+                    senderId: sendId,
+                    receivedId: recivedId,
+                },
+            });
+            return req;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async getSendRequistFriends(senderId) {
-        const sendRequests = await this.prisma.friendRequest.findMany({
-            where: {
-                senderId: senderId,
-            },
-        });
-        return sendRequests;
+        try {
+            const sendRequests = await this.prisma.friendRequest.findMany({
+                where: {
+                    senderId: senderId,
+                },
+            });
+            return sendRequests;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async getRecivedRequistFriends(senderId) {
-        const sendRequests = await this.prisma.friendRequest.findMany({
-            where: {
-                receivedId: senderId,
-            },
-        });
-        return sendRequests;
+        try {
+            const sendRequests = await this.prisma.friendRequest.findMany({
+                where: {
+                    receivedId: senderId,
+                },
+            });
+            return sendRequests;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async getFriends(senderId) {
-        const sendRequests = await this.prisma.friend.findMany({
-            where: {
-                OR: [{ senderId: senderId },
-                    { receivedId: senderId }
-                ]
-            },
-        });
-        return sendRequests;
+        try {
+            const sendRequests = await this.prisma.friend.findMany({
+                where: {
+                    OR: [{ senderId: senderId },
+                        { receivedId: senderId }
+                    ]
+                },
+            });
+            return sendRequests;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async getBlockedUser(senderId) {
-        const sendRequests = await this.prisma.blockedUser.findMany({
-            where: {
-                OR: [{ senderId: senderId, },
-                    { receivedId: senderId, }
-                ]
-            },
-        });
-        return sendRequests;
+        try {
+            const sendRequests = await this.prisma.blockedUser.findMany({
+                where: {
+                    OR: [{ senderId: senderId, },
+                        { receivedId: senderId, }
+                    ]
+                },
+            });
+            return sendRequests;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
 };
 exports.FriendshipService = FriendshipService;

@@ -19,6 +19,8 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    } | {
+        error: boolean;
     }>;
     findAllUsers(): Promise<{
         id: string;
@@ -35,7 +37,9 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     getValideUsers(senderId: string): Promise<{
         friendship: number;
         id: string;
@@ -52,7 +56,9 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     usersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;
         intra_id: string;
@@ -68,8 +74,12 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
-    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2>;
+    }[] | {
+        error: boolean;
+    }>;
+    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2 | {
+        error: boolean;
+    }>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;
@@ -79,6 +89,7 @@ export declare class UserService {
         lastSee: Date;
         lenUser: number;
         idUserOwner: number;
+        error?: undefined;
     } | {
         isUser: boolean;
         id: string;
@@ -88,16 +99,38 @@ export declare class UserService {
         lastSee: number;
         lenUser: number;
         idUserOwner: number;
+        error?: undefined;
+    } | {
+        error: boolean;
+        isUser?: undefined;
+        id?: undefined;
+        nickname?: undefined;
+        profilePic?: undefined;
+        status?: undefined;
+        lastSee?: undefined;
+        lenUser?: undefined;
+        idUserOwner?: undefined;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
         id: string;
-        nickname: string;
-        profilePic: string;
+        nickname: any;
+        profilePic: any;
         status: "INACTIF";
-        lastSee: Date;
+        lastSee: any;
         lenUser: number;
-        idUserOwner: string;
+        idUserOwner: any;
+        error?: undefined;
+    } | {
+        error: boolean;
+        isUser?: undefined;
+        id?: undefined;
+        nickname?: undefined;
+        profilePic?: undefined;
+        status?: undefined;
+        lastSee?: undefined;
+        lenUser?: undefined;
+        idUserOwner?: undefined;
     }>;
     createUser(user1: any): Promise<{
         id: string;

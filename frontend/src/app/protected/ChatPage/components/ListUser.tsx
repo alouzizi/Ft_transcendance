@@ -86,6 +86,7 @@ const ListUser = () => {
     if (user.id !== "-1" && geust.id !== "-1") {
       const upDateGeust = async () => {
         const check = await checkIsBlocked(user.id, geust.id);
+        console.log('-----> check', check);
         setIsBlocked(check);
       }
       upDateGeust();

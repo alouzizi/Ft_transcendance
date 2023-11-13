@@ -18,6 +18,9 @@ export declare class ChannelService {
     } | {
         status: number;
         error: string;
+    } | {
+        error: boolean;
+        status?: undefined;
     }>;
     updateChannel(senderId: string, channelId: string, updateChannelDto: CreateChannelDto): Promise<{
         status: number;
@@ -36,9 +39,17 @@ export declare class ChannelService {
         status: number;
         error: string;
         channel?: undefined;
+    } | {
+        error: boolean;
+        status?: undefined;
+        channel?: undefined;
     }>;
-    checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean>;
-    addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
+    checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
+        error: boolean;
+    }>;
+    addUserToChannel(senderId: string, channelId: string, userId: string): Promise<{
+        error: boolean;
+    }>;
     getChannel(senderId: string, channelId: string): Promise<{
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
@@ -46,6 +57,15 @@ export declare class ChannelService {
         protected: boolean;
         avatar: string;
         channelOwnerId: string;
+        error?: undefined;
+    } | {
+        error: boolean;
+        channelName?: undefined;
+        channelType?: undefined;
+        channelPassword?: undefined;
+        protected?: undefined;
+        avatar?: undefined;
+        channelOwnerId?: undefined;
     }>;
     findChannelById(id: string): Promise<{
         id: string;
@@ -56,29 +76,58 @@ export declare class ChannelService {
         createdAt: Date;
         avatar: string;
         channelOwnerId: string;
+    } | {
+        error: boolean;
     }>;
     getMembersBanned(id: string): Promise<memberChannelDto[]>;
     getRegularMembers(id: string): Promise<memberChannelDto[]>;
     getMembersChannel(id: string): Promise<{
         bannedMembers: memberChannelDto[];
         regularMembres: memberChannelDto[];
+        error?: undefined;
+    } | {
+        error: boolean;
+        bannedMembers?: undefined;
+        regularMembres?: undefined;
     }>;
-    changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
-    leaveChannel(senderId: string, channelId: string): Promise<boolean>;
-    KickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
-    changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean>;
-    validePassword(senderId: string, channelId: string, password: string): Promise<boolean>;
-    checkIsBanner(senderId: string, channelId: string): Promise<boolean>;
+    changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean | {
+        error: boolean;
+    }>;
+    leaveChannel(senderId: string, channelId: string): Promise<boolean | {
+        error: boolean;
+    }>;
+    KickMember(senderId: string, channelId: string, userId: string): Promise<boolean | {
+        error: boolean;
+    }>;
+    changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean | {
+        error: boolean;
+    }>;
+    validePassword(senderId: string, channelId: string, password: string): Promise<boolean | {
+        error: boolean;
+    }>;
+    checkIsBanner(senderId: string, channelId: string): Promise<boolean | {
+        error: boolean;
+    }>;
     getValideChannels(senderId: string): Promise<{
         id: string;
         channelName: string;
         avatar: string;
         protected: boolean;
         Status: string;
-    }[]>;
-    joinChannel(senderId: string, channelId: string): Promise<void>;
-    muteUserChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<void>;
-    cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<void>;
+    }[] | {
+        error: boolean;
+    }>;
+    joinChannel(senderId: string, channelId: string): Promise<{
+        error: boolean;
+    }>;
+    muteUserChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<{
+        error: boolean;
+    }>;
+    cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<{
+        error: boolean;
+    }>;
     cancelTimeOut(senderId: string, channelId: string): Promise<number>;
-    checkIsMuted(senderId: string, channelId: string): Promise<number>;
+    checkIsMuted(senderId: string, channelId: string): Promise<number | {
+        error: boolean;
+    }>;
 }

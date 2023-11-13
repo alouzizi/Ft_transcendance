@@ -1,5 +1,6 @@
 import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
+import Error from 'next/error';
 
 
 export async function getVueGeust(id: string, isUser: Boolean) {
@@ -55,11 +56,17 @@ export async function getUserForMsg(senderId: string) {
 
 
 export async function checkIsBlocked(senderId: string, receivedId: string) {
-    const res = await axios.get(
-        Backend_URL + `/user/checkIsBlocked/${senderId}/${receivedId}`,
-    );
-    const check = await res.data;
-    return check;
+    try {
+        const res = await axios.get(
+            Backend_URL + `/user/checkIsBlocked/${senderId}/${receivedId}`,
+        );
+        const data = await res.data;
+        if (data.error)
+            throw Error
+        return data;
+    } catch (error: any) {
+        console.log('error ->', error)
+    }
 }
 
 export async function getUserGeust(id: string) {

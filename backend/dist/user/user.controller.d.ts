@@ -17,6 +17,8 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    } | {
+        error: boolean;
     }>;
     getUserByIdintr(id_intra: string): Promise<{
         id: string;
@@ -41,7 +43,9 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     getValideUsers(senderId: string): Promise<{
         friendship: number;
         id: string;
@@ -58,7 +62,9 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;
         intra_id: string;
@@ -74,7 +80,9 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;
@@ -84,6 +92,7 @@ export declare class UserController {
         lastSee: Date;
         lenUser: number;
         idUserOwner: number;
+        error?: undefined;
     } | {
         isUser: boolean;
         id: string;
@@ -93,16 +102,40 @@ export declare class UserController {
         lastSee: number;
         lenUser: number;
         idUserOwner: number;
+        error?: undefined;
+    } | {
+        error: boolean;
+        isUser?: undefined;
+        id?: undefined;
+        nickname?: undefined;
+        profilePic?: undefined;
+        status?: undefined;
+        lastSee?: undefined;
+        lenUser?: undefined;
+        idUserOwner?: undefined;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
         id: string;
-        nickname: string;
-        profilePic: string;
+        nickname: any;
+        profilePic: any;
         status: "INACTIF";
-        lastSee: Date;
+        lastSee: any;
         lenUser: number;
-        idUserOwner: string;
+        idUserOwner: any;
+        error?: undefined;
+    } | {
+        error: boolean;
+        isUser?: undefined;
+        id?: undefined;
+        nickname?: undefined;
+        profilePic?: undefined;
+        status?: undefined;
+        lastSee?: undefined;
+        lenUser?: undefined;
+        idUserOwner?: undefined;
     }>;
-    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2>;
+    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2 | {
+        error: boolean;
+    }>;
 }
