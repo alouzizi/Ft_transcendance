@@ -24,6 +24,7 @@ let MyGateway = class MyGateway {
         this.rooms = new Map();
         this.roomState = new Map();
         this.ballPositionInterval = new Map();
+        this.joinedRoom = 0;
     }
     GameInit(roomName) {
         this.roomState.set(roomName, {
@@ -146,7 +147,9 @@ let MyGateway = class MyGateway {
     }
     handleJoinRoom(client, id) {
         console.log({ size: this.clients.size });
-        if (this.clients.size === 2) {
+        this.joinedRoom++;
+        if (this.clients.size === 2 && this.joinedRoom === 2) {
+            this.joinedRoom = 0;
             console.log("2 clients connected");
             const roomName = `room-${Date.now()}`;
             this.rooms.set(roomName, Array.from(this.clients.keys()));

@@ -62,6 +62,7 @@ export class MyGateway implements OnModuleInit {
   private rooms: Map<string, string[]> = new Map();
   private roomState: Map<string, RoomState> = new Map();
   private ballPositionInterval: Map<string, NodeJS.Timeout> = new Map();
+  joinedRoom: number = 0;
 
   // newRoom: string[] = [];
 
@@ -183,8 +184,9 @@ export class MyGateway implements OnModuleInit {
   @SubscribeMessage("joinRoom")
   handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
     console.log({ size: this.clients.size });
-
-    if (this.clients.size === 2) {
+    this.joinedRoom++;
+    if (this.clients.size === 2 && this.joinedRoom === 2) {
+      this.joinedRoom = 0;
       console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
       this.rooms.set(roomName, Array.from(this.clients.keys()));

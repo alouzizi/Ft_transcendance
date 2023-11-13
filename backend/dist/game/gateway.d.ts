@@ -11,6 +11,7 @@ export declare class MyGateway implements OnModuleInit {
     private rooms;
     private roomState;
     private ballPositionInterval;
+    joinedRoom: number;
     onModuleInit(): void;
     collision(ball: any, player: any): boolean;
     identifyClient(client: Socket, id: string): void;
