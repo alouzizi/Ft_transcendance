@@ -12,7 +12,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MessageStatus, Status } from '@prisma/client';
-  import { UserService } from 'src/users/UserService';
+  import { UserService } from 'src/users/user.service';
   
   @WebSocketGateway()
   export class MessagesGateway

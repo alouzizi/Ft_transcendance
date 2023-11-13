@@ -11,7 +11,7 @@ import { MessagesService } from 'src/messages/messages.service';
 export class ChannelService {
   constructor(
     private prisma: PrismaService,
-  ) { }
+  ) {}
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
     try {
@@ -60,17 +60,12 @@ export class ChannelService {
       },
     });
   }
-
-
   findAll() {
     return `This action returns all channel`;
   }
-
-
   update(id:string, updateChannelDto: UpdateChannelDto) {
     return `This action updates a #${id} channel`;
   }
-
   remove(id: string) {
     return `This action removes a #${id} channel`;
   }

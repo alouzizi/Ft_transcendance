@@ -12,7 +12,7 @@ import {
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from 'express';
 import { AuthService } from "./auth.service";
-import { UserService } from "src/users/UserService";
+import { UserService } from "src/users/user.service";
 import { AuthDto } from "./dto";
 import { JwtGuard } from "./guard";
 import { Jwt2faAuthGuard } from "./2FA/jwt-2fa-auth.guard";
@@ -22,7 +22,6 @@ export class AuthController {
   userService: any;
   constructor(
     private authService: AuthService,
-
     ) {}
 
   @Get('login42')
@@ -58,24 +57,23 @@ export class AuthController {
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong authentication code');
     }
-    await this.userService.turnOnTwoFactorAuthentication(req.user.id);
+    await this.userService.turnOnTwoFactorAuth(req.user.id);
   }
 
   @Post('2fa/authenticate')
   @HttpCode(200)
   @UseGuards(AuthGuard)
-  async authenticate(@Req() req, @Body() body) {
+  async authenticate(@Req() req,@Body() body) {
     const isCodeValid = this.authService.isTwoFactorAuthCodeValid(
       body.twoFactorAuthenticationCode,
+
       req.user,
     );
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong authentication code');
     }
-
     return this.authService.loginWith2fa(req.user);
   }
-
   @Get('42-intranet/callback')
   @UseGuards(AuthGuard('42-intranet'))
   async callbackWith42(@Req() req: any,@Res() res: Response) { 

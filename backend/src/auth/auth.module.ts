@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserService } from 'src/users/UserService'; 
+import { UserService } from 'src/users/user.service'; 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule} from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -21,6 +21,6 @@ import { Jwt2faStrategy } from './2FA/jwt-2fa.strategy';
   ],
   controllers: [AuthController],
   providers: [AuthService,FortyTwoIntranetStrategy,Jwt2faStrategy,
-    UserService,PrismaService,ChannelService,MessagesService],
+    UserService,PrismaService,ChannelService,MessagesService, ], 
 })
 export class AuthModule {}

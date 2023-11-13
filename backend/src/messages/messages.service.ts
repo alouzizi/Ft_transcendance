@@ -3,7 +3,7 @@ import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
 import { Channel, Message, MessageStatus, Status, User } from '@prisma/client';
-import { UserService } from 'src/users/UserService';
+import { UserService } from 'src/users/user.service';
 
 @Injectable()
 export class MessagesService {

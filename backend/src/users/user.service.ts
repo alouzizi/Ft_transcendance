@@ -1,18 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, PrismaClient, User} from '@prisma/client'; 
+import {  User} from '@prisma/client'; 
 import { JwtService } from '@nestjs/jwt';
-import { MessagesService } from "src/messages/messages.service";
 import { MessageItemList } from "./dto/user.dto";
 import { Channel, Message, Status } from "@prisma/client";
 import { ChannelService } from "src/channel/channel.service";
 
 @Injectable()
 export class UserService {
+  private user: User[] = [];
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
-    private user: User[] = [],
   ){}
   async createUser(user1:any){
     console.log("my user iss",user1.intra_id);

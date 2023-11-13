@@ -2,7 +2,7 @@ import { Injectable, UnprocessableEntityException} from '@nestjs/common';
 import { PassportStrategy  } from '@nestjs/passport';
 import { Prisma } from '@prisma/client';
 import { Strategy, Profile, VerifyCallback } from 'passport-42';
-import { UserService } from 'src/users/UserService';
+import { UserService } from 'src/users/user.service';
 
 @Injectable()
 export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-intranet') {

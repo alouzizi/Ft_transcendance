@@ -11,7 +11,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UserService } from './UserService';
+import { UserService } from './user.service';
 import { JwtGuard } from 'src/auth/guard';
 
 @Controller('users')

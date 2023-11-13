@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/users/UserService';
+import { UserService } from 'src/users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from "src/prisma/prisma.service";
 import { User } from '@prisma/client';
@@ -17,14 +17,14 @@ export class AuthService {
   async generateAccessToken(user: any){
     // Create a JWT access token based on the user's data
     const payload = { sub: user.intra_id, nickname: user.login42}; // Customize the payload as needed
-    console.log("paylod",payload)
+    // console.log("paylod",payload)
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
   async valiadteUserAndCreateJWT(user: User)
   {
-    console.log("in validate : ",user)
+    // console.log("in validate : ",user)
     try {
       const authResult = await this.UserService.findByIntraId(user.intra_id);
     if(authResult){
@@ -42,7 +42,6 @@ export class AuthService {
     const payload = {
       email: userWithoutPsw.email,
     };
-
     return {
       email: payload.email,
       access_token: this.jwtService.sign(payload),
@@ -89,13 +88,13 @@ export class AuthService {
   isTwoFactorAuthCodeValid(twoFactorAuthCode: string, user: User) {
     if (user.twoFactorAuth){
       // If two-factor authentication is enabled, use the actual secret (string)
-      return authenticator.verify({
+        return authenticator.verify({
         token: twoFactorAuthCode,
         secret: user.twoFactorAuthSecret, // Replace with the actual property name for the secret
     });
-  }else {
+    }else {
     // If two-factor authentication is not enabled, you might handle it differently
     return false;  // Or whatever makes sense for your application
+    }
   }
-}
 }
