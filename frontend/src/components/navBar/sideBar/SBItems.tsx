@@ -11,8 +11,11 @@ export default function SBItems(prompt: {
     <Link
       onClick={prompt.onClick}
       href={`/${prompt.pageName}`}
-      className="flex flex-row px-5 mb-6 border-4 border-transparent   
+      className="flex flex-row border-4 border-transparent   
       hover:border-l-white hover:shadow-md 
+
+      px-3 mb-2
+      sm:px-5 sm:mb-6
       "
     >
       {prompt.children}

@@ -10,7 +10,7 @@ import React, { ChangeEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import NavSearchItem from "./NavSearchItem";
 
-export default function SerachNav(prompt: { show: boolean }) {
+export default function SerachNav() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -66,12 +66,13 @@ export default function SerachNav(prompt: { show: boolean }) {
   // ================ /Search ===============
 
   return (
-    <div className="mx-auto flex flex-row w-fit overflow-hidden">
+    <div className="mx-auto flex flex-row w-fit overflow-hidden ">
       <FaSearch
         onClick={() => {
           onSearch(inputSearch);
         }}
-        className="md:ml-8 ml-2 my-auto md:w-7 md:h-7 h-4 w-4 text-color-main-whith cursor-pointer active:text-color-main block"
+        className=" text-color-main-whith cursor-pointer active:text-color-main block my-auto 
+        md:w-8 md:h-8 sm:w-6 sm:h-6 h-4 w-4  ml-2 "
       />
 
       <input
@@ -81,11 +82,15 @@ export default function SerachNav(prompt: { show: boolean }) {
         type="text"
         name="price"
         value={inputSearch}
-        className={`block  px-6 text-gray-900 my-auto rounded-full bg-[#F1F3F9]  
-        md:py-3 md:mx-8 md:pr-20 md:text-md py-2 mx-4 pr-16 text-sm md:w-96 w-52
+        className={`block   text-gray-900 my-auto rounded-full bg-[#F1F3F9]   
+        
         placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${
           open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
-        }`}
+        }
+        md:py-3 md:mx-8 md:pr-20 md:text-md  md:w-96
+        sm:w-52 sm:px-6 sm:placeholder:text-base
+        py-2 px-4 mx-4 pr-16 text-sm w-32 placeholder:text-xs
+        `}
         placeholder="Search..."
         onChange={handleSearch}
         onBlur={() => {
@@ -98,7 +103,12 @@ export default function SerachNav(prompt: { show: boolean }) {
         id={id}
         open={open}
         anchorEl={anchorEl}
-        className={`flex flex-row mx-auto rounded-b-2xl text-center bg-[#F1F3F9] h-fit  md:w-96 w-52 md:text-sm text-xs`}
+        className={`flex flex-row mx-auto rounded-b-2xl text-center bg-[#F1F3F9]
+        md:w-96  md:text-sm 
+        sm:w-52
+        h-fit text-xs w-32 
+        
+        `}
       >
         <div className="h-fit overflow-auto mb-4 w-full">
           {filteredData.length !== 0 ? (

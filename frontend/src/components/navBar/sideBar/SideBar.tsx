@@ -29,7 +29,8 @@ export default function SideBar() {
     }
     
     // small screen
-    w-5 h-5
+    w-4 h-4 
+    min-[320px]:w-5 min-[320px]:h-5
     // Big screen
     md:w-6 md:h-6
     
@@ -91,12 +92,23 @@ export default function SideBar() {
   };
 
   return (
-    <div className=" flex flex-col   bg-color-main-dark w-24 md:w-28 fixed h-fit  top-0 rounded-br-full">
-      <div className="md:h-24 h-20 mx-auto  flex flex-col justify-center">
+    <div
+      className=" flex flex-col   bg-color-main-dark   rounded-br-full
+      transition-all duration-400 ease-in-out
+      h-fit w-20 
+      sm:w-24 md:w-28 "
+    >
+      <div
+        className=" mx-auto  flex flex-col justify-center
+                       md:h-24 h-16"
+      >
         <img className="h-2/3 m-auto " src="/logo.png" alt="" />
       </div>
 
-      <div className="pb-8 pt-18 flex flex-col justify-between h-5/6 ">
+      <div
+        className="flex flex-col justify-between 
+                      h-5/6 pb-8 pt-18 "
+      >
         <SBSection sectionName="Home">
           {sBItemsList.slice(0, 5).map((item) => (
             <SBItems
@@ -122,20 +134,22 @@ export default function SideBar() {
         </SBSection>
       </div>
 
-      <img
-        className=" object-cover mx-auto mb-16 rounded-full border-2
-         border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] shadow-color-main-whith 
-         hover:shadow-transparent hover:border-color-main-whith
-         
+      <div className=" h-48 bg-white rounded-br-full rounded-tl-full flex flex-col justify-center">
+        <img
+          className="cursor-pointer object-cover mx-auto  rounded-full border-2
+         border-color-main-dark 
+         hover:shadow-transparent  hover:scale-110 hover:border-0
+         transition-all duration-400 ease-in-out 
          // small screen
-         w-14 h-14
+         w-12 h-12 sm:w-14 sm:h-14 bg-green-50 my-auto
          // Big screen
          md:w-16 md:h-16
          
          "
-        src="https://images.alphacoders.com/129/1294445.jpg"
-        alt=""
-      />
+          src="https://images.alphacoders.com/129/1294445.jpg"
+          alt=""
+        />
+      </div>
     </div>
   );
 }

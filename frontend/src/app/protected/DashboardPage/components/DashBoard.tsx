@@ -155,6 +155,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
            // small screen
            flex flex-row  w-fit justify-center  mt-4 mb-6
            // Big screen
+           
            2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
           "
           >
