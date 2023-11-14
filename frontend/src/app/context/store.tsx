@@ -116,10 +116,10 @@ export const GlobalContextProvider = ({
       });
       setSocket(socket);
       socket.on("connect", () => {
-        console.log("socket --> user connected");
+        // console.log("socket --> user connected");
       });
       socket.on("disconnect", () => {
-        console.log("socket --> user disconnected");
+        // console.log("socket --> user disconnected");
       });
     }
 

@@ -1,9 +1,10 @@
 import { useContext, useEffect, useRef } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
-// import { WebsocketContext } from "../random/contexts/WebsocketContext";
 import { useGlobalContext } from "@/app/context/store";
-import { set } from "date-fns";
+import Alert from '@mui/joy/Alert';
+import { useRouter } from "next/navigation";
+
 
 interface PongProps {
   room: string;
@@ -15,9 +16,9 @@ const Pong = ({ room, isLeft }: PongProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
   const { user, socket } = useGlobalContext();
-  // const socket = useContext(WebsocketContext);
   let animationFrameId: number;
   let animationFrameId1: number;
+  const router = useRouter();
   const player: Padlle = {
     x: 10,
     y: 0,
@@ -65,7 +66,6 @@ const Pong = ({ room, isLeft }: PongProps) => {
         player.color = "red";
         player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
       }
-      // console.log("mouseY: ", player.y);
 
       socket.emit("updatePaddle", {
         userId: user.id,
@@ -73,12 +73,9 @@ const Pong = ({ room, isLeft }: PongProps) => {
         paddle: isLeft ? player : computer,
         isLeft: isLeft,
       });
-      console.log("allo: sending paddle update!");
     };
-    // let test: number;
+
     socket.on("resivePaddle", (data: any) => {
-      // console.log('Paddle update received --------------->');
-      // console.log(data);
       if (!isLeft) {
         player.y = data.y;
         player.score = data.score;
@@ -86,26 +83,8 @@ const Pong = ({ room, isLeft }: PongProps) => {
         computer.y = data.y;
         computer.score = data.score;
       }
-      // console.log({data: data});
-      console.log({ computer: computer.y });
     });
-
-    // resetBall(canvasCtx, ball);
-    // function update() {
-    // let computerLevel = 1;
-    // let desiredComputerY = ball.y - computer.height / 2;
-    // desiredComputerY = Math.min(
-    //   Math.max(desiredComputerY, 0),
-    //   canvasCtx.height - computer.height
-    // );
-    // computer.y += (desiredComputerY - computer.y) * computerLevel;
-    // computer.y = test;
-    // console.log("computer.y: ", computer.y);
-
-    // updateCanvas(canvasCtx, ball, computer, player);
     socket.on("updateTheBall", (ballPosition: Ball) => {
-      // console.log({ballPosition: ballPosition});
-      // console.log({ballPosition: ballPosition.color})
       ball.x = ballPosition.x;
       ball.y = ballPosition.y;
       ball.velocityX = ballPosition.velocityX;
@@ -116,7 +95,6 @@ const Pong = ({ room, isLeft }: PongProps) => {
     socket.on("updateScore", (scorePlayer1: number, scorePlayer2: number) => {
       player.score = scorePlayer1;
       computer.score = scorePlayer2;
-      console.log({ player: player.score, computer: computer.score });
       drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
       drawText(
         ctx,
@@ -127,39 +105,34 @@ const Pong = ({ room, isLeft }: PongProps) => {
     });
 
     socket.on("gameOver", (state: string) => {
-      // drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
-      // drawText(
-      //   ctx,
-      //   (3 * canvasCtx.width) / 4,
-      //   canvasCtx.height / 5,
-      //   computer.score
-      // );
       setTimeout(() => {
         if (state === "win") {
+
+          <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
           console.log("test");
+          router.push('/protected/GamePage');
           // alert("You win!");
         }
         if (state === "lose") {
+          <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
           console.log("test");
+          router.push('/protected/GamePage');
           // alert("You lose!");
         }
         if (state === "draw") {
+          <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
           console.log("test");
+          router.push('/protected/GamePage');
           // alert("Draw!");
         }
       }, 1000);
     });
-    // animationFrameId1 = window.requestAnimationFrame(update);
-    // }
-    // setInterval(update, 5);
-    // animationFrameId = window.requestAnimationFrame(update);
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);
-      console.log("allo: unregistering Events !");
       socket.off("connect");
       socket.off("updatePaddle");
     };

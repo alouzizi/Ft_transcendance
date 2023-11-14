@@ -98,7 +98,6 @@ let SocketGateway = class SocketGateway {
             ball.top < bottom);
     }
     identifyClient(client, id) {
-        console.log("client ---> ", client, id);
         console.log({ id: id, client: client.id });
         if (this.clients.has(id)) {
             client.emit("alreadyExist");
@@ -110,7 +109,7 @@ let SocketGateway = class SocketGateway {
             client.join(id);
         }
     }
-    startEmittingBallPosition(roomName) {
+    startEmittingBallPosition(roomName, id) {
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
             const ro = this.roomState.get(roomName);
@@ -139,7 +138,10 @@ let SocketGateway = class SocketGateway {
                 this.server
                     .to(roomName)
                     .emit("updateScore", ro.player1.score, ro.player2.score);
-                this.gameState(roomName, ro.player1.score, ro.player2.score);
+                if (id === this.rooms.get(roomName)[0])
+                    this.gameState(roomName, { player: id, score: ro.player1.score }, { player: this.rooms.get(roomName)[1], score: ro.player2.score });
+                else
+                    this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player1.score }, { player: this.rooms.get(roomName)[0], score: ro.player2.score });
             }
             else if (ro.ball.x + ro.ball.radius >= 600) {
                 this.PongService.resetBall(ro.ball);
@@ -147,40 +149,41 @@ let SocketGateway = class SocketGateway {
                 this.server
                     .to(roomName)
                     .emit("updateScore", ro.player1.score, ro.player2.score);
-                this.gameState(roomName, ro.player1.score, ro.player2.score);
+                if (id === this.rooms.get(roomName)[0])
+                    this.gameState(roomName, { player: id, score: ro.player1.score }, { player: this.rooms.get(roomName)[1], score: ro.player2.score });
+                else
+                    this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player1.score }, { player: this.rooms.get(roomName)[0], score: ro.player2.score });
             }
             this.server.to(roomName).emit("updateTheBall", ro.ball);
-        }, 20));
+        }, 1000 / 60));
     }
-    async gameState(roomName, score1, score2) {
-        const player1 = this.rooms.get(roomName)[0];
-        const player2 = this.rooms.get(roomName)[1];
-        if (score1 + score2 === this.ROUND_LIMIT) {
+    async gameState(roomName, p1, p2) {
+        if (p1.score + p2.score === this.ROUND_LIMIT) {
             const player1Usr = await this.prisma.user.findUnique({
                 where: {
-                    id: player1,
+                    id: p1.player,
                 },
             });
             const player2Usr = await this.prisma.user.findUnique({
                 where: {
-                    id: player2,
+                    id: p2.player,
                 },
             });
-            if (score1 == score2) {
-                console.log(player1, player2);
+            if (p1.score == p2.score) {
+                console.log(p1.player, p2.player);
                 this.server.to(roomName).emit("gameOver", "draw");
             }
-            if (score1 > score2) {
-                console.log(player1, player2);
-                this.server.to(player1).emit("gameOver", "win");
-                this.server.to(player2).emit("gameOver", "lose");
+            if (p1.score > p2.score) {
+                console.log(p1.player, p2.player);
+                this.server.to(p1.player).emit("gameOver", "win");
+                this.server.to(p2.player).emit("gameOver", "lose");
             }
             else {
-                console.log(player1, player2);
-                this.server.to(player1).emit("gameOver", "lose");
-                this.server.to(player2).emit("gameOver", "win");
+                console.log(p1.player, p2.player);
+                this.server.to(p1.player).emit("gameOver", "lose");
+                this.server.to(p2.player).emit("gameOver", "win");
             }
-            this.hixcoder.updateGameHistory(player1Usr.nickname, player2Usr.nickname, score1.toString(), score2.toString());
+            this.hixcoder.updateGameHistory(player1Usr.nickname, player2Usr.nickname, p1.score.toString(), p2.score.toString());
             this.stopEmittingBallPosition(roomName);
         }
     }
@@ -212,7 +215,7 @@ let SocketGateway = class SocketGateway {
             this.server.to(roomName).emit("startGame", roomName);
             this.GameInit(roomName);
             this.PongService.resetBall(this.roomState.get(roomName).ball);
-            this.startEmittingBallPosition(roomName);
+            this.startEmittingBallPosition(roomName, id);
             this.clients.clear();
         }
     }

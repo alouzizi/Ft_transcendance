@@ -26,7 +26,7 @@ export class AuthController {
   @Get("42-intranet/callback")
   @UseGuards(AuthGuard("42-intranet"))
   async callbackWith42(@Req() req: any, @Res() res: Response) {
-    console.log("profil howa niit ?? :", req.user);
+    // console.log("profil howa niit ?? :", req.user);
     const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
     if (ret != null) {
       // res.cookie("auth", ret);

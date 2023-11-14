@@ -11,7 +11,7 @@ export class SocketGatewayService {
 
 
   async handleConnection(client: Socket, wss: Server) {
-    console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
+    // console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
     if (typeof client.handshake.query.senderId === 'string') {
       client.join(client.handshake.query.senderId);
       const senderId = client.handshake.query.senderId;

@@ -28,7 +28,6 @@ let JwtGuard = class JwtGuard {
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: this.config.get("JWT_SECRET"),
             });
-            console.log("payload --> ", payload);
             request["user"] = payload;
         }
         catch {

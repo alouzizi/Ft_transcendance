@@ -60,7 +60,7 @@ export class SocketGateway
   }
 
   ROUND_LIMIT = 4;
-  joindRoom = 0
+  joindRoom = 0;
   private GameInit(roomName: string) {
     this.roomState.set(roomName, {
       player1: {
@@ -91,13 +91,10 @@ export class SocketGateway
     });
   }
 
-  // constructor(private PongService: PongServise) {}
   private clients: Map<string, Socket> = new Map();
   private rooms: Map<string, string[]> = new Map();
   private roomState: Map<string, RoomState> = new Map();
   private ballPositionInterval: Map<string, NodeJS.Timeout> = new Map();
-
-  // newRoom: string[] = [];
 
   onModuleInit() {}
 
@@ -122,7 +119,7 @@ export class SocketGateway
 
   @SubscribeMessage("clientId")
   identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
-    console.log("client ---> ", client, id);
+    // console.log("client ---> ", client, id);
     console.log({ id: id, client: client.id });
 
     if (this.clients.has(id)) {
@@ -137,7 +134,7 @@ export class SocketGateway
     }
   }
 
-  startEmittingBallPosition(roomName: string) {
+  startEmittingBallPosition(roomName: string, id: string) {
     clearInterval(this.ballPositionInterval.get(roomName));
     this.ballPositionInterval.set(
       roomName,
@@ -171,12 +168,26 @@ export class SocketGateway
           this.PongService.resetBall(ro.ball);
           // the computer win
           ro.player2.score++;
+
           // alert("Computer Win");
           this.server
             .to(roomName)
             .emit("updateScore", ro.player1.score, ro.player2.score);
-          this.gameState(roomName, ro.player1.score, ro.player2.score);
+
+          if (id === this.rooms.get(roomName)[0])
+            this.gameState(
+              roomName,
+              { player: id, score: ro.player1.score },
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score }
+            );
+          else
+            this.gameState(
+              roomName,
+              { player: this.rooms.get(roomName)[1], score: ro.player1.score },
+              { player: this.rooms.get(roomName)[0], score: ro.player2.score }
+            );
         } else if (ro.ball.x + ro.ball.radius >= 600) {
+      
           this.PongService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
@@ -184,48 +195,61 @@ export class SocketGateway
           this.server
             .to(roomName)
             .emit("updateScore", ro.player1.score, ro.player2.score);
-
-          this.gameState(roomName, ro.player1.score, ro.player2.score);
+          if (id === this.rooms.get(roomName)[0])
+            this.gameState(
+              roomName,
+              { player: id, score: ro.player1.score },
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score }
+            );
+          else
+            this.gameState(
+              roomName,
+              { player: this.rooms.get(roomName)[1], score: ro.player1.score },
+              { player: this.rooms.get(roomName)[0], score: ro.player2.score }
+            );
         }
-        // const ballPosition = ro.PongService.ball;
         this.server.to(roomName).emit("updateTheBall", ro.ball);
-      }, 20)
+      }, 1000 / 60)
     );
   }
 
-  async gameState(roomName: string, score1: number, score2: number) {
-    const player1 = this.rooms.get(roomName)[0];
-    const player2 = this.rooms.get(roomName)[1];
+  async gameState(
+    roomName: string,
+    p1: { player: string; score: number },
+    p2: { player: string; score: number }
+  ) {
+    // const player1 = this.rooms.get(roomName)[0];
+    // const player2 = this.rooms.get(roomName)[1];
 
-    if (score1 + score2 === this.ROUND_LIMIT) {
+    if (p1.score + p2.score === this.ROUND_LIMIT) {
       const player1Usr = await this.prisma.user.findUnique({
         where: {
-          id: player1,
+          id: p1.player,
         },
       });
       const player2Usr = await this.prisma.user.findUnique({
         where: {
-          id: player2,
+          id: p2.player,
         },
       });
-      if (score1 == score2) {
-        console.log(player1, player2);
+      if (p1.score == p2.score) {
+        console.log(p1.player, p2.player);
         this.server.to(roomName).emit("gameOver", "draw");
       }
-      if (score1 > score2) {
-        console.log(player1, player2);
-        this.server.to(player1).emit("gameOver", "win");
-        this.server.to(player2).emit("gameOver", "lose");
+      if (p1.score > p2.score) {
+        console.log(p1.player, p2.player);
+        this.server.to(p1.player).emit("gameOver", "win");
+        this.server.to(p2.player).emit("gameOver", "lose");
       } else {
-        console.log(player1, player2);
-        this.server.to(player1).emit("gameOver", "lose");
-        this.server.to(player2).emit("gameOver", "win");
+        console.log(p1.player, p2.player);
+        this.server.to(p1.player).emit("gameOver", "lose");
+        this.server.to(p2.player).emit("gameOver", "win");
       }
       this.hixcoder.updateGameHistory(
         player1Usr.nickname,
         player2Usr.nickname,
-        score1.toString(),
-        score2.toString()
+        p1.score.toString(),
+        p2.score.toString()
       );
       this.stopEmittingBallPosition(roomName);
     }
@@ -238,7 +262,7 @@ export class SocketGateway
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
     console.log({ size: this.clients.size });
-    this.joindRoom++
+    this.joindRoom++;
     if (this.clients.size === 2 && this.joindRoom == 2) {
       this.joindRoom = 0;
       console.log("2 clients connected");
@@ -263,7 +287,7 @@ export class SocketGateway
       // this.PongService.startGame();
       this.GameInit(roomName);
       this.PongService.resetBall(this.roomState.get(roomName).ball);
-      this.startEmittingBallPosition(roomName);
+      this.startEmittingBallPosition(roomName, id);
       this.clients.clear();
       // }, 1000);
     }
@@ -281,19 +305,11 @@ export class SocketGateway
 
   @SubscribeMessage("updatePaddle")
   onUpdatePaddle(client: Socket, data: any) {
-    // console.log('updatePaddle', data);
-
     if (data.room) {
       const clientsRoom = this.rooms.get(data.room);
-      //   room.emit()
       if (clientsRoom) {
         const otherClient = clientsRoom.find((c) => c !== data.userId);
-        // this.player2 = data.paddle;
         if (otherClient) {
-          // console.log({ otherClient: otherClient });
-          // otherClient.emit("resivePaddle", data.paddle);
-          // this.PongService.player2 = data.paddle;
-          // this.player1 = data.paddle;
           if (data.isLeft) this.roomState.get(data.room).player1 = data.paddle;
           else this.roomState.get(data.room).player2 = data.paddle;
           this.server.to(otherClient).emit("resivePaddle", data.paddle);

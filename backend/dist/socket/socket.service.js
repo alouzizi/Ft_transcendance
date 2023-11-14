@@ -18,7 +18,6 @@ let SocketGatewayService = class SocketGatewayService {
         this.prisma = prisma;
     }
     async handleConnection(client, wss) {
-        console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
         if (typeof client.handshake.query.senderId === 'string') {
             client.join(client.handshake.query.senderId);
             const senderId = client.handshake.query.senderId;
