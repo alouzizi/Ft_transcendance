@@ -32,6 +32,7 @@ exports.AppModule = AppModule = __decorate([
             channel_module_1.ChannelModule,
             socket_module_1.SocketGatewayModule,
             hixcoder_module_1.HixcoderModule,
+            socket_module_1.SocketGatewayModule,
         ],
     })
 ], AppModule);

@@ -5,11 +5,9 @@ import { ConfigModule } from "@nestjs/config";
 import { UserModule } from "./user/user.module";
 import { MessagesModule } from "./messages/messages.module";
 import { FriendshipModule } from "./friendship/friendship.module";
-import { ChannelModule } from './channel/channel.module';
+import { ChannelModule } from "./channel/channel.module";
 import { SocketGatewayModule } from "./socket/socket.module";
 import { HixcoderModule } from "./hixcoder/hixcoder.module";
-
-
 
 @Module({
   imports: [
@@ -22,6 +20,7 @@ import { HixcoderModule } from "./hixcoder/hixcoder.module";
     ChannelModule,
     SocketGatewayModule,
     HixcoderModule,
+    SocketGatewayModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

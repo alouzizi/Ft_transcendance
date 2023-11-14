@@ -14,7 +14,7 @@ import { Socket, Server } from "socket.io";
 import { BallDto, PaddleDto } from "./dto/game.tdo";
 
 @WebSocketGateway({
-  namespace: 'game',
+  namespace: "game",
   cors: {
     origin: "*",
   },

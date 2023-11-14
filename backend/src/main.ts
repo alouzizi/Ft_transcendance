@@ -22,11 +22,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // app.enableCors({
-  //   origin: 'http://localhost:3000',
-  //   methods: ['GET', 'POST', 'DELETE'],
-  //   credentials: true,
-  // });
   app.use(cookieParser());
 
   await app.listen(4000);

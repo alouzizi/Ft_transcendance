@@ -225,11 +225,11 @@ __decorate([
 ], MyGateway.prototype, "onUpdatePaddle", null);
 exports.MyGateway = MyGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
-        namespace: 'game',
+        namespace: "game",
         cors: {
             origin: "*",
         },
     }),
     __metadata("design:paramtypes", [game_service_1.PongServise])
 ], MyGateway);
-//# sourceMappingURL=gateway.js.map
+//# sourceMappingURL=_gateway.js.map

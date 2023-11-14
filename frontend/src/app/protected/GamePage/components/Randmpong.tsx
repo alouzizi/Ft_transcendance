@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
-import { WebsocketContext } from "../random/WebsocketContext";
+// import { WebsocketContext } from "../random/contexts/WebsocketContext";
 import { useGlobalContext } from "@/app/context/store";
 import { set } from "date-fns";
 
@@ -14,8 +14,8 @@ const Pong = ({ room, isLeft }: PongProps) => {
   const ROUND_LIMIT = 6;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
-  const { user } = useGlobalContext();
-  const socket = useContext(WebsocketContext);
+  const { user, socket } = useGlobalContext();
+  // const socket = useContext(WebsocketContext);
   let animationFrameId: number;
   let animationFrameId1: number;
   const player: Padlle = {
@@ -47,6 +47,7 @@ const Pong = ({ room, isLeft }: PongProps) => {
   };
 
   useEffect(() => {
+    if (!socket) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
