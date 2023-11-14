@@ -157,6 +157,7 @@ export const GlobalContextProvider = ({ children }: {
             });
             if (res.ok) {
                 const owner = await res.json();
+                console.log("----> ", owner);
                 setUser(owner);
             } else {
                 router.push('/auth');
