@@ -24,7 +24,7 @@ export default function AlertDialogFind() {
     const [searsh, setSearsh] = useState('');
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
-    const { user, setGeust, socket } = useGlobalContext();
+    const { user, setGeust, socket, updateInfo } = useGlobalContext();
 
     const [clicked, setClicked] = useState<number>(0)
     const [update, setUpdate] = useState<number>(0)
@@ -59,14 +59,8 @@ export default function AlertDialogFind() {
         const updateIcons = () => {
             setUpdate((pre) => { return pre + 1 });
         };
-        if (socket) {
-            socket.on("updateData", updateIcons);
-        }
-        return () => {
-            if (socket)
-                socket.off("updateData", updateIcons);
-        };
-    }, [socket]);
+        updateIcons();
+    }, [updateInfo]);
 
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);

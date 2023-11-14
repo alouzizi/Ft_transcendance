@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { socket } from "../random/contexts/WebsocketContext";
+
 import { useGlobalContext } from "@/app/context/store";
 
 type MyComponentProps = {
@@ -19,7 +19,7 @@ const MyComponent = ({
   link,
   emit,
 }: MyComponentProps) => {
-  const { user } = useGlobalContext();
+  const { user, socket } = useGlobalContext();
   const router = useRouter();
   return (
     <div className="flex h-44 rounded-2xl bg-[#F1F3F9] bg-clip-border text-gray-700 mb-16 w-full md:w-auto">
@@ -43,14 +43,13 @@ const MyComponent = ({
         <button
           className="uppercase bg-blue-500 hover:bg-blue-700 text-[#F1F3F9]  font-bold font-outfit py-2 px-4 rounded-full self-end"
           onClick={() => {
-            if (emit) 
-            {
-              if (socket.connected){
-
+            if (emit) {
+              if (socket?.connected){
                 socket.emit("clientId", user.id);
                 router.push(link);
-              }
-              else{
+                
+              } 
+              else {
                 alert("Refresh the page and try again!");
               }
             }

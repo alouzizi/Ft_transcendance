@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "level" SET DEFAULT '0.0',
+ALTER COLUMN "level" SET DATA TYPE TEXT;

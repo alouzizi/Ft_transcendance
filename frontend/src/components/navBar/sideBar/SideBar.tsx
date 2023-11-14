@@ -93,9 +93,13 @@ export default function SideBar() {
   return (
     <div
       id="SideBar"
-      className=" flex flex-col  pb-8 pt-20 bg-color-main-dark w-28 h-screen fixed top-0 "
+      className=" flex flex-col   bg-color-main-dark w-28 h-screen fixed top-0 "
     >
-      <div className=" flex flex-col justify-between h-5/6 ">
+      <div className="md:h-24 h-20 mx-auto  flex flex-col justify-center">
+        <img className="h-2/3 m-auto " src="/logo.png" alt="" />
+      </div>
+
+      <div className="pb-8 pt-18 flex flex-col justify-between h-5/6 ">
         <SBSection sectionName="Home">
           {sBItemsList.slice(0, 5).map((item) => (
             <SBItems

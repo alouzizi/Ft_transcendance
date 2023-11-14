@@ -35,6 +35,7 @@ model User {
   email      String? @unique
   profilePic String?
   hash       String?
+  level      String  @default("0.0")
 
   twoFactorAuth Boolean @default(false)
   AsciiSecretQr String?
@@ -49,21 +50,27 @@ model User {
   Friend       Friend[]
   BlockedUser  BlockedUser[]
   Channel      Channel[]
+  GameHistory  GameHistory[]
 }
 
 model Channel {
-  id              String      @id @default(uuid())
-  channelName     String      @unique
-  channelType     ChannelType @default(Public)
-  channelPassword String
-  createdAt       DateTime    @default(now())
-  avatar          String?
+  id          String      @id @default(uuid())
+  channelName String      @unique
+  channelType ChannelType @default(Public)
 
-  User           User?  @relation(fields: [channelOwnerId], references: [id])
-  channelOwnerId String
+  protected       Boolean @default(false)
+  channelPassword String
+
+  createdAt DateTime @default(now())
+  avatar    String?
+
+  channelOwnerId String?
+  User           User?   @relation(fields: [channelOwnerId], references: [id])
+
+  Message Message[]
 
   ChannelMember ChannelMember[]
-  Message       Message[]
+  BannedMember  BannedMember[]
 }
 
 model Message {
@@ -118,10 +125,38 @@ model BlockedUser {
 }
 
 model ChannelMember {
-  id      String  @id @default(uuid())
+  id String @id @default(uuid())
+
   userId  String
   isAdmin Boolean
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+model BannedMember {
+  id String @id @default(uuid())
+
+  userId    String
+  banned_at DateTime @default(now())
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+// game history
+model GameHistory {
+  id String @id @default(uuid())
+
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [senderUsr], references: [nickname])
+  senderUsr   String
+  receiverUsr String
+
+  senderPoints   String
+  receiverPoints String
 }

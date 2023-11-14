@@ -1,4 +1,4 @@
-import { UserService } from './user.service';
+import { UserService } from "./user.service";
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
@@ -11,6 +11,7 @@ export declare class UserController {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -25,6 +26,7 @@ export declare class UserController {
         last_name: string;
         nickname: string;
         profilePic: string;
+        level: string;
     }>;
     getAllUser(): Promise<{
         id: string;
@@ -35,6 +37,7 @@ export declare class UserController {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -52,6 +55,24 @@ export declare class UserController {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -67,7 +88,16 @@ export declare class UserController {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
         lenUser: number;
-        lenUserLive: number;
+        idUserOwner: number;
+    } | {
+        isUser: boolean;
+        id: string;
+        nickname: string;
+        profilePic: string;
+        status: string;
+        lastSee: number;
+        lenUser: number;
+        idUserOwner: number;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
@@ -77,5 +107,6 @@ export declare class UserController {
         status: "INACTIF";
         lastSee: Date;
         lenUser: number;
+        idUserOwner: string;
     }>;
 }

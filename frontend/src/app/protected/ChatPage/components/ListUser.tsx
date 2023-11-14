@@ -9,6 +9,7 @@ import { extractHoursAndM } from './widgetMsg';
 import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
 
+
 export function getColorStatus(status: any): string {
   if (status === "ACTIF") {
     return '#30f32d';
@@ -20,10 +21,9 @@ export function getColorStatus(status: any): string {
 
 
 const ListUser = () => {
-  const { setGeust, geust, socket, user } = useGlobalContext();
+  const { setGeust, geust, socket, user, updateInfo } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
-
 
   const [direct, setDirect] = useState<boolean>(true);
 
@@ -35,10 +35,17 @@ const ListUser = () => {
     getListUsers();
     if (socket) {
       socket.on("findMsg2UsersResponse", getListUsers);
-      socket.on("updateData", getListUsers);
     }
-
+    return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
   }, [socket])
+
+  useEffect(() => {
+    const getListUsers = async () => {
+      const usersList = await getUserForMsg(user.id);
+      setItemList(usersList);
+    };
+    getListUsers();
+  }, [updateInfo])
 
   const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
@@ -50,60 +57,82 @@ const ListUser = () => {
   };
 
   useEffect(() => {
-    if (geust.id === "-1" && itemList.length !== 0) {
-      getDataGeust(itemList[0]);
-    }
-    // mazal matistatx
-    // if (users.length === 0 && geust.id !== 0) {
-    //   setUsers([geust]);
-    //   setLastMsgs([])
-    // }
-  }, [itemList])
-
-  const userWidget = (itemList.length != 0) ? itemList.map((el, index) => {
-    return <Flex align="center" className='relative border-b py-2 pl-1' key={index}
-      style={{
-        background: (el.receivedId === geust.id) ? "#f1f3f9" : 'white'
-      }}
-      onClick={() => {
-        getDataGeust(el);
-      }}>
-      <Avatar
-        size="3"
-        src={el.receivedPic}
-        radius="full"
-        fallback="T"
-      />
-      <div className='absolute pt-6 pl-7'>
-        {el.isDirectMessage ? <GoDotFill size={20} color={getColorStatus(el.receivedStatus)} /> : <></>}
-      </div>
-      <Flex direction="column" className='items-start pl-2'>
-        <Text size="2" weight="bold" className=''>
-          {el.receivedName}
-        </Text>
-        {/* text-neutral-500  w-32  */}
-        <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
-          {(!el.isDirectMessage ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
-          {el.contentMsg}
-        </Box>
-      </Flex>
-      <Text size="1" className='absolute bottom-0 right-4'>
-        {extractHoursAndM(el.createdAt)}
-      </Text>
-      {
-        (el.receivedId === geust.id) ? <Box sx={{
-          width: 6,
-          height: 40,
-          backgroundColor: 'blue',
-          borderTopLeftRadius: 10,
-          borderBottomLeftRadius: 10
-        }}
-          className='absolute right-0'>
-        </Box> : <div></div>
+    if (direct) {
+      if (itemListDirect.length !== 0) {
+        itemListWidget = userWidgetDirect;
+        getDataGeust(itemListDirect[0]);
+      } else if (itemListChannel.length !== 0) {
+        getDataGeust(itemListChannel[0]);
       }
-    </Flex>
+    } else {
+      if (itemListChannel.length !== 0) {
+        itemListWidget = userWidgetChannel;
+        getDataGeust(itemListChannel[0]);
+      } else if (itemListDirect.length !== 0) {
+        getDataGeust(itemListDirect[0]);
+      }
+    }
+  }, [direct, itemList])
 
+  const widgetUser = (el: messageDto, index: number) => {
+    return (
+      <Flex align="center" className='relative border-b py-2 pl-1' key={index}
+        style={{
+          background: (el.receivedId === geust.id) ? "#f1f3f9" : 'white'
+        }}
+        onClick={() => {
+          getDataGeust(el);
+        }}>
+        <Avatar
+          size="3"
+          src={el.receivedPic}
+          radius="full"
+          fallback="T"
+        />
+        <div className='absolute pt-6 pl-7'>
+          {el.isDirectMessage ? <GoDotFill size={20} color={getColorStatus(el.receivedStatus)} /> : <></>}
+        </div>
+        <Flex direction="column" className='items-start pl-2'>
+          <Text size="2" weight="bold" className=''>
+            {el.receivedName}
+          </Text>
+          {/* text-neutral-500  w-32  */}
+          <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
+            {(!el.isDirectMessage ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
+            {el.contentMsg}
+          </Box>
+        </Flex>
+        <Text size="1" className='absolute bottom-0 right-4'>
+          {extractHoursAndM(el.createdAt)}
+        </Text>
+        {
+          (el.receivedId === geust.id) ? <Box sx={{
+            width: 6,
+            height: 40,
+            backgroundColor: 'blue',
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10
+          }}
+            className='absolute right-0'>
+          </Box> : <div></div>
+        }
+      </Flex>)
+  };
+
+  const itemListDirect = itemList.filter((item: messageDto) => item.isDirectMessage);
+  const itemListChannel = itemList.filter((item: messageDto) => !item.isDirectMessage);
+
+  const userWidgetDirect: JSX.Element | JSX.Element[] = (itemListDirect.length != 0) ? itemListDirect.map((el, index) => {
+    return widgetUser(el, index)
   }) : <Text className="flex border-b justify-center">pas user</Text>
+
+
+  const userWidgetChannel: JSX.Element | JSX.Element[] = (itemListChannel.length != 0) ? itemListChannel.map((el, index) => {
+    return widgetUser(el, index)
+  }) : <Text className="flex border-b justify-center">pas user</Text>
+
+  let itemListWidget: JSX.Element | JSX.Element[] = [];
+
 
 
   let styles: string = 'px-2 py-1 my-2 rounded-[20px] text-[#3055d8] bg-white shadow-md';
@@ -129,7 +158,7 @@ const ListUser = () => {
       <ScrollArea scrollbars="vertical" style={{ height: 430 }}>
         <Box>
           <Flex direction="column" >
-            {userWidget}
+            {direct ? userWidgetDirect : userWidgetChannel}
           </Flex>
         </Box>
       </ScrollArea>

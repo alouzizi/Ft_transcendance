@@ -23,25 +23,26 @@ let AuthController = class AuthController {
     async loginWith42() {
     }
     async callbackWith42(req, res) {
+        console.log("profil howa niit ?? :", req.user);
         const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
         if (ret != null) {
         }
-        res.cookie('intra_id', req.user.intra_id);
-        res.cookie('access_token', ret.access_token);
+        res.cookie("intra_id", req.user.intra_id);
+        res.cookie("access_token", ret.access_token);
         res.redirect("http://localhost:3000/protected/DashboardPage");
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Get)('login42'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42-intranet')),
+    (0, common_1.Get)("login42"),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("42-intranet")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginWith42", null);
 __decorate([
-    (0, common_1.Get)('42-intranet/callback'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42-intranet')),
+    (0, common_1.Get)("42-intranet/callback"),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("42-intranet")),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),

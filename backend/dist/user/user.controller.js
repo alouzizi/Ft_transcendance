@@ -31,7 +31,8 @@ let UserController = class UserController {
             first_name: user.first_name,
             last_name: user.last_name,
             nickname: user.nickname,
-            profilePic: user.profilePic
+            profilePic: user.profilePic,
+            level: user.level,
         };
         return temp;
     }
@@ -40,6 +41,9 @@ let UserController = class UserController {
     }
     async getValideUsers(senderId) {
         return await this.userService.getValideUsers(senderId);
+    }
+    async getUsersCanJoinChannel(senderId, channelId) {
+        return await this.userService.usersCanJoinChannel(senderId, channelId);
     }
     async getUserGeust(id) {
         return await this.userService.getUserGeust(id);
@@ -50,49 +54,57 @@ let UserController = class UserController {
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
     (0, common_1.UseGuards)(guard_1.JwtGuard),
-    (0, common_1.Get)('/intra/:id_intra'),
-    __param(0, (0, common_1.Param)('id_intra')),
+    (0, common_1.Get)("/intra/:id_intra"),
+    __param(0, (0, common_1.Param)("id_intra")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserByIdintr", null);
 __decorate([
-    (0, common_1.Get)('/all'),
+    (0, common_1.Get)("/all"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUser", null);
 __decorate([
-    (0, common_1.Get)('/getValideUsers/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)("/getValideUsers/:id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getValideUsers", null);
 __decorate([
-    (0, common_1.Get)('getUserGeust/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)("/getUsersCanJoinChannel/:senderId/:channelId"),
+    __param(0, (0, common_1.Param)("senderId")),
+    __param(1, (0, common_1.Param)("channelId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUsersCanJoinChannel", null);
+__decorate([
+    (0, common_1.Get)("getUserGeust/:id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserGeust", null);
 __decorate([
-    (0, common_1.Get)('getChannelGeust/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)("getChannelGeust/:id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getChannelGeust", null);
 exports.UserController = UserController = __decorate([
-    (0, common_1.Controller)('user'),
+    (0, common_1.Controller)("user"),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

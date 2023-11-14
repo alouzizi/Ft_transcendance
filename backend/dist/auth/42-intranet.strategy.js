@@ -14,21 +14,21 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_42_1 = require("passport-42");
 const user_service_1 = require("../user/user.service");
-let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, '42-intranet') {
+let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, "42-intranet") {
     constructor(userService) {
         super({
-            clientID: 'u-s4t2ud-095667cbde991cad25d4c4725b163ae40cf962fe82422ff3d685da013e33f830',
-            clientSecret: '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',
-            callbackURL: 'http://localhost:4000/auth/42-intranet/callback',
-            scope: ['public'],
+            clientID: "u-s4t2ud-a589bfeab5ffa26f8e418a13eea3927ed0581255abeec0cc4e1ff8d3008e54de",
+            clientSecret: "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",
+            callbackURL: "http://localhost:4000/auth/42-intranet/callback",
+            scope: ["public"],
         });
         this.userService = userService;
     }
     validateUser(profile) {
         const { id, first_name, last_name, image, login } = profile._json;
         const user = {
-            intra_id: typeof id === 'string' ? id : id.toString(),
-            email: profile['emails'][0]['value'],
+            intra_id: typeof id === "string" ? id : id.toString(),
+            email: profile["emails"][0]["value"],
             first_name: first_name,
             last_name: last_name,
             profilePicture: image.link,
@@ -40,6 +40,7 @@ let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passpo
         try {
             const user = await this.validateUser(profile);
             let checkuser = await this.userService.findByIntraId(user.intra_id);
+            console.log("checkuser--------> ", checkuser);
             if (checkuser) {
                 done(null, user);
             }

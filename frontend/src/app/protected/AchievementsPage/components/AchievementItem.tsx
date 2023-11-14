@@ -4,21 +4,28 @@ export default function AchievementItem(prompt: {
   title: string;
   mission: string;
   type: string;
+  isUnlocked: boolean;
 }) {
   let achievColor = "";
-  if (prompt.type === "bronz") {
+  if (prompt.type === "Bronz") {
     achievColor = "#AB6D55";
-  } else if (prompt.type === "selver") {
+  } else if (prompt.type === "Selver") {
     achievColor = "#A7A9AA";
-  } else if (prompt.type === "gold") {
+  } else if (prompt.type === "Gold") {
     achievColor = "#FBB230";
   }
   return (
     <div
       className="transition ease-in-out delay-20 flex flex-row w-full bg-white
     items-center justify-between rounded-xl relative m-2
-    hover:scale-105"
+    hover:scale-105 cursor-pointer"
     >
+      {!prompt.isUnlocked ? (
+        <div className="w-full h-full bg-[#00000068] rounded-lg absolute z-20"></div>
+      ) : (
+        <div className="absolute"></div>
+      )}
+
       <div className="flex flex-row items-center m-4">
         <img
           className=" object-cover mx-auto  mr-4
@@ -32,7 +39,7 @@ export default function AchievementItem(prompt: {
           src={prompt.image}
           alt=""
         />
-        <div className="flex flex-col my-auto cursor-pointer ">
+        <div className="flex flex-col my-auto  ">
           <p
             className=" font-bold  text-black
           

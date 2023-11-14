@@ -14,28 +14,63 @@ export class ChannelController {
     console.log(typeof createChannelDto.channelType, createChannelDto.channelType);
     const channelData: CreateChannelDto = {
       ...createChannelDto,
-      channelType: (createChannelDto.channelType == '1') ? ChannelType.Private : ChannelType.Public,
+      channelType: (createChannelDto.channelType == 'Private') ? ChannelType.Private : ChannelType.Public,
     }
     return this.channelService.createChannel(channelData, senderId);
   }
 
-  @Get()
-  findAll() {
-    return this.channelService.findAll();
+  @Post('/updateChannel/:senderId/:channelId')
+  updateChannel(@Body() createChannelDto: any,
+    @Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    const channelData: CreateChannelDto = {
+      ...createChannelDto,
+      channelType: (createChannelDto.channelType == 'Private') ? ChannelType.Private : ChannelType.Public,
+    }
+    return this.channelService.updateChannel(senderId, channelId, channelData);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelService.findChannelById(id);
+
+  @Get('/addUserToChannel/:senderId/:channelId/:userId')
+  addUserToChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.addUserToChannel(senderId, channelId, userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(+id, updateChannelDto);
+  @Get('/getChannel/:senderId/:channelId')
+  getChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.getChannel(senderId, channelId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.channelService.remove(+id);
+  @Get('/getMembersChannel/:id')
+  getMembersChannel(@Param('id') id: string) {
+    return this.channelService.getMembersChannel(id);
+  }
+
+
+  @Get('/changeStatusAdmin/:senderId/:channelId/:userId')
+  changeStatusAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.changeStatusAdmin(senderId, channelId, userId);
+  }
+
+  @Get('/kickmember/:senderId/:channelId/:userId')
+  kickMember(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.KickMember(senderId, channelId, userId);
+  }
+
+  @Get('/bannedmember/:senderId/:channelId/:userId')
+  banMember(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.changeStatutsBanned(senderId, channelId, userId);
+  }
+
+
+  @Get('/leaveChannel/:senderId/:channelId')
+  leaveChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.leaveChannel(senderId, channelId);
+  }
+
+
+  @Get('/validePassword/:senderId/:channelId/:password')
+  validePassword(@Param('senderId') senderId: string, @Param('channelId') channelId: string
+    , @Param('password') password: string) {
+    return this.channelService.validePassword(senderId, channelId, password);
   }
 }

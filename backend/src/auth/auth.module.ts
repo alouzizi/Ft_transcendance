@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { ChannelService } from 'src/channel/channel.service';
+import { SocketGatewayService } from 'src/socket/socket.service';
 
 @Module({
   imports: [
@@ -17,7 +18,10 @@ import { ChannelService } from 'src/channel/channel.service';
 
   controllers: [AuthController],
   providers: [AuthService, FortyTwoIntranetStrategy,
-    MessagesService, PrismaService, UserService, ChannelService],
+    MessagesService, PrismaService, UserService,
+    ChannelService,
+    SocketGatewayService
+  ],
 })
 
 export class AuthModule { }

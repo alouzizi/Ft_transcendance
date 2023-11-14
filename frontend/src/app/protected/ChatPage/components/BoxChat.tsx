@@ -1,7 +1,8 @@
 'use client';
 import { TextField, Avatar, ScrollArea, Box, Text, Flex } from '@radix-ui/themes';
 import { useEffect, useRef, useState } from 'react';
-import { BsFillSendFill } from "react-icons/bs";
+import { BsFillSendFill, } from "react-icons/bs";
+import { IoSettingsSharp } from "react-icons/io5";
 import { useGlobalContext } from '../../../context/store';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
@@ -9,6 +10,7 @@ import { GoDotFill } from "react-icons/go";
 import { getColorStatus } from './ListUser';
 import { formatDistance } from 'date-fns'
 import { getVueGeust } from '../api/fetch-users';
+import Link from 'next/link';
 
 const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -16,7 +18,7 @@ const BoxChat = () => {
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-    const { geust, user, socket, setGeust } = useGlobalContext();
+    const { geust, user, socket, setGeust, updateInfo } = useGlobalContext();
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -39,7 +41,8 @@ const BoxChat = () => {
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
-                if (data.senderId === geust.id || data.senderId === user.id || !geust.isUser) {
+                if ((geust.isUser && (data.senderId === geust.id || data.senderId === user.id)) ||
+                    ((!geust.isUser && (data.receivedId === geust.id || data.senderId === user.id)))) { // || !geust.isUser
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
                 }
@@ -50,6 +53,8 @@ const BoxChat = () => {
             };
         }
     }, [geust.id, user.id]);
+
+
 
     useEffect(() => {
         async function getData() {
@@ -63,7 +68,7 @@ const BoxChat = () => {
         if (geust.id !== "-1" && user.id !== "-1") {
             getData();
         }
-    }, [geust.id, user.id]);
+    }, [geust.id, user.id, updateInfo]);
 
 
     useEffect(() => {
@@ -74,12 +79,9 @@ const BoxChat = () => {
                     setIsTyping(false);
                 }
             }
-            socket.on("updateData", upDateGeust);
-            return () => {
-                socket.off("updateData", upDateGeust);
-            };
+            upDateGeust();
         }
-    }, [geust.id, user.id]);
+    }, [geust.id, user.id, updateInfo]);
 
     useEffect(() => {
         if (msg != "" && socket) {
@@ -128,30 +130,38 @@ const BoxChat = () => {
                 borderRadius: 10, background: "#f1f3f9", marginLeft: 3
             }}>
 
-            <div className="flex border-b items-center justify-start  bg-white pl-2 pt-2 pb-2 rounded-t-lg">
-                <Avatar
-                    size="3"
-                    src={geust.profilePic}
-                    radius="full"
-                    fallback="T"
-                />
-                <Text className='absolute pt-6 pl-7'>
-                    {geust.isUser ? <GoDotFill size={20} color={getColorStatus(geust.status)} /> : <></>}
-                </Text>
-                <Flex direction="column" className='flex' >
-                    <Text size="2" weight="bold" className='pl-2'>
-                        {geust.nickname}
+            <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-lg">
+                <div className="flex items-center pl-3">
+                    <Avatar
+                        size="3"
+                        src={geust.profilePic}
+                        radius="full"
+                        fallback="T"
+                    />
+                    <Text className='absolute pt-6 pl-7'>
+                        {geust.isUser ? <GoDotFill size={20} color={getColorStatus(geust.status)} /> : <></>}
                     </Text>
-                    {
-                        (geust.status === 'INACTIF') ?
-                            <Text size="1" weight="light" className='pl-2'>
-                                {geust.isUser ?
-                                    formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true }) :
-                                    <>{geust.lenUser} members</>}
-                            </Text> :
-                            <></>
-                    }
-                </Flex>
+                    <Flex direction="column" className='flex' >
+                        <Text size="2" weight="bold" className='pl-2'>
+                            {geust.nickname}
+                        </Text>
+                        {
+                            (geust.status === 'INACTIF') ?
+                                <Text size="1" weight="light" className='pl-2'>
+                                    {geust.isUser ?
+                                        formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true }) :
+                                        <>{geust.lenUser} members</>}
+                                </Text> :
+                                <></>
+                        }
+                    </Flex>
+                </div>
+                <div className="pr-3">
+                    {!geust.isUser ? <Link href='ChatPage/channelSettings'>
+                        <IoSettingsSharp size={20} />
+                    </Link> :
+                        <></>}
+                </div>
             </div >
 
             <div   >

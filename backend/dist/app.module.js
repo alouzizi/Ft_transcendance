@@ -15,14 +15,14 @@ const user_module_1 = require("./user/user.module");
 const messages_module_1 = require("./messages/messages.module");
 const friendship_module_1 = require("./friendship/friendship.module");
 const channel_module_1 = require("./channel/channel.module");
-const game_module_1 = require("./game/game.module");
+const socket_module_1 = require("./socket/socket.module");
+const hixcoder_module_1 = require("./hixcoder/hixcoder.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            game_module_1.GameModule,
             auth_module_1.AuthModule,
             prisma_module_1.PrismaModule,
             config_1.ConfigModule.forRoot({ isGlobal: true }),
@@ -30,6 +30,9 @@ exports.AppModule = AppModule = __decorate([
             messages_module_1.MessagesModule,
             friendship_module_1.FriendshipModule,
             channel_module_1.ChannelModule,
+            socket_module_1.SocketGatewayModule,
+            hixcoder_module_1.HixcoderModule,
+            socket_module_1.SocketGatewayModule,
         ],
     })
 ], AppModule);

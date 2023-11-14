@@ -13,6 +13,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -29,6 +30,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -46,6 +48,24 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
+        twoFactorAuth: boolean;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    usersCanJoinChannel(senderId: string, channelId: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -61,7 +81,16 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
         lenUser: number;
-        lenUserLive: number;
+        idUserOwner: number;
+    } | {
+        isUser: boolean;
+        id: string;
+        nickname: string;
+        profilePic: string;
+        status: string;
+        lastSee: number;
+        lenUser: number;
+        idUserOwner: number;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
@@ -71,6 +100,7 @@ export declare class UserService {
         status: "INACTIF";
         lastSee: Date;
         lenUser: number;
+        idUserOwner: string;
     }>;
     createUser(user1: any): Promise<{
         id: string;
@@ -81,6 +111,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
@@ -97,6 +128,7 @@ export declare class UserService {
         email: string;
         profilePic: string;
         hash: string;
+        level: string;
         twoFactorAuth: boolean;
         AsciiSecretQr: string;
         createdAt: Date;
