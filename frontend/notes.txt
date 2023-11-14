@@ -53,6 +53,7 @@ to do :
 - fix the level✅
 - fix fetching errors✅
 - add loader✅
-- merge with ali 
+- merge with ali ✅
+- fix some responsive errors
 - fix backend urls
 - fix the find blocked or not exist friend page [error page]

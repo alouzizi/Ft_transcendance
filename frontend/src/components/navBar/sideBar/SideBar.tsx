@@ -91,10 +91,7 @@ export default function SideBar() {
   };
 
   return (
-    <div
-      id="SideBar"
-      className=" flex flex-col   bg-color-main-dark w-28 h-screen fixed top-0 "
-    >
+    <div className=" flex flex-col   bg-color-main-dark w-24 md:w-28 fixed h-fit  top-0 rounded-br-full">
       <div className="md:h-24 h-20 mx-auto  flex flex-col justify-center">
         <img className="h-2/3 m-auto " src="/logo.png" alt="" />
       </div>

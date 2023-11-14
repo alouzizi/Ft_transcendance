@@ -18,7 +18,10 @@ export default function HistoryItem(prompt: {
      "
     >
       <div className="flex flex-col justify-start my-auto cursor-pointer w-1/3">
-        <Link href={`/protected/DashboardPage/${prompt.firstPlayerName}`}>
+        <Link
+          className="flex flex-col w-full items-start "
+          href={`/protected/DashboardPage/${prompt.firstPlayerName}`}
+        >
           <img
             className=" object-cover   rounded-full 
           
@@ -53,13 +56,16 @@ export default function HistoryItem(prompt: {
       >
         {prompt.firstPlayerPoints} - {prompt.secondPlayerPoints}
       </p>
-      <div className="flex flex-col items-end my-auto cursor-pointer w-1/3">
-        <Link href={`/protected/DashboardPage/${prompt.secondPlayerName}`}>
+      <div className="flex flex-col items-end my-auto cursor-pointer w-1/3 ">
+        <Link
+          className="flex flex-col w-full items-end "
+          href={`/protected/DashboardPage/${prompt.secondPlayerName}`}
+        >
           <img
-            className="object-cover  rounded-full 
+            className="object-cover  rounded-full mr-
           
           // small screen
-          w-12 h-12
+          w-12 h-12 
         // Big screen
         md:w-14 md:h-14
         "
@@ -67,7 +73,7 @@ export default function HistoryItem(prompt: {
             alt=""
           />
           <p
-            className="mt-2 font-medium 
+            className="mt-2 font-medium text-end
         // small screen
         text-xs
       // Big screen
