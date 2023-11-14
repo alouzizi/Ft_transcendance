@@ -36,8 +36,10 @@ model User {
   profilePic String?
   hash       String?
 
-  twoFactorAuth Boolean @default(false)
-  AsciiSecretQr String?
+  twoFactorAuth          Boolean @default(false)
+  isTwoFactorAuthEnabled Boolean @default(false)
+  twoFactorAuthSecret    String?
+  AsciiSecretQr          String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

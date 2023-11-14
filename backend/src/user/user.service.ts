@@ -1,17 +1,13 @@
 import { Injectable, } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 
-import { MessagesService } from "src/messages/messages.service";
-import { MessageItemList } from "./dto/user.dto";
-import { BlockedUser, Channel, Message, Status, User } from "@prisma/client";
-import { ChannelService } from "src/channel/channel.service";
+import { BlockedUser, Status, User } from "@prisma/client";
 
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
-    private channelService: ChannelService,
   ) { }
 
 
@@ -197,8 +193,6 @@ export class UserService {
     }
   }
 
-
-
   async getChannelGeust(id: string) {
     try {
       const channel = await this.prisma.channel.findUnique({ where: { id } });
@@ -221,7 +215,6 @@ export class UserService {
   // saliha -------------------
 
   async createUser(user1: any) {
-    console.log("my user iss", user1.intra_id);
     const user = await this.prisma.user.create({
       data: {
         intra_id: user1.intra_id.toString(),
@@ -229,17 +222,72 @@ export class UserService {
         email: user1.email.toString(),
         profilePic: user1.profilePicture.toString(),
         last_name: user1.last_name,
-        first_name: user1.first_name
+        first_name: user1.first_name,
+        hash: user1.hash,
+        isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false, // Assuming it's a boolean property
       },
-
     });
-    console.log("prisma user is ", user)
+    return user;
+  }
+
+
+
+  async setTwoFactorAuthSecret(secret: string, intra_id: string) {
+    await this.prisma.user.update({
+      where: { intra_id: intra_id },
+      data: {
+        twoFactorAuthSecret: secret,
+      }
+    })
+  }
+
+  async turnOnTwoFactorAuth(intra_id: string) {
+    // this.user.find(user => user.id === id).isTwoFactorAuthEnabled = true;
+    const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } })
+    await this.prisma.user.update({
+      where: { intra_id: intra_id },
+      data: {
+        isTwoFactorAuthEnabled: true,
+      }
+    })
+  }
+
+  async getUsers() {
+    return this.prisma.user.findMany();
+  }
+
+  async updatUserdata(intra_id: string, nickname: string, image: string) {
+    const user = await this.prisma.user.update({
+      where: {
+        intra_id: intra_id,
+      },
+      data: {
+        nickname: nickname,
+        // profilePic: image,
+      }
+    });
     return user;
   }
 
   async findByIntraId(intra_id: string) {
+    // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },
+
+    });
+  }
+
+  async findByIds(id: string) {
+    // console.log("untra id = ", intra_id);
+    return this.prisma.user.findUnique({
+      where: { id: id },
+
+    });
+  }
+
+  async deleteUser(id: string) {
+    return this.prisma.user.delete({
+      where: { id: id },
     });
   }
 

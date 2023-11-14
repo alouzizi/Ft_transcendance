@@ -41,6 +41,9 @@ let UserController = class UserController {
     async getValideUsers(senderId) {
         return await this.userService.getValideUsers(senderId);
     }
+    async updatUserdata(intra_id, nickname, image) {
+        return await this.userService.updatUserdata(intra_id, nickname, image);
+    }
     async getUsersCanJoinChannel(senderId, channelId) {
         return await this.userService.usersCanJoinChannel(senderId, channelId);
     }
@@ -83,6 +86,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getValideUsers", null);
+__decorate([
+    (0, common_1.Get)('updatUserdata/:intra_id/:nickname/:image'),
+    __param(0, (0, common_1.Param)('intra_id')),
+    __param(1, (0, common_1.Param)('nickname')),
+    __param(2, (0, common_1.Param)('image')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updatUserdata", null);
 __decorate([
     (0, common_1.Get)('/getUsersCanJoinChannel/:senderId/:channelId'),
     __param(0, (0, common_1.Param)('senderId')),

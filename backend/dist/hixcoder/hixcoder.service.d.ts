@@ -12,6 +12,8 @@ export declare class HixcoderService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -30,6 +32,8 @@ export declare class HixcoderService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -49,6 +53,8 @@ export declare class HixcoderService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -66,6 +72,8 @@ export declare class HixcoderService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -85,6 +93,8 @@ export declare class HixcoderService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;

@@ -1,9 +1,7 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { ChannelService } from "src/channel/channel.service";
 export declare class UserService {
     private prisma;
-    private channelService;
-    constructor(prisma: PrismaService, channelService: ChannelService);
+    constructor(prisma: PrismaService);
     findById(id: string): Promise<{
         id: string;
         intra_id: string;
@@ -14,6 +12,8 @@ export declare class UserService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -32,6 +32,8 @@ export declare class UserService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -51,6 +53,8 @@ export declare class UserService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -69,6 +73,8 @@ export declare class UserService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -142,6 +148,46 @@ export declare class UserService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    setTwoFactorAuthSecret(secret: string, intra_id: string): Promise<void>;
+    turnOnTwoFactorAuth(intra_id: string): Promise<void>;
+    getUsers(): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -158,6 +204,44 @@ export declare class UserService {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    findByIds(id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    deleteUser(id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;

@@ -14,13 +14,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
+const user_service_1 = require("../user/user.service");
 const auth_service_1 = require("./auth.service");
+const passport_1 = require("@nestjs/passport");
+const jwt_guard_1 = require("./guard/jwt.guard");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, userService) {
         this.authService = authService;
+        this.userService = userService;
     }
-    async loginWith42() {
+    async loginWith42(req) {
+        const userWithoutPsw = req.user;
+        return this.authService.loginWith2fa(userWithoutPsw);
+    }
+    async register(req) {
+        const { otpAuthUrl } = await this.authService.generateTwoFactorAuthSecret(req.user);
+        const qrcode = await this.authService.generateQrCodeDataURL(otpAuthUrl);
+        return qrcode;
+    }
+    async turnOnTwoFactorAuthentication(req, authCode) {
+        const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(authCode, req.user.sub);
+        if (!isCodeValid) {
+            throw new common_1.UnauthorizedException('Wrong authentication code');
+        }
+        await this.userService.turnOnTwoFactorAuth(req.user.sub);
+        return isCodeValid;
+    }
+    async authenticate(req, authCode) {
+        const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(authCode, req.user.sub);
+        if (isCodeValid) {
+            await this.authService.loginWith2fa(req.user.sub);
+        }
+        return isCodeValid;
     }
     async callbackWith42(req, res) {
         console.log("profil howa niit ?? :", req.user);
@@ -29,17 +54,49 @@ let AuthController = class AuthController {
         }
         res.cookie('intra_id', req.user.intra_id);
         res.cookie('access_token', ret.access_token);
-        res.redirect("http://10.11.4.2:3000/protected/DashboardPage");
+        if (req.user.isTwoFactorAuthEnabled)
+            res.redirect("http://10.12.3.11:3000/Checker2faAuth");
+        else
+            res.redirect("http://10.12.3.11:3000/protected/DashboardPage");
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Get)('login42'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42-intranet')),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginWith42", null);
+__decorate([
+    (0, common_1.Get)('2fa/generate'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.Get)('2fa/turn-on/:authCode'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('authCode')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "turnOnTwoFactorAuthentication", null);
+__decorate([
+    (0, common_1.Get)('2fa/authenticate/:authCode'),
+    (0, common_1.HttpCode)(200),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('authCode')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "authenticate", null);
 __decorate([
     (0, common_1.Get)('42-intranet/callback'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42-intranet')),
@@ -51,6 +108,7 @@ __decorate([
 ], AuthController.prototype, "callbackWith42", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        user_service_1.UserService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

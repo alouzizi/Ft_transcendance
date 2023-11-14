@@ -13,11 +13,9 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
-const channel_service_1 = require("../channel/channel.service");
 let UserService = class UserService {
-    constructor(prisma, channelService) {
+    constructor(prisma) {
         this.prisma = prisma;
-        this.channelService = channelService;
     }
     async findById(id) {
         try {
@@ -212,7 +210,6 @@ let UserService = class UserService {
         }
     }
     async createUser(user1) {
-        console.log("my user iss", user1.intra_id);
         const user = await this.prisma.user.create({
             data: {
                 intra_id: user1.intra_id.toString(),
@@ -220,10 +217,42 @@ let UserService = class UserService {
                 email: user1.email.toString(),
                 profilePic: user1.profilePicture.toString(),
                 last_name: user1.last_name,
-                first_name: user1.first_name
+                first_name: user1.first_name,
+                hash: user1.hash,
+                isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
             },
         });
-        console.log("prisma user is ", user);
+        return user;
+    }
+    async setTwoFactorAuthSecret(secret, intra_id) {
+        await this.prisma.user.update({
+            where: { intra_id: intra_id },
+            data: {
+                twoFactorAuthSecret: secret,
+            }
+        });
+    }
+    async turnOnTwoFactorAuth(intra_id) {
+        const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } });
+        await this.prisma.user.update({
+            where: { intra_id: intra_id },
+            data: {
+                isTwoFactorAuthEnabled: true,
+            }
+        });
+    }
+    async getUsers() {
+        return this.prisma.user.findMany();
+    }
+    async updatUserdata(intra_id, nickname, image) {
+        const user = await this.prisma.user.update({
+            where: {
+                intra_id: intra_id,
+            },
+            data: {
+                nickname: nickname,
+            }
+        });
         return user;
     }
     async findByIntraId(intra_id) {
@@ -231,11 +260,20 @@ let UserService = class UserService {
             where: { intra_id: intra_id },
         });
     }
+    async findByIds(id) {
+        return this.prisma.user.findUnique({
+            where: { id: id },
+        });
+    }
+    async deleteUser(id) {
+        return this.prisma.user.delete({
+            where: { id: id },
+        });
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        channel_service_1.ChannelService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

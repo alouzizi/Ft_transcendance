@@ -12,6 +12,8 @@ export declare class UserController {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -38,6 +40,8 @@ export declare class UserController {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -57,6 +61,8 @@ export declare class UserController {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
@@ -64,6 +70,24 @@ export declare class UserController {
         lastSee: Date;
     }[] | {
         error: boolean;
+    }>;
+    updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        hash: string;
+        twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
     }>;
     getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;
@@ -75,6 +99,8 @@ export declare class UserController {
         profilePic: string;
         hash: string;
         twoFactorAuth: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;

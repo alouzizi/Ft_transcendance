@@ -41,6 +41,11 @@ export class UserController {
     return await this.userService.getValideUsers(senderId);
   }
 
+  @Get('updatUserdata/:intra_id/:nickname/:image')
+  async updatUserdata(@Param('intra_id') intra_id: string, @Param('nickname') nickname: string, @Param('image') image: string,) {
+    return await this.userService.updatUserdata(intra_id, nickname, image);
+  }
+
 
   @Get('/getUsersCanJoinChannel/:senderId/:channelId')
   async getUsersCanJoinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
