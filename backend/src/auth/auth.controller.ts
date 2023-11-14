@@ -83,7 +83,7 @@ export class AuthController {
       res.cookie('intra_id', req.user.accessToken);
       res.cookie('access_token', ret.access_token);
       // req.cookies(accessToken:'accessToken' ,JWT_SECRET);
-    res.redirect("http://localhost:3000/auth/profil");
+    res.redirect("http://localhost:3000/protected/settingspage");
     // res.redirect("http://www.google.com"); 
     // res.send(ret)
   }

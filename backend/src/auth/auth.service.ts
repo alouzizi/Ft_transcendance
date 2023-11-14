@@ -12,7 +12,6 @@ export class AuthService {
     private jwtService: JwtService,
     private UserService: UserService,
     private PrismaService: PrismaService,
-
   ) {}
   async generateAccessToken(user: any){
     // Create a JWT access token based on the user's data
@@ -38,7 +37,7 @@ export class AuthService {
       return null;//res.redirect('https://github.com/');
     }  
   }
-  async login(userWithoutPsw: Partial<User>) {
+  async login(userWithoutPsw: any) {
     const payload = {
       email: userWithoutPsw.email,
     };
@@ -48,7 +47,7 @@ export class AuthService {
     };
   }
 
-  async loginWith2fa(userWithoutPsw: Partial<User>) {
+  async loginWith2fa(userWithoutPsw: any) {
     const payload = {
       email: userWithoutPsw.email,
       isTwoFactorAuthEnabled: !!userWithoutPsw.isTwoFactorAuthEnabled,

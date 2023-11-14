@@ -1,4 +1,5 @@
 "use client";
+
 // components/ImageUpload.tsx
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import Image from "next/image";
 import { useGlobalContext } from "@/app/context/store";
 import { IconButton } from "@mui/material";
 
-const ImageUpload = () => {
+const CoverUpload = () => {
   const { user } = useGlobalContext();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -55,4 +56,4 @@ const ImageUpload = () => {
   );
 };
 
-export default ImageUpload;
+export default CoverUpload;

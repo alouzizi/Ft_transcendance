@@ -23,4 +23,5 @@ import { Jwt2faStrategy } from './2FA/jwt-2fa.strategy';
   providers: [AuthService,FortyTwoIntranetStrategy,Jwt2faStrategy,
     UserService,PrismaService,ChannelService,MessagesService, ], 
 })
+
 export class AuthModule {}

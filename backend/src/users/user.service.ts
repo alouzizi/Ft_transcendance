@@ -29,7 +29,7 @@ export class UserService {
     });
     return user;
   }
-  async findOne(email: string): Promise<User | undefined> {
+  async findOne(email: string) {
     return this.user.find(user => user.email === email);
   }
 
@@ -139,22 +139,22 @@ async findByIntraId(intra_id: string){
     return result;
   }
 
-  // async getUserGeust(id: string){
-  //   const user = this.findById(id);
-  //   return {
-  //     isUser: true,
-  //     id: user.id,
-  //     nickname: user.nickname,
-  //     profilePic: user.profilePic,
-  //     status: user.status,
-  //     lastSee: user.lastSee,
-  //     lenUser: 0,
-  //     lenUserLive: 0,
-  //   };
-  // }
-  findById(id: string) {
-    throw new Error('Method not implemented.');
+  async getUserGeust(id: string){
+    const user = this.findById(id);
+    return {
+      isUser: true,
+      id: user.id,
+      nickname: user.nickname,
+      profilePic: user.profilePic,
+      status: user.status,
+      lastSee: user.lastSee,
+      lenUser: 0,
+      lenUserLive: 0,
+    };
   }
+  // findById(id: string) {
+  //   throw new Error('Method not implemented.');
+  // }
 
   async getChannelGeust(id: string) {
     const channel = await this.channelService.findChannelById(id);
