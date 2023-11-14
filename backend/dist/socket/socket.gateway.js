@@ -19,12 +19,17 @@ const messages_service_1 = require("../messages/messages.service");
 const create_message_dto_1 = require("../messages/dto/create-message.dto");
 const socket_service_1 = require("./socket.service");
 const game_service_1 = require("../game/game.service");
+const prisma_service_1 = require("../prisma/prisma.service");
+const hixcoder_service_1 = require("../hixcoder/hixcoder.service");
 let SocketGateway = class SocketGateway {
-    constructor(PongService, socketGatewayService, messagesService) {
+    constructor(PongService, socketGatewayService, messagesService, hixcoder, prisma) {
         this.PongService = PongService;
         this.socketGatewayService = socketGatewayService;
         this.messagesService = messagesService;
-        this.ROUND_LIMIT = 6;
+        this.hixcoder = hixcoder;
+        this.prisma = prisma;
+        this.ROUND_LIMIT = 4;
+        this.joindRoom = 0;
         this.clients = new Map();
         this.rooms = new Map();
         this.roomState = new Map();
@@ -147,10 +152,20 @@ let SocketGateway = class SocketGateway {
             this.server.to(roomName).emit("updateTheBall", ro.ball);
         }, 20));
     }
-    gameState(roomName, score1, score2) {
+    async gameState(roomName, score1, score2) {
         const player1 = this.rooms.get(roomName)[0];
         const player2 = this.rooms.get(roomName)[1];
         if (score1 + score2 === this.ROUND_LIMIT) {
+            const player1Usr = await this.prisma.user.findUnique({
+                where: {
+                    id: player1,
+                },
+            });
+            const player2Usr = await this.prisma.user.findUnique({
+                where: {
+                    id: player2,
+                },
+            });
             if (score1 == score2) {
                 console.log(player1, player2);
                 this.server.to(roomName).emit("gameOver", "draw");
@@ -165,6 +180,7 @@ let SocketGateway = class SocketGateway {
                 this.server.to(player1).emit("gameOver", "lose");
                 this.server.to(player2).emit("gameOver", "win");
             }
+            this.hixcoder.updateGameHistory(player1Usr.nickname, player2Usr.nickname, score1.toString(), score2.toString());
             this.stopEmittingBallPosition(roomName);
         }
     }
@@ -173,7 +189,9 @@ let SocketGateway = class SocketGateway {
     }
     handleJoinRoom(client, id) {
         console.log({ size: this.clients.size });
-        if (this.clients.size === 2) {
+        this.joindRoom++;
+        if (this.clients.size === 2 && this.joindRoom == 2) {
+            this.joindRoom = 0;
             console.log("2 clients connected");
             const roomName = `room-${Date.now()}`;
             this.rooms.set(roomName, Array.from(this.clients.keys()));
@@ -274,6 +292,8 @@ exports.SocketGateway = SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(),
     __metadata("design:paramtypes", [game_service_1.PongServise,
         socket_service_1.SocketGatewayService,
-        messages_service_1.MessagesService])
+        messages_service_1.MessagesService,
+        hixcoder_service_1.HixcoderService,
+        prisma_service_1.PrismaService])
 ], SocketGateway);
 //# sourceMappingURL=socket.gateway.js.map

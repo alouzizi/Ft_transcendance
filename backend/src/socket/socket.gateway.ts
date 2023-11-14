@@ -15,6 +15,8 @@ import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { SocketGatewayService } from "./socket.service";
 import { PongServise } from "src/game/game.service";
 import { BallDto, PaddleDto } from "src/game/dto/game.tdo";
+import { PrismaService } from "src/prisma/prisma.service";
+import { HixcoderService } from "src/hixcoder/hixcoder.service";
 
 @WebSocketGateway()
 export class SocketGateway
@@ -23,7 +25,9 @@ export class SocketGateway
   constructor(
     private PongService: PongServise,
     private socketGatewayService: SocketGatewayService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
+    private hixcoder: HixcoderService,
+    private prisma: PrismaService
   ) {}
 
   @WebSocketServer() server: Server;
@@ -55,8 +59,8 @@ export class SocketGateway
     this.server.to(ids.receivedId).emit("isTyping", ids);
   }
 
-  ROUND_LIMIT = 6;
-
+  ROUND_LIMIT = 4;
+  joindRoom = 0
   private GameInit(roomName: string) {
     this.roomState.set(roomName, {
       player1: {
@@ -189,11 +193,21 @@ export class SocketGateway
     );
   }
 
-  gameState(roomName: string, score1: number, score2: number) {
+  async gameState(roomName: string, score1: number, score2: number) {
     const player1 = this.rooms.get(roomName)[0];
     const player2 = this.rooms.get(roomName)[1];
 
     if (score1 + score2 === this.ROUND_LIMIT) {
+      const player1Usr = await this.prisma.user.findUnique({
+        where: {
+          id: player1,
+        },
+      });
+      const player2Usr = await this.prisma.user.findUnique({
+        where: {
+          id: player2,
+        },
+      });
       if (score1 == score2) {
         console.log(player1, player2);
         this.server.to(roomName).emit("gameOver", "draw");
@@ -207,6 +221,12 @@ export class SocketGateway
         this.server.to(player1).emit("gameOver", "lose");
         this.server.to(player2).emit("gameOver", "win");
       }
+      this.hixcoder.updateGameHistory(
+        player1Usr.nickname,
+        player2Usr.nickname,
+        score1.toString(),
+        score2.toString()
+      );
       this.stopEmittingBallPosition(roomName);
     }
   }
@@ -218,8 +238,9 @@ export class SocketGateway
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
     console.log({ size: this.clients.size });
-
-    if (this.clients.size === 2) {
+    this.joindRoom++
+    if (this.clients.size === 2 && this.joindRoom == 2) {
+      this.joindRoom = 0;
       console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
       this.rooms.set(roomName, Array.from(this.clients.keys()));

@@ -4,11 +4,15 @@ import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { SocketGatewayService } from "./socket.service";
 import { PongServise } from "src/game/game.service";
+import { PrismaService } from "src/prisma/prisma.service";
+import { HixcoderService } from "src/hixcoder/hixcoder.service";
 export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private PongService;
     private socketGatewayService;
     private messagesService;
-    constructor(PongService: PongServise, socketGatewayService: SocketGatewayService, messagesService: MessagesService);
+    private hixcoder;
+    private prisma;
+    constructor(PongService: PongServise, socketGatewayService: SocketGatewayService, messagesService: MessagesService, hixcoder: HixcoderService, prisma: PrismaService);
     server: Server;
     afterInit(server: any): void;
     handleConnection(client: Socket): Promise<void>;
@@ -17,6 +21,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     updateData(ids: CreateMessageDto): Promise<void>;
     isTyping(ids: CreateMessageDto): Promise<void>;
     ROUND_LIMIT: number;
+    joindRoom: number;
     private GameInit;
     private clients;
     private rooms;
@@ -26,7 +31,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     collision(ball: any, player: any): boolean;
     identifyClient(client: Socket, id: string): void;
     startEmittingBallPosition(roomName: string): void;
-    gameState(roomName: string, score1: number, score2: number): void;
+    gameState(roomName: string, score1: number, score2: number): Promise<void>;
     stopEmittingBallPosition(roomName: string): void;
     handleJoinRoom(client: Socket, id: string): void;
     findRoomByClientId(id: string): string;

@@ -136,13 +136,16 @@ const Pong = ({ room, isLeft }: PongProps) => {
       // );
       setTimeout(() => {
         if (state === "win") {
-          alert("You win!");
+          console.log("test");
+          // alert("You win!");
         }
         if (state === "lose") {
-          alert("You lose!");
+          console.log("test");
+          // alert("You lose!");
         }
         if (state === "draw") {
-          alert("Draw!");
+          console.log("test");
+          // alert("Draw!");
         }
       }, 1000);
     });
