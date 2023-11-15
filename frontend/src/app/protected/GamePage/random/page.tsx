@@ -19,6 +19,7 @@ export default function Home() {
     width: 600,
     height: 400,
   };
+  
   const [gameStarted, setGameStarted] = useState(false);
 
   const startGameHandler = () => {

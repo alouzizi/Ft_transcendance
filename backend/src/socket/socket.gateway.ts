@@ -59,7 +59,7 @@ export class SocketGateway
     this.server.to(ids.receivedId).emit("isTyping", ids);
   }
 
-  ROUND_LIMIT = 4;
+  ROUND_LIMIT = 10;
   joindRoom = 0;
   private GameInit(roomName: string) {
     this.roomState.set(roomName, {
@@ -310,8 +310,8 @@ export class SocketGateway
       if (clientsRoom) {
         const otherClient = clientsRoom.find((c) => c !== data.userId);
         if (otherClient) {
-          if (data.isLeft) this.roomState.get(data.room).player1 = data.paddle;
-          else this.roomState.get(data.room).player2 = data.paddle;
+          if (data.isLeft) this.roomState.get(data.room).player1.y = data.paddle;
+          else this.roomState.get(data.room).player2.y = data.paddle;
           this.server.to(otherClient).emit("resivePaddle", data.paddle);
         }
       }

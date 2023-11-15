@@ -28,7 +28,7 @@ let SocketGateway = class SocketGateway {
         this.messagesService = messagesService;
         this.hixcoder = hixcoder;
         this.prisma = prisma;
-        this.ROUND_LIMIT = 4;
+        this.ROUND_LIMIT = 10;
         this.joindRoom = 0;
         this.clients = new Map();
         this.rooms = new Map();
@@ -235,9 +235,9 @@ let SocketGateway = class SocketGateway {
                 const otherClient = clientsRoom.find((c) => c !== data.userId);
                 if (otherClient) {
                     if (data.isLeft)
-                        this.roomState.get(data.room).player1 = data.paddle;
+                        this.roomState.get(data.room).player1.y = data.paddle;
                     else
-                        this.roomState.get(data.room).player2 = data.paddle;
+                        this.roomState.get(data.room).player2.y = data.paddle;
                     this.server.to(otherClient).emit("resivePaddle", data.paddle);
                 }
             }

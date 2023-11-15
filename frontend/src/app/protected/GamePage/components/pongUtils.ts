@@ -102,9 +102,9 @@ export function drawCanvas(
 }
 
 export function drawNet(ctx: any, ref: any, canvasCtx: Canvas) {
-  for (let i = 0; i <= canvasCtx.width; i += 15) {
+  for (let i = 0; i <= canvasCtx.height; i += 15) {
     drawRect(ctx, {
-      x: 300,
+      x: canvasCtx.width / 2,
       y: i,
       width: 2,
       height: 10,

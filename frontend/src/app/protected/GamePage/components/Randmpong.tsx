@@ -1,9 +1,10 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
 import { useGlobalContext } from "@/app/context/store";
 import Alert from '@mui/joy/Alert';
 import { useRouter } from "next/navigation";
+import { Ratio } from "lucide-react";
 
 
 interface PongProps {
@@ -46,7 +47,8 @@ const Pong = ({ room, isLeft }: PongProps) => {
     velocityY: 5,
     color: "#05EDFF",
   };
-
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  let ratio = 1;
   useEffect(() => {
     if (!socket) return;
     const canvas = canvasRef.current;
@@ -70,24 +72,25 @@ const Pong = ({ room, isLeft }: PongProps) => {
       socket.emit("updatePaddle", {
         userId: user.id,
         room: room,
-        paddle: isLeft ? player : computer,
+        paddle: isLeft ? player.y : computer.y,
         isLeft: isLeft,
       });
     };
 
     socket.on("resivePaddle", (data: any) => {
       if (!isLeft) {
-        player.y = data.y;
-        player.score = data.score;
+        player.y = data;
+        // player.score = data.score;
       } else {
-        computer.y = data.y;
-        computer.score = data.score;
+        computer.y = data;
+        // computer.score = data;
       }
     });
+
     socket.on("updateTheBall", (ballPosition: Ball) => {
-      ball.x = ballPosition.x;
+      ball.x = ballPosition.x * ratio;
       ball.y = ballPosition.y;
-      ball.velocityX = ballPosition.velocityX;
+      ball.velocityX = ballPosition.velocityX * ratio ;
       ball.velocityY = ballPosition.velocityY;
       ball.color = ballPosition.color;
       drawCanvas(ctx, canvas, canvasCtx, ball, computer, player);
@@ -109,24 +112,39 @@ const Pong = ({ room, isLeft }: PongProps) => {
         if (state === "win") {
 
           <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
-          console.log("test");
+          // console.log("test");
           router.push('/protected/GamePage');
           // alert("You win!");
         }
         if (state === "lose") {
           <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
-          console.log("test");
+          // console.log("test");
           router.push('/protected/GamePage');
           // alert("You lose!");
         }
         if (state === "draw") {
           <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
-          console.log("test");
+          // console.log("test");
           router.push('/protected/GamePage');
           // alert("Draw!");
         }
       }, 1000);
     });
+    function handleWindowResize() {
+      setWidth(window.innerWidth);
+      if (window.innerWidth < 600) {
+        ratio = window.innerWidth / 600;
+      canvasCtx.width = window.innerWidth - 200;
+      computer.x = canvasCtx.width - 15;
+      }
+      else if (window.innerWidth > 600) {
+        ratio = 1;
+        canvasCtx.width = 600;
+        computer.x = canvasCtx.width - 15;
+      }
+      // drawCanvas(ctx, {width: width, hight: 400}, canvasCtx, ball, computer, player);
+    }
+    window.addEventListener("resize", handleWindowResize);
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
