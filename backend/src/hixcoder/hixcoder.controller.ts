@@ -155,6 +155,12 @@ export class HixcoderController {
     return this.hixcoderService.getUserRanking(senderUsr);
   }
 
+  // for getUserRanking
+  @Get("/LeaderBoard/")
+  async getLeaderBoard() {
+    return this.hixcoderService.getLeaderBoard();
+  }
+
   // ==========================  Game Posts =========================
 
   // for updateLevel

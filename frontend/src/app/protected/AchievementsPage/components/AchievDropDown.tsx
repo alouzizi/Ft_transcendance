@@ -71,10 +71,11 @@ export default function AchievDropDown(prompt: {
   }, [position]);
   return (
     <div>
-      <div className="flex flex-col justify-center items-center mb-12">
+      <div className="flex flex-col justify-center items-center  mb-6 md:mb-12 ">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex flex-row justify-between w-fit bg-white text-color-main rounded-md py-1 px-4 cursor-pointer">
+            <div className="flex flex-row justify-between w-fit bg-white text-color-main rounded-md  cursor-pointer
+             py-1 px-2 md:px-4 text-sm md:text-base">
               <p className="text-md ">{position}</p>
               <IoIosArrowDropdownCircle
                 className=" my-auto ml-2 text-color-main "
@@ -100,7 +101,7 @@ export default function AchievDropDown(prompt: {
         className="grid gap-y-2
           
          // small screen
-         grid-cols-1
+         grid-cols-1 
 
          sm:grid-cols-2 sm:gap-x-4
 

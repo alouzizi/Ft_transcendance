@@ -330,6 +330,24 @@ export async function getGameHistory(senderUsr: string) {
   }
 }
 
+export async function getLeaderBoard() {
+  const def: LeaderBoard[] = [];
+  try {
+    const response = await fetch(`${Backend_URL}/hixcoder/LeaderBoard/`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.ok) {
+      const data: LeaderBoard[] = await response.json();
+      return data;
+    }
+    return def;
+  } catch (error: any) {
+    console.log("getLeaderBoard error: " + error);
+    return def;
+  }
+}
+
 export async function getGlobalInfos(senderUsr: string) {
   const def = {
     NbrOfAllMatches: 0,

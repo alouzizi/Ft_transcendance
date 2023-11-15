@@ -193,6 +193,16 @@ export declare class HixcoderController {
     } | {
         error: any;
     }>;
+    getLeaderBoard(): Promise<{
+        userName: string;
+        userAvatar: string;
+        level: string;
+        nbrOfMatches: string;
+        winRate: string;
+        rank: string;
+    }[] | {
+        error: any;
+    }>;
     updateLevel(sender: string, newLevel: string): Promise<{
         id: string;
         intra_id: string;

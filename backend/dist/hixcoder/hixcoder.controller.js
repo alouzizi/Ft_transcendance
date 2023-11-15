@@ -76,6 +76,9 @@ let HixcoderController = class HixcoderController {
     async getUserRanking(senderUsr) {
         return this.hixcoderService.getUserRanking(senderUsr);
     }
+    async getLeaderBoard() {
+        return this.hixcoderService.getLeaderBoard();
+    }
     async updateLevel(sender, newLevel) {
         return this.hixcoderService.updateLevel(sender, newLevel);
     }
@@ -225,6 +228,12 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getUserRanking", null);
+__decorate([
+    (0, common_1.Get)("/LeaderBoard/"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getLeaderBoard", null);
 __decorate([
     (0, common_1.Post)("/updateLevel/:senderUsr/:newLevel"),
     __param(0, (0, common_1.Param)("senderUsr")),

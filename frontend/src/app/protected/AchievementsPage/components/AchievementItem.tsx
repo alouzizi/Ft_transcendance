@@ -17,7 +17,7 @@ export default function AchievementItem(prompt: {
   return (
     <div
       className="transition ease-in-out delay-20 flex flex-row w-full bg-white
-    items-center justify-between rounded-xl relative m-2
+    items-center justify-between rounded-xl relative my-2
     hover:scale-105 cursor-pointer"
     >
       {!prompt.isUnlocked ? (
@@ -31,7 +31,8 @@ export default function AchievementItem(prompt: {
           className=" object-cover mx-auto  mr-4
           
           // small screen
-          w-12 h-12
+          w-8 h-8
+          sm:w-12 sm:h-12
         // Big screen
         md:w-16 md:h-16
 
@@ -44,9 +45,9 @@ export default function AchievementItem(prompt: {
             className=" font-bold  text-black
           
           // small screen
-          text-lg
+          text-base md:text-lg
         // Big screen
-        md:text-xl
+        lg:text-xl
 
           "
           >
@@ -57,10 +58,10 @@ export default function AchievementItem(prompt: {
       </div>
       <div
         className={`w-0 h-0  absolute bottom-0 right-0
-  border-t-[24px] border-t-transparent
-  // border-r-[20px] border-r-${achievColor}
-  // border-b-[24px] border-b-${achievColor}
-  border-l-[20px] border-l-transparent
+  border-t-[20px] sm:border-t-[24px] border-t-transparent
+  border-r-[16px] sm:border-r-[20px] border-r-${achievColor}
+  border-b-[20px] sm:border-b-[24px] border-b-${achievColor}
+  border-l-[16px] sm:border-l-[20px] border-l-transparent
   rounded-br-xl`}
         style={{
           borderBottomColor: achievColor,

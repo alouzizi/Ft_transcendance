@@ -200,6 +200,16 @@ export declare class HixcoderService {
     } | {
         error: any;
     }>;
+    getLeaderBoard(): Promise<{
+        userName: string;
+        userAvatar: string;
+        level: string;
+        nbrOfMatches: string;
+        winRate: string;
+        rank: string;
+    }[] | {
+        error: any;
+    }>;
     updateGameHistory(senderUsr: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
         id: string;
         createdAt: Date;
