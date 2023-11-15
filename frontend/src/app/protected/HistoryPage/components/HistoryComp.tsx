@@ -28,15 +28,15 @@ export default function HistoryComp(prompt: { friend: ownerDto }) {
   }, [updateInfo]);
 
   return (
-    <div className="flex flex-col bg-color-main h-screen w-screen  ">
-      <div className="flex flex-row mt-12 mb-8 ml-8  md:ml-24">
+    <div className="flex flex-col bg-color-main h-fit w-screen min-h-screen ">
+      <div className="flex flex-row mt-6 md:mt-12 mb-4 md:mb-8 ml-8  md:ml-24">
         <IoMdArrowRoundBack
           onClick={() => {
             router.back();
           }}
           className="cursor-pointer my-auto mr-2 text-gray-400 hover:text-white active:text-gray-400 text-2xl md:text-3xl"
         />
-        <h1 className="text-left font-bold text-lg md:text-2xl ">
+        <h1 className="text-left font-bold text-md sm:text-lg md:text-2xl ">
           Game History
         </h1>
       </div>

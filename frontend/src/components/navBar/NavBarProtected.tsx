@@ -13,7 +13,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
       {/* ================== NAV BAR ================== */}
       <div className={` md:h-20 h-16  bg-color-main-dark z-1 w-screen `}>
         <div
-          className={` flex flex-row justify-items-start  my-auto  md:h-20 h-16  w-full bg-color-main-dark z-30  ${
+          className={` flex flex-row justify-items-start  my-auto  md:h-20 h-16  w-full bg-color-main-dark z-10  ${
             show ? "pl-20 sm:pl-24 md:pl-28 " : ""
           }
           transition-all duration-300 ease-in-out 
@@ -33,7 +33,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
       </div>
       {/* ================== /NAV BAR ================== */}
       {/* ================== SIDE BAR ================== */}
-      <div className="flex flex-row w-screen bg-color-main relative ">
+      <div className="flex flex-row w-screen bg-color-main relative z-10">
         <div
           className={`absolute  top-0 z-20 transition-all duration-300 ease-in-out overflow-hidden
           ${show ? "left-0" : "-left-full"} 
@@ -43,7 +43,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
           <SideBar />
         </div>
         <div
-          className={` w-screen  m-0 bg-color-main transition-all duration-300 ease-in-out overflow-hidden min-[0px]:pl-0
+          className={` w-screen  m-0 bg-color-main transition-all duration-300 ease-in-out overflow-hidden pl-0
           ${show ? "md:pl-32" : "md:pl-0"} 
           2xl:pl-20
         `}

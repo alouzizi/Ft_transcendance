@@ -14,7 +14,7 @@ export default function HistoryItem(prompt: {
     <div
       className="transition ease-in-out delay-20 
     flex flex-row justify-between rounded-xl 
-     hover:bg-white items-center  hover:text-black text-gray-400 p-3 
+     hover:bg-white items-center  hover:text-black text-gray-400 p-1 md:p-3 my-1
      "
     >
       <div className="flex flex-col justify-start my-auto cursor-pointer w-1/3">

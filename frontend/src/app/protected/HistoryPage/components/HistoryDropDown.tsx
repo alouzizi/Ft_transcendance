@@ -82,10 +82,13 @@ export default function HistoryDropDown(prompt: {
   }, []);
   return (
     <div>
-      <div className="flex flex-col justify-center items-center mb-12">
+      <div className="flex flex-col justify-center items-center mb-6 md:mb-12 ">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex flex-row justify-between w-fit bg-white text-color-main rounded-md py-1 px-4 cursor-pointer">
+            <div
+              className="flex flex-row justify-between w-fit bg-white text-color-main rounded-md  cursor-pointer
+                            py-1 px-2 md:px-4 text-sm md:text-base"
+            >
               <p className="text-md ">{position}</p>
               <IoIosArrowDropdownCircle
                 className=" my-auto ml-2 text-color-main "
@@ -116,9 +119,9 @@ export default function HistoryDropDown(prompt: {
   // transition-all duration-100 ease-in-out 
 
     // small screen
-      mb-12 h-[48rem] w-[65%] p-8 
+      mb-12 h-[32rem] p-2  w-[90%]
     // Big screen
-    max-w-2xl min-h-2xl
+    max-w-2xl min-h-2xl  md:w-[65%] sm:p-8 md:h-[48rem]
     "
       >
         {gameHistoryFormated.length !== 0 ? (

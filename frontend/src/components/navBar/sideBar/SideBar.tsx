@@ -93,7 +93,7 @@ export default function SideBar() {
 
   return (
     <div
-      className=" flex flex-col   bg-color-main-dark   rounded-br-full
+      className=" flex flex-col   bg-color-main-dark   rounded-br-full fixed top-0 
       transition-all duration-400 ease-in-out
       h-fit w-20 
       sm:w-24 md:w-28 "
@@ -134,9 +134,9 @@ export default function SideBar() {
         </SBSection>
       </div>
 
-      <div className=" h-48 bg-white rounded-br-full rounded-tl-full flex flex-col justify-center">
-        <img
-          className="cursor-pointer object-cover mx-auto  rounded-full border-2
+      {/* <div className=" h-48  rounded-br-full rounded-tl-full flex flex-col justify-center"> */}
+      {/* <img
+        className="cursor-pointer object-cover mx-auto  rounded-full border-2
          border-color-main-dark 
          hover:shadow-transparent  hover:scale-110 hover:border-0
          transition-all duration-400 ease-in-out 
@@ -146,10 +146,10 @@ export default function SideBar() {
          md:w-16 md:h-16
          
          "
-          src="https://images.alphacoders.com/129/1294445.jpg"
-          alt=""
-        />
-      </div>
+        src="https://images.alphacoders.com/129/1294445.jpg"
+        alt=""
+      /> */}
+      {/* </div> */}
     </div>
   );
 }
