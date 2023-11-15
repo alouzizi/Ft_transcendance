@@ -17,6 +17,7 @@ const friendship_module_1 = require("./friendship/friendship.module");
 const channel_module_1 = require("./channel/channel.module");
 const socket_module_1 = require("./socket/socket.module");
 const hixcoder_module_1 = require("./hixcoder/hixcoder.module");
+const notification_module_1 = require("./notification/notification.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,6 +33,7 @@ exports.AppModule = AppModule = __decorate([
             channel_module_1.ChannelModule,
             socket_module_1.SocketGatewayModule,
             hixcoder_module_1.HixcoderModule,
+            notification_module_1.NotificationModule,
         ],
     })
 ], AppModule);

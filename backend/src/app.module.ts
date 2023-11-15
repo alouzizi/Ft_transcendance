@@ -8,6 +8,7 @@ import { FriendshipModule } from "./friendship/friendship.module";
 import { ChannelModule } from './channel/channel.module';
 import { SocketGatewayModule } from "./socket/socket.module";
 import { HixcoderModule } from "./hixcoder/hixcoder.module";
+import { NotificationModule } from './notification/notification.module';
 
 
 
@@ -22,6 +23,7 @@ import { HixcoderModule } from "./hixcoder/hixcoder.module";
     ChannelModule,
     SocketGatewayModule,
     HixcoderModule,
+    NotificationModule,
   ],
 })
 export class AppModule { }

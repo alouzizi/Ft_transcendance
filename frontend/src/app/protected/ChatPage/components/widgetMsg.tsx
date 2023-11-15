@@ -119,12 +119,12 @@ function showDays(currentDate: number, timeMsg: number) {
 
     const difference = dt_fixTime.getTime() - dt_zero.getTime();
     if (lastPrint === 0) {
-        lastPrint = dt_zero.getTime() + 86400000;
+        lastPrint = dt_zero.getTime() + 86400200;
         return { show: true, data: formatDateOnly(currentDate, timeMsg) };
     }
 
     if (difference <= 0) {
-        lastPrint = dt_zero.getTime() + 86400000;
+        lastPrint = dt_zero.getTime() + 86400200;
         return { show: true, data: `${formatDateOnly(currentDate, timeMsg)}` };
     }
     return { show: false, data: '' };
