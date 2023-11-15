@@ -7,13 +7,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import { GoDotFill } from "react-icons/go";
+import { TbListTree } from "react-icons/tb";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../../context/store';
 import { checkUserIsInChannel, joinChannel, validePassword } from '../api/fetch-channel';
 import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';
-import AlertDialogFind from './FindAlert';
 import { extractHoursAndM } from './widgetMsg';
 
 
@@ -28,7 +28,7 @@ export function getColorStatus(status: any): string {
 
 
 const ListUser = () => {
-  const { setGeust, geust, socket, user, updateInfo, setOpenAlertError } = useGlobalContext();
+  const { setGeust, geust, socket, user, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
 
@@ -222,10 +222,24 @@ const ListUser = () => {
 
   let styles: string = 'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
-    <Box style={{ width: 300, height: 900, borderRadius: 15, background: "white" }}>
+    <Box
+      className={
+        `bg-white h-[900px] w-[300px] 
+        ${!displayChat ? '' : 'hidden'}
+        sm:block
+        sm:rounded-[15px]`
+      }>
 
 
       <div className="flex border-b items-center justify-between px-2 py-2" >
+
+        <div className='block sm:hidden bg-red-600'
+          onClick={() => {
+            setDisplayChat((pre) => { return !pre })
+          }}>
+          <TbListTree />
+        </div>
+
         <Text size='6' weight="bold">CHAT</Text>
         {direct ? <div className='h-[40px]'></div> : <AlertAddChannel />}
       </div >

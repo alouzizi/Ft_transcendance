@@ -18,6 +18,10 @@ interface ContextProps {
     updateInfo: number,
     setUpdateInfo: Dispatch<SetStateAction<number>>,
 
+
+    displayChat: boolean,
+    setDisplayChat: Dispatch<SetStateAction<boolean>>,
+
     openAlertErro: boolean,
     setOpenAlertError: Dispatch<SetStateAction<boolean>>,
 
@@ -39,6 +43,10 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
+
+    displayChat: false,
+    setDisplayChat: () => { },
+
     updateInfo: 1,
     setUpdateInfo: () => { },
 
@@ -91,6 +99,7 @@ export const GlobalContextProvider = ({ children }: {
 
     const router = useRouter();
 
+    const [displayChat, setDisplayChat] = useState<boolean>(false);
     const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
     const [updateInfo, setUpdateInfo] = useState<number>(1);
     const [saveChanges, setSaveChanges] = useState<number>(0);
@@ -120,7 +129,6 @@ export const GlobalContextProvider = ({ children }: {
 
     useEffect(() => {
         if ((user.id && user.id != '-1')) {
-            console.log("socket ---------------------> ", user.id);
             const socket = io(Backend_URL, {
                 transports: ['websocket'],
                 query: {
@@ -157,7 +165,6 @@ export const GlobalContextProvider = ({ children }: {
             });
             if (res.ok) {
                 const owner = await res.json();
-                console.log("----> ", owner);
                 setUser(owner);
             } else {
                 router.push('/auth');
@@ -185,7 +192,8 @@ export const GlobalContextProvider = ({ children }: {
     return (
         <GlobalContext.Provider value={{
             geust, setGeust, user, setUser, socket,
-            updateInfo, setUpdateInfo, saveChanges, setSaveChanges, openAlertErro, setOpenAlertError
+            updateInfo, setUpdateInfo, saveChanges, setSaveChanges, openAlertErro, setOpenAlertError,
+            displayChat, setDisplayChat
         }}>
             <Stack spacing={2} sx={{ width: '100%' }}>
                 <Snackbar open={openAlertErro} autoHideDuration={6000}>

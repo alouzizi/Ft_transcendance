@@ -519,6 +519,7 @@ let ChannelService = class ChannelService {
         return 0;
     }
     async checkIsMuted(senderId, channelId) {
+        await this.prisma.notification.findMany({});
         try {
             const muted = await this.prisma.mutedMember.findFirst({
                 where: {

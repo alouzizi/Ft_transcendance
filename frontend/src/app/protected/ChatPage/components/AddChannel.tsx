@@ -182,7 +182,8 @@ export default function AlertAddChannel() {
     return (
         <div >
             <div className='flex items-center justify-center w-[50px] h-[40px] 
-                rounded-[16px] bg-[#254BD6] cursor-pointer'
+                rounded-[16px] bg-[#254BD6] cursor-pointer
+                '
                 onClick={() => setOpen(true)}
             >
                 <IoAddOutline size={20} color="white" />
