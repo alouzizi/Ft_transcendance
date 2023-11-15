@@ -67,12 +67,11 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         setGlobalInfo(globalInfoTmp);
 
         //for set the win rate
-        if (globalInfo.NbrOfAllMatches > 0) {
-          setWinRate(
-            Math.round(
-              (globalInfo.NbrOfWinnedMatches * 100) / globalInfo.NbrOfAllMatches
-            )
-          );
+        if (globalInfoTmp.NbrOfAllMatches > 0) {
+          const winRate =
+            (globalInfoTmp.NbrOfWinnedMatches * 100) /
+            globalInfoTmp.NbrOfAllMatches;
+          setWinRate(winRate);
         }
       } catch (error: any) {
         console.log("getData error: " + error);
@@ -172,7 +171,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             <CardInfo
               cardImg="/win-rate.png"
               cardName="Win Rate"
-              value={`${winRate}%`}
+              value={`${winRate.toFixed(0)}%`}
             />
           </div>
         </div>
