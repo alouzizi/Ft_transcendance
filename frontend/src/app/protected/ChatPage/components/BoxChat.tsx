@@ -2,7 +2,7 @@
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { Avatar, Box, Flex, ScrollArea, Text, TextField } from '@radix-ui/themes';
+import { Avatar, Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { formatDistance } from 'date-fns';
 import Link from 'next/link';
 import * as React from 'react';
@@ -11,7 +11,7 @@ import { BsFillSendFill, } from "react-icons/bs";
 import { GoDotFill } from "react-icons/go";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useGlobalContext } from '../../../context/store';
-import { checkIsMuted, checkUserIsInChannel } from '../api/fetch-channel';
+import { checkIsMuted } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
@@ -187,8 +187,8 @@ const BoxChat = () => {
     return (geust.id != "-1") ? (
         <Box
             style={{
-                width: 500, height: 600,
-                borderRadius: 10, background: "#f1f3f9", marginLeft: 3
+                width: 600, height: 900,
+                borderRadius: 15, background: "#F1F3F9", marginLeft: 30
             }}>
             <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-lg">
                 <div className="flex items-center pl-3">
@@ -201,7 +201,7 @@ const BoxChat = () => {
                     />
                     <Text className='absolute pt-6 pl-7'>
                         {geust.isUser ? <GoDotFill size={20}
-                            color={(geust.status === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
+                            color={(geust.status === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"} /> : <></>}
                     </Text>
                     <Flex direction="column" className='flex' >
                         <Text size="2" weight="bold" className='pl-2'>
@@ -220,16 +220,17 @@ const BoxChat = () => {
                         }
                     </Flex>
                 </div>
+
                 <div className="pr-3">
                     {!geust.isUser ? <Link href='ChatPage/channelSettings'>
-                        <IoSettingsSharp size={20} />
+                        <IoSettingsSharp size={16} />
                     </Link> :
                         <></>}
                 </div>
             </div >
 
             <div   >
-                <ScrollArea scrollbars="vertical" style={{ height: 500 }} ref={scrollAreaRef}>
+                <ScrollArea scrollbars="vertical" style={{ height: 795 }} ref={scrollAreaRef}>
                     <Box p="1" pr="3">
                         <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}
@@ -240,22 +241,27 @@ const BoxChat = () => {
                     e.preventDefault();
                     handleSendMessage();
                 }}>
-                    <TextField.Root className="ml-2 mr-2" style={{ width: 480 }} >
-                        <TextField.Input radius="full"
-                            placeholder={!isMuted ? "  Type your message" : " Your muted from this channel"}
-                            size="2"
+                    {/* radius="large"  */}
+                    <div className="flex bg-white mx-4  p-1 border rounded-[14px]" >
+                        <input type={"text"} className="bg-white m-1 flex flex-grow
+                        text-black placeholder-gray-600 text-sm outline-none "
                             value={msg}
-                            disabled={isMuted}
+                            placeholder={!isMuted ? "  Type your message" : " Your muted from this channel"}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setMsg(event.target.value);
-                            }} />
-                        <TextField.Slot>
-                            <BsFillSendFill color='blue'
+                            }}
+                        >
+                        </input>
+
+
+                        <div className='flex items-center justify-center w-[30px] h-[30px] 
+                rounded-[10px] bg-[#254BD6] cursor-pointer m-[1px]'>
+                            <BsFillSendFill color='white'
                                 onClick={() =>
                                     handleSendMessage()} />
+                        </div>
 
-                        </TextField.Slot>
-                    </TextField.Root>
+                    </div >
 
                 </form>
             </div>
@@ -263,7 +269,6 @@ const BoxChat = () => {
 
             <div>
                 <Dialog open={showUnblockAlert} >
-                    {/* <DialogTitle>Confirme Action</DialogTitle> */}
                     <DialogContent className='flex flex-col p-0'>
                         <div className='flex text-black text-sm rounded-lg pt-3 px-6'>
                             Unblock contact to send a message

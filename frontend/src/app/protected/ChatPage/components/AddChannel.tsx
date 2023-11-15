@@ -4,23 +4,21 @@ import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import { Avatar, Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { GoDotFill } from 'react-icons/go';
-import { IoPersonAdd, IoPersonRemove } from "react-icons/io5";
-import { TbSquareRoundedPlusFilled } from "react-icons/tb";
+import { IoAddOutline, IoCloseOutline, IoPersonAdd, IoPersonRemove } from "react-icons/io5";
 import { TiDelete } from "react-icons/ti";
+import { z } from "zod";
 import { useGlobalContext } from '../../../context/store';
+import { createChannel } from '../api/fetch-channel';
 import { getValideUsers, getVueGeust } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';
-import { z } from "zod";
-import { createChannel } from '../api/fetch-channel';
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+
 
 enum ChannelType {
     Public = 'Public',
@@ -55,17 +53,6 @@ export default function AlertAddChannel() {
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
     const [membersChannel, setMembersChannel] = useState<userDto[]>([]);
-
-    const handleChannelType = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChannelData((prevState) => {
-            return { ...prevState, channelType: ChannelType.Public };
-        });
-        if (event.target.value === 'private') {
-            setChannelData((prevState) => {
-                return { ...prevState, channelType: ChannelType.Private };
-            });
-        }
-    };
 
     useEffect(() => {
         async function getData() {
@@ -153,9 +140,6 @@ export default function AlertAddChannel() {
                         fallback="T"
                         style={{ height: '30px', borderRadius: '30px' }}
                     />
-                    <div className='absolute pt-5 pl-5'>
-                        <GoDotFill size={15} color={getColorStatus(elm.status)} />
-                    </div>
                     <Text size="3" weight="bold" className='pl-2'>
                         {elm.nickname}
                     </Text>
@@ -192,114 +176,138 @@ export default function AlertAddChannel() {
         </Box>
     })
 
+    const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
+
+    let styles: string = 'px-8 py-1 my-1.5 rounded-[36px] text-[#254BD6] bg-white shadow-md';
     return (
-        <div>
-
-            <TbSquareRoundedPlusFilled style={{ color: 'blue', fontSize: '40px', cursor: 'pointer' }}
-                onClick={() => setOpen(true)} />
-
-            <Dialog
-                open={open}
-                keepMounted
-            // onClose={handleClose}
+        <div >
+            <div className='flex items-center justify-center w-[50px] h-[40px] 
+                rounded-[16px] bg-[#254BD6] cursor-pointer'
+                onClick={() => setOpen(true)}
             >
-                <div className='flex justify-end mt-2 mr-2' >
-                    <TiDelete onClick={() => setOpen(false)} size="30" />
-                </div>
-                <DialogTitle textAlign="center" >{"Create Channel"}</DialogTitle>
-                <DialogContent className='w-[25rem] h-[25rem] '>
+                <IoAddOutline size={20} color="white" />
+            </div>
 
-                    <div
-                        style={{
-                            display: 'flex', flexDirection: 'column',
-                            alignItems: 'center', justifyContent: 'center'
-                        }}>
+
+            <Dialog open={open} keepMounted >
+                <div className='flex justify-end mt-2 mr-2 cursor-pointer' >
+                    <IoCloseOutline onClick={() => setOpen(false)} size="25" />
+                </div>
+                <DialogTitle style={{ padding: 0, paddingLeft: 15 }} textAlign="start"  >{"Create Channel"}</DialogTitle>
+                <DialogContent style={{ padding: 0, paddingLeft: 15, paddingRight: 40 }} className='w-[25rem] h-[25rem] '>
+                    <div className='pt-5'>
 
                         <ScrollArea type="always" scrollbars="vertical"
                             style={{
-                                height: 300, width: 200,
-                                alignItems: "center", justifyItems: "center"
+                                alignItems: "center", justifyItems: "center",
                             }}>
 
-                            <FormControl className='ml-2'>
-                                <RadioGroup
-                                    row
-                                    aria-labelledby="demo-row-radio-buttons-group-label"
-                                    name="row-radio-buttons-group">
 
-                                    <FormControlLabel
-                                        control={
-                                            <Radio checked={channelData.channelType === ChannelType.Public}
-                                                value="public"
-                                                onChange={handleChannelType}
-                                            />} label="Public" />
+                            <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[15rem]" >
+                                <div style={{ cursor: 'pointer' }}
+                                    className={(channelData.channelType === ChannelType.Public) ? styles : ""} onClick={() => {
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelType: ChannelType.Public };
+                                        });
+                                    }}>
+                                    <Text size='2' weight="bold">Public</Text>
+                                </div>
+                                <div style={{ cursor: 'pointer' }}
+                                    className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelType: ChannelType.Private };
+                                        });
+                                    }}>
+                                    <Text size='2' weight="bold">Private</Text>
+                                </div>
+                            </div >
 
-                                    <FormControlLabel
-                                        control={
-                                            <Radio checked={channelData.channelType === ChannelType.Private}
-                                                value="private"
-                                                onChange={handleChannelType}
-
-                                            />} label="Private" />
-
-                                </RadioGroup>
-                            </FormControl>
-
-                            <TextField required fullWidth size="small" className='mt-3'
-                                style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
-                                label="Channel Name" variant="outlined"
-                                value={channelData.channelName}
-                                onChange={(e) => {
-                                    setErrorName('');
-                                    setChannelData((prevState) => {
-                                        return { ...prevState, channelName: e.target.value };
-                                    });
-
-                                }} />
+                            <div className="flex bg-[#F6F7FA] mt-3  border rounded-[10px]" >
+                                <input type={"text"} className="bg-[#F6F7FA] m-1 p-1 flex flex-grow
+                        text-black placeholder-gray-600 text-sm outline-none"
+                                    value={channelData.channelName}
+                                    placeholder='Channel Name'
+                                    onChange={(e) => {
+                                        setErrorName('');
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelName: e.target.value };
+                                        });
+                                    }}
+                                >
+                                </input>
+                            </div >
                             {errorName && <Text as="div" color='red'>{errorName}</Text>}
 
-                            <FormControlLabel control={<Checkbox checked={channelData.protected} onChange={(event) => {
-                                setErrorKey('');
-                                setChannelData((prevState) => {
-                                    return { ...prevState, channlePassword: '' };
-                                });
-                                setChannelData((prevState) => {
-                                    return { ...prevState, protected: event.target.checked };
-                                });
-                            }} />} label="Protected" />
 
-                            <TextField
-                                disabled={!channelData.protected}
-                                required={channelData.protected}
-                                type="password"
-                                fullWidth size="small" className='mt-1'
-                                style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
-                                label="Channel Key" variant="outlined"
-                                value={channelData.channelPassword}
-                                onChange={(e) => {
-                                    setErrorKey(''),
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channelPassword: e.target.value };
-                                        });
 
-                                }} />
+
+                            <div className="mt-2 ">
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox style={{ color: "#254BD6" }} checked={channelData.protected} onChange={(event) => {
+                                            setErrorKey('');
+                                            setChannelData((prevState) => {
+                                                return { ...prevState, channlePassword: '' };
+                                            });
+                                            setChannelData((prevState) => {
+                                                return { ...prevState, protected: event.target.checked };
+                                            });
+                                        }}
+                                        />}
+                                    label="Protected" />
+                            </div>
+
+
+                            <div className="flex bg-[#F6F7FA] mt-0  border rounded-[10px]" >
+                                <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow
+                        text-black placeholder-gray-600 text-sm outline-none"
+                                    disabled={!channelData.protected}
+                                    required={channelData.protected}
+                                    type={isPasswordVisibleAlert ? "text" : "password"}
+                                    placeholder='Channel Key'
+                                    value={channelData.channelPassword}
+                                    onChange={(e) => {
+                                        setErrorKey(''),
+                                            setChannelData((prevState) => {
+                                                return { ...prevState, channelPassword: e.target.value };
+                                            });
+                                    }}
+                                >
+                                </input>
+                                <div className='cursor-pointer flex items-center pr-2' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
+                                    {!isPasswordVisibleAlert ?
+                                        <MdVisibilityOff size={18} color="black" /> :
+                                        <MdVisibility size={18} color="black" />}
+                                </div>
+                            </div >
                             {errorKey && <Text as="div" color='red'>{errorKey}</Text>}
 
+
                             <div className='mt-2'> {widgetMembers}</div>
-                            <TextField fullWidth size="small" className='mt-1'
-                                style={{ width: '200px', background: "#edf6f9", borderRadius: 5 }}
-                                label="Add membres" variant="outlined"
-                                value={memberSearch}
-                                onChange={(e) => { setMemberSearch(e.target.value) }} />
+
+                            <div className="flex bg-[#F6F7FA]  mt-0  border rounded-[10px]" >
+                                <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow
+                        text-black placeholder-gray-600 text-sm outline-none"
+                                    type="text"
+                                    placeholder='Add membres'
+                                    value={memberSearch}
+                                    onChange={(e) => {
+                                        setMemberSearch(e.target.value)
+                                    }}
+                                >
+                                </input>
+                            </div >
                             {widgetSearsh}
-
-
                         </ScrollArea>
 
                     </div>
 
                     <DialogActions style={{ justifyContent: 'center' }}>
-                        <Button style={{ background: 'blue', color: "white" }}
+                        <Button
+                            style={{
+                                background: '#4069FF', color: "white", paddingLeft: 20, paddingRight: 20,
+                                border: 10
+                            }}
                             onClick={() => {
                                 const parsName = channelNameSchema.safeParse(channelData.channelName);
                                 const parskey = channelkeySchema.safeParse(channelData.channelPassword);
@@ -323,6 +331,7 @@ export default function AlertAddChannel() {
                 </DialogContent>
 
             </Dialog>
+
         </div >
     );
 }

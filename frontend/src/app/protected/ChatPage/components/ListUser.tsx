@@ -31,7 +31,6 @@ const ListUser = () => {
   const { setGeust, geust, socket, user, updateInfo, setOpenAlertError } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
-  const [filterItem, setFilterItem] = useState<messageDto[]>([]);
 
   const [direct, setDirect] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
@@ -114,9 +113,9 @@ const ListUser = () => {
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
-      <Flex align="center" className='relative border-b py-2 pl-1' key={index}
+      <Flex align="center" className='relative border-b py-2 pl-3 border-[#E9ECF1] border-1.5' key={index}
         style={{
-          background: (el.receivedId === geust.id) ? "#f1f3f9" : 'white'
+          background: (el.receivedId === geust.id) ? "#F1F3F9" : 'white'
         }}
         onClick={() => {
           if (el.isDirectMessage || el.contentMsg !== "")
@@ -130,7 +129,7 @@ const ListUser = () => {
         />
         <div className='absolute pt-6 pl-7'>
           {el.isDirectMessage ? <GoDotFill size={20}
-            color={(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
+            color={(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"} /> : <></>}
         </div>
 
 
@@ -155,9 +154,9 @@ const ListUser = () => {
           (el.receivedId === geust.id) ? <Box sx={{
             width: 6,
             height: 40,
-            backgroundColor: 'blue',
-            borderTopLeftRadius: 10,
-            borderBottomLeftRadius: 10
+            backgroundColor: '#254BD6',
+            borderTopLeftRadius: 15,
+            borderBottomLeftRadius: 15
           }}
             className='absolute right-0'>
           </Box> : <div></div>
@@ -221,9 +220,9 @@ const ListUser = () => {
 
 
 
-  let styles: string = 'px-2 py-1 my-2 rounded-[20px] text-[#3055d8] bg-white shadow-md';
+  let styles: string = 'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
-    <Box style={{ width: 300, height: 900, borderRadius: 10, background: "white" }}>
+    <Box style={{ width: 300, height: 900, borderRadius: 15, background: "white" }}>
 
 
       <div className="flex border-b items-center justify-between px-2 py-2" >
@@ -232,17 +231,17 @@ const ListUser = () => {
       </div >
 
 
-      <div className="flex items-center justify-around bg-[#f6f7fa] mx-5 my-2 rounded-md border" >
-        <div style={{ cursor: 'pointer' }} className={direct ? styles : ""} onClick={() => { setDirect((pre) => !pre) }}>
+      <div className="flex items-center justify-around bg-[#F6F7FA] mx-5 my-2 rounded-[10px]" >
+        <div style={{ cursor: 'pointer' }} className={direct ? styles : ""} onClick={() => { setDirect(true) }}>
           <Text size='2' weight="bold">DIRECT</Text>
         </div>
-        <div style={{ cursor: 'pointer' }} className={!direct ? styles : ""} onClick={() => { setDirect((pre) => !pre) }}>
+        <div style={{ cursor: 'pointer' }} className={!direct ? styles : ""} onClick={() => { setDirect(false) }}>
           <Text size='2' weight="bold">CHANNLES</Text>
         </div>
       </div >
 
-      <div className="flex bg-[#f6f7fa] mx-5 my-3  border rounded-md" >
-        <input type={"text"} className="bg-[#f6f7fa] m-1 flex flex-grow
+      <div className="flex bg-[#F6F7FA] mx-5 my-3  border rounded-md" >
+        <input type={"text"} className="bg-[#F6F7FA] m-1 flex flex-grow
                         text-black placeholder-gray-600 text-sm outline-none"
           value={search}
           placeholder={direct ? 'search a friends' : 'search a group'}
@@ -269,7 +268,7 @@ const ListUser = () => {
           <DialogContent className='flex flex-col'>
             <div className='flex bg-[#f1f3f8] text-black border border-[#1f3175]
       placeholder-gray-300 text-sm focus:border-white
-        rounded-lg  w-full p-1.5 outline-none'
+      rounded-lg  w-full p-1.5 outline-none'
               style={{ borderColor: (notMatch === '') ? '#1f3175' : 'red' }}
             >
               <input type={isPasswordVisibleAlert ? "text" : "password"} className="bg-[#f1f3f8]
