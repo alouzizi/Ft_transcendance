@@ -71,6 +71,7 @@ type messageDto = {
   receivedStatus: Status; // in DirectMsg
 
   OwnerChannelId: String;
+  isChannProtected: Boolean
 
 
 }

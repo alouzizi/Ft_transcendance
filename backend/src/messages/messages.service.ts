@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
-import { BlockedUser, Channel, ChannelMember, Message, MessageStatus, Status, User } from '@prisma/client';
+import { BlockedUser, Channel, ChannelMember, Friend, Message, MessageStatus, Status, User } from '@prisma/client';
 // import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -86,6 +86,7 @@ export class MessagesService {
         receivedStatus: receivedUser.status,
 
         OwnerChannelId: '', // no matter
+        isChannProtected: false // no matter
 
       }
       if (notSendTo === "")
@@ -156,6 +157,7 @@ export class MessagesService {
           receivedStatus: Status.INACTIF, // not matter
 
           OwnerChannelId: channel.channelOwnerId,
+          isChannProtected: channel.protected
 
 
         }
@@ -202,6 +204,7 @@ export class MessagesService {
             receivedStatus: receivedUser.status,
 
             OwnerChannelId: '', // no matter
+            isChannProtected: false // no matter
 
 
 
@@ -260,6 +263,7 @@ export class MessagesService {
                 receivedStatus: Status.INACTIF, // not matter
 
                 OwnerChannelId: channel.channelOwnerId,
+                isChannProtected: channel.protected
 
 
               }
@@ -299,19 +303,19 @@ export class MessagesService {
   async getChannleForMsg(senderId: string) {
 
     let result: messageDto[] = [];
-    let myChannel: Channel[] = [];
+    let myChannels: Channel[] = [];
 
-    const channelMembers = await this.prisma.channelMember.findMany({
+    const channelMembers: ChannelMember[] = await this.prisma.channelMember.findMany({
       where: {
         userId: senderId
       }
     });
     for (const ch of channelMembers) {
       const channel: Channel = await this.prisma.channel.findUnique({ where: { id: ch.channelId } });
-      myChannel.push(channel);
+      myChannels.push(channel);
     }
 
-    for (const channel of myChannel) {
+    for (const channel of myChannels) {
       const lastMessageChannel: Message = await this.prisma.message.findFirst({
         where: {
           isDirectMessage: false,
@@ -320,7 +324,6 @@ export class MessagesService {
         orderBy: {
           createdAt: "desc",
         },
-
       });
       const userSender = await this.prisma.user.findUnique({ where: { id: lastMessageChannel.senderId } });
       const temp: messageDto = {
@@ -341,10 +344,49 @@ export class MessagesService {
         receivedPic: channel.avatar,
         receivedStatus: Status.INACTIF, // no matter
 
-        OwnerChannelId: channel.channelOwnerId, // no matter
+        OwnerChannelId: channel.channelOwnerId,
+        isChannProtected: channel.protected
+
       }
       result.push(temp);
 
+    }
+
+    const channlesPublic: Channel[] = await this.prisma.channel.findMany({
+      where: { channelType: "Public" }
+    })
+
+    for (const chl of channlesPublic) {
+      let find: boolean = false;
+      for (const mych of myChannels) {
+        if (mych.id === chl.id) {
+          find = true;
+          break;
+        }
+      }
+      if (find) continue;
+      const temp: messageDto = {
+        isDirectMessage: false,
+
+        InfoMessage: false,
+
+        senderId: '',
+        senderName: "",
+        senderPic: "", // no matter
+
+        contentMsg: "",
+        createdAt: new Date(),
+        messageStatus: "Received",
+
+        receivedId: chl.id,
+        receivedName: chl.channelName,
+        receivedPic: chl.avatar,
+        receivedStatus: Status.INACTIF, // no matter
+
+        OwnerChannelId: chl.channelOwnerId,
+        isChannProtected: chl.protected
+      }
+      result.push(temp);
     }
     return result;
 
@@ -400,10 +442,49 @@ export class MessagesService {
           receivedStatus: user.status,
 
           OwnerChannelId: '', // no matter
+          isChannProtected: false // no matter
         }
         resultDirect.push(tmp);
       }
 
+      const friends: Friend[] = await this.prisma.friend.findMany({
+        where: {
+          OR: [
+            { senderId: senderId },
+            { receivedId: senderId },
+          ]
+        }
+      });
+      for (const friend of friends) {
+        let idU: string = "";
+        if (senderId === friend.senderId) idU = friend.receivedId;
+        if (senderId === friend.receivedId) idU = friend.senderId;
+        if (idUsersArray.includes(idU)) continue;
+        const user: User = await this.prisma.user.findUnique({ where: { id: idU } })
+        const tmp: messageDto = {
+          isDirectMessage: true,
+
+          InfoMessage: false,
+
+          senderId: '',  // no matter
+          senderName: '',  // no matter
+          senderPic: '', // no matter
+
+          contentMsg: "",
+          createdAt: new Date(),
+          messageStatus: "Received",
+
+          receivedId: user.id,
+          receivedName: user.nickname,
+          receivedPic: user.profilePic,
+          receivedStatus: user.status,
+
+          OwnerChannelId: '', // no matter
+          isChannProtected: false // no matter
+        }
+        resultDirect.push(tmp);
+
+      }
       const result = [...resultDirect, ...resultChannel]
 
 
@@ -414,6 +495,7 @@ export class MessagesService {
       });
       return result;
     } catch (error) {
+      console.log("error = ", error);
       return { error: true }
     }
   }

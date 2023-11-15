@@ -57,12 +57,11 @@ export class AuthController {
     return isCodeValid;
   }
 
-
-
   @Get('2fa/authenticate/:authCode')
   @HttpCode(200)
   @UseGuards(JwtGuard)
   async authenticate(@Req() req, @Param('authCode') authCode: string) {
+    console.log(req);
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
       req.user.sub,
@@ -84,9 +83,9 @@ export class AuthController {
     res.cookie('intra_id', req.user.intra_id);
     res.cookie('access_token', ret.access_token);
     if (req.user.isTwoFactorAuthEnabled)
-      res.redirect("http://10.12.3.11:3000/Checker2faAuth");
+      res.redirect("http://10.12.3.15:3000/Checker2faAuth");
     else
-      res.redirect("http://10.12.3.11:3000/protected/DashboardPage");
+      res.redirect("http://10.12.3.15:3000/protected/DashboardPage");
 
   }
 }

@@ -1,14 +1,20 @@
 "use client"
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { GoDotFill } from "react-icons/go";
+import { IoMdAddCircle } from "react-icons/io";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../../context/store';
+import { checkUserIsInChannel, joinChannel, validePassword } from '../api/fetch-channel';
 import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
-import { extractHoursAndM } from './widgetMsg';
-import AlertDialogFind from './FindAlert';
 import AlertAddChannel from './AddChannel';
-import { checkUserIsInChannel } from '../api/fetch-channel';
+import AlertDialogFind from './FindAlert';
+import { extractHoursAndM } from './widgetMsg';
 
 
 export function getColorStatus(status: any): string {
@@ -25,8 +31,10 @@ const ListUser = () => {
   const { setGeust, geust, socket, user, updateInfo, setOpenAlertError } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
+  const [filterItem, setFilterItem] = useState<messageDto[]>([]);
 
   const [direct, setDirect] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     const getListUsers = async () => {
@@ -34,7 +42,6 @@ const ListUser = () => {
       if (usersList !== undefined) setItemList(usersList);
       else setOpenAlertError(true);
     };
-
     getListUsers();
     if (socket) {
       socket.on("findMsg2UsersResponse", getListUsers);
@@ -64,7 +71,6 @@ const ListUser = () => {
 
   const [check, setCheck] = useState(false);
   useEffect(() => {
-
     const checked = async () => {
       const temp = await checkUserIsInChannel(user.id, geust.id);
       if (temp !== undefined && !temp) setCheck(true);
@@ -74,14 +80,12 @@ const ListUser = () => {
     if (geust.id === '-1' || check) {
       if (direct) {
         if (itemListDirect.length !== 0) {
-          itemListWidget = userWidgetDirect;
           getDataGeust(itemListDirect[0]);
         } else if (itemListChannel.length !== 0) {
           getDataGeust(itemListChannel[0]);
         }
       } else {
         if (itemListChannel.length !== 0) {
-          itemListWidget = userWidgetChannel;
           getDataGeust(itemListChannel[0]);
         } else if (itemListDirect.length !== 0) {
           getDataGeust(itemListDirect[0]);
@@ -115,7 +119,8 @@ const ListUser = () => {
           background: (el.receivedId === geust.id) ? "#f1f3f9" : 'white'
         }}
         onClick={() => {
-          getDataGeust(el);
+          if (el.isDirectMessage || el.contentMsg !== "")
+            getDataGeust(el);
         }}>
         <Avatar
           size="3"
@@ -127,19 +132,25 @@ const ListUser = () => {
           {el.isDirectMessage ? <GoDotFill size={20}
             color={(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#15ff00" : "#9b9c9b"} /> : <></>}
         </div>
+
+
         <Flex direction="column" className='items-start pl-2'>
           <Text size="2" weight="bold" className=''>
             {el.receivedName}
           </Text>
-          {/* text-neutral-500  w-32  */}
-          <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
-            {(!el.isDirectMessage ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
-            {el.contentMsg}
-          </Box>
+          {el.contentMsg === "" ? <></> :
+            <Box className='w-32 line-clamp-1 overflow-hidden text-sm' >
+              {(!el.isDirectMessage ? <Text weight='medium'>{el.senderName}:{' '}</Text> : <></>)}
+              {el.contentMsg}
+            </Box>
+          }
         </Flex>
+
+
         <Text size="1" className='absolute bottom-0 right-4'>
-          {extractHoursAndM(el.createdAt)}
+          {el.contentMsg === "" ? "" : extractHoursAndM(el.createdAt)}
         </Text>
+
         {
           (el.receivedId === geust.id) ? <Box sx={{
             width: 6,
@@ -151,11 +162,46 @@ const ListUser = () => {
             className='absolute right-0'>
           </Box> : <div></div>
         }
+
+        {(el.contentMsg === "" && !el.isDirectMessage) ?
+          <div className='absolute  right-6 cursor-pointer'
+            onClick={async () => {
+              console.log(el.isChannProtected);
+              if (!el.isChannProtected) {
+                await joinChannel(user.id, el.receivedId);
+                socket?.emit('updateData', {
+                  content: '',
+                  senderId: user.id,
+                  isDirectMessage: false,
+                  receivedId: el.receivedId,
+                });
+                getDataGeust(el);
+              }
+              else {
+                setIdChannel(el.receivedId);
+                setOpenConfirm(true);
+              }
+
+            }}>
+            <IoMdAddCircle size={20} />
+          </div> :
+          <></>}
+
       </Flex>)
   };
 
-  const itemListDirect = itemList.filter((item: messageDto) => item.isDirectMessage);
-  const itemListChannel = itemList.filter((item: messageDto) => !item.isDirectMessage);
+  const itemListDirect = itemList.filter(
+    (item: messageDto) => {
+      return (item.isDirectMessage && (
+        (item.contentMsg !== "" && search === "") ||
+        ((item.receivedName.includes(search) && search !== '') || search === "*")))
+    });
+
+  const itemListChannel = itemList.filter((item: messageDto) => {
+    return (!item.isDirectMessage && (
+      (item.contentMsg !== "" && search === "") ||
+      ((item.receivedName.includes(search) && search !== '') || search === "*")))
+  });
 
   const userWidgetDirect: JSX.Element | JSX.Element[] = (itemListDirect.length != 0) ? itemListDirect.map((el, index) => {
     return widgetUser(el, index)
@@ -166,28 +212,45 @@ const ListUser = () => {
     return widgetUser(el, index)
   }) : <Text className="flex border-b justify-center">pas user</Text>
 
-  let itemListWidget: JSX.Element | JSX.Element[] = [];
+  // ALERT CONFIM PASS
+  const [idChannel, setIdChannel] = useState("");
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
+  const [password, setPassword] = useState('');
+  const [notMatch, setNotMatch] = useState('');
 
 
 
   let styles: string = 'px-2 py-1 my-2 rounded-[20px] text-[#3055d8] bg-white shadow-md';
   return (
-    <Box style={{ width: 250, height: 600, borderRadius: 10, background: "white" }}>
+    <Box style={{ width: 300, height: 900, borderRadius: 10, background: "white" }}>
 
-      <div className="flex border-b items-center justify-between pl-2 pr-2 py-3" >
+
+      <div className="flex border-b items-center justify-between px-2 py-2" >
         <Text size='6' weight="bold">CHAT</Text>
-        {direct ? <AlertDialogFind /> : <AlertAddChannel />}
-
+        {direct ? <div className='h-[40px]'></div> : <AlertAddChannel />}
       </div >
 
 
-      <div className="flex items-center justify-around bg-[#f6f7fa] m-5 p-1 rounded-lg border-b" >
+      <div className="flex items-center justify-around bg-[#f6f7fa] mx-5 my-2 rounded-md border" >
         <div style={{ cursor: 'pointer' }} className={direct ? styles : ""} onClick={() => { setDirect((pre) => !pre) }}>
           <Text size='2' weight="bold">DIRECT</Text>
         </div>
         <div style={{ cursor: 'pointer' }} className={!direct ? styles : ""} onClick={() => { setDirect((pre) => !pre) }}>
           <Text size='2' weight="bold">CHANNLES</Text>
         </div>
+      </div >
+
+      <div className="flex bg-[#f6f7fa] mx-5 my-3  border rounded-md" >
+        <input type={"text"} className="bg-[#f6f7fa] m-1 flex flex-grow
+                        text-black placeholder-gray-600 text-sm outline-none"
+          value={search}
+          placeholder={direct ? 'search a friends' : 'search a group'}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        >
+        </input>
       </div >
 
       <ScrollArea scrollbars="vertical" style={{ height: 430 }}>
@@ -197,6 +260,70 @@ const ListUser = () => {
           </Flex>
         </Box>
       </ScrollArea>
+
+
+
+      <div>
+        <Dialog open={openConfirm} onClose={() => { setOpenConfirm(false) }}>
+          <DialogTitle>Confirme Action</DialogTitle>
+          <DialogContent className='flex flex-col'>
+            <div className='flex bg-[#f1f3f8] text-black border border-[#1f3175]
+      placeholder-gray-300 text-sm focus:border-white
+        rounded-lg  w-full p-1.5 outline-none'
+              style={{ borderColor: (notMatch === '') ? '#1f3175' : 'red' }}
+            >
+              <input type={isPasswordVisibleAlert ? "text" : "password"} className="bg-[#f1f3f8]
+            text-black
+      placeholder-gray-300 text-sm outline-none"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setNotMatch('');
+                }}
+              >
+              </input>
+              <div className='cursor-pointer' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
+                {!isPasswordVisibleAlert ?
+                  <MdVisibilityOff size={18} color="black" /> :
+                  <MdVisibility size={18} color="black" />}
+              </div>
+            </div>
+            <p className='text-sm text-red-600'>{notMatch}</p>
+
+          </DialogContent>
+          <DialogActions>
+            <button onClick={async () => {
+              let vld = false;
+              if (password !== '')
+                vld = await validePassword(user.id, idChannel, password);
+              if (vld) {
+                setOpenConfirm(false);
+                await joinChannel(user.id, idChannel);
+                const gst = await getChannelGeust(idChannel);
+                socket?.emit('updateData', {
+                  content: '',
+                  senderId: user.id,
+                  isDirectMessage: false,
+                  receivedId: idChannel,
+                });
+                setGeust(gst);
+                setPassword('');
+              } else {
+                setNotMatch('Password not Match');
+              }
+            }}
+              className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
+            text-xs px-2
+            md:text-sm lg:text-md lg:px-4">
+              Confirm
+            </button>
+          </DialogActions>
+        </Dialog>
+      </div>
+
+
+
+
     </Box>
   );
 };

@@ -20,4 +20,5 @@ export declare class messageDto {
     receivedPic: string;
     receivedStatus: Status;
     OwnerChannelId: String;
+    isChannProtected: boolean;
 }

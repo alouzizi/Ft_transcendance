@@ -17,7 +17,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: ["http://localhost:3000", "http://10.12.3.11:3000"],
+    origin: ["http://localhost:3000", "http://10.12.3.15:3000"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   });
@@ -25,7 +25,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // await app.listen(4000);
-  await app.listen(4000, '10.12.3.11');
+  await app.listen(4000, '10.12.3.15');
 }
 
 bootstrap();
