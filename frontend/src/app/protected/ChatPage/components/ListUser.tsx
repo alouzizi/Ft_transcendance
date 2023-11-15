@@ -118,8 +118,10 @@ const ListUser = () => {
           background: (el.receivedId === geust.id) ? "#F1F3F9" : 'white'
         }}
         onClick={() => {
-          if (el.isDirectMessage || el.contentMsg !== "")
+          if (el.isDirectMessage || el.contentMsg !== "") {
             getDataGeust(el);
+            setDisplayChat(true)
+          }
         }}>
         <Avatar
           size="3"
@@ -224,24 +226,14 @@ const ListUser = () => {
   return (
     <Box
       className={
-        `bg-white h-[900px] w-[300px] 
+        `bg-white h-[900px] w-[300px]  rounded-[15px]
         ${!displayChat ? '' : 'hidden'}
-        sm:block
-        sm:rounded-[15px]`
+        sm:block`
       }>
 
-
       <div className="flex border-b items-center justify-between px-2 py-2" >
-
-        <div className='block sm:hidden bg-red-600'
-          onClick={() => {
-            setDisplayChat((pre) => { return !pre })
-          }}>
-          <TbListTree />
-        </div>
-
         <Text size='6' weight="bold">CHAT</Text>
-        {direct ? <div className='h-[40px]'></div> : <AlertAddChannel />}
+        {direct ? <div className='h-[40px] w-[50px]'></div> : <AlertAddChannel />}
       </div >
 
 
@@ -320,6 +312,7 @@ const ListUser = () => {
                   receivedId: idChannel,
                 });
                 setGeust(gst);
+                setDisplayChat(true);
                 setPassword('');
               } else {
                 setNotMatch('Password not Match');

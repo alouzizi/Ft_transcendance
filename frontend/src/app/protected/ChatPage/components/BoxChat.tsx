@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BsFillSendFill, } from "react-icons/bs";
 import { GoDotFill } from "react-icons/go";
 import { IoSettingsSharp } from "react-icons/io5";
-import { TbListTree } from "react-icons/tb";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import { useGlobalContext } from '../../../context/store';
 import { checkIsMuted } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
@@ -71,7 +71,6 @@ const BoxChat = () => {
 
 
     useEffect(() => {
-        console.log("object")
         async function getData() {
             let msgs;
             if (geust.isUser)
@@ -188,36 +187,29 @@ const BoxChat = () => {
     return (geust.id != "-1") ? (
         <Box
             className={`
-        bg-[#F1F3F9] h-[900px]  ml-[15px]  w-[300px] 
+        bg-[#F1F3F9] h-[900px]    w-[300px]  rounded-[15px]
         ${displayChat ? '' : 'hidden'}
         sm:block
-        sm:rounded-[15px]
+        sm:ml-[15px]
         lg:w-[400px]
         xl:w-[500px]
         2xl:w-[600px]
         `}
 
         >
-            <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-lg">
+            <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-[15px]">
+                <div className='block sm:hidden'>
+                    <IoMdArrowRoundBack size={25} onClick={() => {
+                        setDisplayChat(false)
+                    }} />
+                </div>
                 <div className="flex items-center pl-3">
 
-                    <div className='block sm:hidden bg-red-600'
-                    >
-                        <TbListTree onClick={() => {
-
-                            setDisplayChat((pre) => { return !pre })
-
-                        }} />
-                    </div>
-                    <button onClick={() => { console.log("------------"); }}>*</button>
                     <Avatar
                         size="3"
                         src={geust.profilePic}
                         radius="full"
                         fallback="T"
-                        onClick={() => {
-                            console.log("------------******")
-                        }}
                     />
                     <Text className='absolute pt-6 pl-7'>
                         {geust.isUser ? <GoDotFill size={20}
