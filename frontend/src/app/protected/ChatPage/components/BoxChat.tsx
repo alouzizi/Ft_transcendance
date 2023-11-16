@@ -17,6 +17,7 @@ import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
+import Badge from "@mui/material/Badge";
 
 
 enum Status {
@@ -187,34 +188,52 @@ const BoxChat = () => {
     return (geust.id != "-1") ? (
         <Box
             className={`
-        bg-[#F1F3F9] h-[900px]    w-[300px]  rounded-[15px]
+        bg-[#F1F3F9] h-[900px] rounded-[15px] 
         ${displayChat ? '' : 'hidden'}
-        sm:block
-        sm:ml-[15px]
-        lg:w-[400px]
-        xl:w-[500px]
-        2xl:w-[600px]
+        md:ml-[15px]
+        md:block
+        md:w-[50%]
+        w-[90%]
+        max-w-4xl
         `}
 
         >
-            <div className="flex border-b items-center justify-between bg-white pl-2 pt-2 pb-2 rounded-t-[15px]">
-                <div className='block sm:hidden'>
-                    <IoMdArrowRoundBack size={25} onClick={() => {
-                        setDisplayChat(false)
-                    }} />
-                </div>
-                <div className="flex items-center pl-3">
+            <div className="flex border-b items-center justify-between bg-white p-4 rounded-t-[15px]">
 
-                    <Avatar
-                        size="3"
-                        src={geust.profilePic}
-                        radius="full"
-                        fallback="T"
-                    />
-                    <Text className='absolute pt-6 pl-7'>
-                        {geust.isUser ? <GoDotFill size={20}
-                            color={(geust.status === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"} /> : <></>}
-                    </Text>
+
+                <div className="flex items-center ">
+
+                    <div className='block md:hidden'>
+                        <IoMdArrowRoundBack size={25} onClick={() => {
+                            setDisplayChat(false)
+                        }} />
+                    </div>
+                    <Badge
+                        badgeContent={4}
+                        sx={{
+                            "& .MuiBadge-badge": {
+                                backgroundColor: `${(geust.status === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
+                                // prompt.friendInfo.status === "ACTIF" ? "#15ff00" : "#9b9c9b",
+                                width: 15,
+                                height: 15,
+                                borderRadius: 50,
+                                border: "2px solid #ffffff",
+                            },
+                        }}
+                        variant="dot"
+                        overlap="circular"
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                    >
+                        <Avatar
+                            size="3"
+                            src={geust.profilePic}
+                            radius="full"
+                            fallback="T"
+                        />
+                    </Badge>
                     <Flex direction="column" className='flex' >
                         <Text size="2" weight="bold" className='pl-2'>
                             {geust.nickname}
@@ -242,7 +261,7 @@ const BoxChat = () => {
             </div >
 
             <div   >
-                <ScrollArea scrollbars="vertical" style={{ height: 795 }} ref={scrollAreaRef}>
+                <ScrollArea scrollbars="vertical" style={{ height: 775 }} ref={scrollAreaRef} >
                     <Box p="1" pr="3">
                         <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}

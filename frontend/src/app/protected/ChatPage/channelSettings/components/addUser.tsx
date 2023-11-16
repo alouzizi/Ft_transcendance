@@ -11,8 +11,6 @@ import { IoMdAddCircle } from "react-icons/io";
 import { addUserToChannel, checkOwnerIsAdmin, getChannel } from '../../api/fetch-channel';
 import { usersCanJoinChannel } from '../../api/fetch-users';
 
-
-
 export default function AlertsAddUserChannel() {
 
     const [open, setOpen] = React.useState(false);

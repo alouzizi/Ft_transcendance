@@ -32,7 +32,8 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
   }, [prompt.friend.id, user.id]);
 
   return (
-    <div className="flex flex-col h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
+    <div className="flex flex-col h-fit 2xl:h-screen
+    max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
 
       <div

@@ -43,13 +43,13 @@ export function MessageRight({ message }: { message: messageDto }) {
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         marginLeft: 'auto',
-        background: "#ddfdfd",
+        background: "#E5E9F7", // ddfdfd
     };
     return (
         <div style={cardStyles} className='relative mb-2 mt-2'>
             <div className='mb-4 text-sm'> {message.contentMsg}</div>
             <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
-                <Text size="1" className='pr-1'>
+                <Text size="1" className='pr-1 text-[#254BD6]'>
                     {extractHoursAndM(message.createdAt)}
                 </Text>
                 <div onMouseEnter={() => setIsHovered(true)}
@@ -57,9 +57,9 @@ export function MessageRight({ message }: { message: messageDto }) {
 
                     {!isHovered ?
                         (message.messageStatus === 'NotReceived') ?
-                            <BsCheck2 /> :
-                            <BsCheck2All />
-                        : <MdOutlineEditNote />}
+                            <BsCheck2 style={{ color: '#254BD6' }} /> :
+                            <BsCheck2All style={{ color: '#254BD6' }} />
+                        : <MdOutlineEditNote style={{ color: '#254BD6' }} />}
 
                 </div>
             </Flex>
@@ -93,7 +93,7 @@ export function MessageLeft({ message }: { message: messageDto }) {
                 </Text>
                 <div style={cardStyles} className='relative'>
                     <div className='mb-4  text-sm'> {message.contentMsg}</div>
-                    <Text size="1" className='absolute bottom-1 right-2 mt-2'>
+                    <Text size="1" className='absolute bottom-1 right-2 mt-2 text-[#254BD6]'>
                         {extractHoursAndM(message.createdAt)}
                     </Text>
                 </div>

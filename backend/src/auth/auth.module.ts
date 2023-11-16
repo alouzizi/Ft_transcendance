@@ -38,12 +38,10 @@ import { FortyTwoIntranetStrategy } from './42-intranet.strategy';
 import { MessagesService } from 'src/messages/messages.service';
 import { ChannelService } from 'src/channel/channel.service';
 import { UserService } from 'src/user/user.service';
-import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [
-    // PassportModule,
-    PassportModule.register({ defaultStrategy: 'google' }),
+    PassportModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
@@ -52,7 +50,7 @@ import { GoogleStrategy } from './google.strategy';
   ],
   controllers: [AuthController],
 
-  providers: [AuthService, FortyTwoIntranetStrategy, GoogleStrategy,
+  providers: [AuthService, FortyTwoIntranetStrategy,
     UserService, PrismaService, ChannelService, MessagesService,],
 })
 

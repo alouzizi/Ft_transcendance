@@ -6,8 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
-import { GoDotFill } from "react-icons/go";
-import { TbListTree } from "react-icons/tb";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../../context/store';
@@ -15,6 +13,7 @@ import { checkUserIsInChannel, joinChannel, validePassword } from '../api/fetch-
 import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
+import Badge from "@mui/material/Badge";
 
 
 export function getColorStatus(status: any): string {
@@ -123,16 +122,43 @@ const ListUser = () => {
             setDisplayChat(true);
           }
         }}>
-        <Avatar
-          size="3"
-          src={el.receivedPic}
-          radius="full"
-          fallback="T"
-        />
-        <div className='absolute pt-6 pl-7'>
-          {el.isDirectMessage ? <GoDotFill size={20}
-            color={(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"} /> : <></>}
-        </div>
+
+
+
+        {el.isDirectMessage ?
+          <Badge
+            badgeContent={4}
+            sx={{
+              "& .MuiBadge-badge": {
+                backgroundColor: `${(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
+                width: 15,
+                height: 15,
+                borderRadius: 50,
+                border: "2px solid #ffffff",
+              },
+            }}
+            variant="dot"
+            overlap="circular"
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <Avatar
+              size="3"
+              src={el.receivedPic}
+              radius="full"
+              fallback="T"
+            />
+          </Badge>
+          :
+          <Avatar
+            size="3"
+            src={el.receivedPic}
+            radius="full"
+            fallback="T"
+          />
+        }
 
 
         <Flex direction="column" className='items-start pl-2'>
@@ -227,13 +253,14 @@ const ListUser = () => {
   return (
     <Box
       className={
-        `bg-white h-[900px] w-[300px]  rounded-[15px]
+        `bg-white h-[900px] w-[90%] rounded-[15px]
         ${!displayChat ? '' : 'hidden'}
-        sm:block`
+        md:block
+        md:w-[300px]`
       }>
 
-      <div className="flex border-b items-center justify-between px-2 py-2" >
-        <Text size='6' weight="bold">CHAT</Text>
+      <div className="flex border-b items-center justify-between p-4" >
+        <Text size='5' weight="bold">CHAT</Text>
         {direct ? <div className='h-[40px] w-[50px]'></div> : <AlertAddChannel />}
       </div >
 

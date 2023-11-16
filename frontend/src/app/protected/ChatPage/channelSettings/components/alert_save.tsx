@@ -8,40 +8,38 @@ import { useEffect } from 'react';
 
 export default function AlertSave() {
 
-    const { user, geust, saveChanges, setSaveChanges } = useGlobalContext();
+    const { saveChanges, setSaveChanges } = useGlobalContext();
 
-    useEffect(() => {
-        // console.log("useEffect called from AlertSaved")
-    }, [saveChanges]);
 
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center pt-20">
             {(saveChanges !== 1 ?
-                <div className='bg-black text-white w-1/2 p-1.5  rounded-md'>
+                <div className=' text-white w-[50%] p-2  rounded-md shadow-sm shadow-white  max-w-xl'>
 
                     <div className='flex items-center justify-between'>
 
-                        <Text size='2' >
+                        <Text size='3' className='hidden md:block' >
                             Careful - you have unsaved changes!
                         </Text>
 
-                        <div >
-                            <Text size='2' className='hover:underline cursor-pointer'
+                        <div className='flex flex-grow items-center justify-between  md:flex-none' >
+                            <Text size='3' className='hover:underline cursor-pointer'
                                 onClick={() => { setSaveChanges(-1) }}>
                                 Rest
                             </Text>
 
                             <button onClick={() => { setSaveChanges((pre) => { return pre - 50000 }) }}
-                                className="rounded-sm text-white bg-green-500 ml-2 px-1
-                        hover:bg-green-900">
-                                <Text size='2' > Save Changes</Text>
+                                className="rounded-sm text-white bg-[#254BD6] ml-3 p-1">
+                                {/* hover:bg-green-900 */}
+                                <Text size='3' > Save Changes</Text>
 
                             </button>
                         </div>
                     </div>
 
-                </div>
-                : <></>)}
-        </div>
+                </div >
+                : <></>)
+            }
+        </div >
     );
 }

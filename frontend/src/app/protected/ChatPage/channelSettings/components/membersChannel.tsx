@@ -113,6 +113,7 @@ export default function MembersChannel() {
         }
         return false;
     }
+
     const widgetMembers = membersFiltred.map((member: memberChannelDto, index) => {
         lengthMembers++;
         if (member.unmuted_at !== 0 && (timer === 0 || member.unmuted_at < timer)) {
@@ -154,11 +155,11 @@ export default function MembersChannel() {
                     onChange={(e) => { setSearsh(e.target.value) }}
                 ></input>
 
-                <AlertsAddUserChannel />
+                {isUserAdmin() ? <AlertsAddUserChannel /> : <></>}
             </div>
 
-            <div>
-                <div className='text-white'>{members.length} members</div>
+            <div className='mt-2'>
+                <Text className='text-white '>{members.length} members</Text>
                 {widgetMembers}
             </div>
 
@@ -174,9 +175,9 @@ export default function MembersChannel() {
 
 
 
-            <hr className="border-b-[0.5px] mt-4 border-gray-600 w-3/4" />
+            {/* <hr className="border-b-[0.5px] mt-4 border-gray-600 w-3/4" /> */}
 
-            <div className='flex pt-1 items-center justify-end text-red-500  w-3/4'>
+            <div className='flex pt-3 items-center justify-end text-red-500  w-3/4'>
 
                 <button onClick={async () => {
                     setGeust({
@@ -202,8 +203,8 @@ export default function MembersChannel() {
                     className="flex items-center rounded-md text-red-500 px-2
                     hover:bg-red-500 hover:text-white
                     ">
-                    <Text size='4' className='pr-2'> Leave Channel </Text>
-                    <IoIosExit size='20px' />
+                    <Text size='4' className='pr-2 p-2'> Leave Channel </Text>
+                    <IoIosExit size='25px' />
                 </button>
             </div>
 
