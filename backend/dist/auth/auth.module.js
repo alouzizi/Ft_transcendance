@@ -17,13 +17,14 @@ const _42_intranet_strategy_1 = require("./42-intranet.strategy");
 const messages_service_1 = require("../messages/messages.service");
 const channel_service_1 = require("../channel/channel.service");
 const user_service_1 = require("../user/user.service");
+const google_strategy_1 = require("./google.strategy");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            passport_1.PassportModule,
+            passport_1.PassportModule.register({ defaultStrategy: 'google' }),
             jwt_1.JwtModule.register({
                 global: true,
                 secret: process.env.JWT_SECRET,
@@ -31,7 +32,7 @@ exports.AuthModule = AuthModule = __decorate([
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy,
+        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy, google_strategy_1.GoogleStrategy,
             user_service_1.UserService, prisma_service_1.PrismaService, channel_service_1.ChannelService, messages_service_1.MessagesService,],
     })
 ], AuthModule);

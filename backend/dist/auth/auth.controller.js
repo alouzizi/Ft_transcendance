@@ -16,16 +16,14 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("../user/user.service");
 const auth_service_1 = require("./auth.service");
-const passport_1 = require("@nestjs/passport");
 const jwt_guard_1 = require("./guard/jwt.guard");
+const google_oauth_guard_1 = require("./google-oauth.guard");
 let AuthController = class AuthController {
     constructor(authService, userService) {
         this.authService = authService;
         this.userService = userService;
     }
     async loginWith42(req) {
-        const userWithoutPsw = req.user;
-        return this.authService.loginWith2fa(userWithoutPsw);
     }
     async register(req) {
         const { otpAuthUrl } = await this.authService.generateTwoFactorAuthSecret(req.user);
@@ -49,22 +47,21 @@ let AuthController = class AuthController {
         return isCodeValid;
     }
     async callbackWith42(req, res) {
-        console.log("profil howa niit ?? :", req.user);
         const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
         if (ret != null) {
         }
         res.cookie('intra_id', req.user.intra_id);
         res.cookie('access_token', ret.access_token);
         if (req.user.isTwoFactorAuthEnabled)
-            res.redirect("http://10.12.3.15:3000/Checker2faAuth");
+            res.redirect("http://localhost:3000/Checker2faAuth");
         else
-            res.redirect("http://10.12.3.15:3000/protected/DashboardPage");
+            res.redirect("http://localhost:3000/protected/DashboardPage");
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Get)('login42'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42-intranet')),
+    (0, common_1.UseGuards)(google_oauth_guard_1.GoogleOAuthGuard),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -99,8 +96,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "authenticate", null);
 __decorate([
-    (0, common_1.Get)('42-intranet/callback'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42-intranet')),
+    (0, common_1.Get)('google/callback'),
+    (0, common_1.UseGuards)(google_oauth_guard_1.GoogleOAuthGuard),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
