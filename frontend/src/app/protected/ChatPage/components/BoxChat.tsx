@@ -8,7 +8,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { BsFillSendFill, } from "react-icons/bs";
-import { GoDotFill } from "react-icons/go";
+import { RiPingPongFill } from "react-icons/ri";
 import { IoSettingsSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useGlobalContext } from '../../../context/store';
@@ -199,41 +199,47 @@ const BoxChat = () => {
 
         >
             <div className="flex border-b items-center justify-between bg-white p-4 rounded-t-[15px]">
-
-
                 <div className="flex items-center ">
-
                     <div className='block md:hidden'>
                         <IoMdArrowRoundBack size={25} onClick={() => {
                             setDisplayChat(false)
                         }} />
                     </div>
-                    <Badge
-                        badgeContent={4}
-                        sx={{
-                            "& .MuiBadge-badge": {
-                                backgroundColor: `${(geust.status === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
-                                // prompt.friendInfo.status === "ACTIF" ? "#15ff00" : "#9b9c9b",
-                                width: 15,
-                                height: 15,
-                                borderRadius: 50,
-                                border: "2px solid #ffffff",
-                            },
-                        }}
-                        variant="dot"
-                        overlap="circular"
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                    >
+                    {geust.isUser ?
+                        <Badge
+                            badgeContent={4}
+                            sx={{
+                                "& .MuiBadge-badge": {
+                                    backgroundColor: `${(geust.status === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: 50,
+                                    border: "2px solid #ffffff",
+                                },
+                            }}
+                            variant="dot"
+                            overlap="circular"
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right",
+                            }}
+                        >
+                            <Avatar
+                                size="3"
+                                src={geust.profilePic}
+                                radius="full"
+                                fallback="T"
+                            />
+                        </Badge>
+                        :
                         <Avatar
                             size="3"
                             src={geust.profilePic}
                             radius="full"
                             fallback="T"
                         />
-                    </Badge>
+                    }
+
                     <Flex direction="column" className='flex' >
                         <Text size="2" weight="bold" className='pl-2'>
                             {geust.nickname}
@@ -256,7 +262,9 @@ const BoxChat = () => {
                     {!geust.isUser ? <Link href='ChatPage/channelSettings'>
                         <IoSettingsSharp size={16} />
                     </Link> :
-                        <></>}
+                        <RiPingPongFill size={20} className='cursor-pointer'
+                            onClick={() => { console.log("ali ali") }}
+                        />}
                 </div>
             </div >
 
@@ -274,7 +282,7 @@ const BoxChat = () => {
                 }}>
                     {/* radius="large"  */}
                     <div className="flex bg-white mx-4  p-1 border rounded-[14px]" >
-                        <input type={"text"} className="bg-white m-1 flex flex-grow
+                        <input type={"text"} className="bg-white m-1 flex flex-grow w-px
                         text-black placeholder-gray-600 text-sm outline-none "
                             value={msg}
                             placeholder={!isMuted ? "  Type your message" : " Your muted from this channel"}

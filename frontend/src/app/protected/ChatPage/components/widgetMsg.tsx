@@ -36,7 +36,6 @@ export function MessageRight({ message }: { message: messageDto }) {
     const [isHovered, setIsHovered] = useState(false);
 
     const cardStyles = {
-        width: 200,
         borderTopRightRadius: 0,
         padding: 5,
         borderTopLeftRadius: 10,
@@ -46,7 +45,7 @@ export function MessageRight({ message }: { message: messageDto }) {
         background: "#E5E9F7", // ddfdfd
     };
     return (
-        <div style={cardStyles} className='relative mb-2 mt-2'>
+        <div style={cardStyles} className='relative mb-2 mt-2 w-[100px] sm:w-[200px] '>
             <div className='mb-4 text-sm'> {message.contentMsg}</div>
             <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
                 <Text size="1" className='pr-1 text-[#254BD6]'>
@@ -69,7 +68,6 @@ export function MessageRight({ message }: { message: messageDto }) {
 
 export function MessageLeft({ message }: { message: messageDto }) {
     const cardStyles = {
-        width: 200,
         borderTopRightRadius: 10,
         padding: 5,
         borderTopLeftRadius: 0,
@@ -87,7 +85,7 @@ export function MessageLeft({ message }: { message: messageDto }) {
                 radius="full"
                 fallback="T"
             />
-            <div className='pl-2'>
+            <div className='pl-2 w-[100px] sm:w-[200px]'>
                 <Text as="span" size="2" weight="bold">
                     {message.senderName}
                 </Text>

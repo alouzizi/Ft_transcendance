@@ -135,21 +135,24 @@ export default function AlertAddChannel() {
         return <Box p="1" pr="3" className='mx-2' key={elm.id}>
             <Flex align="center" justify="between" className='border-b py-2'>
                 <div className='flex items-center relative'>
-                    <Avatar
+                    {/* <Avatar className="h-[30px] md:h-40 rounded-full"
                         src={elm.profilePic}
                         fallback="T"
-                        style={{ height: '30px', borderRadius: '30px' }}
-                    />
-                    <Text size="3" weight="bold" className='pl-2'>
+                    style={{ height: '30px', borderRadius: '30px' }}
+                    /> */}
+                    <img
+                        className="h-[20px] md:h-[30px]  rounded-full"
+                        src={elm.profilePic} />
+                    <Text weight="bold" className='pl-2 text-sm md:text-base'>
                         {elm.nickname}
                     </Text>
-                </div>
+                </div >
                 {checkIsExist(elm, membersChannel) ?
-                    <IoPersonRemove color="red" onClick={() => {
+                    <IoPersonRemove color="red" className='text-sm md:text-base' onClick={() => {
                         setMembersChannel((prevMembers) =>
                             prevMembers.filter((member) => member.id !== elm.id));
                     }} /> :
-                    <IoPersonAdd color="green" onClick={() => {
+                    <IoPersonAdd color="green" className='text-sm md:text-base' onClick={() => {
                         setMembersChannel((pre) => [...pre, elm]);
                     }} />
                 }
@@ -160,25 +163,10 @@ export default function AlertAddChannel() {
     });
 
     const [isMouseOver, setIsMouseOver] = useState('-1');
-    const widgetMembers = membersChannel.map((elm) => {
-        return <Box key={elm.id} style={{ display: "inline-block" }}
-            onMouseEnter={() => setIsMouseOver(elm.id)}
-            onMouseLeave={() => setIsMouseOver('-1')}>
-            <div className='flex  items-center  pl-2 pr-1.5 m-1'
-                style={{ background: "pink", borderTopRightRadius: 10, borderBottomRightRadius: 10 }}>
-                <p>{elm.nickname}</p>
-                {(isMouseOver === elm.id) && <TiDelete onClick={() => {
-                    setMembersChannel((prevMembers) =>
-                        prevMembers.filter((member) => member.id !== elm.id));
-                }} color='red' />}
-
-            </div>
-        </Box>
-    })
 
     const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
 
-    let styles: string = 'px-8 py-1 my-1.5 rounded-[36px] text-[#254BD6] bg-white shadow-md';
+    let styles: string = 'px-2 md:px-8 py-1 my-1.5 rounded-[36px] text-[#254BD6] bg-white shadow-md';
     return (
         <div >
             <div className='flex items-center justify-center w-[50px] h-[40px] 
@@ -190,116 +178,115 @@ export default function AlertAddChannel() {
             </div>
 
 
-            <Dialog open={open} keepMounted >
+            <Dialog open={open} keepMounted  >
                 <div className='flex justify-end mt-2 mr-2 cursor-pointer' >
                     <IoCloseOutline onClick={() => setOpen(false)} size="25" />
                 </div>
                 <DialogTitle style={{ padding: 0, paddingLeft: 15 }} textAlign="start"  >{"Create Channel"}</DialogTitle>
-                <DialogContent style={{ padding: 0, paddingLeft: 15, paddingRight: 40 }} className='w-[25rem] h-[25rem] '>
+                <DialogContent style={{ padding: 0, paddingLeft: 15, paddingRight: 40 }}
+                    className=' h-[30rem]  w-[15rem] md:w-[25rem]   flex flex-col justify-center items-center '>
                     <div className='pt-5'>
 
-                        <ScrollArea type="always" scrollbars="vertical"
-                            style={{
-                                alignItems: "center", justifyItems: "center",
-                            }}>
 
 
-                            <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[15rem]" >
-                                <div style={{ cursor: 'pointer' }}
-                                    className={(channelData.channelType === ChannelType.Public) ? styles : ""} onClick={() => {
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channelType: ChannelType.Public };
-                                        });
-                                    }}>
-                                    <Text size='2' weight="bold">Public</Text>
-                                </div>
-                                <div style={{ cursor: 'pointer' }}
-                                    className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channelType: ChannelType.Private };
-                                        });
-                                    }}>
-                                    <Text size='2' weight="bold">Private</Text>
-                                </div>
-                            </div >
-
-                            <div className="flex bg-[#F6F7FA] mt-3  border rounded-[10px]" >
-                                <input type={"text"} className="bg-[#F6F7FA] m-1 p-1 flex flex-grow
-                        text-black placeholder-gray-600 text-sm outline-none"
-                                    value={channelData.channelName}
-                                    placeholder='Channel Name'
-                                    onChange={(e) => {
-                                        setErrorName('');
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channelName: e.target.value };
-                                        });
-                                    }}
-                                >
-                                </input>
-                            </div >
-                            {errorName && <Text as="div" color='red'>{errorName}</Text>}
-
-
-
-
-                            <div className="mt-2 ">
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox style={{ color: "#254BD6" }} checked={channelData.protected} onChange={(event) => {
-                                            setErrorKey('');
-                                            setChannelData((prevState) => {
-                                                return { ...prevState, channlePassword: '' };
-                                            });
-                                            setChannelData((prevState) => {
-                                                return { ...prevState, protected: event.target.checked };
-                                            });
-                                        }}
-                                        />}
-                                    label="Protected" />
+                        <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[10rem] md:w-[15rem]" >
+                            <div style={{ cursor: 'pointer' }}
+                                className={(channelData.channelType === ChannelType.Public) ? styles : ""} onClick={() => {
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, channelType: ChannelType.Public };
+                                    });
+                                }}>
+                                <Text size='2' weight="bold">Public</Text>
                             </div>
+                            <div style={{ cursor: 'pointer' }}
+                                className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, channelType: ChannelType.Private };
+                                    });
+                                }}>
+                                <Text size='2' weight="bold">Private</Text>
+                            </div>
+                        </div >
+                        <div className="flex bg-[#F6F7FA] mt-3  border rounded-[10px]  w-[10rem] md:w-[15rem]" >
+                            <input type={"text"} className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[9rem] md:w-[15rem] 
+                        text-black placeholder-gray-600 text-sm outline-none rounded-[10px] mr-1"
+                                value={channelData.channelName}
+                                placeholder='Channel Name'
+                                onChange={(e) => {
+                                    setErrorName('');
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, channelName: e.target.value };
+                                    });
+                                }}
+                            >
+                            </input>
+                        </div >
+                        {errorName && <Text as="div" color='red'>{errorName}</Text>}
 
 
-                            <div className="flex bg-[#F6F7FA] mt-0  border rounded-[10px]" >
-                                <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow
-                        text-black placeholder-gray-600 text-sm outline-none"
-                                    disabled={!channelData.protected}
-                                    required={channelData.protected}
-                                    type={isPasswordVisibleAlert ? "text" : "password"}
-                                    placeholder='Channel Key'
-                                    value={channelData.channelPassword}
-                                    onChange={(e) => {
-                                        setErrorKey(''),
-                                            setChannelData((prevState) => {
-                                                return { ...prevState, channelPassword: e.target.value };
-                                            });
+
+
+                        <div className="mt-2 ">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox style={{ color: "#254BD6" }} checked={channelData.protected} onChange={(event) => {
+                                        setErrorKey('');
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channlePassword: '' };
+                                        });
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, protected: event.target.checked };
+                                        });
                                     }}
-                                >
-                                </input>
-                                <div className='cursor-pointer flex items-center pr-2' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
-                                    {!isPasswordVisibleAlert ?
-                                        <MdVisibilityOff size={18} color="black" /> :
-                                        <MdVisibility size={18} color="black" />}
-                                </div>
-                            </div >
-                            {errorKey && <Text as="div" color='red'>{errorKey}</Text>}
+                                    />}
+                                label="Protected" />
+                        </div>
 
 
-                            <div className='mt-2'> {widgetMembers}</div>
-
-                            <div className="flex bg-[#F6F7FA]  mt-0  border rounded-[10px]" >
-                                <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow
+                        <div className="flex bg-[#F6F7FA] mt-0  border rounded-[10px]  w-[10rem] md:w-[15rem]" >
+                            <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[8rem] md:w-[15rem]
                         text-black placeholder-gray-600 text-sm outline-none"
-                                    type="text"
-                                    placeholder='Add membres'
-                                    value={memberSearch}
-                                    onChange={(e) => {
-                                        setMemberSearch(e.target.value)
-                                    }}
-                                >
-                                </input>
-                            </div >
-                            {widgetSearsh}
-                        </ScrollArea>
+                                disabled={!channelData.protected}
+                                required={channelData.protected}
+                                type={isPasswordVisibleAlert ? "text" : "password"}
+                                placeholder='Channel Key'
+                                value={channelData.channelPassword}
+                                onChange={(e) => {
+                                    setErrorKey(''),
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelPassword: e.target.value };
+                                        });
+                                }}
+                            >
+                            </input>
+                            <div className='cursor-pointer flex items-center pr-2' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
+                                {!isPasswordVisibleAlert ?
+                                    <MdVisibilityOff size={18} color="black" /> :
+                                    <MdVisibility size={18} color="black" />}
+                            </div>
+                        </div >
+                        {errorKey && <Text as="div" color='red'>{errorKey}</Text>}
+
+
+                        <div className="flex bg-[#F6F7FA]  mt-2  border rounded-[10px]  w-[10rem] md:w-[15rem]" >
+                            <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[9rem] md:w-[15rem]
+                        text-black placeholder-gray-600 text-sm outline-none"
+                                type="text"
+                                placeholder='Add membres'
+                                value={memberSearch}
+                                onChange={(e) => {
+                                    setMemberSearch(e.target.value)
+                                }}
+                            >
+                            </input>
+                        </div >
+                        <div className='h-[5rem]'>
+
+                            <ScrollArea scrollbars="vertical">
+                                {widgetSearsh}
+                            </ScrollArea>
+                        </div>
+
 
                     </div>
 
@@ -327,6 +314,8 @@ export default function AlertAddChannel() {
                                     if (!parskey.success && channelData.protected) setErrorKey('Invalid channel key');
                                 }
                             }}>Create</Button>
+
+
                     </DialogActions>
 
                 </DialogContent>
