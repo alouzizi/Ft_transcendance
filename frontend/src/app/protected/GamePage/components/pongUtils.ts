@@ -71,7 +71,9 @@ export function drawCanvas(
   computer: Padlle,
   player: Padlle
 ) {
-  ctx?.clearRect(0, 0, canvasCtx.width, canvasCtx.height);
+  // ctx?.clearRect(0, 0, canvasCtx.width, canvasCtx.height);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  ctx.fillRect(0, 0, canvasCtx.width, canvasCtx.height);
   drawRect(ctx, {
     x: 0,
     y: 0,
@@ -122,9 +124,10 @@ export function drawRect(ctx: any, p: Padlle) {
 export function drawCircle(ctx: any, b: Ball) {
   ctx.fillStyle = b.color;
   ctx.beginPath();
-  ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2, false);
-  ctx.closePath();
+  ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
   ctx.fill();
+  ctx.closePath();
 }
 
 export function drawText(ctx: any, x: number, y: number, score: number) {

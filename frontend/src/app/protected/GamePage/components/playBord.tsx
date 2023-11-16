@@ -45,13 +45,15 @@ const MyComponent = ({
           onClick={() => {
             if (emit) {
               if (socket?.connected){
-                socket.emit("clientId", user.id);
+                // socket.emit("clientId", user.id);
                 router.push(link);
                 
               } 
               else {
                 alert("Refresh the page and try again!");
               }
+            }else{
+              router.push(link);
             }
           }}
         >

@@ -3,8 +3,9 @@ import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
 import { useGlobalContext } from "@/app/context/store";
 import Alert from '@mui/joy/Alert';
-import { useRouter } from "next/navigation";
-import { Ratio } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
+import { set } from "date-fns";
+
 
 
 interface PongProps {
@@ -47,9 +48,17 @@ const Pong = ({ room, isLeft }: PongProps) => {
     velocityY: 5,
     color: "#05EDFF",
   };
+
   const [width, setWidth] = useState<number>(window.innerWidth);
+
   let ratio = 1;
+
+  if (canvasCtx.width < 600) {
+    ratio = (canvasCtx.width) / 600;
+  }
+
   useEffect(() => {
+
     if (!socket) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -75,8 +84,8 @@ const Pong = ({ room, isLeft }: PongProps) => {
         paddle: isLeft ? player.y : computer.y,
         isLeft: isLeft,
       });
-    };
-
+    }; 
+  
     socket.on("resivePaddle", (data: any) => {
       if (!isLeft) {
         player.y = data;
@@ -106,7 +115,9 @@ const Pong = ({ room, isLeft }: PongProps) => {
         computer.score
       );
     });
-
+    socket.on("clientDisconnected", () => {
+      
+    });
     socket.on("gameOver", (state: string) => {
       setTimeout(() => {
         if (state === "win") {
@@ -133,8 +144,8 @@ const Pong = ({ room, isLeft }: PongProps) => {
     function handleWindowResize() {
       setWidth(window.innerWidth);
       if (window.innerWidth < 600) {
-        ratio = window.innerWidth / 600;
-      canvasCtx.width = window.innerWidth - 200;
+        ratio = (window.innerWidth - 80) / 600;
+      canvasCtx.width = window.innerWidth - 80;
       computer.x = canvasCtx.width - 15;
       }
       else if (window.innerWidth > 600) {
@@ -142,19 +153,43 @@ const Pong = ({ room, isLeft }: PongProps) => {
         canvasCtx.width = 600;
         computer.x = canvasCtx.width - 15;
       }
-      // drawCanvas(ctx, {width: width, hight: 400}, canvasCtx, ball, computer, player);
     }
+    socket.on("opponentLeft" , () => {
+      console.log("opponent left");
+      router.replace('/protected/GamePage');
+      router.push('/protected/GamePage');
+      
+    });
+    
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+      console.log({ID:user.id}, "ALOOO");
+      console.log(room);
+      socket?.emit("opponentLeft", {room: room, userId:user.id});
+      // router.push('/protected/GamePage');
+      
+      // window.location.replace('/protected/GamePage');
+      // router.push('/protected/GamePage');
+
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener("resize", handleWindowResize);
     window.addEventListener("mousemove", handleMouseMove);
+
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);
+      // window.removeEventListener('beforeunload', handleBeforeUnload);
       socket.off("connect");
       socket.off("updatePaddle");
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // socket.emit("opponentLeft", room, user.id);
+      // socket.off("opponentLeft");
+
     };
-  }, []);
+  }, [router]);
 
   return (
     <canvas
