@@ -65,7 +65,7 @@ export function FriendAlert(props: SimpleDialogProps) {
     <Dialog onClose={handleClose} open={open}>
       <div
         className="w-52 h-96 p-2 
-      md:w-96 md:h-[32rem] md:p-4
+      sm:w-96 md:h-[32rem] md:p-4
       "
       >
         <div
@@ -91,7 +91,7 @@ export function FriendAlert(props: SimpleDialogProps) {
           ring-1 ring-inset ring-gray-300 placeholder:text-[#666C79] focus:outline-none
           
           text-xs w-[80%] py-2 ml-4 mb-4 pl-4 pr-16
-          lg:text-md  md:py-3 md:mx-8 md:mb-8 md:pl-7 md:pr-20
+          lg:text-sm  md:py-3 md:mx-8 md:mb-8 md:pl-7 md:pr-20
           md:text-sm sm:leading-6 
           "
           placeholder="Enter friend username"

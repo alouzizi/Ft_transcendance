@@ -8,7 +8,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/app/components/ui/dropdown-menu";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import AchievementItem from "./AchievementItem";
 import {
@@ -74,8 +74,10 @@ export default function AchievDropDown(prompt: {
       <div className="flex flex-col justify-center items-center  mb-6 md:mb-12 ">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex flex-row justify-between w-fit bg-white text-color-main rounded-md  cursor-pointer
-             py-1 px-2 md:px-4 text-sm md:text-base">
+            <div
+              className="flex flex-row justify-between w-fit bg-white text-color-main rounded-md  cursor-pointer
+             py-1 px-2 md:px-4 text-sm md:text-base"
+            >
               <p className="text-md ">{position}</p>
               <IoIosArrowDropdownCircle
                 className=" my-auto ml-2 text-color-main "

@@ -8,7 +8,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/app/components/ui/dropdown-menu";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import HistoryItem from "./HistoryItem";
 import { useGlobalContext } from "@/app/context/store";
