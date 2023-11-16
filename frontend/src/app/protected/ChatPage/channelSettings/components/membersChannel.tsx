@@ -63,8 +63,9 @@ export default function MembersChannel() {
 
     const widgetUser = (member: memberChannelDto) => {
         return (
-            <div key={member.userId} className='bg-white my-1 w-[450px] h-[60px] rounded-lg
-            flex '>
+            <div key={member.userId} className='bg-white my-1 w-[300px] h-[60px] rounded-lg  flex            
+            md:w-[450px]
+            '>
                 <div className='flex flex-grow  items-center justify-center pl-1.5'>
                     <div className='flex '>
                         <Avatar
@@ -141,7 +142,10 @@ export default function MembersChannel() {
 
     return (
         <div className="flex flex-col  items-center pt-5 ">
-            <div className="flex-grow flex items-between justify-between w-[450px]">
+            <div className="flex-grow flex items-between justify-between w-[300px]
+            md:w-[450px]
+            ">
+
                 <input type="text" className="bg-[#111623] text-white border border-[#1f3175]
                       placeholder-gray-300 text-sm focus:border-white
                         rounded-lg block p-1.5 outline-none"

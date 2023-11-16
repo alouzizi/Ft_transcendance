@@ -156,8 +156,12 @@ export default function UpdateChannel() {
 
 
     return (
-        <div className="flex flex-col items-center justify-centser">
-            <div className="flex items-center justify-start pt-2 pb-2">
+        <div className="flex flex-col items-center">
+            <div className="flex items-center justify-center pt-2 pb-2
+                    flex-col
+                    md:flex-row
+                    
+            ">
 
                 <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'>
                     <Avatar
@@ -193,7 +197,6 @@ export default function UpdateChannel() {
                         value={channelData.channelName}
                         onChange={(e) => {
                             if (isOwnerAdmin || !channel.protected) {
-
                                 if (validToChange === false) {
                                     setOpenConfirm(true);
                                 } else {
@@ -211,9 +214,8 @@ export default function UpdateChannel() {
                 </div>
 
                 <FormControl >
-
                     <RadioGroup
-                        className='flex flex-col items-start justify-start pl-6'>
+                        className='flex flex-row items-start justify-start pl-6   md:flex-col'>
 
                         <FormControlLabel
                             className='text-white'

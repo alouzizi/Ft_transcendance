@@ -120,7 +120,7 @@ const ListUser = () => {
         onClick={() => {
           if (el.isDirectMessage || el.contentMsg !== "") {
             getDataGeust(el);
-            setDisplayChat(true)
+            setDisplayChat(true);
           }
         }}>
         <Avatar
@@ -177,6 +177,7 @@ const ListUser = () => {
                   receivedId: el.receivedId,
                 });
                 getDataGeust(el);
+                setDisplayChat(true);
               }
               else {
                 setIdChannel(el.receivedId);

@@ -85,7 +85,7 @@ export default function AlertsAddUserChannel() {
                     />
                     <div className='absolute pt-[20px] pl-[25px]'>
                         <GoDotFill size={24}
-                            color={(elm.status === 'ACTIF') ? "#15ff00" : "#9b9c9b"} />
+                            color={(elm.status === 'ACTIF') ? "#07F102" : "#B4B4B4"} />
                     </div>
                     <Text size="3" weight="bold" className='pl-2'>
                         {elm.nickname}
@@ -126,7 +126,10 @@ export default function AlertsAddUserChannel() {
                 keepMounted
                 onClose={handleClose}
             >
-                <DialogContent className=' w-[30rem] h-[20rem] items-center justify-center'>
+                <DialogContent className=' w-[20rem] h-[10rem] items-center justify-center
+                 md:w-[30rem] 
+                 md:h-[20rem]
+                '>
 
                     <TextField fullWidth size="small"
                         label="Add user to channel" variant="outlined"
