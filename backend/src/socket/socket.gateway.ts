@@ -42,6 +42,17 @@ export class SocketGateway
 
   async handleDisconnect(client: Socket) {
     this.socketGatewayService.handleDisconnect(client, this.server);
+    if (this.clients.has(client.id)) {
+      console.log("Client disconnected", { id: client.id });
+      this.clients.delete(client.id);
+      const room = this.findRoomByClientId(client.id);
+      if (room) {
+        this.server.to(room).emit("clientDisconnected");
+        this.stopEmittingBallPosition(room);
+        this.rooms.delete(room);
+        this.roomState.delete(room);
+      }
+    }
   }
 
   @SubscribeMessage("createMessage")
@@ -83,7 +94,7 @@ export class SocketGateway
         x: 0,
         y: 0,
         radius: 10,
-        speed: 5,
+        speed: 1,
         velocityX: 5,
         velocityY: 5,
         color: "#05EDFF",
@@ -92,6 +103,7 @@ export class SocketGateway
   }
 
   private clients: Map<string, Socket> = new Map();
+  private joindClients: Map<string, number> = new Map();
   private rooms: Map<string, string[]> = new Map();
   private roomState: Map<string, RoomState> = new Map();
   private ballPositionInterval: Map<string, NodeJS.Timeout> = new Map();
@@ -117,28 +129,14 @@ export class SocketGateway
     );
   }
 
-  @SubscribeMessage("clientId")
-  identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
-    // console.log("client ---> ", client, id);
-    console.log({ id: id, client: client.id });
-
-    if (this.clients.has(id)) {
-      client.emit("alreadyExist");
-      console.log("Client already exists");
-    } else {
-      console.log("Client identified", { id: id });
-
-      this.clients.set(id, client);
-
-      client.join(id);
-    }
-  }
 
   startEmittingBallPosition(roomName: string, id: string) {
     clearInterval(this.ballPositionInterval.get(roomName));
+    // this.roomState.get(roomName).ball.speed = 1;
     this.ballPositionInterval.set(
       roomName,
       setInterval(() => {
+        
         // console.log({layer1: this.player1, player2: this.player2});
         const ro = this.roomState.get(roomName);
         // console.log(ro.player1.x, ro.player1.y, ro.player2.x, ro.player2.y);
@@ -209,7 +207,7 @@ export class SocketGateway
             );
         }
         this.server.to(roomName).emit("updateTheBall", ro.ball);
-      }, 1000 / 60)
+      }, 20)
     );
   }
 
@@ -218,8 +216,6 @@ export class SocketGateway
     p1: { player: string; score: number },
     p2: { player: string; score: number }
   ) {
-    // const player1 = this.rooms.get(roomName)[0];
-    // const player2 = this.rooms.get(roomName)[1];
 
     if (p1.score + p2.score === this.ROUND_LIMIT) {
       const player1Usr = await this.prisma.user.findUnique({
@@ -259,11 +255,31 @@ export class SocketGateway
     clearInterval(this.ballPositionInterval.get(roomName));
   }
 
+
+
+  @SubscribeMessage("clientId")
+  identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
+    // console.log("client ---> ", client, id);
+
+    // console.log({ id: id, client: client.id });
+
+    if (this.clients.has(id)) {
+      client.emit("alreadyExist");
+      console.log("Client already exists");
+    } else {
+      console.log("Client identified", { id: id });
+
+      this.clients.set(id, client);
+      this.joindClients.set(id, 0);
+
+      client.join(id);
+    }
+  }
+
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
-    console.log({ size: this.clients.size });
     this.joindRoom++;
-    if (this.clients.size === 2 && this.joindRoom == 2) {
+    if (this.clients.size === 2 && this.joindRoom > 1 ) {
       this.joindRoom = 0;
       console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
@@ -316,6 +332,26 @@ export class SocketGateway
         }
       }
     }
+  }
+
+  @SubscribeMessage("opponentLeft")
+  onOpponentLeft(client: Socket, data: any) {
+    console.log(data);
+    console.log("opponentLeft");
+    if (data.room) {
+      const clientsRoom = this.rooms.get(data.room);
+      if (clientsRoom) {
+        const otherClient = clientsRoom.find((c) => c !== data.userId);
+        if (otherClient) {
+          console.log("opponentLeft send");
+          this.server.to(otherClient).emit("opponentLeft");
+        }
+      }
+    }
+    delete this.rooms[data.room];
+    delete this.roomState[data.room];
+    delete this.ballPositionInterval[data.room];
+    delete this.joindClients[data.userId];
   }
 }
 

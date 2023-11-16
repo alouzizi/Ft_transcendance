@@ -24,12 +24,12 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     joindRoom: number;
     private GameInit;
     private clients;
+    private joindClients;
     private rooms;
     private roomState;
     private ballPositionInterval;
     onModuleInit(): void;
     collision(ball: any, player: any): boolean;
-    identifyClient(client: Socket, id: string): void;
     startEmittingBallPosition(roomName: string, id: string): void;
     gameState(roomName: string, p1: {
         player: string;
@@ -39,7 +39,9 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
         score: number;
     }): Promise<void>;
     stopEmittingBallPosition(roomName: string): void;
+    identifyClient(client: Socket, id: string): void;
     handleJoinRoom(client: Socket, id: string): void;
     findRoomByClientId(id: string): string;
     onUpdatePaddle(client: Socket, data: any): void;
+    onOpponentLeft(client: Socket, data: any): void;
 }
