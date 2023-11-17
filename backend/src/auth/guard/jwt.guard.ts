@@ -27,6 +27,7 @@ export class JwtGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.config.get("JWT_SECRET"),
       });
+
       request["user"] = payload;
     } catch {
       throw new UnauthorizedException();
@@ -36,6 +37,6 @@ export class JwtGuard implements CanActivate {
 
   private extractTokenFromHeader(request: Request) {
     const [type, token] = request.headers.authorization.split(" ") ?? [];
-    return type === "Bearer" ? token : undefined;
+    return (type === "Bearer") ? token : undefined;
   }
 }

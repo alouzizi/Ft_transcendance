@@ -4,7 +4,7 @@
   "source": "src",
   "private": true,
   "scripts": {
-    "dev": "HOST=10.12.3.15 next dev",
+    "dev": "HOST=10.12.2.12 next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

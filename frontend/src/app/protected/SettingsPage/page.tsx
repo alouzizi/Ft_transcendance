@@ -111,13 +111,17 @@ export default function SettingsPage() {
 
                   if (keyQrCode !== "") {
                     const token = Cookies.get('access_token');
-                    const res = await axios.get(Backend_URL + `/auth/2fa/turn-on/${keyQrCode}`, {
-                      method: 'GET',
+                    const res = await axios.get(`${Backend_URL}/auth/2fa/turn-on/${keyQrCode}`, {
                       headers: {
-                        authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
                       },
                     });
+
+
+                    console.log("---> ", res.data)
+
+
                     const isCodeValide = await res.data;
                     if (isCodeValide) {
                       setShowSuccesCode(true);

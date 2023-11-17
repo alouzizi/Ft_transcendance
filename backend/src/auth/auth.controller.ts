@@ -25,7 +25,9 @@ export class AuthController {
 
 
   @Get('login42')
+
   @UseGuards(AuthGuard('42-intranet'))
+
   @HttpCode(200)
   async loginWith42(@Req() req) {
     // const userWithoutPsw: any = req.user;
@@ -44,50 +46,46 @@ export class AuthController {
     return qrcode;
   }
 
-  @Get('2fa/turn-on/:authCode')
-  @UseGuards(JwtGuard)
-  async turnOnTwoFactorAuthentication(@Req() req, @Param('authCode') authCode: string) {
+  @Get('2fa/turn-on/:intra_id/:authCode')
+  async turnOnTwoFactorAuthentication(@Param('intra_id') intra_id: string, @Param('authCode') authCode: string) {
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
-      req.user.sub,
+      intra_id,
     );
-    if (!isCodeValid) {
-      throw new UnauthorizedException('Wrong authentication code');
-    }
-    await this.userService.turnOnTwoFactorAuth(req.user.sub);
+    if (isCodeValid) await this.userService.turnOnTwoFactorAuth(intra_id)
     return isCodeValid;
   }
 
-  @Get('2fa/authenticate/:authCode')
+  @Get('2fa/authenticate/:intra_id/:authCode')
   @HttpCode(200)
-  @UseGuards(JwtGuard)
-  async authenticate(@Req() req, @Param('authCode') authCode: string) {
-    console.log(req);
+  async authenticate(@Res() res: Response, @Param('intra_id') intra_id: string,
+    @Param('authCode') authCode: string) {
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
-      req.user.sub,
+      intra_id,
     );
     if (isCodeValid) {
-      await this.authService.loginWith2fa(req.user.sub);
+      const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
+      res.cookie('access_token', ret.access_token)
     }
+    console.log("isCodeValid --> ", isCodeValid);
     return isCodeValid;
   }
-
 
   @Get('42-intranet/callback')
   @UseGuards(AuthGuard('42-intranet'))
   async callbackWith42(@Req() req: any, @Res() res: Response) {
-
-    const ret = await this.authService.valiadteUserAndCreateJWT(req.user);
+    const ret = await this.authService.valiadteUserAndCreateJWT(req.user.intra_id);
     if (ret != null) {
       // res.cookie("auth", ret);
     }
     res.cookie('intra_id', req.user.intra_id);
-    res.cookie('access_token', ret.access_token);
     if (req.user.isTwoFactorAuthEnabled)
-      res.redirect("http://10.12.3.15:3000/Checker2faAuth");
-    else
-      res.redirect("http://10.12.3.15:3000/protected/DashboardPage");
+      res.redirect("http://10.12.2.12:3000/Checker2faAuth");
+    else {
+      res.cookie('access_token', ret.access_token)
+      res.redirect("http://10.12.2.12:3000/protected/DashboardPage");
+    }
 
   }
 }

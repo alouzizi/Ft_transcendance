@@ -16,24 +16,27 @@ export class AuthService {
 
   ) { }
 
-  async generateAccessToken(user: any) {
+  async generateAccessToken(user: User) {
     // Create a JWT access token based on the user's data
-    const payload = { sub: user.intra_id, nickname: user.login42 }; // Customize the payload as needed
+    const payload = { sub: user.intra_id, nickname: user.nickname, email: user.email }; // Customize the payload as needed
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
-  async valiadteUserAndCreateJWT(user: User) {
+  async generate2fa_Token(user: any) {
+    const payload = { sub: user.intra_id, nickname: user.login42 }; // Customize the payload as needed
+    return await this.jwtService.signAsync(payload);
+  }
+
+  async valiadteUserAndCreateJWT(intra_id: string) {
     try {
-      // console.log("in validate : ",user)
-      const authResult = await this.userService.findByIntraId(user.intra_id);
-      if (authResult) {
+      const user = await this.userService.findByIntraId(intra_id);
+      if (user) {
         return this.generateAccessToken(user);//res.redirect('/profile');
       } else {
         return null;//res.redirect('https://github.com/');
       }
-
     } catch (error) {
       return null;//res.redirect('https://github.com/');
     }
@@ -63,7 +66,6 @@ export class AuthService {
 
   async generateTwoFactorAuthSecret(user: any) {
     const secret = authenticator.generateSecret();
-
     const otpAuthUrl = authenticator.keyuri(
       user.nickname,
       'ft_tranc',

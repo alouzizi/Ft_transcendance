@@ -122,9 +122,6 @@ const ListUser = () => {
             setDisplayChat(true);
           }
         }}>
-
-
-
         {el.isDirectMessage ?
           <Badge
             badgeContent={4}
@@ -249,6 +246,8 @@ const ListUser = () => {
 
 
 
+  if (user.id === "-1")
+    return <></>
   let styles: string = 'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
     <Box

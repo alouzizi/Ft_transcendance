@@ -21,9 +21,12 @@ const ImageUpload = () => {
       reader.readAsDataURL(file);
     }
   };
+
+
   useEffect(() => {
-    console.log("user --> ", user);
-  }, [user.id]);
+    console.log(selectedImage);
+  }, [selectedImage]);
+
   return (
     <div className="kborder ml-4 -mt-24">
       <IconButton className="z-50 relative top-10 left-11">
@@ -46,7 +49,6 @@ const ImageUpload = () => {
           width={100}
           height={100}
           src={selectedImage || user.profilePic}
-          // src={selectedImage || Avatar}
           alt="Preview"
           className="w-20 h-20 rounded-full bg-cover object-contain"
         />

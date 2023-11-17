@@ -242,7 +242,6 @@ export class UserService {
   }
 
   async turnOnTwoFactorAuth(intra_id: string) {
-    // this.user.find(user => user.id === id).isTwoFactorAuthEnabled = true;
     const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } })
     await this.prisma.user.update({
       where: { intra_id: intra_id },

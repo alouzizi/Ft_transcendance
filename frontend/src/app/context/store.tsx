@@ -167,8 +167,7 @@ export const GlobalContextProvider = ({ children }: {
                 const owner = await res.json();
                 setUser(owner);
             } else {
-                router.push('/auth');
-
+                // router.push('/auth');
             }
         };
         if (user.id === "-1")
@@ -189,6 +188,7 @@ export const GlobalContextProvider = ({ children }: {
 
 
 
+
     return (
         <GlobalContext.Provider value={{
             geust, setGeust, user, setUser, socket,
@@ -201,7 +201,6 @@ export const GlobalContextProvider = ({ children }: {
                 </Snackbar>
             </Stack>
             {children}
-
         </GlobalContext.Provider>
     )
 }

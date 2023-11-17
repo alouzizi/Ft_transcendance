@@ -7,10 +7,11 @@ export declare class AuthService {
     private userService;
     private jwtService;
     constructor(prisma: PrismaService, userService: UserService, jwtService: JwtService);
-    generateAccessToken(user: any): Promise<{
+    generateAccessToken(user: User): Promise<{
         access_token: string;
     }>;
-    valiadteUserAndCreateJWT(user: User): Promise<{
+    generate2fa_Token(user: any): Promise<string>;
+    valiadteUserAndCreateJWT(intra_id: string): Promise<{
         access_token: string;
     }>;
     loginWith2fa(userWithoutPsw: any): Promise<{

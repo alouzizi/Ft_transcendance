@@ -9,41 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtGuard = void 0;
+exports.TwoFactorGuard = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
-let JwtGuard = class JwtGuard {
-    constructor(jwtService, config) {
+const user_service_1 = require("../../user/user.service");
+let TwoFactorGuard = class TwoFactorGuard {
+    constructor(jwtService, config, userService) {
         this.jwtService = jwtService;
         this.config = config;
+        this.userService = userService;
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        const token = this.extractTokenFromHeader(request);
-        if (!token) {
-            throw new common_1.UnauthorizedException();
+        const user = request.user;
+        const tmp = await this.userService.findByIntraId(user.sub);
+        if (tmp) {
+            if (!tmp.isTwoFactorAuthEnabled)
+                return true;
         }
-        try {
-            const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.config.get("JWT_SECRET"),
-            });
-            request["user"] = payload;
-        }
-        catch {
-            throw new common_1.UnauthorizedException();
-        }
-        return true;
-    }
-    extractTokenFromHeader(request) {
-        const [type, token] = request.headers.authorization.split(" ") ?? [];
-        return (type === "Bearer") ? token : undefined;
+        return false;
     }
 };
-exports.JwtGuard = JwtGuard;
-exports.JwtGuard = JwtGuard = __decorate([
+exports.TwoFactorGuard = TwoFactorGuard;
+exports.TwoFactorGuard = TwoFactorGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService,
-        config_1.ConfigService])
-], JwtGuard);
-//# sourceMappingURL=jwt.guard.js.map
+        config_1.ConfigService,
+        user_service_1.UserService])
+], TwoFactorGuard);
+//# sourceMappingURL=2fa.guard.js.map

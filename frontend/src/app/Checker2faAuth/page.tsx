@@ -35,17 +35,14 @@ export default function login() {
 
           if (keyQrCode !== "") {
 
-            const token = Cookies.get('access_token');
+            const intra_id = Cookies.get('intra_id');
 
-            const res = await axios.get(Backend_URL + `/auth/2fa/authenticate/${keyQrCode}`, {
+            const res = await axios.get(Backend_URL + `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`, {
               method: 'GET',
-              headers: {
-                authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
             });
             const isCodeValide = await res.data;
             if (isCodeValide) {
+              console.log("royttetet")
               router.push('/protected/DashboardPage');
             }
             else {

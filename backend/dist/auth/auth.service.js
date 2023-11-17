@@ -23,15 +23,19 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async generateAccessToken(user) {
-        const payload = { sub: user.intra_id, nickname: user.login42 };
+        const payload = { sub: user.intra_id, nickname: user.nickname, email: user.email };
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
     }
-    async valiadteUserAndCreateJWT(user) {
+    async generate2fa_Token(user) {
+        const payload = { sub: user.intra_id, nickname: user.login42 };
+        return await this.jwtService.signAsync(payload);
+    }
+    async valiadteUserAndCreateJWT(intra_id) {
         try {
-            const authResult = await this.userService.findByIntraId(user.intra_id);
-            if (authResult) {
+            const user = await this.userService.findByIntraId(intra_id);
+            if (user) {
                 return this.generateAccessToken(user);
             }
             else {
