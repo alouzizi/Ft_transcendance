@@ -1,4 +1,5 @@
 "use client";
+<<<<<<< HEAD
 import { useGlobalContext } from "@/app/context/store";
 import CardInfo from "@/app/protected/DashboardPage/components/CardInfo";
 import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
@@ -158,4 +159,12 @@ export default function DashboardPage() {
       </div>
     </div>
   );
+=======
+import { useGlobalContext } from "@/app/protected/context/store";
+import DashBoard from "./components/DashBoard";
+
+export default function DashboardPage() {
+  const { user } = useGlobalContext();
+  return <DashBoard friend={user} />;
+>>>>>>> origin/lhoussin
 }

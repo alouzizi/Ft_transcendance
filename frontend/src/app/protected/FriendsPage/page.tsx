@@ -1,7 +1,13 @@
 "use client";
 
+<<<<<<< HEAD
 import FriendItem from "@/app/protected/FriendsPage/components/FriendItem";
 import { useState } from "react";
+=======
+import { useState } from "react";
+import FriendCategory from "./components/FriendCategory";
+import { FriendAlert } from "./components/FriendAlert/FriendAlert";
+>>>>>>> origin/lhoussin
 
 export default function FriendsPage() {
   // Create an array to store the isSelected state for each item
@@ -37,10 +43,18 @@ export default function FriendsPage() {
   function getIconStyle(index: number) {
     const iconStyle = ` font-bold  py-1 rounded-md  
     transition ease-in-out delay-100
+<<<<<<< HEAD
     ${isSelectedList[index]
         ? "text-white bg-[#515562] hover:bg-[#515562] hover:text-white"
         : "text-gray-300 bg-transparent hover:bg-[#2A2F40] hover:text-slate-50"
       }
+=======
+    ${
+      isSelectedList[index]
+        ? "text-white bg-[#515562] hover:bg-[#515562] hover:text-white"
+        : "text-gray-300 bg-transparent hover:bg-[#2A2F40] hover:text-slate-50"
+    }
+>>>>>>> origin/lhoussin
 
     // small screen
     text-xs px-2 mr-1.5
@@ -62,6 +76,27 @@ export default function FriendsPage() {
     setIsSelectedList(updatedIsSelectedList);
   };
 
+<<<<<<< HEAD
+=======
+  // ================== friend alert ==================
+  const handleAddFriend = () => {
+    console.log("add friend");
+  };
+
+  const [open, setOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("emails[1]");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+  // ================== /friend alert ==================
+
+>>>>>>> origin/lhoussin
   return (
     <div className="flex flex-col bg-color-main h-screen w-screen ">
       <div className="flex flex-col justify-end mt-12 mb-8 ml-8  md:ml-24 ">
@@ -100,9 +135,21 @@ export default function FriendsPage() {
           // big screen 
           md:text-sm lg:text-md lg:px-4 
           "
+<<<<<<< HEAD
           >
             Add Friend
           </button>
+=======
+            onClick={handleClickOpen}
+          >
+            Add Friend
+          </button>
+          <FriendAlert
+            selectedValue={selectedValue}
+            open={open}
+            onClose={handleClose}
+          />
+>>>>>>> origin/lhoussin
         </div>
         {/* this is the friend items */}
         <div
@@ -114,6 +161,7 @@ export default function FriendsPage() {
           lg:w-[60%]
         "
         >
+<<<<<<< HEAD
           <p
             className="mr-4 mb-4 w-fit font-bold  py-1 px-3 text-gray-400 
           
@@ -134,6 +182,9 @@ export default function FriendsPage() {
           <FriendItem
             friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
           />
+=======
+          <FriendCategory itemsStatus={itemsStatus} />
+>>>>>>> origin/lhoussin
         </div>
       </div>
     </div>

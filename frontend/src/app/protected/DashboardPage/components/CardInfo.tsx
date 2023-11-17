@@ -7,10 +7,14 @@ export default function CardInfo(prompt: {
   return (
     <div
       className=" min-[0px]:w-24 lg:w-40  h-fit flex flex-row justify-between mx-2
+<<<<<<< HEAD
      bg-white    rounded-2xl border-[0.2rem] border-color-main-whith"
 
     
     >
+=======
+     bg-white    rounded-2xl border-[0.2rem] border-color-main-whith" >
+>>>>>>> origin/lhoussin
       <div className="flex flex-col justify-center mr-1  p-1  w-3/4 ">
         <img
           className="w-8 h-8 mx-auto"

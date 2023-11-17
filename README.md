@@ -8,6 +8,7 @@
 
 This project is fully coded in Typescript and could be deployed with docker-compose.
 
+<<<<<<< HEAD
 - For the front framework, we choose ReactJS.
 - For the back framework, NestJS was imposed.
 - As a database, Postgres was imposed too.
@@ -183,3 +184,8 @@ Deploy your NestJS application to a production server, considering security best
 # Creating the 2fa system
 First we have to create a unique secret for every user that turns on 2fa, but we'll also need a special otp authentication url that we'll be using later to create a QrCode. The otplib package is a good match, so let's install it.
 
+=======
+- For the front framework, we choose Next.js.
+- For the back framework, NestJS was imposed.
+- As a database, Postgres was imposed too.
+>>>>>>> origin/lhoussin

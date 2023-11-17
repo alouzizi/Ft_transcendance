@@ -5,7 +5,11 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useEffect, useState } from "react";
 import Avatar from "public/DefaultAvatar.png";
 import Image from "next/image";
+<<<<<<< HEAD
 import { useGlobalContext } from "@/app/context/store";
+=======
+import { useGlobalContext } from "@/app/protected/context/store";
+>>>>>>> origin/lhoussin
 import { IconButton } from "@mui/material";
 
 const CoverUpload = () => {
@@ -39,7 +43,11 @@ const CoverUpload = () => {
             style={{ display: "none" }}
           />
           <div className="bg-slate-50 rounded-full h-8 w-8 flex items-center justify-center">
+<<<<<<< HEAD
           <AddPhotoAlternateIcon style={{ color: "black" }} />
+=======
+            <AddPhotoAlternateIcon style={{ color: "black" }} />
+>>>>>>> origin/lhoussin
           </div>
         </label>
       </IconButton>

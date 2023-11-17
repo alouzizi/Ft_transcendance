@@ -8,4 +8,8 @@ export class AuthDto {
     @IsString()
     @IsNotEmpty()
     password: string;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/lhoussin

@@ -8,12 +8,17 @@ import { ReactNode } from "react";
 
 export default function NavBarPublic(prompt: { children: ReactNode }) {
   return (
+<<<<<<< HEAD
     <div className="flex flex-col  h-screen">
+=======
+    <div className="flex flex-col  h-screen  text-white">
+>>>>>>> origin/lhoussin
       <div className="w-full bg-color-main-dark flex flex-row justify-center py-4">
         <div className="container flex items-center justify-between">
           <Link href="/">
             <Laugh size={32} />
           </Link>
+<<<<<<< HEAD
 
           <Link
             href="/auth"
@@ -26,6 +31,28 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
           </Link>
 
 
+=======
+          <div className="flex flex-row space-x-2">
+            <Link
+              href="/auth"
+              className={buttonVariants({
+                variant: "outline",
+                className: "text-color-main bg-color-main-whith",
+              })}
+            >
+              Login
+            </Link>
+            <Link
+              href="/auth/openAccount"
+              className={buttonVariants({
+                variant: "outline",
+                className: "text-color-main bg-color-main-whith",
+              })}
+            >
+              Open account
+            </Link>
+          </div>
+>>>>>>> origin/lhoussin
         </div>
       </div>
       {prompt.children}

@@ -25,6 +25,7 @@ enum ChannelType {
   Public
   Private
 }
+<<<<<<< HEAD
 model User {
   id            String @id @default(uuid())
   intra_id      String @unique
@@ -39,6 +40,23 @@ model User {
   isTwoFactorAuthEnabled Boolean
   twoFactorAuthSecret String?
   AsciiSecretQr String?
+=======
+
+model User {
+  id         String  @id @default(uuid())
+  intra_id   String  @unique
+  first_name String?
+  last_name  String?
+  nickname   String  @unique
+  email      String? @unique
+  profilePic String?
+  hash       String?
+
+  twoFactorAuth          Boolean @default(false)
+  isTwoFactorAuthEnabled Boolean @default(false)
+  twoFactorAuthSecret    String?
+  AsciiSecretQr          String?
+>>>>>>> origin/lhoussin
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,6 +69,7 @@ model User {
   BlockedUser  BlockedUser[]
   Channel      Channel[]
 }
+<<<<<<< HEAD
   
 model Channel {
   id              String      @id @default(uuid())
@@ -66,11 +85,38 @@ model Channel {
   ChannelMember ChannelMember[]
   Message       Message[]
 }
+=======
+
+model Channel {
+  id          String      @id @default(uuid())
+  channelName String      @unique
+  channelType ChannelType @default(Public)
+
+  protected       Boolean @default(false)
+  channelPassword String
+
+  createdAt DateTime @default(now())
+  avatar    String?
+
+  channelOwnerId String?
+  User           User?   @relation(fields: [channelOwnerId], references: [id])
+
+  Message Message[]
+
+  ChannelMember ChannelMember[]
+  BannedMember  BannedMember[]
+  MutedMember   MutedMember[]
+
+  inviteLink String?
+}
+
+>>>>>>> origin/lhoussin
 model Message {
   id String @id @default(uuid())
 
   isDirectMessage Boolean @default(true)
 
+<<<<<<< HEAD
   senderId      String
   content       String
   createdAt     DateTime      @default(now())
@@ -79,10 +125,26 @@ model Message {
 
   user User? @relation(fields: [senderId], references: [id])
 
+=======
+  senderId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  notSendTo String @default("")
+
+  messageStatus MessageStatus @default(NotReceived)
+
+  user       User?   @relation(fields: [senderId], references: [id])
+>>>>>>> origin/lhoussin
   receivedId String?
 
   Channel   Channel? @relation(fields: [channelId], references: [id])
   channelId String?
+<<<<<<< HEAD
+=======
+
+  InfoMessage Boolean @default(false)
+>>>>>>> origin/lhoussin
 }
 
 // friendship
@@ -116,10 +178,49 @@ model BlockedUser {
 }
 
 model ChannelMember {
+<<<<<<< HEAD
   id      String  @id @default(uuid())
   userId  String
   isAdmin Boolean
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String
+=======
+  id String @id @default(uuid())
+
+  userId  String
+  isAdmin Boolean
+
+  // test      String   @default("88")
+  createdAt DateTime @default(now())
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+model BannedMember {
+  id String @id @default(uuid())
+
+  userId    String
+  banned_at DateTime @default(now())
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+model MutedMember {
+  id String @id @default(uuid())
+
+  userId     String
+  unmuted_at DateTime
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+>>>>>>> origin/lhoussin
 }

@@ -6,4 +6,8 @@ import { PrismaService } from './prisma.service';
   providers: [PrismaService],
   exports: [PrismaService]
 })
+<<<<<<< HEAD
 export class PrismaModule {}
+=======
+export class PrismaModule {}
+>>>>>>> origin/lhoussin
