@@ -64,7 +64,8 @@ const GlobalContext = createContext<ContextProps>({
         first_name: '',
         last_name: '',
         nickname: '',
-        profilePic: ''
+        profilePic: '',
+        isTwoFactorAuthEnabled: true
 
     },
     setUser: () => { },
@@ -110,7 +111,8 @@ export const GlobalContextProvider = ({ children }: {
         first_name: '',
         last_name: '',
         nickname: '',
-        profilePic: ''
+        profilePic: '',
+        isTwoFactorAuthEnabled: true
     })
 
     const [geust, setGeust] = useState<geustDto>({

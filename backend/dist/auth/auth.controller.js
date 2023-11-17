@@ -30,31 +30,38 @@ let AuthController = class AuthController {
         const qrcode = await this.authService.generateQrCodeDataURL(otpAuthUrl);
         return qrcode;
     }
-    async turnOnTwoFactorAuthentication(intra_id, authCode) {
+    async turnOffTwoFactorAuthentication(intra_id) {
+        console.log("intraid", intra_id);
+        await this.userService.turnOffTwoFactorAuth(intra_id);
+    }
+    async turnOnTwoFactorAuthentication(res, intra_id, authCode) {
         const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(authCode, intra_id);
-        if (isCodeValid)
-            await this.userService.turnOnTwoFactorAuth(intra_id);
-        return isCodeValid;
+        if (!isCodeValid) {
+            throw new common_1.UnauthorizedException('Wrong authentication code');
+        }
+        await this.userService.turnOnTwoFactorAuth(intra_id);
+        res.send({ isCodeValid: isCodeValid });
     }
     async authenticate(res, intra_id, authCode) {
         const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(authCode, intra_id);
-        if (isCodeValid) {
-            const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
-            res.cookie('access_token', ret.access_token);
+        if (!isCodeValid) {
+            throw new common_1.UnauthorizedException('Wrong authentication code');
         }
-        console.log("isCodeValid --> ", isCodeValid);
-        return isCodeValid;
+        const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
+        res.cookie('access_token', ret.access_token);
+        res.send({ isCodeValid: isCodeValid });
     }
     async callbackWith42(req, res) {
         const ret = await this.authService.valiadteUserAndCreateJWT(req.user.intra_id);
         if (ret != null) {
         }
         res.cookie('intra_id', req.user.intra_id);
+        res.cookie('access_token', ret.access_token);
         if (req.user.isTwoFactorAuthEnabled)
-            res.redirect("http://10.12.2.12:3000/Checker2faAuth");
+            res.redirect("http://10.12.3.15:3000/Checker2faAuth");
         else {
             res.cookie('access_token', ret.access_token);
-            res.redirect("http://10.12.2.12:3000/protected/DashboardPage");
+            res.redirect("http://10.12.3.15:3000/protected/DashboardPage");
         }
     }
 };
@@ -77,15 +84,25 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
-    (0, common_1.Get)('2fa/turn-on/:intra_id/:authCode'),
+    (0, common_1.Post)('2fa/turn-off/:intra_id'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('intra_id')),
-    __param(1, (0, common_1.Param)('authCode')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "turnOffTwoFactorAuthentication", null);
+__decorate([
+    (0, common_1.Post)('2fa/turn-on/:intra_id/:authCode'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('intra_id')),
+    __param(2, (0, common_1.Param)('authCode')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "turnOnTwoFactorAuthentication", null);
 __decorate([
-    (0, common_1.Get)('2fa/authenticate/:intra_id/:authCode'),
+    (0, common_1.Post)('2fa/authenticate/:intra_id/:authCode'),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('intra_id')),

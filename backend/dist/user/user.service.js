@@ -241,6 +241,16 @@ let UserService = class UserService {
             }
         });
     }
+    async turnOffTwoFactorAuth(intra_id) {
+        const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } });
+        console.log(user);
+        await this.prisma.user.update({
+            where: { intra_id: intra_id },
+            data: {
+                isTwoFactorAuthEnabled: false,
+            }
+        });
+    }
     async getUsers() {
         return this.prisma.user.findMany();
     }

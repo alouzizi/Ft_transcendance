@@ -14,9 +14,12 @@ import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function SettingsPage() {
-
+  const token = Cookies.get('access_token');
   const router = useRouter();
 
   const { user } = useGlobalContext();
@@ -27,42 +30,46 @@ export default function SettingsPage() {
   const [keyQrCode, setKeyQrCode] = useState("");
 
 
-  const [showErrorCode, setShowErrorCode] = useState(false);
-  const [showSuccesCode, setShowSuccesCode] = useState(false);
+  const getUrlQr = async () => {
+    const token = Cookies.get('access_token');
+    const res = await axios.get(Backend_URL + `/auth/2fa/generate`, {
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const qrcode = await res.data;
+    if (qrcode)
+      setUrlImage(qrcode);
+  }
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
-
-
-  useEffect(() => {
-    const getUrlQr = async () => {
-      const token = Cookies.get('access_token');
-      const res = await axios.get(Backend_URL + `/auth/2fa/generate`, {
-        method: 'GET',
-        headers: {
-          authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      const qrcode = await res.data;
-      if (qrcode)
-        setUrlImage(qrcode);
-    }
-    if (checked === true) {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(user);
+    if (user && event.target.checked == false && user.id !== '-1' && checked) {
+      const res = await fetch(`${Backend_URL}/auth/2fa/turn-off/${user.intra_id}`,
+        {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      setChecked(false);
+      toast.success("2fa authentication turned off successfully")
+    } else if (event.target.checked == true) {
       getUrlQr();
     }
-    setNickName(user.nickname);
-  }, [checked, user.id])
+  };
 
   useEffect(() => {
-    if (showErrorCode) {
-      const timeoutId = setTimeout(() => {
-        setShowErrorCode(false);
-      }, 6000);
-      return () => clearTimeout(timeoutId);
+    if (user.id != "-1" && user.isTwoFactorAuthEnabled) {
+      setChecked(true);
     }
-  }, [showErrorCode])
+
+    setNickName(user.nickname);
+  }, [user.id])
+
 
   return (
     <div className="h-screen flex items-center justify-center">
@@ -106,35 +113,29 @@ export default function SettingsPage() {
                     setKeyQrCode(e.target.value);
                   }}
                 >
+
                 </input>
+
                 <Button variant="contained" className='ml-2 bg-blue-600' onClick={async () => {
 
                   if (keyQrCode !== "") {
-                    const token = Cookies.get('access_token');
-                    const res = await axios.get(`${Backend_URL}/auth/2fa/turn-on/${keyQrCode}`, {
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                      },
-                    });
 
-
-                    console.log("---> ", res.data)
-
-
-                    const isCodeValide = await res.data;
-                    if (isCodeValide) {
-                      setShowSuccesCode(true);
-                      setShowErrorCode(false);
-                      setUrlImage('');
-                    }
-                    else {
-                      setShowErrorCode(true);
-                      setShowSuccesCode(false)
+                    const response = await fetch(Backend_URL + `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
+                      {
+                        method: 'POST', headers: {
+                          authorization: `Bearer ${token}`,
+                          'Content-Type': 'application/json',
+                        },
+                      });
+                    if (response.ok) {
+                      setChecked(true);
+                      setUrlImage("");
+                      toast.success("2fa authentication turned on successfully")
+                    } else {
+                      toast.error("Wrong authentication code")
                     }
                   } else {
-                    setShowErrorCode(true);
-                    setShowSuccesCode(false)
+                    toast.error("Wrong authentication code")
                   }
 
                 }}>Active 2FA</Button>
@@ -142,15 +143,7 @@ export default function SettingsPage() {
             }
           </div>
 
-          <Snackbar open={showErrorCode}
-            message="Note archived">
-            <Alert severity="error" onClose={() => { setShowErrorCode(false) }} >Error while Activating 2FA</Alert>
-          </Snackbar>
 
-          <Snackbar open={showSuccesCode}
-            message="Note archived">
-            <Alert severity="success" onClose={() => { setShowSuccesCode(false) }} >2FA Activated</Alert>
-          </Snackbar>
 
 
         </div>
@@ -169,6 +162,7 @@ export default function SettingsPage() {
           SAVE
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 }

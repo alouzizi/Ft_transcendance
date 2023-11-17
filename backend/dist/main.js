@@ -12,12 +12,12 @@ async function bootstrap() {
         transform: true,
     }));
     app.enableCors({
-        origin: ["http://10.12.2.12:3000", "http://10.12.2.12:3000"],
+        origin: ["http://10.12.3.15:3000", "http://10.12.3.15:3000"],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         credentials: true,
     });
     app.use(cookieParser());
-    await app.listen(4000, '10.12.2.12');
+    await app.listen(4000, '10.12.3.15');
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

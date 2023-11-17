@@ -46,30 +46,45 @@ export class AuthController {
     return qrcode;
   }
 
-  @Get('2fa/turn-on/:intra_id/:authCode')
-  async turnOnTwoFactorAuthentication(@Param('intra_id') intra_id: string, @Param('authCode') authCode: string) {
+  @Post('2fa/turn-off/:intra_id')
+  @UseGuards(JwtGuard)
+  async turnOffTwoFactorAuthentication(@Param('intra_id') intra_id: string) {
+    console.log("intraid", intra_id);
+    await this.userService.turnOffTwoFactorAuth(intra_id)
+  }
+
+
+  @Post('2fa/turn-on/:intra_id/:authCode')
+  @UseGuards(JwtGuard)
+  async turnOnTwoFactorAuthentication(@Res() res: Response, @Param('intra_id') intra_id: string, @Param('authCode') authCode: string) {
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
       intra_id,
     );
-    if (isCodeValid) await this.userService.turnOnTwoFactorAuth(intra_id)
-    return isCodeValid;
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
+
+    await this.userService.turnOnTwoFactorAuth(intra_id);
+    res.send({ isCodeValid: isCodeValid });
   }
 
-  @Get('2fa/authenticate/:intra_id/:authCode')
+  @Post('2fa/authenticate/:intra_id/:authCode')
   @HttpCode(200)
   async authenticate(@Res() res: Response, @Param('intra_id') intra_id: string,
     @Param('authCode') authCode: string) {
+
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
       intra_id,
     );
-    if (isCodeValid) {
-      const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
-      res.cookie('access_token', ret.access_token)
+
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
     }
-    console.log("isCodeValid --> ", isCodeValid);
-    return isCodeValid;
+    const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
+    res.cookie('access_token', ret.access_token)
+    res.send({ isCodeValid: isCodeValid });
   }
 
   @Get('42-intranet/callback')
@@ -80,11 +95,13 @@ export class AuthController {
       // res.cookie("auth", ret);
     }
     res.cookie('intra_id', req.user.intra_id);
+    res.cookie('access_token', ret.access_token);
+
     if (req.user.isTwoFactorAuthEnabled)
-      res.redirect("http://10.12.2.12:3000/Checker2faAuth");
+      res.redirect("http://10.12.3.15:3000/Checker2faAuth");
     else {
       res.cookie('access_token', ret.access_token)
-      res.redirect("http://10.12.2.12:3000/protected/DashboardPage");
+      res.redirect("http://10.12.3.15:3000/protected/DashboardPage");
     }
 
   }

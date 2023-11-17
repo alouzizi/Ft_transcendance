@@ -28,6 +28,7 @@ type ownerDto = {
   last_name: string;
   nickname: string;
   profilePic: string;
+  isTwoFactorAuthEnabled: boolean
 };
 
 type geustDto = {

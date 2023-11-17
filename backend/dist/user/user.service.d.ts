@@ -158,6 +158,7 @@ export declare class UserService {
     }>;
     setTwoFactorAuthSecret(secret: string, intra_id: string): Promise<void>;
     turnOnTwoFactorAuth(intra_id: string): Promise<void>;
+    turnOffTwoFactorAuth(intra_id: string): Promise<void>;
     getUsers(): Promise<{
         id: string;
         intra_id: string;

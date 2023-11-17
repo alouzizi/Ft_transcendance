@@ -1,13 +1,14 @@
 "use client";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { cache, useState } from "react";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import axios from "axios";
 import { Backend_URL } from "@/lib/Constants";
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function login() {
@@ -17,7 +18,7 @@ export default function login() {
 
   const [keyQrCode, setKeyQrCode] = useState("");
 
-  const [showErrorCode, setShowErrorCode] = useState(false);
+
 
 
   return (
@@ -37,29 +38,22 @@ export default function login() {
 
             const intra_id = Cookies.get('intra_id');
 
-            const res = await axios.get(Backend_URL + `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`, {
-              method: 'GET',
-            });
-            const isCodeValide = await res.data;
-            if (isCodeValide) {
-              console.log("royttetet")
+            const response = await fetch(Backend_URL + `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`,
+              { method: 'POST' });
+
+            if (response.ok) {
               router.push('/protected/DashboardPage');
-            }
-            else {
-              setShowErrorCode(true);
+            } else {
+              toast.error("Wrong authentication codee")
             }
           } else {
-            setShowErrorCode(true);
+            toast.error("Wrong authentication codee")
           }
 
         }}>Active 2FA</Button>
 
-        <Snackbar open={showErrorCode}
-          message="Note archived">
-          <Alert severity="error" onClose={() => { setShowErrorCode(false) }} >Error while Activating 2FA</Alert>
-        </Snackbar>
-
       </div>
+      <ToastContainer />
     </div>
   );
 }
