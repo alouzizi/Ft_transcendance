@@ -1,5 +1,5 @@
 'use client';
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';

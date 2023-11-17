@@ -4,7 +4,7 @@ import {
   getAllPossibleFriends,
   getPendingFriends
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as React from "react";

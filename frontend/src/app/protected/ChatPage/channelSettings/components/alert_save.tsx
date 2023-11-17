@@ -1,5 +1,5 @@
 'use client';
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import Alert from '@mui/material/Alert';
 import { Text } from '@radix-ui/themes';
 import { useEffect } from 'react';

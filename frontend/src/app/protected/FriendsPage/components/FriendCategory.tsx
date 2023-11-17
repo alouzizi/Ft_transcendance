@@ -1,6 +1,6 @@
 "use client";
 
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import { Backend_URL } from "@/lib/Constants";
 import {
   useState,

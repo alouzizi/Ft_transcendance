@@ -8,7 +8,7 @@ import ImageUpload from "./imageupload";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Backend_URL } from '@/lib/Constants';
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';

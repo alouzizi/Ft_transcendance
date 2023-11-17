@@ -11,7 +11,7 @@ import { BsFillSendFill, } from "react-icons/bs";
 import { RiPingPongFill } from "react-icons/ri";
 import { IoSettingsSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { useGlobalContext } from '../../../context/store';
+import { useGlobalContext } from '../../context/store';
 import { checkIsMuted } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
 import { checkIsBlocked, getVueGeust } from '../api/fetch-users';

@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useGlobalDataContext } from "./FriendCategory";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import { blockFriend, removeFriend } from "@/app/api/hixcoder/FriendsPageAPI";
 
 export default function PopoverMenu(prompt: { friendInfo: friendDto }) {

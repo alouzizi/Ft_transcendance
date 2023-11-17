@@ -190,6 +190,8 @@ export const GlobalContextProvider = ({ children }: {
 
 
 
+    if (user.id === '-1')
+        return <div></div>
 
     return (
         <GlobalContext.Provider value={{

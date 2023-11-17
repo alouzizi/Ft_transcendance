@@ -1,5 +1,5 @@
 "use client";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import DashBoard from "./components/DashBoard";
 
 export default function DashboardPage() {

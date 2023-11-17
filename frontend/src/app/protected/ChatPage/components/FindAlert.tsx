@@ -15,7 +15,7 @@ import { GoDotFill } from "react-icons/go";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
-import { useGlobalContext } from '../../../context/store';
+import { useGlobalContext } from '../../context/store';
 import { joinChannel, validePassword } from '../api/fetch-channel';
 import { getValideChannels, getValideUsers, getVueGeust } from '../api/fetch-users';
 import { accepteRequistFriend, removeRequistFriend, sendRequistFriend } from '../api/send-Friend-req';

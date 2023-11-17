@@ -1,5 +1,5 @@
 'use client'
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import TextField from '@mui/material/TextField';

@@ -5,7 +5,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useEffect, useState } from "react";
 import Avatar from "public/DefaultAvatar.png";
 import Image from "next/image";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import { IconButton } from "@mui/material";
 
 const CoverUpload = () => {

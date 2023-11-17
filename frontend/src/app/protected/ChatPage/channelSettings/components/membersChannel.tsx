@@ -1,5 +1,5 @@
 'use client';
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import { Avatar, Text } from '@radix-ui/themes';
 import { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";

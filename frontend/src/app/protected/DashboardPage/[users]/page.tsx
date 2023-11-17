@@ -4,7 +4,7 @@ import DashBoard from "../components/DashBoard";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();

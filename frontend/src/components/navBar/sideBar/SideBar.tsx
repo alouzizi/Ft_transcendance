@@ -24,9 +24,8 @@ export default function SideBar() {
   ]);
 
   function getIconStyle(index: number) {
-    const iconStyle = ` mx-auto transition ease-in-out delay-100 ${
-      isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
-    }
+    const iconStyle = ` mx-auto transition ease-in-out delay-100 ${isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
+      }
     
     // small screen
     w-5 h-5

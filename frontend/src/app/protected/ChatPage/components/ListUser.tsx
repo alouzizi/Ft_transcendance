@@ -8,7 +8,7 @@ import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { useGlobalContext } from '../../../context/store';
+import { useGlobalContext } from '../../context/store';
 import { checkUserIsInChannel, joinChannel, validePassword } from '../api/fetch-channel';
 import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';

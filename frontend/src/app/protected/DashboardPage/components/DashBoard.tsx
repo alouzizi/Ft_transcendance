@@ -5,7 +5,7 @@ import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import PopoverMenuDash from "./PopoverMenuDash";
 import { getAllFriends } from "@/app/api/hixcoder/FriendsPageAPI";

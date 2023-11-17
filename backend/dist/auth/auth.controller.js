@@ -58,12 +58,13 @@ let AuthController = class AuthController {
         if (ret != null) {
         }
         res.cookie('intra_id', req.user.intra_id);
+        const diff = ((new Date()).getTime() - (new Date(`${req.user.createdAt}`)).getTime()) / 1000;
+        if (diff < 120)
+            res.redirect("http://localhost:3000/protected/SettingsPage");
         if (req.user.isTwoFactorAuthEnabled)
             res.redirect("http://localhost:3000/Checker2faAuth");
-        else {
-            res.cookie('access_token', ret.access_token);
-            res.redirect("http://localhost:3000/protected/DashboardPage");
-        }
+        res.cookie('access_token', ret.access_token);
+        res.redirect("http://localhost:3000/protected/DashboardPage");
     }
 };
 exports.AuthController = AuthController;

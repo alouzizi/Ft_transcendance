@@ -19,7 +19,7 @@ import {
   unblockFriend,
   unsendFriendRequest,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import { MdOutlineDone } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import Badge from "@mui/material/Badge";

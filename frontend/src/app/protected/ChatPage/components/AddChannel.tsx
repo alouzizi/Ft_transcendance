@@ -13,7 +13,7 @@ import { GoDotFill } from 'react-icons/go';
 import { IoAddOutline, IoCloseOutline, IoPersonAdd, IoPersonRemove } from "react-icons/io5";
 import { TiDelete } from "react-icons/ti";
 import { z } from "zod";
-import { useGlobalContext } from '../../../context/store';
+import { useGlobalContext } from '../../context/store';
 import { createChannel } from '../api/fetch-channel';
 import { getValideUsers, getVueGeust } from '../api/fetch-users';
 import { getColorStatus } from './ListUser';

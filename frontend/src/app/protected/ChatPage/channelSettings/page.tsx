@@ -1,5 +1,5 @@
 'use client';
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import AlertSave from './components/alert_save';
 import MembersChannel from './components/membersChannel';
 import UpdateChannel from './components/updateChannel';

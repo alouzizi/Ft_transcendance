@@ -4,7 +4,7 @@ import {
   getAllUsers,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
 import { Popper } from "@mui/material";
 import React, { ChangeEvent } from "react";
 import { useState } from "react";
