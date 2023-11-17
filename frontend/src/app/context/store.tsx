@@ -8,7 +8,7 @@ import {
   useState,
   useEffect,
 } from "react";
-import { io, Socket } from "Socket.IO-client";
+import { io, Socket } from "socket.io-client";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
