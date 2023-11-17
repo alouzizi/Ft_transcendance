@@ -2,14 +2,15 @@
 import { useGlobalContext } from '@/app/protected/context/store';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import TextField from '@mui/material/TextField';
 import { Avatar, Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { GoDotFill } from "react-icons/go";
-import { IoMdAddCircle } from "react-icons/io";
+import { useEffect, useRef, useState } from 'react';
+import { IoCloseOutline, IoSearch } from "react-icons/io5";
+import { SlRefresh } from "react-icons/sl";
 import { addUserToChannel, checkOwnerIsAdmin, getChannel } from '../../api/fetch-channel';
 import { usersCanJoinChannel } from '../../api/fetch-users';
+import { Backend_URL } from '@/lib/Constants';
+
 
 export default function AlertsAddUserChannel() {
 
@@ -74,36 +75,36 @@ export default function AlertsAddUserChannel() {
 
     const widgetItem = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
         return <Box p="1" pr="3" key={index}>
-            <Flex align="center" justify="between" className='border-b py-2'>
+            <Flex align="center" justify="between" className='py-2'>
                 <div className='flex items-center relative'>
                     <Avatar
                         src={elm.profilePic}
                         fallback="T"
-                        style={{ height: '40px', borderRadius: '40px', cursor: 'pointer' }}
+                        style={{ height: '35px', borderRadius: '35px' }}
                     />
-                    <div className='absolute pt-[20px] pl-[25px]'>
-                        <GoDotFill size={24}
-                            color={(elm.status === 'ACTIF') ? "#07F102" : "#B4B4B4"} />
-                    </div>
-                    <Text size="3" weight="bold" className='pl-2'>
+
+                    <Text size="2" weight="medium" className='pl-2'>
                         {elm.nickname}
                     </Text>
                 </div>
-                <div className='flex items-center'>
 
-                    <IoMdAddCircle size='25' color='#3a86ff' style={{ cursor: 'pointer' }}
-                        onClick={async () => {
-                            await addUserToChannel(user.id, geust.id, elm.id);
-                            setSearsh('');
-                            socket?.emit('updateData', {
-                                content: '',
-                                senderId: user.id,
-                                isDirectMessage: false,
-                                receivedId: geust.id,
-                            });
-                            handleClose();
-                        }} />
+                <div className='border px-3 border-[#1f3175] cursor-pointer'
+                    onClick={async () => {
+                        await addUserToChannel(user.id, geust.id, elm.id);
+                        setSearsh('');
+                        socket?.emit('updateData', {
+                            content: '',
+                            senderId: user.id,
+                            isDirectMessage: false,
+                            receivedId: geust.id,
+                        });
+                        handleClose();
+                    }} >
+                    <Text size="2" weight="medium" >
+                        Add
+                    </Text>
                 </div>
+
             </Flex>
         </Box>
     }) : searsh === '' ? <div></div> : <div className='flex items-center justify-center'>pas user</div>
@@ -122,25 +123,72 @@ export default function AlertsAddUserChannel() {
             <Dialog
                 open={open}
                 keepMounted
-                onClose={handleClose}
-            >
-                <DialogContent className=' w-[20rem] h-[10rem] items-center justify-center
+                onClose={handleClose}>
+                <div className='flex justify-between  bg-gray-100 pr-2 pt-2 pl-2' >
+                    <Text size="2" weight="medium" className='pl-2  '>
+                        Add friends to {channel?.channelName}
+                    </Text>
+                    <IoCloseOutline onClick={() => setOpen(false)} size="25" className='cursor-pointer' />
+                </div>
+                <DialogContent className=' w-[20rem] h-[10rem] items-center justify-center bg-gray-100
                  md:w-[30rem] 
                  md:h-[20rem]
                 '>
 
-                    <TextField fullWidth size="small"
-                        label="Add user to channel" variant="outlined"
-                        value={searsh}
-                        onChange={(e) => { setSearsh(e.target.value) }} />
+                    <div className="flex bg-[#F6F7FA]  border rounded-[10px]  w-[100%]" >
+                        <input className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[100%]
+                        text-black placeholder-gray-600 text-sm outline-none"
+
+                            type="text"
+                            placeholder='Search for friends'
+                            value={searsh}
+                            onChange={(e) => {
+                                setSearsh(e.target.value)
+                            }}
+                        >
+                        </input>
+                        <div className='cursor-pointer flex items-center pr-2'  >
+
+                            <IoSearch size={18} color="black" />
+
+                        </div>
+                    </div >
+
                     <ScrollArea type="always" scrollbars="vertical"
-                        style={{ height: 240 }}>
+                        style={{ height: 170 }}>
                         {widgetItem}
                     </ScrollArea>
+                    <div className='flex items-center pb-1'>
+                        <text className='text-sm pl-1'>
+                            Or send a server invite link to a friend
+                        </text>
+                        <SlRefresh className='cursor-pointer ml-1'
+                            size="12"
+                            onClick={() =>
+                                setOpen(false)} />
+                    </div>
+                    <div className="flex justify-between items-center bg-[#F6F7FA]  border rounded-[10px]  w-[100%]" >
+                        <div>
+                            <text className='pl-3 text-sm  w-[80px]' >
+                                {Backend_URL + `/${geust.id.substring(0, 4)}` + `/${channel?.inviteLink.substring(0, 4)}`}
+                            </text>
 
-                </DialogContent>
-            </Dialog>
+                        </div>
+                        <div className="flex items-center px-3 bg-[#1f3175] cursor-pointer m-1 rounded-[10px] py-1"
+                            onClick={() => {
+                                const link: string = Backend_URL + `/${geust.id}` + `/${channel?.inviteLink}`
+                                navigator.clipboard.writeText(link)
+                            }}>
+
+                            <Text className='text-white text-sm'>
+                                Copy
+                            </Text>
+
+                        </div>
+                    </div >
+                </DialogContent >
+            </Dialog >
         </div >
     );
 }
-
+//http://localhost:4000/3a444534-0846-40f5-a4f2-2d4cfcf34c2a/643810b5-1467-4502-a22f-0321ac75d411

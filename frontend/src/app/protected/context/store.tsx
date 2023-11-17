@@ -9,6 +9,8 @@ import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 
+
+
 enum Status {
     ACTIF = "ACTIF",
     INACTIF = "INACTIF",
@@ -56,7 +58,9 @@ const GlobalContext = createContext<ContextProps>({
 
 
     saveChanges: 0,
-    setSaveChanges: () => { },
+    setSaveChanges: () => {
+
+    },
 
     user: {
         id: '-1',

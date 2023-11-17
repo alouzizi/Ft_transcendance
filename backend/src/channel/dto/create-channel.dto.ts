@@ -18,6 +18,7 @@ export class CreateChannelDto {
     avatar: string;
     channelOwnerId: string;
     protected: boolean;
+    inviteLink: string;
 }
 
 export class memberChannelDto {

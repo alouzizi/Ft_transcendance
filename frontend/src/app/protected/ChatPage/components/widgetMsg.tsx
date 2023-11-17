@@ -4,6 +4,10 @@ import { BsCheck2, BsCheck2All } from "react-icons/bs";
 import { MdOutlineEditNote } from "react-icons/md";
 import { useState } from 'react';
 
+
+
+
+
 export function extractHoursAndM(time: number): string {
 
     const dt = new Date(time);
@@ -35,6 +39,7 @@ export function IsTypingMsg() {
 export function MessageRight({ message }: { message: messageDto }) {
     const [isHovered, setIsHovered] = useState(false);
 
+
     const cardStyles = {
         borderTopRightRadius: 0,
         padding: 5,
@@ -46,7 +51,12 @@ export function MessageRight({ message }: { message: messageDto }) {
     };
     return (
         <div style={cardStyles} className='relative mb-2 mt-2 w-[100px] sm:w-[200px] '>
-            <div className='mb-4 text-sm'> {message.contentMsg}</div>
+
+
+            <div className='mb-4 text-sm'>
+                {message.contentMsg}
+            </div>
+
             <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
                 <Text size="1" className='pr-1 text-[#254BD6]'>
                     {extractHoursAndM(message.createdAt)}

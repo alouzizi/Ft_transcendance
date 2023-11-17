@@ -3,6 +3,7 @@ import { BannedMember, Channel, ChannelMember, ChannelType, MutedMember, Prisma,
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -30,6 +31,7 @@ export class ChannelService {
   }
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
+    const uniqueId = uuidv4();
     let bcryptPassword: string = '';
     if (createChannelDto.channelPassword != '')
       bcryptPassword = await bcrypt.hash(createChannelDto.channelPassword, 10);
@@ -41,7 +43,8 @@ export class ChannelService {
           channelPassword: bcryptPassword,
           channelType: createChannelDto.channelType,
           protected: createChannelDto.protected,
-          avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png"
+          avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png",
+          inviteLink: uniqueId,
         }
       })
 
@@ -163,7 +166,8 @@ export class ChannelService {
           channelPassword: channel.protected ? '****' : '',
           protected: channel.protected,
           avatar: channel.avatar,
-          channelOwnerId: channel.channelOwnerId
+          channelOwnerId: channel.channelOwnerId,
+          inviteLink: channel.inviteLink
         }
     } catch (error) {
       return { error: true }
@@ -537,7 +541,6 @@ export class ChannelService {
   }
 
   async checkIsMuted(senderId: string, channelId: string) {
-    await this.prisma.notification.findMany({})
     try {
       const muted: MutedMember = await this.prisma.mutedMember.findFirst({
         where: {

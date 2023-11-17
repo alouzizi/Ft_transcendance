@@ -112,4 +112,15 @@ export class ChannelController {
     , @Param('userId') userId: string) {
     return this.channelService.cancelTimeOutByAdmin(senderId, channelId, userId);
   }
+
+
+  @Post('/joinChannelWithLink/:senderId/:channelId/:uuid')
+  async joinChannelWithLink(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('uuid') uuid: string) {
+
+
+
+    // Perform your logic here...
+
+    return { success: true, message: 'Joined channel successfully!' };
+  }
 }

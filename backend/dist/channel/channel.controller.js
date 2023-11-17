@@ -80,6 +80,9 @@ let ChannelController = class ChannelController {
     cancelTimeOutByAdmin(senderId, channelId, userId) {
         return this.channelService.cancelTimeOutByAdmin(senderId, channelId, userId);
     }
+    async joinChannelWithLink(senderId, channelId, uuid) {
+        return { success: true, message: 'Joined channel successfully!' };
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -225,6 +228,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "cancelTimeOutByAdmin", null);
+__decorate([
+    (0, common_1.Post)('/joinChannelWithLink/:senderId/:channelId/:uuid'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('uuid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "joinChannelWithLink", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

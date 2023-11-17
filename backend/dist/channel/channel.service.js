@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcrypt");
+const uuid_1 = require("uuid");
 let ChannelService = class ChannelService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -32,6 +33,7 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
+        const uniqueId = (0, uuid_1.v4)();
         let bcryptPassword = '';
         if (createChannelDto.channelPassword != '')
             bcryptPassword = await bcrypt.hash(createChannelDto.channelPassword, 10);
@@ -43,7 +45,8 @@ let ChannelService = class ChannelService {
                     channelPassword: bcryptPassword,
                     channelType: createChannelDto.channelType,
                     protected: createChannelDto.protected,
-                    avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png"
+                    avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png",
+                    inviteLink: uniqueId,
                 }
             });
             this.createMessageInfoChannel(senderId, newChannel.id, '', 'create group');
@@ -158,7 +161,8 @@ let ChannelService = class ChannelService {
                     channelPassword: channel.protected ? '****' : '',
                     protected: channel.protected,
                     avatar: channel.avatar,
-                    channelOwnerId: channel.channelOwnerId
+                    channelOwnerId: channel.channelOwnerId,
+                    inviteLink: channel.inviteLink
                 };
         }
         catch (error) {
@@ -519,7 +523,6 @@ let ChannelService = class ChannelService {
         return 0;
     }
     async checkIsMuted(senderId, channelId) {
-        await this.prisma.notification.findMany({});
         try {
             const muted = await this.prisma.mutedMember.findFirst({
                 where: {

@@ -14,6 +14,7 @@ export declare class ChannelService {
         createdAt: Date;
         avatar: string;
         channelOwnerId: string;
+        inviteLink: string;
         error?: undefined;
     } | {
         status: number;
@@ -33,6 +34,7 @@ export declare class ChannelService {
             createdAt: Date;
             avatar: string;
             channelOwnerId: string;
+            inviteLink: string;
         };
         error?: undefined;
     } | {
@@ -57,6 +59,7 @@ export declare class ChannelService {
         protected: boolean;
         avatar: string;
         channelOwnerId: string;
+        inviteLink: string;
         error?: undefined;
     } | {
         error: boolean;
@@ -66,6 +69,7 @@ export declare class ChannelService {
         protected?: undefined;
         avatar?: undefined;
         channelOwnerId?: undefined;
+        inviteLink?: undefined;
     }>;
     findChannelById(id: string): Promise<{
         id: string;
@@ -76,6 +80,7 @@ export declare class ChannelService {
         createdAt: Date;
         avatar: string;
         channelOwnerId: string;
+        inviteLink: string;
     } | {
         error: boolean;
     }>;

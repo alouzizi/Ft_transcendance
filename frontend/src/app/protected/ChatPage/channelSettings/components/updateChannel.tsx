@@ -56,7 +56,8 @@ export default function UpdateChannel() {
         channelOwnerId: '',
         avatar: '',
         protected: false,
-        channelMember: []
+        channelMember: [],
+        inviteLink: ''
     })
 
     const [channel, setChannel] = useState<channelDto>(channelData);
