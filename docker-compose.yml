@@ -1,15 +1,40 @@
 version: '3.8'
 
 services:
-  dev-db:
-    image: postgres:13
+  frontend:
+    build: ./frontend # Path to the directory containing your Next.js frontend code
     ports:
-      - 5432:5432
+      - '3000:3000' # Map the container port 3000 to the host's port 3000
+    environment:
+      - NODE_ENV=development # Set the environment variables
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend # Path to the directory containing your NestJS backend code
+    ports:
+      - '4000:4000' # Map the container port 5000 to the host's port 5000
+    depends_on:
+      - database
+    environment:
+      - NODE_ENV=development # Set the environment variables
+      - DATABASE_URL=postgresql://postgres:123@database:5432/db_name # Replace with your database details
+    networks:
+      - mynetwork
+
+
+  database:
+    image: postgres:13 
+    ports:
+      - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: db
     networks:
-      - 42_network
+      - mynetwork
+
+
 networks:
-  42_network:
+  mynetwork:
+    driver: bridge
