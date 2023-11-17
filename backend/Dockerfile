@@ -19,6 +19,9 @@ RUN npm run build
 
 RUN chmod +x script.sh
 
+
 EXPOSE 4000
 
 CMD ["bash", "script.sh"]
+
+
