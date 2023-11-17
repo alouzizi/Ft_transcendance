@@ -34,6 +34,11 @@ export class AuthController {
     // return this.authService.loginWith2fa(userWithoutPsw);
   }
 
+  @Get('checkTokenIsValide/:intra_id')
+  @UseGuards(JwtGuard)
+  async checkTockenIsValide(@Req() req: any, @Param('intra_id') intra_id: string) {
+    return true;
+  }
 
   @Get('2fa/generate')
   @UseGuards(JwtGuard)
@@ -69,11 +74,10 @@ export class AuthController {
     res.send({ isCodeValid: isCodeValid });
   }
 
-  @Post('2fa/authenticate/:intra_id/:authCode')
+  @Get('2fa/authenticate/:intra_id/:authCode')
   @HttpCode(200)
-  async authenticate(@Res() res: Response, @Param('intra_id') intra_id: string,
+  async authenticate(@Param('intra_id') intra_id: string,
     @Param('authCode') authCode: string) {
-
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
       intra_id,
@@ -83,8 +87,7 @@ export class AuthController {
       throw new UnauthorizedException('Wrong authentication code');
     }
     const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
-    res.cookie('access_token', ret.access_token)
-    res.send({ isCodeValid: isCodeValid });
+    return ret.access_token
   }
 
   @Get('42-intranet/callback')
@@ -95,13 +98,11 @@ export class AuthController {
       // res.cookie("auth", ret);
     }
     res.cookie('intra_id', req.user.intra_id);
-    res.cookie('access_token', ret.access_token);
-
     if (req.user.isTwoFactorAuthEnabled)
-      res.redirect("http://10.12.3.15:3000/Checker2faAuth");
+      res.redirect("http://localhost:3000/Checker2faAuth");
     else {
       res.cookie('access_token', ret.access_token)
-      res.redirect("http://10.12.3.15:3000/protected/DashboardPage");
+      res.redirect("http://localhost:3000/protected/DashboardPage");
     }
 
   }

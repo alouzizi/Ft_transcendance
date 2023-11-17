@@ -38,13 +38,14 @@ export default function login() {
 
             const intra_id = Cookies.get('intra_id');
 
-            const response = await fetch(Backend_URL + `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`,
-              { method: 'POST' });
-
-            if (response.ok) {
+            try {
+              const res = await axios.get(
+                Backend_URL + `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`);
+              const token = await res.data;
+              Cookies.set('access_token', token);
               router.push('/protected/DashboardPage');
-            } else {
-              toast.error("Wrong authentication codee")
+            } catch {
+              toast.error("Wrong authentication codee");
             }
           } else {
             toast.error("Wrong authentication codee")
