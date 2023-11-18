@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
-// import { WebsocketContext } from "../random/contexts/WebsocketContext";
-import { useGlobalContext } from "@/app/context/store";
+
 import { set } from "date-fns";
+import { useGlobalContext } from "../../context/store";
 
 interface PongProps {
   room: string;

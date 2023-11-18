@@ -10,6 +10,7 @@ import { BiSolidLogOut } from "react-icons/bi";
 import SBSection from "./SBSection";
 import SBItems from "./SBItems";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 export default function SideBar() {
   // Create an array to store the isSelected state for each item
@@ -75,7 +76,7 @@ export default function SideBar() {
       index: 6,
     },
     {
-      pageName: "api/auth/signout",
+      pageName: "auth/",
       icon: <BiSolidLogOut className={`${getIconStyle(7)}`} />,
       index: 7,
     },
@@ -88,6 +89,10 @@ export default function SideBar() {
       updatedIsSelectedList[i] = false;
     }
     updatedIsSelectedList[index] = true;
+    if (index === 7) {
+      Cookies.remove("access_token");
+      Cookies.remove("intra_id");
+    }
     setIsSelectedList(updatedIsSelectedList);
   };
 

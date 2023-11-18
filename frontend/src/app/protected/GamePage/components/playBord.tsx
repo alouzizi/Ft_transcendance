@@ -1,8 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "../../context/store";
 
 type MyComponentProps = {
   emit: boolean;
@@ -44,12 +43,10 @@ const MyComponent = ({
           className="uppercase bg-blue-500 hover:bg-blue-700 text-[#F1F3F9]  font-bold font-outfit py-2 px-4 rounded-full self-end"
           onClick={() => {
             if (emit) {
-              if (socket?.connected){
+              if (socket?.connected) {
                 socket.emit("clientId", user.id);
                 router.push(link);
-                
-              } 
-              else {
+              } else {
                 alert("Refresh the page and try again!");
               }
             }

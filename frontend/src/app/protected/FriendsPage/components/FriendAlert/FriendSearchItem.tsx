@@ -4,7 +4,8 @@ import {
   getPendingFriends,
   sendFriendRequest,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "@/app/protected/context/store";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaMessage } from "react-icons/fa6";

@@ -4,10 +4,14 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/mpublic/HomePage",
+        destination: "/public/HomePage",
         permanent: true,
       },
     ];
+  },
+
+  images: {
+    domains: ["cdn.intra.42.fr", "localhost"],
   },
 };
 

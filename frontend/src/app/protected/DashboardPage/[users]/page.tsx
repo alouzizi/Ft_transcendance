@@ -7,9 +7,10 @@ import {
   getIsBlocked,
   getOneUser,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+
 import ErrorPage from "../components/ErrorPage";
 import { CircularProgress } from "@mui/material";
+import { useGlobalContext } from "../../context/store";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();

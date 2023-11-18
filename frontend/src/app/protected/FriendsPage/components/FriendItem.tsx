@@ -7,7 +7,7 @@ import {
   unblockFriend,
   unsendFriendRequest,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+
 import Badge from "@mui/material/Badge";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import { MdOutlineDone } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import { useGlobalDataContext } from "./FriendCategory";
 import PopoverMenu from "./PopoverMenu";
+import { useGlobalContext } from "../../context/store";
 export default function FriendItem(prompt: {
   friendInfo: friendDto;
   itemsStatus: string;
@@ -200,10 +201,12 @@ export default function FriendItem(prompt: {
           <PopoverMenu friendInfo={prompt.friendInfo} />
 
           <Tooltip title="Message" placement="top" className="text-lg">
-            <div className="my-auto hover: bg-color-main  rounded-full
+            <div
+              className="my-auto hover: bg-color-main  rounded-full
             
             text-md p-1 mr-2
-                md:text-lg md:p-2 md:mr-4">
+                md:text-lg md:p-2 md:mr-4"
+            >
               <FaMessage />
             </div>
           </Tooltip>

@@ -1,5 +1,6 @@
 "use client";
-import { useGlobalContext } from "@/app/context/store";
+
+import { useGlobalContext } from "../../context/store";
 import Pong from "../components/Randmpong";
 import { Canvas, canvasContext } from "../components/interface";
 
@@ -8,8 +9,8 @@ import { useContext, useEffect, useState } from "react";
 // import WaitingForPlayer from "../components/WaitingForPlayer";
 
 export default function Home() {
-  const { user,socket } = useGlobalContext();
-  
+  const { user, socket } = useGlobalContext();
+
   const [message, setMessage] = useState("Start game!");
   const [room, setRoom] = useState("");
   const [left, setLeft] = useState<boolean>(true);
@@ -48,20 +49,20 @@ export default function Home() {
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center bg-color-main">
       {/* <WebsocketProvider value={socket}> */}
-        <canvasContext.Provider value={canvas}>
-          {!gameStarted && (
-            <div className="flex flex-col justify-center m-auto bg-black rounded-md w-96 h-96">
-              <div className="bg-white w-3 h-1/3 rounded-full mb-4"></div>
-              <button
-                className="bg-color-main-whith text-white w-fit mx-auto px-2 py-1 rounded-md"
-                onClick={startGameHandler}
-              >
-                {message}
-              </button>
-            </div>
-          )}
-          {gameStarted && <Pong room={room} isLeft={left} />}
-        </canvasContext.Provider>
+      <canvasContext.Provider value={canvas}>
+        {!gameStarted && (
+          <div className="flex flex-col justify-center m-auto bg-black rounded-md w-96 h-96">
+            <div className="bg-white w-3 h-1/3 rounded-full mb-4"></div>
+            <button
+              className="bg-color-main-whith text-white w-fit mx-auto px-2 py-1 rounded-md"
+              onClick={startGameHandler}
+            >
+              {message}
+            </button>
+          </div>
+        )}
+        {gameStarted && <Pong room={room} isLeft={left} />}
+      </canvasContext.Provider>
       {/* </WebsocketProvider> */}
     </div>
   );

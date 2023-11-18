@@ -1,4 +1,3 @@
-import { useGlobalContext } from "@/app/context/store";
 import { Backend_URL } from "../../../../lib/Constants";
 import axios from "axios";
 

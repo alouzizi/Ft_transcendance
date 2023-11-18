@@ -8,9 +8,9 @@ import {
   removeFriend,
   sendFriendRequest,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
 import { useState } from "react";
+import { useGlobalContext } from "../../context/store";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;

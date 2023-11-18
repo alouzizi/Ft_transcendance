@@ -4,13 +4,13 @@ import {
   getAllPossibleFriends,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as React from "react";
 import { ChangeEvent, useState } from "react";
 import { ImCross } from "react-icons/im";
 import FriendSearchItem from "./FriendSearchItem";
+import { useGlobalContext } from "@/app/protected/context/store";
 
 export interface SimpleDialogProps {
   open: boolean;

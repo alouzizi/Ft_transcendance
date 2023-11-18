@@ -3,12 +3,13 @@ import {
   getNavSearchUsers,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+
 import { Popper } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import NavSearchItem from "./NavSearchItem";
+import { useGlobalContext } from "@/app/protected/context/store";
 
 export default function SerachNav() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

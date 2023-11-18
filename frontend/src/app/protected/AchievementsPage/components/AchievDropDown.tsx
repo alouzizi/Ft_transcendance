@@ -15,7 +15,7 @@ import {
   getAchievmentsData,
   getGlobalInfos,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "../../context/store";
 
 export default function AchievDropDown(prompt: {
   items: string[];

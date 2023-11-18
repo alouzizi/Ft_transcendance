@@ -5,7 +5,7 @@ import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useGlobalContext } from "@/app/context/store";
+
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import PopoverMenuDash from "./PopoverMenuDash";
 import {
@@ -17,6 +17,7 @@ import {
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { promise } from "zod";
 import { resolve } from "path";
+import { useGlobalContext } from "../../context/store";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();

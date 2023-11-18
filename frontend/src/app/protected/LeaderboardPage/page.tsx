@@ -5,7 +5,7 @@ import {
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useEffect, useState } from "react";
 import LeaderBItem from "./components/LeaderBItem";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "../context/store";
 
 export default function LeaderboardPage() {
   const { updateInfo } = useGlobalContext();

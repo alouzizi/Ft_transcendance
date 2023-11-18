@@ -1,5 +1,5 @@
 "use client";
-import { Backend_URL } from "../../../lib/Constants";
+
 import {
   createContext,
   useContext,
@@ -11,6 +11,11 @@ import {
 import { io, Socket } from "socket.io-client";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import * as React from "react";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import { Backend_URL } from "../../../../lib/Constants";
 
 enum Status {
   ACTIF = "ACTIF",
@@ -20,6 +25,12 @@ enum Status {
 interface ContextProps {
   updateInfo: number;
   setUpdateInfo: Dispatch<SetStateAction<number>>;
+
+  displayChat: boolean;
+  setDisplayChat: Dispatch<SetStateAction<boolean>>;
+
+  openAlertErro: boolean;
+  setOpenAlertError: Dispatch<SetStateAction<boolean>>;
 
   user: ownerDto;
   setUser: Dispatch<SetStateAction<ownerDto>>;
@@ -34,10 +45,16 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
+  displayChat: false,
+  setDisplayChat: () => {},
+
   updateInfo: 1,
   setUpdateInfo: () => {},
 
-  saveChanges: 1,
+  openAlertErro: false,
+  setOpenAlertError: () => {},
+
+  saveChanges: 0,
   setSaveChanges: () => {},
 
   user: {
@@ -47,6 +64,7 @@ const GlobalContext = createContext<ContextProps>({
     last_name: "",
     nickname: "",
     profilePic: "",
+    isTwoFactorAuthEnabled: true,
     level: "0.0",
   },
   setUser: () => {},
@@ -80,8 +98,10 @@ export const GlobalContextProvider = ({
 }) => {
   const router = useRouter();
 
+  const [displayChat, setDisplayChat] = useState<boolean>(false);
+  const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
-  const [saveChanges, setSaveChanges] = useState<number>(1);
+  const [saveChanges, setSaveChanges] = useState<number>(0);
 
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
@@ -90,6 +110,7 @@ export const GlobalContextProvider = ({
     last_name: "",
     nickname: "",
     profilePic: "",
+    isTwoFactorAuthEnabled: true,
     level: "0.0",
   });
 
@@ -162,6 +183,8 @@ export const GlobalContextProvider = ({
       socket.on("updateData", update);
     }
   }, [socket]);
+
+  if (user.id === "-1") return <div></div>;
   return (
     <GlobalContext.Provider
       value={{
@@ -174,8 +197,24 @@ export const GlobalContextProvider = ({
         setUpdateInfo,
         saveChanges,
         setSaveChanges,
+        openAlertErro,
+        setOpenAlertError,
+        displayChat,
+        setDisplayChat,
       }}
     >
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={openAlertErro} autoHideDuration={6000}>
+          <Alert
+            severity="error"
+            onClose={() => {
+              setOpenAlertError(false);
+            }}
+          >
+            This is an error message!
+          </Alert>
+        </Snackbar>
+      </Stack>
       {children}
     </GlobalContext.Provider>
   );

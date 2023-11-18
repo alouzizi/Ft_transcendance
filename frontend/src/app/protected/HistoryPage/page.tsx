@@ -1,5 +1,5 @@
 "use client";
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "../context/store";
 import HistoryComp from "./components/HistoryComp";
 
 export default function HistoryPage() {

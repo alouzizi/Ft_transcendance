@@ -1,9 +1,7 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { ChannelService } from "src/channel/channel.service";
 export declare class UserService {
     private prisma;
-    private channelService;
-    constructor(prisma: PrismaService, channelService: ChannelService);
+    constructor(prisma: PrismaService);
     findById(id: string): Promise<{
         id: string;
         intra_id: string;
@@ -12,14 +10,15 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    } | {
+        error: boolean;
     }>;
     findAllUsers(): Promise<{
         id: string;
@@ -29,15 +28,16 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     getValideUsers(senderId: string): Promise<{
         friendship: number;
         id: string;
@@ -47,15 +47,16 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
     usersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;
         intra_id: string;
@@ -64,15 +65,19 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: boolean;
+    }>;
+    checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2 | {
+        error: boolean;
+    }>;
     getUserGeust(id: string): Promise<{
         isUser: boolean;
         id: string;
@@ -82,6 +87,7 @@ export declare class UserService {
         lastSee: Date;
         lenUser: number;
         idUserOwner: number;
+        error?: undefined;
     } | {
         isUser: boolean;
         id: string;
@@ -91,6 +97,17 @@ export declare class UserService {
         lastSee: number;
         lenUser: number;
         idUserOwner: number;
+        error?: undefined;
+    } | {
+        error: boolean;
+        isUser?: undefined;
+        id?: undefined;
+        nickname?: undefined;
+        profilePic?: undefined;
+        status?: undefined;
+        lastSee?: undefined;
+        lenUser?: undefined;
+        idUserOwner?: undefined;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
@@ -101,6 +118,17 @@ export declare class UserService {
         lastSee: Date;
         lenUser: number;
         idUserOwner: string;
+        error?: undefined;
+    } | {
+        error: boolean;
+        isUser?: undefined;
+        id?: undefined;
+        nickname?: undefined;
+        profilePic?: undefined;
+        status?: undefined;
+        lastSee?: undefined;
+        lenUser?: undefined;
+        idUserOwner?: undefined;
     }>;
     createUser(user1: any): Promise<{
         id: string;
@@ -110,14 +138,42 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    }>;
+    setTwoFactorAuthSecret(secret: string, intra_id: string): Promise<void>;
+    turnOnTwoFactorAuth(intra_id: string): Promise<void>;
+    turnOffTwoFactorAuth(intra_id: string): Promise<void>;
+    getUsers(): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
+        status: number;
+        error?: undefined;
+    } | {
+        status: number;
+        error: boolean;
+    }>;
+    uploadImage(intra_id: string, path: string): Promise<{
+        message: string;
     }>;
     findByIntraId(intra_id: string): Promise<{
         id: string;
@@ -127,10 +183,41 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    findByIds(id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
+    deleteUser(id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
