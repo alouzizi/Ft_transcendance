@@ -4,8 +4,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useGlobalDataContext } from "./FriendCategory";
-import { useGlobalContext } from "@/app/protected/context/store";
+
 import { blockFriend, removeFriend } from "@/app/api/hixcoder/FriendsPageAPI";
+import { useGlobalContext } from "../../context/store";
 
 export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -28,7 +29,7 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
 
   // ===================== handle popover options ==============
   const contxt = useGlobalDataContext();
-  const user = useGlobalContext();
+  const { user, socket } = useGlobalContext();
 
   function handlePlayMatch() {
     console.log("play match with friend: " + prompt.friendInfo.nickname);
@@ -37,11 +38,17 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
 
   async function handleRemoveFriend() {
     try {
-      await removeFriend(user.user.id, prompt.friendInfo.id);
+      await removeFriend({ user, socket }.user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleRemoveFriend: " + error);
     }
@@ -50,11 +57,17 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
 
   async function handleBlockFriend() {
     try {
-      await blockFriend(user.user.id, prompt.friendInfo.id);
+      await blockFriend(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleBlockFriend: " + error);
     }

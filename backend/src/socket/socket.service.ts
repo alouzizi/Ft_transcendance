@@ -6,10 +6,8 @@ import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 
 @Injectable()
 export class SocketGatewayService {
-
   constructor(
     private prisma: PrismaService,) { }
-
 
 
   async handleConnection(client: Socket, wss: Server) {
@@ -36,7 +34,6 @@ export class SocketGatewayService {
             where: {
               receivedId: senderId,
               messageStatus: MessageStatus.NotReceived,
-              senderId: ""
             },
             data: {
               messageStatus: MessageStatus.Received,
@@ -83,10 +80,10 @@ export class SocketGatewayService {
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } })
       for (const member of channelMembers) {
-        wss.to(member.userId).emit('updateData', ids.content);
+        wss.to(member.userId).emit('updateData', {});
       }
     } else
-      wss.to(ids.receivedId).emit('updateData', ids.content);
+      wss.to(ids.receivedId).emit('updateData', {});
   }
 
 }

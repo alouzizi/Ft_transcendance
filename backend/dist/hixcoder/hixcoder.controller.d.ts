@@ -10,11 +10,9 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -22,7 +20,7 @@ export declare class HixcoderController {
     }[] | {
         error: any;
     }>;
-    getOneUser(userName: string): Promise<{
+    getOneUser(reciever: string): Promise<{
         id: string;
         intra_id: string;
         first_name: string;
@@ -30,15 +28,16 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    }>;
+    getIsBlocked(sender: string, reciever: string): Promise<{
+        isBlocked: boolean;
     }>;
     getOnlineFriends(sender: string): Promise<any[] | {
         error: any;
@@ -51,11 +50,9 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -70,19 +67,15 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    getBlockedFriends(sender: string): Promise<any[] | {
-        error: any;
-    }>;
+    getBlockedFriends(sender: string): Promise<any[]>;
     getAllPossibleFriends(sender: string): Promise<{
         id: string;
         intra_id: string;
@@ -91,11 +84,27 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
+    getNavSearchUsers(sender: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -157,6 +166,63 @@ export declare class HixcoderController {
         senderId: string;
         receivedId: string;
     }[] | {
+        error: any;
+    }>;
+    getGameHistory(sender: string): Promise<{
+        receiverAvatar: string;
+        senderAvatar: string;
+        id: string;
+        createdAt: Date;
+        senderUsr: string;
+        receiverUsr: string;
+        senderPoints: string;
+        receiverPoints: string;
+    }[]>;
+    getGlobalInfos(recieverUsr: string): Promise<import("./dto").globalInfoDto | {
+        error: any;
+    }>;
+    getUserRanking(senderUsr: string): Promise<{
+        userName: string;
+        rank: number;
+    } | {
+        error: any;
+    }>;
+    getLeaderBoard(): Promise<{
+        userName: string;
+        userAvatar: string;
+        level: string;
+        nbrOfMatches: string;
+        winRate: string;
+        rank: string;
+    }[] | {
+        error: any;
+    }>;
+    updateLevel(sender: string, newLevel: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    } | {
+        error: any;
+    }>;
+    updateGameHistory(senderUsr: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
+        id: string;
+        createdAt: Date;
+        senderUsr: string;
+        receiverUsr: string;
+        senderPoints: string;
+        receiverPoints: string;
+    } | {
         error: any;
     }>;
 }

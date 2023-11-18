@@ -39,7 +39,6 @@ let SocketGatewayService = class SocketGatewayService {
                         where: {
                             receivedId: senderId,
                             messageStatus: client_1.MessageStatus.NotReceived,
-                            senderId: ""
                         },
                         data: {
                             messageStatus: client_1.MessageStatus.Received,
@@ -83,11 +82,11 @@ let SocketGatewayService = class SocketGatewayService {
         if (ids.isDirectMessage === false) {
             const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } });
             for (const member of channelMembers) {
-                wss.to(member.userId).emit('updateData', ids.content);
+                wss.to(member.userId).emit('updateData', {});
             }
         }
         else
-            wss.to(ids.receivedId).emit('updateData', ids.content);
+            wss.to(ids.receivedId).emit('updateData', {});
     }
 };
 exports.SocketGatewayService = SocketGatewayService;

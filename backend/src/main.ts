@@ -1,9 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
-import { NestExpressApplication } from '@nestjs/platform-express';
-import * as cookieParser from 'cookie-parser';
-import express from "express";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -14,21 +13,18 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
 
   app.enableCors({
-    origin: ["http://10.12.13.5:3000", "http://10.12.13.5:3000"],
+    origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   });
 
   app.use(cookieParser());
 
-  // await app.listen(4000);
-
-
-  await app.listen(4000, '10.12.13.5');
+  await app.listen(4000);
 }
 
 bootstrap();

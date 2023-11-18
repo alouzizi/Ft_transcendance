@@ -1,7 +1,6 @@
 "use client";
 
-import { useGlobalContext } from "@/app/protected/context/store";
-import { Backend_URL } from "@/lib/Constants";
+import { Backend_URL } from "../../../../../lib/Constants";
 import {
   useState,
   useEffect,
@@ -16,6 +15,7 @@ import {
   getOnlineFriends,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
+import { useGlobalContext } from "../../context/store";
 
 // ====================== create context ======================
 interface ContextProps {
@@ -31,11 +31,9 @@ const DataContext = createContext<ContextProps>({
 // ====================== create context ======================
 export default function FriendCategory(prompt: { itemsStatus: string }) {
   const [data, setData] = useState<friendDto[]>([]);
-  const { user, updateInfo } = useGlobalContext();
+  const { updateInfo, user } = useGlobalContext();
   useEffect(() => {
     async function getData() {
-      console.log("prompt.itemsStatus ==> " + prompt.itemsStatus);
-
       try {
         let dataTmp = [];
         if (prompt.itemsStatus === "Online") {
@@ -55,7 +53,6 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
         console.log("getData error: " + error);
       }
     }
-    console.log(user);
     getData();
   }, [user.id, prompt.itemsStatus, updateInfo]);
   //   useEffect(() => {}, [data]);

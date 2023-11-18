@@ -2,15 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import * as argon from "argon2";
 import { isEmpty } from "class-validator";
+import { globalInfoDto } from "./dto";
+import { GameHistory, User } from "@prisma/client";
 
 @Injectable()
 export class HixcoderService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // ==========================  Gets ==========================
   async getAllUsers(senderId: string) {
-    // await this.test_createManyUsers();
-    // await this.test_giveFriendsToUser(1);
     try {
       const allUsers = await this.prisma.user.findMany({
         where: {
@@ -27,14 +27,44 @@ export class HixcoderService {
     }
   }
 
-  async getOneUser(recieverId: string) {
+  async getOneUser(recieverUsr: string) {
     try {
       const oneUser = await this.prisma.user.findFirst({
         where: {
-          nickname: recieverId,
+          nickname: recieverUsr,
         },
       });
       return oneUser;
+    } catch (error) {
+      console.log("getOneUser error: ", error);
+      return null;
+    }
+  }
+
+  async getIsBlocked(recieverId: string, senderId: string) {
+    try {
+      const isBlocked = await this.prisma.blockedUser.findFirst({
+        where: {
+          OR: [
+            {
+              senderId: senderId,
+              receivedId: recieverId,
+            },
+            {
+              senderId: recieverId,
+              receivedId: senderId,
+            },
+          ],
+        },
+      });
+      if (isBlocked) {
+        return {
+          isBlocked: true,
+        };
+      }
+      return {
+        isBlocked: false,
+      };
     } catch (error) {
       console.log("getOneUser error: ", error);
       return null;
@@ -130,14 +160,12 @@ export class HixcoderService {
           isYouSender: isYouSender1 ? true : isYouSender2 ? false : null,
         };
       });
-
       return formattedPendingFriends;
     } catch (error) {
       console.log("error: ", error);
       return null;
     }
   }
-
 
   async getBlockedFriends(senderId: string) {
     try {
@@ -160,9 +188,8 @@ export class HixcoderService {
       }
       return blockedFriends;
     } catch (error) {
-      return {
-        error: error,
-      };
+      console.log("error:", error);
+      return null;
     }
   }
 
@@ -218,10 +245,64 @@ export class HixcoderService {
     }
   }
 
+  async getNavSearchUsers(senderId: string) {
+    try {
+      const allUsers = await this.prisma.user.findMany({
+        where: {
+          NOT: {
+            id: senderId,
+          },
+        },
+      });
+
+      const blockedFriendsTmp = await this.prisma.blockedUser.findMany({
+        where: {
+          OR: [
+            {
+              senderId: senderId,
+            },
+            {
+              receivedId: senderId,
+            },
+          ],
+        },
+      });
+      const possibleFriends = allUsers.filter((user) => {
+        const isBlocked = blockedFriendsTmp.some(
+          (blocked) =>
+            blocked.senderId === user.id || blocked.receivedId === user.id
+        );
+        return !isBlocked;
+      });
+      return possibleFriends;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
   // ==========================  Posts ==========================
 
   async sendFriendRequest(senderId: string, recieverId: string) {
     try {
+      const isPending = await this.prisma.friendRequest.findFirst({
+        where: {
+          OR: [
+            {
+              senderId: senderId,
+              receivedId: recieverId,
+            },
+            {
+              senderId: recieverId,
+              receivedId: senderId,
+            },
+          ],
+        },
+      });
+      if (isPending) {
+        return null;
+      }
       const user = await this.prisma.friendRequest.create({
         data: {
           senderId: senderId,
@@ -386,6 +467,288 @@ export class HixcoderService {
         return user;
       }
       return friendToDelete;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================    ****    ==========================
+  // ==========================  Game Gets ==========================
+
+  async getGameHistory(senderUsr: string) {
+    try {
+      const allUsers = await this.prisma.user.findMany();
+      const users = await this.prisma.gameHistory.findMany({
+        where: {
+          OR: [
+            {
+              receiverUsr: senderUsr,
+            },
+            {
+              senderUsr: senderUsr,
+            },
+          ],
+        },
+      });
+
+      const usersWithAvatar = users.map((user) => {
+        const receiverAvatar = allUsers.find(
+          (item) => item.nickname === user.receiverUsr
+        ).profilePic;
+        const senderAvatar = allUsers.find(
+          (item) => item.nickname === user.senderUsr
+        ).profilePic;
+        return {
+          ...user,
+          receiverAvatar: receiverAvatar,
+          senderAvatar: senderAvatar,
+        };
+      });
+      return usersWithAvatar;
+    } catch (error) {
+      console.log("error:", error);
+      return [];
+    }
+  }
+
+  // - nbr of matches
+  // - nbr of friends
+  // - winned matches
+  // - blocked users
+  // - losed matches
+  // - nbr of invited friend
+
+  isWined(record: GameHistory, isWined: boolean, user: User) {
+    let senderUsr = record.receiverUsr;
+    let receiverUsr = record.senderUsr;
+    let senderPoints = record.senderPoints;
+    let receiverPoints = record.receiverPoints;
+    if (isWined) {
+      senderUsr = record.receiverUsr;
+      receiverUsr = record.senderUsr;
+      senderPoints = record.receiverPoints;
+      receiverPoints = record.senderPoints;
+    }
+    if (senderUsr === user.nickname) {
+      return parseInt(senderPoints) > parseInt(receiverPoints);
+    } else if (receiverUsr === user.nickname) {
+      return parseInt(senderPoints) < parseInt(receiverPoints);
+    }
+  }
+
+  async getNbrOfMatches(recieverUsr: string, isWined: number) {
+    const user = await this.getOneUser(recieverUsr);
+    const gamesHistory = await this.getGameHistory(recieverUsr);
+    let NbrOfMatches = 0;
+    if (gamesHistory) {
+      NbrOfMatches = gamesHistory.length;
+      if (isWined === 1) {
+        NbrOfMatches = gamesHistory.filter((record) =>
+          this.isWined(record, true, user)
+        ).length;
+      } else if (isWined === 0) {
+        NbrOfMatches = gamesHistory.filter((record) =>
+          this.isWined(record, false, user)
+        ).length;
+      }
+    }
+
+    return NbrOfMatches;
+  }
+  catch(error) {
+    return {
+      error: error,
+    };
+  }
+
+  async getGlobalInfos(recieverUsr: string) {
+    try {
+      const globInfo: globalInfoDto = {
+        NbrOfAllMatches: 0,
+        NbrOfWinnedMatches: 0,
+        NbrOfLosedMatches: 0,
+        NbrOfFriends: 0,
+        NbrOfBlockedFriends: 0,
+        NbrOfInvitedFriends: 0,
+      };
+      const user = await this.getOneUser(recieverUsr);
+      const gamesHistory = await this.getGameHistory(recieverUsr);
+      if (gamesHistory) {
+        globInfo.NbrOfAllMatches = gamesHistory.length;
+        globInfo.NbrOfWinnedMatches = gamesHistory.filter((record) =>
+          this.isWined(record, true, user)
+        ).length;
+        globInfo.NbrOfLosedMatches = gamesHistory.filter((record) =>
+          this.isWined(record, false, user)
+        ).length;
+      }
+      const allFriends = await this.getAllFriends(user.id);
+      if (allFriends) {
+        globInfo.NbrOfFriends = allFriends.length;
+      }
+      const allBlocked = await this.getBlockedFriends(user.id);
+      if (allBlocked) {
+        globInfo.NbrOfBlockedFriends = allBlocked.length;
+      }
+      const allInvited = await this.getPendingFriends(user.id);
+      if (allInvited) {
+        globInfo.NbrOfInvitedFriends = allInvited.length;
+      }
+      return globInfo;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  async getUserRanking(senderUsr: string) {
+    try {
+      const allUsers = await this.prisma.user.findMany();
+      const usersRank = await Promise.all(
+        allUsers.map(async (user) => {
+          const userRank = await this.getNbrOfMatches(user.nickname, 1);
+
+          return {
+            userName: user.nickname,
+            winedGames: userRank,
+          };
+        })
+      );
+      const sortedData = usersRank.sort((a, b) => b.winedGames - a.winedGames);
+      // const rankedData = sortedData.map((item, index) => ({
+      //   userName: item.userName,
+      //   rank: index + 1,
+      // }));
+      let userRank = { userName: senderUsr, rank: 0 };
+      sortedData.map((item, index) => {
+        if (senderUsr === item.userName) {
+          userRank.rank = index + 1;
+        }
+      });
+
+      return userRank;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  async getLeaderBoard() {
+    try {
+      const allUsers = await this.prisma.user.findMany();
+      const usersRank = await Promise.all(
+        allUsers.map(async (user) => {
+          const winedGames = await this.getNbrOfMatches(user.nickname, 1);
+          const nbrOfMatches = await this.getNbrOfMatches(user.nickname, 3);
+          let winRate = 0;
+          if (nbrOfMatches != 0) {
+            winRate = (winedGames * 100) / nbrOfMatches;
+          }
+          return {
+            userName: user.nickname,
+            userAvatar: user.profilePic,
+            level: user.level,
+            nbrOfMatches: nbrOfMatches.toString(),
+            winRate: winRate.toFixed(0),
+            winedGames: winedGames,
+          };
+        })
+      );
+      const sortedData = usersRank.sort((a, b) => b.winedGames - a.winedGames);
+      const rankedData = sortedData.map((item, index) => ({
+        userName: item.userName,
+        userAvatar: item.userAvatar,
+        level: item.level,
+        nbrOfMatches: item.nbrOfMatches,
+        winRate: item.winRate,
+        rank: (index + 1).toString(),
+      }));
+      return rankedData;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  // ==========================  Game Posts =========================
+
+  async updateGameHistory(
+    senderUsr: string,
+    recieverUsr: string,
+    senderPt: string,
+    recieverPt: string
+  ) {
+    try {
+      const user = await this.prisma.gameHistory.create({
+        data: {
+          senderUsr: senderUsr,
+          receiverUsr: recieverUsr,
+          senderPoints: senderPt,
+          receiverPoints: recieverPt,
+        },
+      });
+      if (parseInt(senderPt) > parseInt(recieverPt)) {
+        this.updateLevelAfterGame(senderUsr, "0.23");
+      }
+      if (parseInt(senderPt) < parseInt(recieverPt)) {
+        this.updateLevelAfterGame(recieverUsr, "0.23");
+      }
+      return user;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  async updateLevel(senderUsr: string, newLevel: string) {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          nickname: senderUsr,
+        },
+        data: {
+          level: newLevel,
+        },
+      });
+      return user;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
+  async updateLevelAfterGame(senderUsr: string, incrLevelBy: string) {
+    try {
+      const userT = await this.prisma.user.findUnique({
+        where: {
+          nickname: senderUsr,
+        },
+      });
+      const currentLevel = parseFloat(userT.level);
+      const level = currentLevel + parseFloat(incrLevelBy);
+
+      const user = await this.prisma.user.update({
+        where: {
+          nickname: senderUsr,
+        },
+        data: {
+          level: level.toFixed(2),
+        },
+      });
+      return user;
     } catch (error) {
       return {
         error: error,

@@ -27,12 +27,18 @@ exports.AuthModule = AuthModule = __decorate([
             jwt_1.JwtModule.register({
                 global: true,
                 secret: process.env.JWT_SECRET,
-                signOptions: { expiresIn: "1d" }
+                signOptions: { expiresIn: "1d" },
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy,
-            user_service_1.UserService, prisma_service_1.PrismaService, channel_service_1.ChannelService, messages_service_1.MessagesService,],
+        providers: [
+            auth_service_1.AuthService,
+            _42_intranet_strategy_1.FortyTwoIntranetStrategy,
+            user_service_1.UserService,
+            prisma_service_1.PrismaService,
+            channel_service_1.ChannelService,
+            messages_service_1.MessagesService,
+        ],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

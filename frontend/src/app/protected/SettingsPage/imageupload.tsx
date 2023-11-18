@@ -3,16 +3,15 @@ import { BiImageAdd } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useGlobalContext } from "@/app/protected/context/store";
-import { IconButton } from "@mui/material";
-import { Backend_URL } from "@/lib/Constants";
-import Cookies from 'js-cookie';
+
+import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
+import { Backend_URL } from "../../../../lib/Constants";
 
 const ImageUpload = () => {
-
-  const intra_id = Cookies.get('intra_id');
+  const intra_id = Cookies.get("intra_id");
   const { user } = useGlobalContext();
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<string>("");
 
   const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -24,29 +23,32 @@ const ImageUpload = () => {
       reader.readAsDataURL(file);
 
       const formData = new FormData();
-      formData.append('file', file);
-      try { // Content-Type: 
-        const response = await fetch(Backend_URL + `/user/${intra_id}/uploadImage`, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            // authorization: `Bearer ${token}`,
-          },
-        });
+      formData.append("file", file);
+      try {
+        // Content-Type:
+        const response = await fetch(
+          Backend_URL + `/user/${intra_id}/uploadImage`,
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              // authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const result = await response.json();
         console.log(result.message);
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Error uploading image:", error);
       }
     }
   };
-
 
   return (
     <div className="mt-1 flex justify-center">
       <Badge
         badgeContent={
-          <label className='rounded-full p-[1.5px]  '>
+          <label className="rounded-full p-[1.5px]  ">
             <input
               type="file"
               accept="image/*"
@@ -54,8 +56,7 @@ const ImageUpload = () => {
               id="image-upload"
               style={{ display: "none" }}
             />
-            <BiImageAdd size={18}
-              style={{ color: "black" }} />
+            <BiImageAdd size={18} style={{ color: "black" }} />
           </label>
         }
         sx={{
@@ -72,7 +73,6 @@ const ImageUpload = () => {
           horizontal: "right",
         }}
       >
-
         <Image
           width={100}
           height={100}
@@ -81,9 +81,7 @@ const ImageUpload = () => {
           className="w-20 h-20 rounded-full bg-cover object-contain "
         />
       </Badge>
-
-
-    </div >
+    </div>
   );
 };
 

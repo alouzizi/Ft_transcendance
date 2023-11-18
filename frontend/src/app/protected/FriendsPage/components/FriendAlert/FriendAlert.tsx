@@ -2,15 +2,15 @@
 
 import {
   getAllPossibleFriends,
-  getPendingFriends
+  getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/protected/context/store";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as React from "react";
 import { ChangeEvent, useState } from "react";
 import { ImCross } from "react-icons/im";
 import FriendSearchItem from "./FriendSearchItem";
+import { useGlobalContext } from "@/app/protected/context/store";
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -31,20 +31,20 @@ export function FriendAlert(props: SimpleDialogProps) {
   const [PendingFriendsList, setPendingFriendsList] = React.useState<
     friendDto[]
   >([]);
-  const { user } = useGlobalContext();
+  const { updateInfo, user } = useGlobalContext();
   React.useEffect(() => {
     async function getData() {
       try {
         const AllPossibleFriendsDataTmp = await getAllPossibleFriends(user.id);
-        const pendingFriendsList = await getPendingFriends(user.id);
-        setPendingFriendsList(pendingFriendsList);
+        const pendingFriendsListTmp = await getPendingFriends(user.id);
+        setPendingFriendsList(pendingFriendsListTmp);
         setData(AllPossibleFriendsDataTmp);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
     }
     getData();
-  }, [open]);
+  }, [open, updateInfo]);
   // ================== /fetch users ==================
 
   // ================== handle search ==================
@@ -63,23 +63,41 @@ export function FriendAlert(props: SimpleDialogProps) {
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <div className="w-fit p-4">
-        <div onClick={handleClose} className="flex flex-row justify-end mb-2">
+      <div
+        className="w-52 h-96 p-2 
+      sm:w-96 md:h-[32rem] md:p-4
+      "
+      >
+        <div
+          onClick={handleClose}
+          className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
+        >
           <ImCross className="text-gray-400 hover:text-color-main cursor-pointer" />
         </div>
-        <DialogTitle>Add Friends</DialogTitle>
+        <p
+          className="
+          text-sm mb-2 ml-4
+          md:text-md md:mb-4
+          lg:text-lg
+          "
+        >
+          Add Friends
+        </p>
 
         <input
           type="text"
           name="price"
-          className="block w-96 rounded-xl  py-3 mx-8 mb-8 pl-7 pr-20 text-gray-900  bg-[#F1F3F9]  text-lg
-          ring-1 ring-inset ring-gray-300 placeholder:text-[#666C79]
-          sm:text-sm sm:leading-6
-          focus:outline-none"
+          className="block  rounded-xl  text-gray-900  bg-[#F1F3F9]  
+          ring-1 ring-inset ring-gray-300 placeholder:text-[#666C79] focus:outline-none
+          
+          text-xs w-[80%] py-2 ml-4 mb-4 pl-4 pr-16
+          lg:text-sm  md:py-3 md:mx-8 md:mb-8 md:pl-7 md:pr-20
+          md:text-sm sm:leading-6 
+          "
           placeholder="Enter friend username"
           onChange={handleSearch}
         ></input>
-        <div className="h-96 overflow-auto mb-8 ">
+        <div className="h-[60%]  mb-8 overflow-y-scroll">
           {filteredData.length !== 0 ? (
             filteredData.map((element) => (
               <FriendSearchItem

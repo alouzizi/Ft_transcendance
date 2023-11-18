@@ -23,7 +23,11 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async generateAccessToken(user) {
-        const payload = { sub: user.intra_id, nickname: user.nickname, email: user.email };
+        const payload = {
+            sub: user.intra_id,
+            nickname: user.nickname,
+            email: user.email,
+        };
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
@@ -59,7 +63,7 @@ let AuthService = class AuthService {
     }
     async generateTwoFactorAuthSecret(user) {
         const secret = otplib_1.authenticator.generateSecret();
-        const otpAuthUrl = otplib_1.authenticator.keyuri(user.nickname, 'ft_tranc', secret);
+        const otpAuthUrl = otplib_1.authenticator.keyuri(user.nickname, "ft_tranc", secret);
         await this.userService.setTwoFactorAuthSecret(secret, user.sub);
         return {
             secret,
@@ -70,7 +74,9 @@ let AuthService = class AuthService {
         return (0, qrcode_1.toDataURL)(otpAuthUrl);
     }
     async isTwoFactorAuthCodeValid(authCode, intra_id) {
-        const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } });
+        const user = await this.prisma.user.findUnique({
+            where: { intra_id: intra_id },
+        });
         return otplib_1.authenticator.verify({
             token: authCode,
             secret: user.twoFactorAuthSecret,

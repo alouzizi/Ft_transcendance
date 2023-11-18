@@ -12,7 +12,6 @@ export declare class ChannelController {
         createdAt: Date;
         avatar: string;
         channelOwnerId: string;
-        inviteLink: string;
         error?: undefined;
     } | {
         status: number;
@@ -32,7 +31,6 @@ export declare class ChannelController {
             createdAt: Date;
             avatar: string;
             channelOwnerId: string;
-            inviteLink: string;
         };
         error?: undefined;
     } | {
@@ -60,7 +58,6 @@ export declare class ChannelController {
         protected: boolean;
         avatar: string;
         channelOwnerId: string;
-        inviteLink: string;
         error?: undefined;
     } | {
         error: boolean;
@@ -70,7 +67,6 @@ export declare class ChannelController {
         protected?: undefined;
         avatar?: undefined;
         channelOwnerId?: undefined;
-        inviteLink?: undefined;
     }>;
     getMembersChannel(id: string): Promise<{
         bannedMembers: import("./dto/create-channel.dto").memberChannelDto[];

@@ -1,5 +1,5 @@
 /// <reference types="multer" />
-import { UserService } from './user.service';
+import { UserService } from "./user.service";
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
@@ -11,11 +11,9 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -40,11 +38,9 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -61,11 +57,9 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -91,11 +85,9 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
+        level: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;

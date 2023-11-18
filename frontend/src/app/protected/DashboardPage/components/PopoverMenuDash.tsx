@@ -8,9 +8,9 @@ import {
   removeFriend,
   sendFriendRequest,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/protected/context/store";
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
 import { useState } from "react";
+import { useGlobalContext } from "../../context/store";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;
@@ -21,7 +21,7 @@ export default function PopoverMenuDash(prompt: {
   );
 
   // ==================== popover configs =====================
-  const user = useGlobalContext();
+  const { user, socket } = useGlobalContext();
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -44,11 +44,17 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleRemoveFriend() {
     try {
-      await removeFriend(user.user.id, prompt.friendInfo.id);
+      await removeFriend(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleRemoveFriend: " + error);
     }
@@ -57,11 +63,17 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleBlockFriend() {
     try {
-      await blockFriend(user.user.id, prompt.friendInfo.id);
+      await blockFriend(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleBlockFriend: " + error);
     }
@@ -70,7 +82,13 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleInvite() {
     try {
-      await sendFriendRequest(user.user.id, prompt.friendInfo.id);
+      await sendFriendRequest(user.id, prompt.friendInfo.id);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleInvite: " + error);
     }

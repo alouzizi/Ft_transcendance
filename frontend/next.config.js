@@ -11,9 +11,8 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['cdn.intra.42.fr', '10.12.13.5'],
+    domains: ["cdn.intra.42.fr", "10.11.8.5"],
   },
 };
 
-// Export the combined configuration
 module.exports = nextConfig;

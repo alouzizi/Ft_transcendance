@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FriendCategory from "./components/FriendCategory";
 import { FriendAlert } from "./components/FriendAlert/FriendAlert";
 
@@ -65,9 +65,6 @@ export default function FriendsPage() {
   };
 
   // ================== friend alert ==================
-  const handleAddFriend = () => {
-    console.log("add friend");
-  };
 
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState("emails[1]");

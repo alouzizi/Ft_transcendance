@@ -34,12 +34,11 @@ model User {
   nickname   String  @unique
   email      String? @unique
   profilePic String?
-  hash       String?
 
-  twoFactorAuth          Boolean @default(false)
   isTwoFactorAuthEnabled Boolean @default(false)
   twoFactorAuthSecret    String?
-  AsciiSecretQr          String?
+
+  level String @default("0.0")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,6 +50,7 @@ model User {
   Friend       Friend[]
   BlockedUser  BlockedUser[]
   Channel      Channel[]
+  GameHistory  GameHistory[]
 }
 
 model Channel {
@@ -163,4 +163,17 @@ model MutedMember {
   channelId String
 
   @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+// game history
+model GameHistory {
+  id String @id @default(uuid())
+
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [senderUsr], references: [nickname])
+  senderUsr   String
+  receiverUsr String
+
+  senderPoints   String
+  receiverPoints String
 }

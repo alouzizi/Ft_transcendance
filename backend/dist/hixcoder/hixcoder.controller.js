@@ -22,8 +22,11 @@ let HixcoderController = class HixcoderController {
     async getallUsers(sender) {
         return this.hixcoderService.getAllUsers(sender);
     }
-    async getOneUser(userName) {
-        return this.hixcoderService.getOneUser(userName);
+    async getOneUser(reciever) {
+        return this.hixcoderService.getOneUser(reciever);
+    }
+    async getIsBlocked(sender, reciever) {
+        return this.hixcoderService.getIsBlocked(sender, reciever);
     }
     async getOnlineFriends(sender) {
         return this.hixcoderService.getOnlineFriends(sender);
@@ -39,6 +42,9 @@ let HixcoderController = class HixcoderController {
     }
     async getAllPossibleFriends(sender) {
         return this.hixcoderService.getAllPossibleFriends(sender);
+    }
+    async getNavSearchUsers(sender) {
+        return this.hixcoderService.getNavSearchUsers(sender);
     }
     async sendFriendRequest(sender, reciever) {
         return this.hixcoderService.sendFriendRequest(sender, reciever);
@@ -61,6 +67,24 @@ let HixcoderController = class HixcoderController {
     async removeFriend(sender, reciever) {
         return this.hixcoderService.removeFriend(sender, reciever);
     }
+    async getGameHistory(sender) {
+        return this.hixcoderService.getGameHistory(sender);
+    }
+    async getGlobalInfos(recieverUsr) {
+        return this.hixcoderService.getGlobalInfos(recieverUsr);
+    }
+    async getUserRanking(senderUsr) {
+        return this.hixcoderService.getUserRanking(senderUsr);
+    }
+    async getLeaderBoard() {
+        return this.hixcoderService.getLeaderBoard();
+    }
+    async updateLevel(sender, newLevel) {
+        return this.hixcoderService.updateLevel(sender, newLevel);
+    }
+    async updateGameHistory(senderUsr, recieverUsr, senderPt, recieverPt) {
+        return this.hixcoderService.updateGameHistory(senderUsr, recieverUsr, senderPt, recieverPt);
+    }
 };
 exports.HixcoderController = HixcoderController;
 __decorate([
@@ -71,12 +95,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getallUsers", null);
 __decorate([
-    (0, common_1.Get)("/oneUser/:recieverUsername"),
-    __param(0, (0, common_1.Param)("recieverUsername")),
+    (0, common_1.Get)("/oneUser/:recieverUsr"),
+    __param(0, (0, common_1.Param)("recieverUsr")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getOneUser", null);
+__decorate([
+    (0, common_1.Get)("/isBlocked/:sender/:reciever"),
+    __param(0, (0, common_1.Param)("sender")),
+    __param(1, (0, common_1.Param)("reciever")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getIsBlocked", null);
 __decorate([
     (0, common_1.Get)("/onlineFriends/:sender"),
     __param(0, (0, common_1.Param)("sender")),
@@ -112,6 +144,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getAllPossibleFriends", null);
+__decorate([
+    (0, common_1.Get)("/navSearchUsers/:sender"),
+    __param(0, (0, common_1.Param)("sender")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getNavSearchUsers", null);
 __decorate([
     (0, common_1.Post)("/sendFriendRequest/:sender/:reciever"),
     __param(0, (0, common_1.Param)("sender")),
@@ -168,6 +207,51 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "removeFriend", null);
+__decorate([
+    (0, common_1.Get)("/gameHistory/:senderUsr"),
+    __param(0, (0, common_1.Param)("senderUsr")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getGameHistory", null);
+__decorate([
+    (0, common_1.Get)("/globalInfos/:recieverUsr"),
+    __param(0, (0, common_1.Param)("recieverUsr")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getGlobalInfos", null);
+__decorate([
+    (0, common_1.Get)("/userRanking/:senderUsr"),
+    __param(0, (0, common_1.Param)("senderUsr")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getUserRanking", null);
+__decorate([
+    (0, common_1.Get)("/LeaderBoard/"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "getLeaderBoard", null);
+__decorate([
+    (0, common_1.Post)("/updateLevel/:senderUsr/:newLevel"),
+    __param(0, (0, common_1.Param)("senderUsr")),
+    __param(1, (0, common_1.Param)("newLevel")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "updateLevel", null);
+__decorate([
+    (0, common_1.Post)("/updateGameHistory/:senderUsr/:recieverUsr/:senderPt/:recieverPt"),
+    __param(0, (0, common_1.Param)("senderUsr")),
+    __param(1, (0, common_1.Param)("recieverUsr")),
+    __param(2, (0, common_1.Param)("senderPt")),
+    __param(3, (0, common_1.Param)("recieverPt")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:returntype", Promise)
+], HixcoderController.prototype, "updateGameHistory", null);
 exports.HixcoderController = HixcoderController = __decorate([
     (0, common_1.Controller)("hixcoder"),
     __metadata("design:paramtypes", [hixcoder_service_1.HixcoderService])

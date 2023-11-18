@@ -1,59 +1,62 @@
 "use client";
 import { FaMessage } from "react-icons/fa6";
-// import {
-//   Tooltip,
-//   TooltipContent,
-//   TooltipProvider,
-//   TooltipTrigger,
-// } from "../../../../components/ui/tooltip";
-import Tooltip from "@mui/material/Tooltip";
-import PopoverMenu from "./PopoverMenu";
-import { useContext } from "react";
-import { useGlobalDataContext } from "./FriendCategory";
-import { IoPersonRemove } from "react-icons/io5";
-import { BiUserX } from "react-icons/bi";
+
 import {
   acceptFriendRequest,
-  blockFriend,
   rejectFriendRequest,
   unblockFriend,
   unsendFriendRequest,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { useGlobalContext } from "@/app/protected/context/store";
+
+import Badge from "@mui/material/Badge";
+import Tooltip from "@mui/material/Tooltip";
+import Link from "next/link";
+import { BiUserX } from "react-icons/bi";
 import { MdOutlineDone } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
-import Badge from "@mui/material/Badge";
-import { green } from "@mui/material/colors";
-import Link from "next/link";
+import { useGlobalDataContext } from "./FriendCategory";
+import PopoverMenu from "./PopoverMenu";
+import { useGlobalContext } from "../../context/store";
 export default function FriendItem(prompt: {
   friendInfo: friendDto;
   itemsStatus: string;
 }) {
   // ==================== handleUnblock =====================
-  const user = useGlobalContext();
+  const { user, socket } = useGlobalContext();
   const contxt = useGlobalDataContext();
   async function handleUnblock(): Promise<void> {
     try {
-      await unblockFriend(user.user.id, prompt.friendInfo.id);
+      await unblockFriend(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleBlockFriend: " + error);
     }
-    console.log("handleUnblock" + prompt.friendInfo.id);
   }
   // ==================== /handleUnblock =====================
 
   // ==================== handleReject =====================
   async function handleReject(): Promise<void> {
     try {
-      await rejectFriendRequest(user.user.id, prompt.friendInfo.id);
+      await rejectFriendRequest(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleReject: " + error);
     }
@@ -63,11 +66,17 @@ export default function FriendItem(prompt: {
   // ==================== handleAccept =====================
   async function handleAccept(): Promise<void> {
     try {
-      await acceptFriendRequest(user.user.id, prompt.friendInfo.id);
+      await acceptFriendRequest(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleAccept: " + error);
     }
@@ -77,11 +86,17 @@ export default function FriendItem(prompt: {
   // ==================== handleCancel =====================
   async function handleCancel(): Promise<void> {
     try {
-      await unsendFriendRequest(user.user.id, prompt.friendInfo.id);
+      await unsendFriendRequest(user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit("updateData", {
+        content: "",
+        senderId: user.id,
+        isDirectMessage: true,
+        receivedId: prompt.friendInfo.id,
+      });
     } catch (error) {
       console.log("handleCancel: " + error);
     }
@@ -172,7 +187,9 @@ export default function FriendItem(prompt: {
             <Tooltip title="Accept" placement="top" className="text-lg">
               <div
                 onClick={handleAccept}
-                className="my-auto mr-4 bg-color-main p-2 rounded-full hover:text-green-400 text-lg"
+                className="my-auto  bg-color-main  rounded-full hover:text-green-400 
+                text-md p-1 mr-2
+                md:text-lg md:p-2 md:mr-4"
               >
                 <MdOutlineDone />
               </div>
@@ -184,7 +201,12 @@ export default function FriendItem(prompt: {
           <PopoverMenu friendInfo={prompt.friendInfo} />
 
           <Tooltip title="Message" placement="top" className="text-lg">
-            <div className="my-auto mr-4 hover: bg-color-main p-2 rounded-full">
+            <div
+              className="my-auto hover: bg-color-main  rounded-full
+            
+            text-md p-1 mr-2
+                md:text-lg md:p-2 md:mr-4"
+            >
               <FaMessage />
             </div>
           </Tooltip>

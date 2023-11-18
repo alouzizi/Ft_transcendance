@@ -1,15 +1,16 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException, } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 
 import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 
-
 @Injectable()
 export class UserService {
-  constructor(
-    private prisma: PrismaService,
-  ) { }
-
+  constructor(private prisma: PrismaService) { }
 
   async findById(id: string) {
     try {
@@ -20,7 +21,7 @@ export class UserService {
       });
       return user;
     } catch (error) {
-      return { error: true }
+      return { error: true };
     }
   }
 
@@ -28,7 +29,7 @@ export class UserService {
     try {
       return await this.prisma.user.findMany();
     } catch (error) {
-      return { error: true }
+      return { error: true };
     }
   }
 
@@ -67,21 +68,21 @@ export class UserService {
           if (friends) return { ...user, friendship: 1 }; // friends
 
           let freiReq = await this.prisma.friendRequest.findFirst({
-            where: { senderId: user.id, receivedId: senderId, },
+            where: { senderId: user.id, receivedId: senderId },
           });
           if (freiReq) return { ...user, friendship: 2 }; //  user that I sent a friend request
 
           let sendReq = await this.prisma.friendRequest.findFirst({
-            where: { senderId: senderId, receivedId: user.id, },
+            where: { senderId: senderId, receivedId: user.id },
           });
-          if (sendReq) return { ...user, friendship: 3 };  // user who sent a friend request 
+          if (sendReq) return { ...user, friendship: 3 }; // user who sent a friend request
 
           return { ...user, friendship: 0 }; // user
         })
       );
       return result;
     } catch (error) {
-      return { error: true }
+      return { error: true };
     }
   }
 
@@ -94,11 +95,11 @@ export class UserService {
         },
       });
       const bannedUsersChannel = await this.prisma.bannedMember.findMany({
-        where: { channelId: channelId }
-      })
+        where: { channelId: channelId },
+      });
       const membersChannel = await this.prisma.channelMember.findMany({
-        where: { channelId: channelId }
-      })
+        where: { channelId: channelId },
+      });
 
       const cleanUser = users.filter((user) => {
         if (user.id === senderId) return false;
@@ -114,7 +115,7 @@ export class UserService {
 
       const cleanUser2 = cleanUser.filter((user) => {
         const found = bannedUsersChannel.find((banned) => {
-          return (banned.userId === user.id);
+          return banned.userId === user.id;
         });
         if (found) return false;
         return true;
@@ -122,14 +123,14 @@ export class UserService {
 
       const result = cleanUser2.filter((user) => {
         const found = membersChannel.find((banned) => {
-          return (banned.userId === user.id);
+          return banned.userId === user.id;
         });
         if (found) return false;
         return true;
       });
       return result;
     } catch {
-      return { error: true }
+      return { error: true };
     }
   }
 
@@ -141,22 +142,20 @@ export class UserService {
       const block1: BlockedUser = await this.prisma.blockedUser.findFirst({
         where: {
           senderId: senderId,
-          receivedId: receivedId
-        }
-      })
-      if (block1)
-        return 1;
+          receivedId: receivedId,
+        },
+      });
+      if (block1) return 1;
       const block2: BlockedUser = await this.prisma.blockedUser.findFirst({
         where: {
           senderId: receivedId,
-          receivedId: senderId
-        }
-      })
-      if (block2)
-        return 2;
+          receivedId: senderId,
+        },
+      });
+      if (block2) return 2;
       return 0;
     } catch (error) {
-      return { error: true }
+      return { error: true };
     }
   }
 
@@ -180,23 +179,25 @@ export class UserService {
         };
       return {
         isUser: true,
-        id: '-1',
-        nickname: '',
-        profilePic: '',
-        status: '',
+        id: "-1",
+        nickname: "",
+        profilePic: "",
+        status: "",
         lastSee: 0,
         lenUser: 0,
         idUserOwner: 0,
       };
     } catch {
-      return { error: true }
+      return { error: true };
     }
   }
 
   async getChannelGeust(id: string) {
     try {
       const channel = await this.prisma.channel.findUnique({ where: { id } });
-      const members = await this.prisma.channelMember.findMany({ where: { channelId: id } });
+      const members = await this.prisma.channelMember.findMany({
+        where: { channelId: id },
+      });
       return {
         isUser: false,
         id: id,
@@ -205,10 +206,10 @@ export class UserService {
         status: Status.INACTIF,
         lastSee: channel.createdAt,
         lenUser: members.length,
-        idUserOwner: channel.channelOwnerId
+        idUserOwner: channel.channelOwnerId,
       };
     } catch {
-      return { error: true }
+      return { error: true };
     }
   }
 
@@ -218,48 +219,49 @@ export class UserService {
     const user = await this.prisma.user.create({
       data: {
         intra_id: user1.intra_id.toString(),
-        nickname: user1.login42.toString() + `${new Date()}`,
+        nickname: user1.login42.toString(),
         email: user1.email.toString(),
         profilePic: user1.profilePicture.toString(),
         last_name: user1.last_name,
         first_name: user1.first_name,
-        hash: user1.hash,
         isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false, // Assuming it's a boolean property
       },
     });
     return user;
   }
 
-
-
   async setTwoFactorAuthSecret(secret: string, intra_id: string) {
     await this.prisma.user.update({
       where: { intra_id: intra_id },
       data: {
         twoFactorAuthSecret: secret,
-      }
-    })
+      },
+    });
   }
 
   async turnOnTwoFactorAuth(intra_id: string) {
-    const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } })
+    const user = await this.prisma.user.findUnique({
+      where: { intra_id: intra_id },
+    });
     await this.prisma.user.update({
       where: { intra_id: intra_id },
       data: {
         isTwoFactorAuthEnabled: true,
-      }
-    })
+      },
+    });
   }
 
   async turnOffTwoFactorAuth(intra_id: string) {
-    const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } })
+    const user = await this.prisma.user.findUnique({
+      where: { intra_id: intra_id },
+    });
     console.log(user);
     await this.prisma.user.update({
       where: { intra_id: intra_id },
       data: {
         isTwoFactorAuthEnabled: false,
-      }
-    })
+      },
+    });
   }
 
   async getUsers() {
@@ -267,7 +269,6 @@ export class UserService {
   }
 
   async updatUserdata(intra_id: string, nickname: string, image: string) {
-
     const usr = await this.prisma.user.findUnique({ where: { intra_id } });
     if (usr.nickname === nickname) {
       return;
@@ -279,15 +280,15 @@ export class UserService {
         },
         data: {
           nickname: nickname,
-        }
+        },
       });
       return { status: 200 };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new HttpException('nickname aleady exist', HttpStatus.CONFLICT);
+        if (error.code === "P2002") {
+          throw new HttpException("nickname aleady exist", HttpStatus.CONFLICT);
         } else {
-          return { status: 202, error: true }
+          return { status: 202, error: true };
         }
       }
     }
@@ -300,21 +301,19 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://10.12.13.5:4000/${path}`,
-        }
+          profilePic: `http://10.11.8.5:4000/${path}`,
+        },
       });
-      console.log('File uploaded successfully')
-      return { message: 'File uploaded successfully' };
+      console.log("File uploaded successfully");
+      return { message: "File uploaded successfully" };
     } catch (error) {
       console.log(error);
     }
-
   }
   async findByIntraId(intra_id: string) {
     // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },
-
     });
   }
 
@@ -322,7 +321,6 @@ export class UserService {
     // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { id: id },
-
     });
   }
 
@@ -331,5 +329,4 @@ export class UserService {
       where: { id: id },
     });
   }
-
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import NavBarPublic from "@/components/navBar/NavbarPublic";
-
+import NavBarPublic from "../components/navBar/NavbarPublic";
 
 export default function AuthLayout(prompt: { children: React.ReactNode }) {
   return (

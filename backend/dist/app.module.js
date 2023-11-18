@@ -35,8 +35,8 @@ exports.AppModule = AppModule = __decorate([
             socket_module_1.SocketGatewayModule,
             hixcoder_module_1.HixcoderModule,
             serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', 'uploads'),
-                serveRoot: '/uploads',
+                rootPath: (0, path_1.join)(__dirname, "..", "uploads"),
+                serveRoot: "/uploads",
             }),
         ],
     })
