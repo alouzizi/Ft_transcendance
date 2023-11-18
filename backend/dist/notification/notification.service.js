@@ -42,12 +42,16 @@ let NotificationService = class NotificationService {
         console.log(`Notification with ID ${notificationId} has been deleted.`);
         return;
     }
-    async fetchNotifications(receiverId) {
+    async fetchNotifications(senderId) {
         const notifications = await this.prisma.notificationTable.findMany({
             where: {
-                recieverId: receiverId,
+                recieverId: senderId,
+            },
+            include: {
+                user: true,
             },
         });
+        console.log(notifications);
         return notifications;
     }
 };

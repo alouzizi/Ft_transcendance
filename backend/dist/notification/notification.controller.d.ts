@@ -7,11 +7,30 @@ export declare class NotificationController {
         statusCode: number;
         message: string;
     }>;
-    fetchNotifications(recieverId: string): Promise<{
+    fetchNotifications(senderId: string): Promise<({
+        user: {
+            id: string;
+            intra_id: string;
+            first_name: string;
+            last_name: string;
+            nickname: string;
+            email: string;
+            profilePic: string;
+            hash: string;
+            twoFactorAuth: boolean;
+            isTwoFactorAuthEnabled: boolean;
+            twoFactorAuthSecret: string;
+            AsciiSecretQr: string;
+            createdAt: Date;
+            updatedAt: Date;
+            status: import(".prisma/client").$Enums.Status;
+            lastSee: Date;
+        };
+    } & {
         id: string;
         subjet: string;
         senderId: string;
         recieverId: string;
         createdAt: Date;
-    }[]>;
+    })[]>;
 }

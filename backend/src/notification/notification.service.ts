@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import {  NotificationDTO } from './dto/create-notification.dto';
+import { NotificationDTO } from './dto/create-notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotFoundException } from '@nestjs/common';
+import { DefaultDeserializer } from 'v8';
 
 
 @Injectable()
 export class NotificationService {
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async createNotification(createNotificationDto: NotificationDTO)  {
+  async createNotification(createNotificationDto: NotificationDTO) {
     const notification = await this.prisma.notificationTable.create({
       data: {
         senderId: createNotificationDto.senderId,
@@ -21,38 +22,42 @@ export class NotificationService {
     return 'Notification created succesfully';
   }
 
-async deleteNotification(notificationId: string) {
-  const notification = await this.prisma.notificationTable.findUnique({
-    where: { id: notificationId },
-  });
+  async deleteNotification(notificationId: string) {
+    const notification = await this.prisma.notificationTable.findUnique({
+      where: { id: notificationId },
+    });
 
-  if (!notification) {
-    console.log("User tried to delete a record that does not exist");
+    if (!notification) {
+      console.log("User tried to delete a record that does not exist");
 
-    throw new NotFoundException("There is no notification with the given ID");
+      throw new NotFoundException("There is no notification with the given ID");
+    }
+
+    await this.prisma.notificationTable.delete({
+      where: { id: notificationId },
+    });
+
+    console.log(`Notification with ID ${notificationId} has been deleted.`);
+
+    return;
   }
 
-  await this.prisma.notificationTable.delete({
-    where: { id: notificationId },
-  });
 
-  console.log(`Notification with ID ${notificationId} has been deleted.`);
+  async fetchNotifications(senderId: string) {
+    const notifications = await this.prisma.notificationTable.findMany({
+      where: {
+        recieverId: senderId,
+      },
+      include: {
+        user: true,
+      },
+    });
 
-  return;
-}
+    console.log(notifications);
+    return notifications;
+  }
 
 
-async fetchNotifications(receiverId: string) {
-  const notifications = await this.prisma.notificationTable.findMany({
-    where: {
-      recieverId: receiverId,
-    },
-  });
 
-  return notifications;
-}
-
-  
-  
 
 }

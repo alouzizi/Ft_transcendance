@@ -21,7 +21,6 @@ let NotificationController = class NotificationController {
         this.notificationService = notificationService;
     }
     createNotification(createNotificationDto) {
-        console.log(typeof createNotificationDto.senderId, createNotificationDto.recieverId);
         return this.notificationService.createNotification(createNotificationDto);
     }
     async deleteNotification(notificationId) {
@@ -40,8 +39,8 @@ let NotificationController = class NotificationController {
             }
         }
     }
-    async fetchNotifications(recieverId) {
-        const notifications = await this.notificationService.fetchNotifications(recieverId);
+    async fetchNotifications(senderId) {
+        const notifications = await this.notificationService.fetchNotifications(senderId);
         return notifications;
     }
 };
@@ -61,8 +60,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "deleteNotification", null);
 __decorate([
-    (0, common_1.Get)('/getNotifications/:recieverId'),
-    __param(0, (0, common_1.Param)('recieverId')),
+    (0, common_1.Get)('/getNotifications/:senderId'),
+    __param(0, (0, common_1.Param)('senderId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

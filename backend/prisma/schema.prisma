@@ -44,8 +44,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  status       Status          @default(INACTIF)
-  lastSee      DateTime        @default(now())
+  status       Status              @default(INACTIF)
+  lastSee      DateTime            @default(now())
   message      Message[]
   frienRequest FriendRequest[]
   Friend       Friend[]
@@ -169,13 +169,9 @@ model MutedMember {
 model NotificationTable {
   id String @id @default(uuid())
 
-  subjet      String
-  senderId     String
-  recieverId     String
-  createdAt DateTime @default(now())
-  user       User?   @relation(fields: [senderId], references: [id])
-
-
+  subjet     String
+  senderId   String
+  recieverId String
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [senderId], references: [id])
 }
-
-
