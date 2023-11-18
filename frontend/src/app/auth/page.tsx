@@ -9,7 +9,7 @@ export default function login() {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="flex flex-col w-[50%] items-center">
+      {/* <div className="flex flex-col w-[50%] items-center">
         <Text weight="bold" className="text-center text-[20px] w-[50%]">
           Welcome to PongMaster Where Pong Legends Are Born! 🏓💥
         </Text>
@@ -23,7 +23,7 @@ export default function login() {
 
       <div className="w-[40%]">
         <img src="/gg1.png" />
-      </div>
+      </div> */}
     </div>
   );
 }

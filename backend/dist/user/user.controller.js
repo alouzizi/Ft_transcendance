@@ -44,8 +44,8 @@ let UserController = class UserController {
     async getValideUsers(senderId) {
         return await this.userService.getValideUsers(senderId);
     }
-    async updatUserdata(intra_id, nickname, image) {
-        return await this.userService.updatUserdata(intra_id, nickname, image);
+    async updatUserdata(intra_id, nickname) {
+        return await this.userService.updatUserdata(intra_id, nickname);
     }
     uploadImage(file, senderId) {
         return this.userService.uploadImage(senderId, file.path);
@@ -93,13 +93,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getValideUsers", null);
 __decorate([
-    (0, common_1.Post)("updatUserdata/:intra_id/:nickname/:image"),
+    (0, common_1.Post)("updatUserdata/:intra_id/:nickname"),
     (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("intra_id")),
     __param(1, (0, common_1.Param)("nickname")),
-    __param(2, (0, common_1.Param)("image")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updatUserdata", null);
 __decorate([

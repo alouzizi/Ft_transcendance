@@ -46,16 +46,16 @@ interface ContextProps {
 
 const GlobalContext = createContext<ContextProps>({
   displayChat: false,
-  setDisplayChat: () => {},
+  setDisplayChat: () => { },
 
   updateInfo: 1,
-  setUpdateInfo: () => {},
+  setUpdateInfo: () => { },
 
   openAlertErro: false,
-  setOpenAlertError: () => {},
+  setOpenAlertError: () => { },
 
   saveChanges: 0,
-  setSaveChanges: () => {},
+  setSaveChanges: () => { },
 
   user: {
     id: "-1",
@@ -67,7 +67,7 @@ const GlobalContext = createContext<ContextProps>({
     isTwoFactorAuthEnabled: true,
     level: "0.0",
   },
-  setUser: () => {},
+  setUser: () => { },
 
   geust: {
     isUser: true,
@@ -79,7 +79,7 @@ const GlobalContext = createContext<ContextProps>({
     lenUser: 0,
     idUserOwner: "",
   },
-  setGeust: () => {},
+  setGeust: () => { },
 
   socket: null, // Initialize socket as null
 });
@@ -167,7 +167,7 @@ export const GlobalContextProvider = ({
         const owner = await res.json();
         setUser(owner);
       } else {
-        router.push("/auth");
+        router.push("/public/HomePage");
       }
     };
     if (user.id === "-1") getDataUser();

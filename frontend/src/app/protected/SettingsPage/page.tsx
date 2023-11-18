@@ -39,7 +39,8 @@ export default function SettingsPage() {
   };
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (user && event.target.checked == false && user.id !== "-1" && checked) {
+
+    if (user && user.id !== "-1" && !event.target.checked && user.isTwoFactorAuthEnabled) {
       const res = await fetch(
         `${Backend_URL}/auth/2fa/turn-off/${user.intra_id}`,
         {
@@ -52,8 +53,12 @@ export default function SettingsPage() {
       );
       setChecked(false);
       toast.success("2fa authentication turned off successfully");
-    } else if (event.target.checked == true) {
+    } else if (event.target.checked) {
+      setChecked(event.target.checked);
       getUrlQr();
+    } else if (!event.target.checked) {
+      setUrlImage("");
+      setChecked(event.target.checked);
     }
   };
 
@@ -61,70 +66,44 @@ export default function SettingsPage() {
     if (user.id != "-1" && user.isTwoFactorAuthEnabled) {
       setChecked(true);
     }
-
     setNickName(user.nickname);
   }, [user.id]);
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <div>
-        <Text className="text-gray-600 text-xl">Cover Image</Text>
-        <div className="mt-1 mb-4">
+    <div className="h-screen  ">
+
+      <div className="pt-5 pl-5 text-white text-2xl/[29px] font-fredoka font-700 mb-5 mt-5">
+        <Text weight="bold">Edit Profile</Text>
+      </div>
+
+      <div className="flex flex-col items-center ">
+        <Text weight="bold" className="text-gray-400 text-xl w-[30rem] md:w-[10rem]">Cover Image</Text>
+        <div className="mt-2 mb-4">
           <img
-            className="rounded-2xl h-[10rem] w-[30rem]"
+            className="rounded-2xl h-[10rem] md:w-[30rem] w-[10rem]"
             src="/bg-info.png"
           ></img>
         </div>
-        <Text className="text-gray-600 text-xl ">Profile Image</Text>
-        <ImageUpload />
 
-        <div className="flex flex-col justify-center items-center gap-6 w-[30rem] mt-4">
-          <div className="flex bg-[#F6F7FA] mt-0  border rounded-[10px]  w-[10rem] md:w-[15rem]">
+        <Text weight="bold" className="text-gray-400 text-xl md:w-[30rem] w-[10rem]">Profile Image</Text>
+        <div className="md:w-[30rem] w-[10rem] mt-4">
+          <ImageUpload />
+        </div>
+        <div className="md:w-[30rem] w-[10rem] mt-5">
+          <div className="flex bg-[#F6F7FA] mt-0  border rounded-[10px]  md:w-[20rem] w-[10rem]">
             <input
               type="text"
-              className="bg-[#F6F7FA]  p-1.5 flex w-[20rem]  
-                        text-black placeholder-gray-600 text-sm outline-none rounded-[5px] mr-1"
+              className="bg-[#F6F7FA]  p-1.5 flex md:w-[15rem] w-[7rem] 
+                        text-black placeholder-gray-400 text-sm outline-none rounded-[5px] mr-1"
               value={newNickName}
               placeholder="nickname"
               onChange={(e) => {
-                setNickName(e.target.value);
+                setNickName(e.target.value.trim());
               }}
             ></input>
-            {newNickName !== user.nickname && newNickName !== "" ? (
-              <div
-                className="cursor-pointer flex items-center pr-2"
-                onClick={async () => {
-                  if (newNickName.length > 20 || newNickName.length < 3) {
-                    toast.error("nickname error");
-                  } else {
-                    try {
-                      const response = await fetch(
-                        Backend_URL +
-                          `/user/updatUserdata/${user.intra_id}/${newNickName}/tmp`,
-                        {
-                          method: "POST",
-                          headers: {
-                            authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                          },
-                        }
-                      );
-                      if (response.status === 409)
-                        toast.error("nickname aleady exist");
-                      else if (response.status === 201) {
-                        toast.success("nickname has been change");
-                      }
-                    } catch (error) {}
-                  }
-                }}
-              >
-                <FaCheckCircle size={18} color="black" />
-              </div>
-            ) : (
-              <></>
-            )}
           </div>
-          <div className="flex flex-col items-center justify-center mt-2">
+
+          <div className="md:w-[30rem] w-[10rem] mt-3">
             <div className="flex items-center justify-start ">
               <Switch checked={checked} color="info" onChange={handleChange} />
               <label className="text-white">Two-factor Authentification</label>
@@ -163,7 +142,7 @@ export default function SettingsPage() {
                     if (keyQrCode !== "") {
                       const response = await fetch(
                         Backend_URL +
-                          `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
+                        `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
                         {
                           method: "POST",
                           headers: {
@@ -190,6 +169,37 @@ export default function SettingsPage() {
                 </Button>
               </div>
             )}
+          </div>
+          <div className="flex items-end justify-end md:w-[30rem] w-[10rem]">
+            <button onClick={async (e) => {
+              e.preventDefault();
+              if (newNickName.length > 20 || newNickName.length < 3) {
+                toast.error("nickname error");
+              } else {
+                try {
+                  const response = await fetch(
+                    Backend_URL +
+                    `/user/updatUserdata/${user.intra_id}/${newNickName.toLowerCase()}`,
+                    {
+                      method: "POST",
+                      headers: {
+                        authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  );
+                  if (response.status === 409)
+                    toast.error("nickname aleady exist");
+                  else if (response.status === 201) {
+                    toast.success("nickname has been change");
+                  }
+                } catch (error) { }
+              }
+            }}
+              className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center ">
+              <text className="text-white font-outfit pr-2">Save</text>
+
+            </button>
           </div>
         </div>
         <ToastContainer />

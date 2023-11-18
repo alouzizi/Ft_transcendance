@@ -268,7 +268,7 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  async updatUserdata(intra_id: string, nickname: string, image: string) {
+  async updatUserdata(intra_id: string, nickname: string) {
     const usr = await this.prisma.user.findUnique({ where: { intra_id } });
     if (usr.nickname === nickname) {
       return;

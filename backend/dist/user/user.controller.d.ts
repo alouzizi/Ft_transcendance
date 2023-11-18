@@ -67,7 +67,7 @@ export declare class UserController {
     }[] | {
         error: boolean;
     }>;
-    updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
+    updatUserdata(intra_id: string, nickname: string): Promise<{
         status: number;
         error?: undefined;
     } | {

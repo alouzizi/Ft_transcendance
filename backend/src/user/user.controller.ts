@@ -18,7 +18,7 @@ import { diskStorage } from "multer";
 
 @Controller("user")
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   // @UseGuards(JwtGuard)
   @Get(":id")
@@ -53,14 +53,13 @@ export class UserController {
     return await this.userService.getValideUsers(senderId);
   }
 
-  @Post("updatUserdata/:intra_id/:nickname/:image")
+  @Post("updatUserdata/:intra_id/:nickname")
   @UseGuards(JwtGuard)
   async updatUserdata(
     @Param("intra_id") intra_id: string,
     @Param("nickname") nickname: string,
-    @Param("image") image: string
   ) {
-    return await this.userService.updatUserdata(intra_id, nickname, image);
+    return await this.userService.updatUserdata(intra_id, nickname);
   }
 
   @Post("/:intra_id/uploadImage")

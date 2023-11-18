@@ -259,7 +259,7 @@ let UserService = class UserService {
     async getUsers() {
         return this.prisma.user.findMany();
     }
-    async updatUserdata(intra_id, nickname, image) {
+    async updatUserdata(intra_id, nickname) {
         const usr = await this.prisma.user.findUnique({ where: { intra_id } });
         if (usr.nickname === nickname) {
             return;

@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
   const hasIntra_id = request.cookies.has("intra_id");
 
   if (!hasToken && !hasIntra_id) {
-    return NextResponse.redirect(new URL(`/auth`, request.nextUrl));
+    return NextResponse.redirect(new URL(`/public/HomePage`, request.nextUrl));
   }
 }
 export const config = {

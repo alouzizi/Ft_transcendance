@@ -30,7 +30,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
             <Link
               href="/public/HomePage"
               className={
-                pathname === "/public/HomePage" || pathname === "/auth"
+                pathname === "/public/HomePage"
                   ? ""
                   : "text-gray-400"
               }

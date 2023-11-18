@@ -25,7 +25,6 @@ const ImageUpload = () => {
       const formData = new FormData();
       formData.append("file", file);
       try {
-        // Content-Type:
         const response = await fetch(
           Backend_URL + `/user/${intra_id}/uploadImage`,
           {
@@ -45,7 +44,7 @@ const ImageUpload = () => {
   };
 
   return (
-    <div className="mt-1 flex justify-center">
+    <div className="mt-4">
       <Badge
         badgeContent={
           <label className="rounded-full p-[1.5px]  ">
@@ -56,7 +55,7 @@ const ImageUpload = () => {
               id="image-upload"
               style={{ display: "none" }}
             />
-            <BiImageAdd size={18} style={{ color: "black" }} />
+            <BiImageAdd size={18} style={{ color: "black" }} className="cursor-pointer" />
           </label>
         }
         sx={{
