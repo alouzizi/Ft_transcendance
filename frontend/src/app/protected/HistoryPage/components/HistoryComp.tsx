@@ -17,7 +17,7 @@ export default function HistoryComp(prompt: { friend: ownerDto }) {
   useEffect(() => {
     async function getData() {
       try {
-        const gameHistoryTmp = await getGameHistory(prompt.friend.nickname);
+        const gameHistoryTmp = await getGameHistory(prompt.friend.id);
 
         setGameHistory(gameHistoryTmp);
       } catch (error: any) {

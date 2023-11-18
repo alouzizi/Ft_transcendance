@@ -169,10 +169,10 @@ model MutedMember {
 model GameHistory {
   id String @id @default(uuid())
 
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [senderUsr], references: [nickname])
-  senderUsr   String
-  receiverUsr String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [senderId], references: [id])
+  senderId   String
+  receiverId String
 
   senderPoints   String
   receiverPoints String

@@ -16,17 +16,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
           <Link href="/auth">
             <img className="h-8" src="/PongMaster.svg" alt="PongMaster" />
           </Link>
-          {/* <div className="flex flex-row justify-center space-x-8">
-            <Link href="/public/HomePage">
-              <p className="text-gray-400 font-700 focus:text-white">Home</p>
-            </Link>
-            <Link href="/public/AboutPage">
-              <p className="text-gray-400 font-700 focus:text-white">About</p>
-            </Link>
-            <Link href="/public/ContactPage">
-              <p className="text-gray-400 font-700 focus:text-white">Contact</p>
-            </Link>
-          </div> */}
+
           <div className="space-x-4">
             <Link
               href="/auth"

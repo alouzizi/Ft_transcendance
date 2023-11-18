@@ -22,7 +22,7 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-    getOneUser(recieverUsr: string): Promise<{
+    getOneUser(recieverId: string): Promise<{
         id: string;
         intra_id: string;
         first_name: string;
@@ -170,25 +170,25 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-    getGameHistory(senderUsr: string): Promise<{
+    getGameHistory(senderId: string): Promise<{
         receiverAvatar: string;
         senderAvatar: string;
         id: string;
         createdAt: Date;
-        senderUsr: string;
-        receiverUsr: string;
+        senderId: string;
+        receiverId: string;
         senderPoints: string;
         receiverPoints: string;
     }[]>;
     isWined(record: GameHistory, isWined: boolean, user: User): boolean;
-    getNbrOfMatches(recieverUsr: string, isWined: number): Promise<number>;
+    getNbrOfMatches(recieverId: string, isWined: number): Promise<number>;
     catch(error: any): {
         error: any;
     };
-    getGlobalInfos(recieverUsr: string): Promise<globalInfoDto | {
+    getGlobalInfos(recieverId: string): Promise<globalInfoDto | {
         error: any;
     }>;
-    getUserRanking(senderUsr: string): Promise<{
+    getUserRanking(senderId: string): Promise<{
         userName: string;
         rank: number;
     } | {
@@ -204,17 +204,17 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-    updateGameHistory(senderUsr: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
+    updateGameHistory(senderId: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
         id: string;
         createdAt: Date;
-        senderUsr: string;
-        receiverUsr: string;
+        senderId: string;
+        receiverId: string;
         senderPoints: string;
         receiverPoints: string;
     } | {
         error: any;
     }>;
-    updateLevel(senderUsr: string, newLevel: string): Promise<{
+    updateLevel(senderId: string, newLevel: string): Promise<{
         id: string;
         intra_id: string;
         first_name: string;
@@ -232,7 +232,7 @@ export declare class HixcoderService {
     } | {
         error: any;
     }>;
-    updateLevelAfterGame(senderUsr: string, incrLevelBy: string): Promise<{
+    updateLevelAfterGame(senderId: string, incrLevelBy: string): Promise<{
         id: string;
         intra_id: string;
         first_name: string;

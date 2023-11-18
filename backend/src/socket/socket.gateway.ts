@@ -60,7 +60,7 @@ export class SocketGateway
   }
 
   ROUND_LIMIT = 4;
-  joindRoom = 0
+  joindRoom = 0;
   private GameInit(roomName: string) {
     this.roomState.set(roomName, {
       player1: {
@@ -91,7 +91,6 @@ export class SocketGateway
     });
   }
 
-  // constructor(private PongService: PongServise) {}
   private clients: Map<string, Socket> = new Map();
   private rooms: Map<string, string[]> = new Map();
   private roomState: Map<string, RoomState> = new Map();
@@ -238,7 +237,7 @@ export class SocketGateway
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
     console.log({ size: this.clients.size });
-    this.joindRoom++
+    this.joindRoom++;
     if (this.clients.size === 2 && this.joindRoom == 2) {
       this.joindRoom = 0;
       console.log("2 clients connected");

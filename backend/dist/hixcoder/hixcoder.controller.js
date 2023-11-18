@@ -70,8 +70,8 @@ let HixcoderController = class HixcoderController {
     async getGameHistory(sender) {
         return this.hixcoderService.getGameHistory(sender);
     }
-    async getGlobalInfos(recieverUsr) {
-        return this.hixcoderService.getGlobalInfos(recieverUsr);
+    async getGlobalInfos(recieverId) {
+        return this.hixcoderService.getGlobalInfos(recieverId);
     }
     async getUserRanking(senderUsr) {
         return this.hixcoderService.getUserRanking(senderUsr);
@@ -208,15 +208,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "removeFriend", null);
 __decorate([
-    (0, common_1.Get)("/gameHistory/:senderUsr"),
-    __param(0, (0, common_1.Param)("senderUsr")),
+    (0, common_1.Get)("/gameHistory/:senderId"),
+    __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getGameHistory", null);
 __decorate([
-    (0, common_1.Get)("/globalInfos/:recieverUsr"),
-    __param(0, (0, common_1.Param)("recieverUsr")),
+    (0, common_1.Get)("/globalInfos/:recieverId"),
+    __param(0, (0, common_1.Param)("recieverId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

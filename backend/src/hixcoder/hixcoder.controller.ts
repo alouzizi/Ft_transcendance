@@ -139,14 +139,14 @@ export class HixcoderController {
   // ==========================    ****    ==========================
   // ==========================  Game Gets ==========================
   // for get gameHistory
-  @Get("/gameHistory/:senderUsr")
-  async getGameHistory(@Param("senderUsr") sender: string) {
+  @Get("/gameHistory/:senderId")
+  async getGameHistory(@Param("senderId") sender: string) {
     return this.hixcoderService.getGameHistory(sender);
   }
   // for get globalInfos for acheivments making
-  @Get("/globalInfos/:recieverUsr")
-  async getGlobalInfos(@Param("recieverUsr") recieverUsr: string) {
-    return this.hixcoderService.getGlobalInfos(recieverUsr);
+  @Get("/globalInfos/:recieverId")
+  async getGlobalInfos(@Param("recieverId") recieverId: string) {
+    return this.hixcoderService.getGlobalInfos(recieverId);
   }
 
   // for getUserRanking

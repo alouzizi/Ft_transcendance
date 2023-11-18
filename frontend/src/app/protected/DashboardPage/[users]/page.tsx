@@ -1,16 +1,11 @@
 "use client";
-import DashBoard from "../components/DashBoard";
+import { getIsBlocked, getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  getBlockedFriends,
-  getIsBlocked,
-  getOneUser,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+import DashBoard from "../components/DashBoard";
 
-import ErrorPage from "../components/ErrorPage";
-import { CircularProgress } from "@mui/material";
 import { useGlobalContext } from "../../context/store";
+import ErrorPage from "../components/ErrorPage";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();

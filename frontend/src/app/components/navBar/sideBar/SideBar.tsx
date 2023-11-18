@@ -138,23 +138,6 @@ export default function SideBar() {
           ))}
         </SBSection>
       </div>
-
-      {/* <div className=" h-48  rounded-br-full rounded-tl-full flex flex-col justify-center"> */}
-      {/* <img
-        className="cursor-pointer object-cover mx-auto  rounded-full border-2
-         border-color-main-dark 
-         hover:shadow-transparent  hover:scale-110 hover:border-0
-         transition-all duration-400 ease-in-out 
-         // small screen
-         w-12 h-12 sm:w-14 sm:h-14 bg-green-50 my-auto
-         // Big screen
-         md:w-16 md:h-16
-         
-         "
-        src="https://images.alphacoders.com/129/1294445.jpg"
-        alt=""
-      /> */}
-      {/* </div> */}
     </div>
   );
 }

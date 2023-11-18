@@ -30,19 +30,19 @@ export default function HistoryDropDown(prompt: {
 
   React.useEffect(() => {
     function isWined(record: gameHistoryDto, isWined: boolean) {
-      let senderUsr = record.receiverUsr;
-      let receiverUsr = record.senderUsr;
+      let senderId = record.receiverId;
+      let receiverId = record.senderId;
       let senderPoints = record.senderPoints;
       let receiverPoints = record.receiverPoints;
       if (isWined) {
-        senderUsr = record.receiverUsr;
-        receiverUsr = record.senderUsr;
+        senderId = record.receiverId;
+        receiverId = record.senderId;
         senderPoints = record.receiverPoints;
         receiverPoints = record.senderPoints;
       }
-      if (senderUsr === prompt.friend.nickname) {
+      if (senderId === prompt.friend.nickname) {
         return parseInt(senderPoints) > parseInt(receiverPoints);
-      } else if (receiverUsr === prompt.friend.nickname) {
+      } else if (receiverId === prompt.friend.nickname) {
         return parseInt(senderPoints) < parseInt(receiverPoints);
       }
     }
@@ -71,7 +71,7 @@ export default function HistoryDropDown(prompt: {
   React.useEffect(() => {
     async function getData() {
       try {
-        const gameHistoryTmp = await getGameHistory(prompt.friend.nickname);
+        const gameHistoryTmp = await getGameHistory(prompt.friend.id);
 
         setGameHistoryFormated(gameHistoryTmp);
       } catch (error: any) {
@@ -130,9 +130,9 @@ export default function HistoryDropDown(prompt: {
             .map((record) => (
               <HistoryItem
                 key={record.id}
-                firstPlayerName={record.senderUsr}
+                firstPlayerName={record.senderId}
                 firstPlayerPoints={record.senderPoints}
-                secondPlayerName={record.receiverUsr}
+                secondPlayerName={record.receiverId}
                 secondPlayerPoints={record.receiverPoints}
                 firstPlayerImg={record.senderAvatar}
                 secondPlayerImg={record.receiverAvatar}

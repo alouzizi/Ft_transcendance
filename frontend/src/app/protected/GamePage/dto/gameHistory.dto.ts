@@ -1,8 +1,8 @@
 type gameHistoryDto = {
   id: string;
   createdAt: string;
-  senderUsr: string;
-  receiverUsr: string;
+  senderId: string;
+  receiverId: string;
   senderPoints: string;
   receiverPoints: string;
   receiverAvatar: string;

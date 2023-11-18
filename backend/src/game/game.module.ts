@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
-import { MyGateway } from "./_gateway";
 import { PongServise } from "./game.service";
 
 @Module({
-  providers: [MyGateway, PongServise],
+  providers: [PongServise],
 })
 export class GameModule {}

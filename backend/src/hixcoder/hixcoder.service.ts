@@ -27,11 +27,11 @@ export class HixcoderService {
     }
   }
 
-  async getOneUser(recieverUsr: string) {
+  async getOneUser(recieverId: string) {
     try {
       const oneUser = await this.prisma.user.findFirst({
         where: {
-          nickname: recieverUsr,
+          id: recieverId,
         },
       });
       return oneUser;
@@ -483,17 +483,17 @@ export class HixcoderService {
   // ==========================    ****    ==========================
   // ==========================  Game Gets ==========================
 
-  async getGameHistory(senderUsr: string) {
+  async getGameHistory(senderId: string) {
     try {
       const allUsers = await this.prisma.user.findMany();
       const users = await this.prisma.gameHistory.findMany({
         where: {
           OR: [
             {
-              receiverUsr: senderUsr,
+              receiverId: senderId,
             },
             {
-              senderUsr: senderUsr,
+              senderId: senderId,
             },
           ],
         },
@@ -501,10 +501,10 @@ export class HixcoderService {
 
       const usersWithAvatar = users.map((user) => {
         const receiverAvatar = allUsers.find(
-          (item) => item.nickname === user.receiverUsr
+          (item) => item.id === user.receiverId
         ).profilePic;
         const senderAvatar = allUsers.find(
-          (item) => item.nickname === user.senderUsr
+          (item) => item.id === user.senderId
         ).profilePic;
         return {
           ...user,
@@ -519,34 +519,27 @@ export class HixcoderService {
     }
   }
 
-  // - nbr of matches
-  // - nbr of friends
-  // - winned matches
-  // - blocked users
-  // - losed matches
-  // - nbr of invited friend
-
   isWined(record: GameHistory, isWined: boolean, user: User) {
-    let senderUsr = record.receiverUsr;
-    let receiverUsr = record.senderUsr;
+    let senderId = record.receiverId;
+    let receiverId = record.senderId;
     let senderPoints = record.senderPoints;
     let receiverPoints = record.receiverPoints;
     if (isWined) {
-      senderUsr = record.receiverUsr;
-      receiverUsr = record.senderUsr;
+      senderId = record.receiverId;
+      receiverId = record.senderId;
       senderPoints = record.receiverPoints;
       receiverPoints = record.senderPoints;
     }
-    if (senderUsr === user.nickname) {
+    if (senderId === user.nickname) {
       return parseInt(senderPoints) > parseInt(receiverPoints);
-    } else if (receiverUsr === user.nickname) {
+    } else if (receiverId === user.nickname) {
       return parseInt(senderPoints) < parseInt(receiverPoints);
     }
   }
 
-  async getNbrOfMatches(recieverUsr: string, isWined: number) {
-    const user = await this.getOneUser(recieverUsr);
-    const gamesHistory = await this.getGameHistory(recieverUsr);
+  async getNbrOfMatches(recieverId: string, isWined: number) {
+    const user = await this.getOneUser(recieverId);
+    const gamesHistory = await this.getGameHistory(recieverId);
     let NbrOfMatches = 0;
     if (gamesHistory) {
       NbrOfMatches = gamesHistory.length;
@@ -569,7 +562,7 @@ export class HixcoderService {
     };
   }
 
-  async getGlobalInfos(recieverUsr: string) {
+  async getGlobalInfos(recieverId: string) {
     try {
       const globInfo: globalInfoDto = {
         NbrOfAllMatches: 0,
@@ -579,8 +572,8 @@ export class HixcoderService {
         NbrOfBlockedFriends: 0,
         NbrOfInvitedFriends: 0,
       };
-      const user = await this.getOneUser(recieverUsr);
-      const gamesHistory = await this.getGameHistory(recieverUsr);
+      const user = await this.getOneUser(recieverId);
+      const gamesHistory = await this.getGameHistory(recieverId);
       if (gamesHistory) {
         globInfo.NbrOfAllMatches = gamesHistory.length;
         globInfo.NbrOfWinnedMatches = gamesHistory.filter((record) =>
@@ -610,7 +603,7 @@ export class HixcoderService {
     }
   }
 
-  async getUserRanking(senderUsr: string) {
+  async getUserRanking(senderId: string) {
     try {
       const allUsers = await this.prisma.user.findMany();
       const usersRank = await Promise.all(
@@ -628,9 +621,9 @@ export class HixcoderService {
       //   userName: item.userName,
       //   rank: index + 1,
       // }));
-      let userRank = { userName: senderUsr, rank: 0 };
+      let userRank = { userName: senderId, rank: 0 };
       sortedData.map((item, index) => {
-        if (senderUsr === item.userName) {
+        if (senderId === item.userName) {
           userRank.rank = index + 1;
         }
       });
@@ -648,8 +641,8 @@ export class HixcoderService {
       const allUsers = await this.prisma.user.findMany();
       const usersRank = await Promise.all(
         allUsers.map(async (user) => {
-          const winedGames = await this.getNbrOfMatches(user.nickname, 1);
-          const nbrOfMatches = await this.getNbrOfMatches(user.nickname, 3);
+          const winedGames = await this.getNbrOfMatches(user.id, 1);
+          const nbrOfMatches = await this.getNbrOfMatches(user.id, 3);
           let winRate = 0;
           if (nbrOfMatches != 0) {
             winRate = (winedGames * 100) / nbrOfMatches;
@@ -684,7 +677,7 @@ export class HixcoderService {
   // ==========================  Game Posts =========================
 
   async updateGameHistory(
-    senderUsr: string,
+    senderId: string,
     recieverUsr: string,
     senderPt: string,
     recieverPt: string
@@ -692,14 +685,14 @@ export class HixcoderService {
     try {
       const user = await this.prisma.gameHistory.create({
         data: {
-          senderUsr: senderUsr,
-          receiverUsr: recieverUsr,
+          senderId: senderId,
+          receiverId: recieverUsr,
           senderPoints: senderPt,
           receiverPoints: recieverPt,
         },
       });
       if (parseInt(senderPt) > parseInt(recieverPt)) {
-        this.updateLevelAfterGame(senderUsr, "0.23");
+        this.updateLevelAfterGame(senderId, "0.23");
       }
       if (parseInt(senderPt) < parseInt(recieverPt)) {
         this.updateLevelAfterGame(recieverUsr, "0.23");
@@ -712,11 +705,11 @@ export class HixcoderService {
     }
   }
 
-  async updateLevel(senderUsr: string, newLevel: string) {
+  async updateLevel(senderId: string, newLevel: string) {
     try {
       const user = await this.prisma.user.update({
         where: {
-          nickname: senderUsr,
+          id: senderId,
         },
         data: {
           level: newLevel,
@@ -730,11 +723,11 @@ export class HixcoderService {
     }
   }
 
-  async updateLevelAfterGame(senderUsr: string, incrLevelBy: string) {
+  async updateLevelAfterGame(senderId: string, incrLevelBy: string) {
     try {
       const userT = await this.prisma.user.findUnique({
         where: {
-          nickname: senderUsr,
+          id: senderId,
         },
       });
       const currentLevel = parseFloat(userT.level);
@@ -742,7 +735,7 @@ export class HixcoderService {
 
       const user = await this.prisma.user.update({
         where: {
-          nickname: senderUsr,
+          id: senderId,
         },
         data: {
           level: level.toFixed(2),

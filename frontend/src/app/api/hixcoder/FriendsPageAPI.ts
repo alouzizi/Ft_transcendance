@@ -305,14 +305,14 @@ export async function acceptFriendRequest(
 // ==========================    ****    ==========================
 // ==========================  Game Gets ==========================
 
-export async function getGameHistory(senderUsr: string) {
+export async function getGameHistory(senderId: string) {
   const def: gameHistoryDto[] = [];
   try {
-    if (!senderUsr) {
+    if (!senderId) {
       return def;
     }
     const response = await fetch(
-      `${Backend_URL}/hixcoder/gameHistory/${senderUsr}`,
+      `${Backend_URL}/hixcoder/gameHistory/${senderId}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },

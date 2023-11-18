@@ -29,6 +29,7 @@ export declare class UserController {
         nickname: string;
         profilePic: string;
         isTwoFactorAuthEnabled: boolean;
+        level: string;
     }>;
     getAllUser(): Promise<{
         id: string;

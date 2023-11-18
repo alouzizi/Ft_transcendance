@@ -1,13 +1,11 @@
 "use client";
 import CardInfo from "@/app/protected/DashboardPage/components/CardInfo";
-import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
+import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import AchievementItem from "../../AchievementsPage/components/AchievementItem";
-import PopoverMenuDash from "./PopoverMenuDash";
 import {
   getAchievmentsData,
   getAllFriends,
@@ -15,9 +13,9 @@ import {
   getGlobalInfos,
   getUserRanking,
 } from "@/app/api/hixcoder/FriendsPageAPI";
-import { promise } from "zod";
-import { resolve } from "path";
+import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import { useGlobalContext } from "../../context/store";
+import PopoverMenuDash from "./PopoverMenuDash";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
@@ -46,13 +44,15 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         setRank(rankTmp.rank);
 
         // for fetch the level
+        console.log(" ======prompt.friend", prompt.friend);
         const levelTmp = prompt.friend.level.split(".");
         setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
 
         // for fetch the gameHistory
         const gameHistoryTmp: gameHistoryDto[] = await getGameHistory(
-          prompt.friend.nickname
+          prompt.friend.id
         );
+        console.log("gameHistoryTmp", gameHistoryTmp);
         if (gameHistoryTmp.length !== 0) {
           setGameHistory(gameHistoryTmp);
         }
@@ -83,7 +83,6 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
       (acheiv) => acheiv.isUnlocked
     );
   }, [updateInfo]);
-
   return (
     <div className="flex flex-col min-h-screen h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
@@ -203,9 +202,9 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
               .map((record) => (
                 <HistoryItem
                   key={record.id}
-                  firstPlayerName={record.senderUsr}
+                  firstPlayerName={record.senderId}
                   firstPlayerPoints={record.senderPoints}
-                  secondPlayerName={record.receiverUsr}
+                  secondPlayerName={record.receiverId}
                   secondPlayerPoints={record.receiverPoints}
                   firstPlayerImg={record.senderAvatar}
                   secondPlayerImg={record.receiverAvatar}

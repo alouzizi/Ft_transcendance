@@ -1,8 +1,5 @@
 "use client";
-import {
-  getGameHistory,
-  getLeaderBoard,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+import { getLeaderBoard } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useEffect, useState } from "react";
 import LeaderBItem from "./components/LeaderBItem";
 import { useGlobalContext } from "../context/store";

@@ -55,5 +55,12 @@ to do :
 - add loader✅
 - merge with ali ✅
 - fix some responsive errors✅
-- fix backend urls
+- setup docker containers for front, back and database✅
+
+
+to do:
 - fix the find blocked or not exist friend page [error page]
+- fix backend urls
+- fix the history use id instead of username 
+- fix update level function
+- 

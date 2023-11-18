@@ -35,6 +35,7 @@ let UserController = class UserController {
             nickname: user.nickname,
             profilePic: user.profilePic,
             isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
+            level: user.level,
         };
         return temp;
     }

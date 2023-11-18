@@ -34,8 +34,7 @@ let PongServise = class PongServise {
     startGame(ball, player1, player2) {
         ball.x += ball.velocityX;
         ball.y += ball.velocityY;
-        if (ball.y + ball.radius > 400 ||
-            ball.y - ball.radius < 0) {
+        if (ball.y + ball.radius > 400 || ball.y - ball.radius < 0) {
             ball.velocityY = -ball.velocityY;
         }
         let user = ball.x < 600 / 2 ? player1 : player2;
