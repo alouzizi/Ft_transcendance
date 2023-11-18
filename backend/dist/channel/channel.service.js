@@ -159,7 +159,6 @@ let ChannelService = class ChannelService {
                     protected: channel.protected,
                     avatar: channel.avatar,
                     channelOwnerId: channel.channelOwnerId,
-                    inviteLink: channel.inviteLink
                 };
         }
         catch (error) {

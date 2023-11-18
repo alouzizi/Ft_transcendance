@@ -4,6 +4,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { ChannelType } from '@prisma/client';
 
+
 @Controller('channel')
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) { }

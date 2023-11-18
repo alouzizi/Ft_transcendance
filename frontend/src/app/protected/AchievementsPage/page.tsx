@@ -35,7 +35,7 @@ export default function AchievementsPage() {
         <MyDropDown items={items} />
 
         <div
-          className="grid gap-y-2
+          className="grid gap-y-1
           
          // small screen
          grid-cols-1

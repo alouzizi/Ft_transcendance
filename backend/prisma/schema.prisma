@@ -51,6 +51,7 @@ model User {
   Friend       Friend[]
   BlockedUser  BlockedUser[]
   Channel      Channel[]
+  notification NotificationTable[]
 }
 
 model Channel {
@@ -164,3 +165,17 @@ model MutedMember {
 
   @@unique([userId, channelId], name: "Unique_userId_channelId")
 }
+
+model NotificationTable {
+  id String @id @default(uuid())
+
+  subjet      String
+  senderId     String
+  recieverId     String
+  createdAt DateTime @default(now())
+  user       User?   @relation(fields: [senderId], references: [id])
+
+
+}
+
+

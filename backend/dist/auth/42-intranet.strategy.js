@@ -17,8 +17,8 @@ const user_service_1 = require("../user/user.service");
 let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, '42-intranet') {
     constructor(userService) {
         super({
-            clientID: 'u-s4t2ud-7527be8cdb9352288351be959fdbe96d939875e2c2b8cb6f649886e3b5799f4c',
-            clientSecret: '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',
+            clientID: 'u-s4t2ud-0d34f697f052538e1e04d6afced1b035cc7095a5e265512e511b21a76552c238',
+            clientSecret: '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',
             callbackURL: 'http://localhost:4000/auth/42-intranet/callback',
             scope: ['public'],
         });

@@ -10,6 +10,7 @@ import { SocketGatewayModule } from "./socket/socket.module";
 import { HixcoderModule } from "./hixcoder/hixcoder.module";
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { NotificationModule } from './notification/notification.module';
 
 
 @Module({
@@ -27,6 +28,7 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
     }),
+    NotificationModule,
   ],
 })
 export class AppModule { }
