@@ -3,11 +3,6 @@ import { BannedMember, Channel, ChannelMember, ChannelType, MutedMember, Prisma,
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
-
-
-
-
 
 @Injectable()
 export class ChannelService {
@@ -31,7 +26,6 @@ export class ChannelService {
   }
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
-    const uniqueId = uuidv4();
     let bcryptPassword: string = '';
     if (createChannelDto.channelPassword != '')
       bcryptPassword = await bcrypt.hash(createChannelDto.channelPassword, 10);
@@ -44,7 +38,6 @@ export class ChannelService {
           channelType: createChannelDto.channelType,
           protected: createChannelDto.protected,
           avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png",
-          inviteLink: uniqueId,
         }
       })
 
@@ -111,8 +104,6 @@ export class ChannelService {
         }
       }
     }
-
-
   }
 
   async checkOwnerIsAdmin(senderId: string, channelId: string) {

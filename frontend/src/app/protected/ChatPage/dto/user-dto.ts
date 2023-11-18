@@ -98,7 +98,6 @@ type channelDto = {
   channelOwnerId: string;
   protected: boolean;
   channelMember: string[];
-  inviteLink: string;
 }
 
 type memberChannelDto = {

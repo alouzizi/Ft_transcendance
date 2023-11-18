@@ -1,5 +1,4 @@
 "use client";
-
 // components/ImageUpload.tsx
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useEffect, useState } from "react";

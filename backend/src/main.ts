@@ -3,6 +3,7 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
+import express from "express";
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -25,6 +26,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // await app.listen(4000);
+
+
   await app.listen(4000, 'localhost');
 }
 

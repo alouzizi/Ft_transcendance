@@ -1,21 +1,18 @@
 "use client";
-import Switch from '@mui/material/Switch';
-import Cookies from 'js-cookie';
-import Avatar from "public/DefaultAvatar.png";
-import Image from "next/image";
-import Input from '@mui/joy/Input';
-import ImageUpload from "./imageupload";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Backend_URL } from '@/lib/Constants';
 import { useGlobalContext } from '@/app/protected/context/store';
+import { Backend_URL } from '@/lib/Constants';
 import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import Snackbar from '@mui/material/Snackbar';
+import Switch from '@mui/material/Switch';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import Image from "next/image";
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ImageUpload from "./imageupload";
+import { Text } from '@radix-ui/themes';
+import { FaCheckCircle } from 'react-icons/fa';
 
 
 export default function SettingsPage() {
@@ -45,7 +42,6 @@ export default function SettingsPage() {
   }
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(user);
     if (user && event.target.checked == false && user.id !== '-1' && checked) {
       const res = await fetch(`${Backend_URL}/auth/2fa/turn-off/${user.intra_id}`,
         {
@@ -71,32 +67,68 @@ export default function SettingsPage() {
   }, [user.id])
 
 
+
   return (
-    <div className="h-screen flex items-center justify-center">
-      <form className="flex bg-slate-400 border border-green-500 flex-col justify-center gap-6 w-[500px]">
-        <div className="border border-red-500 min-w-[400px] h-40 rounded-2xl flex flex-col items-center w-full pt-10 gap-14">
+    <div className="h-screen flex flex-col items-center justify-center">
+      <div>
 
+        <Text className='text-gray-600 text-xl'>Cover Image</Text>
+        <div className="mt-1 mb-4">
+          <img className="rounded-2xl h-[10rem] w-[30rem]"
+            src='/bg-info.png'></img>
         </div>
-
+        <Text className='text-gray-600 text-xl '>Profile Image</Text>
         <ImageUpload />
-        <div className="flex flex-col w-full border">
-          <input
-            type="text"
-            placeholder="Nickname"
-            className="px-[4px] border border-black rounded mx-auto my-3 w-[90%] h-10 text-black"
-            value={newNickName}
-            onChange={(e) => {
-              setNickName(e.target.value);
-            }}
-          ></input>
-          <div className='flex flex-col items-center justify-center'>
-            <div>
-              <Switch checked={checked}
+
+        <div className="flex flex-col justify-center items-center gap-6 w-[30rem] mt-4">
+          <div className="flex bg-[#F6F7FA] mt-0  border rounded-[10px]  w-[10rem] md:w-[15rem]" >
+            <input type="text" className="bg-[#F6F7FA]  p-1.5 flex w-[20rem]  
+                        text-black placeholder-gray-600 text-sm outline-none rounded-[5px] mr-1"
+              value={newNickName}
+              placeholder="nickname"
+              onChange={(e) => {
+                setNickName(e.target.value);
+              }}
+            >
+            </input>
+            {(newNickName !== user.nickname && newNickName !== "") ?
+              <div className='cursor-pointer flex items-center pr-2' onClick={async () => {
+                if (newNickName.length > 20 || newNickName.length < 3) {
+                  toast.error("nickname error")
+                } else {
+                  try {
+                    const response = await fetch(Backend_URL + `/user/updatUserdata/${user.intra_id}/${newNickName}/tmp`,
+                      {
+                        method: 'POST', headers: {
+                          authorization: `Bearer ${token}`,
+                          'Content-Type': 'application/json',
+                        },
+                      });
+                    if (response.status === 409)
+                      toast.error("nickname aleady exist")
+                    else if ((response.status === 201)) {
+                      toast.success("nickname has been change")
+                    }
+                  } catch (error) {
+                  }
+                }
+              }}>
+                <FaCheckCircle size={18} color="black" />
+              </div>
+              :
+              <></>}
+          </div >
+          <div className='flex flex-col items-center justify-center mt-2'>
+
+
+            <div className="flex items-center justify-start ">
+              <Switch checked={checked} color='info'
                 onChange={handleChange} />
               <label className="text-white">Two-factor Authentification</label>
             </div>
 
-            {urlImage === "" ? <></> :
+            {urlImage === "" ?
+              <></> :
               <Image
                 width={200}
                 height={200}
@@ -104,22 +136,23 @@ export default function SettingsPage() {
                 alt="Preview"
                 className="w-40 h-40"
               />}
-            {urlImage === "" ? <></> :
+            {urlImage === "" ?
+              <></> :
               <div className='flex my-3'>
-                <input type="text" className="
-              bg-[#f1f3f8] text-black placeholder-gray-300 text-sm outline-none rounded border-2 border-blue-600"
+
+                <input type="text" className="bg-[#F6F7FA]  p-1.5 flex w-[10rem]  
+                        text-black placeholder-gray-600 text-sm outline-none rounded-[5px] mr-1"
                   value={keyQrCode}
+                  placeholder="code 6 digit"
                   onChange={(e) => {
                     setKeyQrCode(e.target.value);
                   }}
                 >
-
                 </input>
 
-                <Button variant="contained" className='ml-2 bg-blue-600' onClick={async () => {
+                <Button variant="contained" className='ml-2 bg-[#4069FF]' onClick={async () => {
 
                   if (keyQrCode !== "") {
-
                     const response = await fetch(Backend_URL + `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
                       {
                         method: 'POST', headers: {
@@ -143,26 +176,9 @@ export default function SettingsPage() {
             }
           </div>
 
-
-
-
         </div>
-        <button className="border text-white text-center border-black bg-[#4069FF] 
-          rounded-xl justify-center mx-auto item-center w-[50%] h-14 font-bold"
-          onClick={async () => {
-            const token = Cookies.get('access_token');
-            const res = await axios.get(Backend_URL + `/user/updatUserdata/${user.intra_id}/${newNickName}/tmp`, {
-              method: 'GET',
-              headers: {
-                authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            });
-          }}>
-          SAVE
-        </button>
-      </form>
-      <ToastContainer />
+        <ToastContainer />
+      </div>
     </div>
   );
 }

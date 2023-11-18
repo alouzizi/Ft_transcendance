@@ -72,8 +72,6 @@ model Channel {
   ChannelMember ChannelMember[]
   BannedMember  BannedMember[]
   MutedMember   MutedMember[]
-
-  inviteLink String?
 }
 
 model Message {

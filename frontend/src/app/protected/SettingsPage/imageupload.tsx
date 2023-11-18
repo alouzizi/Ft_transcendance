@@ -1,59 +1,89 @@
 "use client";
-// components/ImageUpload.tsx
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { BiImageAdd } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useGlobalContext } from "@/app/protected/context/store";
 import { IconButton } from "@mui/material";
+import { Backend_URL } from "@/lib/Constants";
+import Cookies from 'js-cookie';
+import Badge from "@mui/material/Badge";
 
 const ImageUpload = () => {
+
+  const intra_id = Cookies.get('intra_id');
   const { user } = useGlobalContext();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string>('');
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         setSelectedImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+
+      const formData = new FormData();
+      formData.append('file', file);
+      try { // Content-Type: 
+        const response = await fetch(Backend_URL + `/user/${intra_id}/uploadImage`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            // authorization: `Bearer ${token}`,
+          },
+        });
+        const result = await response.json();
+        console.log(result.message);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     }
   };
 
 
-  useEffect(() => {
-    console.log(selectedImage);
-  }, [selectedImage]);
-
   return (
-    <div className="kborder ml-4 -mt-24">
-      <IconButton className="z-50 relative top-10 left-11">
-        <label htmlFor="image-upload">
-          <input
-            className="border-4 border-pink-500"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            id="image-upload"
-            style={{ display: "none" }}
-          />
-          <div className="bg-slate-50 rounded-full h-8 w-8 flex items-center justify-center">
-            <AddPhotoAlternateIcon style={{ color: "black" }} />
-          </div>
-        </label>
-      </IconButton>
-      <div>
+    <div className="mt-1 flex justify-center">
+      <Badge
+        badgeContent={
+          <label className='rounded-full p-[1.5px]  '>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={uploadPhoto}
+              id="image-upload"
+              style={{ display: "none" }}
+            />
+            <BiImageAdd size={18}
+              style={{ color: "black" }} />
+          </label>
+        }
+        sx={{
+          "& .MuiBadge-badge": {
+            background: "white",
+            width: 25,
+            height: 25,
+            borderRadius: 50,
+          },
+        }}
+        overlap="circular"
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+
         <Image
           width={100}
           height={100}
           src={selectedImage || user.profilePic}
           alt="Preview"
-          className="w-20 h-20 rounded-full bg-cover object-contain"
+          className="w-20 h-20 rounded-full bg-cover object-contain "
         />
-      </div>
-    </div>
+      </Badge>
+
+
+    </div >
   );
 };
 

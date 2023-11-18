@@ -11,7 +11,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['cdn.intra.42.fr'],
+    domains: ['cdn.intra.42.fr', 'localhost:4000'],
   },
 };
 

@@ -1,7 +1,7 @@
-import { Injectable, } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, UnauthorizedException, } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 
-import { BlockedUser, Status, User } from "@prisma/client";
+import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 
 
 @Injectable()
@@ -267,18 +267,49 @@ export class UserService {
   }
 
   async updatUserdata(intra_id: string, nickname: string, image: string) {
-    const user = await this.prisma.user.update({
-      where: {
-        intra_id: intra_id,
-      },
-      data: {
-        nickname: nickname,
-        // profilePic: image,
-      }
-    });
-    return user;
-  }
 
+    const usr = await this.prisma.user.findUnique({ where: { intra_id } });
+    if (usr.nickname === nickname) {
+      return;
+    }
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          intra_id: intra_id,
+        },
+        data: {
+          nickname: nickname,
+        }
+      });
+      return { status: 200 };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new HttpException('nickname aleady exist', HttpStatus.CONFLICT);
+        } else {
+          return { status: 202, error: true }
+        }
+      }
+    }
+  }
+  async uploadImage(intra_id: string, path: string) {
+    console.log(intra_id);
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          intra_id: intra_id,
+        },
+        data: {
+          profilePic: `http://localhost:4000/${path}`,
+        }
+      });
+      console.log('File uploaded successfully')
+      return { message: 'File uploaded successfully' };
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
   async findByIntraId(intra_id: string) {
     // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
