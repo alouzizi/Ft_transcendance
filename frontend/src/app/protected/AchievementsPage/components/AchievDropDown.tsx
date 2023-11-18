@@ -61,7 +61,7 @@ export default function AchievDropDown(prompt: {
   React.useEffect(() => {
     async function getData() {
       try {
-        const globalInfoTmp = await getGlobalInfos(prompt.friend.nickname);
+        const globalInfoTmp = await getGlobalInfos(prompt.friend.id);
         setGlobalInfo(globalInfoTmp);
       } catch (error: any) {
         console.log("getData error: " + error);

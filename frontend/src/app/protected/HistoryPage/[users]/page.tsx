@@ -1,5 +1,5 @@
 "use client";
-import { getIsBlocked, getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
+import { getIsBlocked, getUserByNick } from "@/app/api/hixcoder/FriendsPageAPI";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ErrorPage from "../../DashboardPage/components/ErrorPage";
@@ -16,7 +16,7 @@ export default function HistoryPage() {
     const lastSegment = segments.pop() ?? "";
     async function getData() {
       try {
-        const usr = await getOneUser(lastSegment);
+        const usr = await getUserByNick(lastSegment);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         if (isBlocked.isBlocked) {

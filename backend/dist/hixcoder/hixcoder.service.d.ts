@@ -22,7 +22,7 @@ export declare class HixcoderService {
     }[] | {
         error: any;
     }>;
-    getOneUser(recieverId: string): Promise<{
+    getUserByNick(recieverUsr: string): Promise<{
         id: string;
         intra_id: string;
         first_name: string;
@@ -173,6 +173,8 @@ export declare class HixcoderService {
     getGameHistory(senderId: string): Promise<{
         receiverAvatar: string;
         senderAvatar: string;
+        receiverUsr: string;
+        senderUsr: string;
         id: string;
         createdAt: Date;
         senderId: string;
@@ -181,6 +183,22 @@ export declare class HixcoderService {
         receiverPoints: string;
     }[]>;
     isWined(record: GameHistory, isWined: boolean, user: User): boolean;
+    getUserById(recieverId: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }>;
     getNbrOfMatches(recieverId: string, isWined: number): Promise<number>;
     catch(error: any): {
         error: any;
@@ -189,7 +207,7 @@ export declare class HixcoderService {
         error: any;
     }>;
     getUserRanking(senderId: string): Promise<{
-        userName: string;
+        userId: string;
         rank: number;
     } | {
         error: any;

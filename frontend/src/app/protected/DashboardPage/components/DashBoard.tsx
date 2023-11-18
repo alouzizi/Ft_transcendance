@@ -11,6 +11,7 @@ import {
   getAllFriends,
   getGameHistory,
   getGlobalInfos,
+  getUserByNick,
   getUserRanking,
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
@@ -19,6 +20,7 @@ import PopoverMenuDash from "./PopoverMenuDash";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
+  const [friend, setFriend] = useState<ownerDto>(prompt.friend);
   const { user, updateInfo } = useGlobalContext();
   const [isFriend, setIsFriend] = useState(false);
   const [gameHistory, setGameHistory] = useState<gameHistoryDto[]>([]);
@@ -40,19 +42,18 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     async function getData() {
       try {
         // for fetch the ranking
-        const rankTmp = await getUserRanking(prompt.friend.nickname);
+        const rankTmp = await getUserRanking(prompt.friend.id);
         setRank(rankTmp.rank);
+        console.log("globalInfoTmp", rankTmp.rank);
 
         // for fetch the level
-        console.log(" ======prompt.friend", prompt.friend);
-        const levelTmp = prompt.friend.level.split(".");
+        const levelTmp = friend.level.split(".");
         setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
 
         // for fetch the gameHistory
         const gameHistoryTmp: gameHistoryDto[] = await getGameHistory(
           prompt.friend.id
         );
-        console.log("gameHistoryTmp", gameHistoryTmp);
         if (gameHistoryTmp.length !== 0) {
           setGameHistory(gameHistoryTmp);
         }
@@ -64,7 +65,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         );
 
         // for fetch the globalInfoTmp
-        const globalInfoTmp = await getGlobalInfos(prompt.friend.nickname);
+        const globalInfoTmp = await getGlobalInfos(prompt.friend.id);
         setGlobalInfo(globalInfoTmp);
 
         //for set the win rate
@@ -74,6 +75,10 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             globalInfoTmp.NbrOfAllMatches;
           setWinRate(winRate);
         }
+
+        // update friend info
+        const usr = await getUserByNick(prompt.friend.nickname);
+        setFriend(usr);
       } catch (error: any) {
         console.log("getData error: " + error);
       }
@@ -83,6 +88,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
       (acheiv) => acheiv.isUnlocked
     );
   }, [updateInfo]);
+
   return (
     <div className="flex flex-col min-h-screen h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
       {/* this is the CardInfo */}
@@ -202,9 +208,9 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
               .map((record) => (
                 <HistoryItem
                   key={record.id}
-                  firstPlayerName={record.senderId}
+                  firstPlayerName={record.senderUsr}
                   firstPlayerPoints={record.senderPoints}
-                  secondPlayerName={record.receiverId}
+                  secondPlayerName={record.receiverUsr}
                   secondPlayerPoints={record.receiverPoints}
                   firstPlayerImg={record.senderAvatar}
                   secondPlayerImg={record.receiverAvatar}

@@ -40,9 +40,9 @@ export default function HistoryDropDown(prompt: {
         senderPoints = record.receiverPoints;
         receiverPoints = record.senderPoints;
       }
-      if (senderId === prompt.friend.nickname) {
+      if (senderId === prompt.friend.id) {
         return parseInt(senderPoints) > parseInt(receiverPoints);
-      } else if (receiverId === prompt.friend.nickname) {
+      } else if (receiverId === prompt.friend.id) {
         return parseInt(senderPoints) < parseInt(receiverPoints);
       }
     }
@@ -130,9 +130,9 @@ export default function HistoryDropDown(prompt: {
             .map((record) => (
               <HistoryItem
                 key={record.id}
-                firstPlayerName={record.senderId}
+                firstPlayerName={record.senderUsr}
                 firstPlayerPoints={record.senderPoints}
-                secondPlayerName={record.receiverId}
+                secondPlayerName={record.receiverUsr}
                 secondPlayerPoints={record.receiverPoints}
                 firstPlayerImg={record.senderAvatar}
                 secondPlayerImg={record.receiverAvatar}

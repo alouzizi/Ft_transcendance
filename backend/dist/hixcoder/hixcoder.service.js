@@ -34,17 +34,17 @@ let HixcoderService = class HixcoderService {
             };
         }
     }
-    async getOneUser(recieverId) {
+    async getUserByNick(recieverUsr) {
         try {
             const oneUser = await this.prisma.user.findFirst({
                 where: {
-                    id: recieverId,
+                    nickname: recieverUsr,
                 },
             });
             return oneUser;
         }
         catch (error) {
-            console.log("getOneUser error: ", error);
+            console.log("getUserByNick error: ", error);
             return null;
         }
     }
@@ -74,7 +74,7 @@ let HixcoderService = class HixcoderService {
             };
         }
         catch (error) {
-            console.log("getOneUser error: ", error);
+            console.log("getIsBlocked error: ", error);
             return null;
         }
     }
@@ -474,12 +474,14 @@ let HixcoderService = class HixcoderService {
                 },
             });
             const usersWithAvatar = users.map((user) => {
-                const receiverAvatar = allUsers.find((item) => item.id === user.receiverId).profilePic;
-                const senderAvatar = allUsers.find((item) => item.id === user.senderId).profilePic;
+                const receiver = allUsers.find((item) => item.id === user.receiverId);
+                const sender = allUsers.find((item) => item.id === user.senderId);
                 return {
                     ...user,
-                    receiverAvatar: receiverAvatar,
-                    senderAvatar: senderAvatar,
+                    receiverAvatar: receiver.profilePic,
+                    senderAvatar: sender.profilePic,
+                    receiverUsr: receiver.nickname,
+                    senderUsr: sender.nickname,
                 };
             });
             return usersWithAvatar;
@@ -500,15 +502,29 @@ let HixcoderService = class HixcoderService {
             senderPoints = record.receiverPoints;
             receiverPoints = record.senderPoints;
         }
-        if (senderId === user.nickname) {
+        if (senderId === user.id) {
             return parseInt(senderPoints) > parseInt(receiverPoints);
         }
-        else if (receiverId === user.nickname) {
+        else if (receiverId === user.id) {
             return parseInt(senderPoints) < parseInt(receiverPoints);
         }
     }
+    async getUserById(recieverId) {
+        try {
+            const oneUser = await this.prisma.user.findFirst({
+                where: {
+                    id: recieverId,
+                },
+            });
+            return oneUser;
+        }
+        catch (error) {
+            console.log("getUserById error: ", error);
+            return null;
+        }
+    }
     async getNbrOfMatches(recieverId, isWined) {
-        const user = await this.getOneUser(recieverId);
+        const user = await this.getUserById(recieverId);
         const gamesHistory = await this.getGameHistory(recieverId);
         let NbrOfMatches = 0;
         if (gamesHistory) {
@@ -537,7 +553,7 @@ let HixcoderService = class HixcoderService {
                 NbrOfBlockedFriends: 0,
                 NbrOfInvitedFriends: 0,
             };
-            const user = await this.getOneUser(recieverId);
+            const user = await this.getUserById(recieverId);
             const gamesHistory = await this.getGameHistory(recieverId);
             if (gamesHistory) {
                 globInfo.NbrOfAllMatches = gamesHistory.length;
@@ -568,16 +584,16 @@ let HixcoderService = class HixcoderService {
         try {
             const allUsers = await this.prisma.user.findMany();
             const usersRank = await Promise.all(allUsers.map(async (user) => {
-                const userRank = await this.getNbrOfMatches(user.nickname, 1);
+                const userRank = await this.getNbrOfMatches(user.id, 1);
                 return {
-                    userName: user.nickname,
+                    userId: user.id,
                     winedGames: userRank,
                 };
             }));
             const sortedData = usersRank.sort((a, b) => b.winedGames - a.winedGames);
-            let userRank = { userName: senderId, rank: 0 };
+            let userRank = { userId: senderId, rank: 0 };
             sortedData.map((item, index) => {
-                if (senderId === item.userName) {
+                if (senderId === item.userId) {
                     userRank.rank = index + 1;
                 }
             });

@@ -20,7 +20,7 @@ export declare class HixcoderController {
     }[] | {
         error: any;
     }>;
-    getOneUser(reciever: string): Promise<{
+    getUserByNick(reciever: string): Promise<{
         id: string;
         intra_id: string;
         first_name: string;
@@ -171,6 +171,8 @@ export declare class HixcoderController {
     getGameHistory(sender: string): Promise<{
         receiverAvatar: string;
         senderAvatar: string;
+        receiverUsr: string;
+        senderUsr: string;
         id: string;
         createdAt: Date;
         senderId: string;
@@ -181,8 +183,8 @@ export declare class HixcoderController {
     getGlobalInfos(recieverId: string): Promise<import("./dto").globalInfoDto | {
         error: any;
     }>;
-    getUserRanking(senderUsr: string): Promise<{
-        userName: string;
+    getUserRanking(recieverId: string): Promise<{
+        userId: string;
         rank: number;
     } | {
         error: any;

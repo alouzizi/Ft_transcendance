@@ -170,8 +170,8 @@ export const GlobalContextProvider = ({
         router.push("/auth");
       }
     };
-    if (user.id === "-1") getDataUser();
-  }, []);
+    getDataUser();
+  }, [updateInfo]);
 
   useEffect(() => {
     const update = async () => {

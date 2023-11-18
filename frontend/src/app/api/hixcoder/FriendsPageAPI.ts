@@ -34,11 +34,11 @@ export async function getNavSearchUsers(userId: string) {
   }
 }
 
-export async function getOneUser(recieverId: string) {
+export async function getUserByNick(recieverUsr: string) {
   try {
-    console.log(`${Backend_URL}/hixcoder/oneUser/${recieverId}`);
+    console.log(`${Backend_URL}/hixcoder/getUserByNick/${recieverUsr}`);
     const response = await fetch(
-      `${Backend_URL}/hixcoder/oneUser/${recieverId}`,
+      `${Backend_URL}/hixcoder/getUserByNick/${recieverUsr}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -47,7 +47,7 @@ export async function getOneUser(recieverId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.log("getOneUser error: " + error);
+    console.log("getUserByNick error: " + error);
     return null;
   }
 }
@@ -347,7 +347,7 @@ export async function getLeaderBoard() {
   }
 }
 
-export async function getGlobalInfos(senderUsr: string) {
+export async function getGlobalInfos(senderId: string) {
   const def = {
     NbrOfAllMatches: 0,
     NbrOfWinnedMatches: 0,
@@ -357,11 +357,11 @@ export async function getGlobalInfos(senderUsr: string) {
     NbrOfInvitedFriends: 0,
   };
   try {
-    if (senderUsr === "") {
+    if (senderId === "") {
       return def;
     }
     const response = await fetch(
-      `${Backend_URL}/hixcoder/globalInfos/${senderUsr}`,
+      `${Backend_URL}/hixcoder/globalInfos/${senderId}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -483,17 +483,17 @@ export function getAchievmentsData(globalInfo: globalInfoDto) {
   return achievementsList;
 }
 
-export async function getUserRanking(senderUsr: string) {
+export async function getUserRanking(senderId: string) {
   const def = {
     userName: "",
     rank: 0,
   };
   try {
-    if (!senderUsr) {
+    if (!senderId) {
       return def;
     }
     const response = await fetch(
-      `${Backend_URL}/hixcoder/userRanking/${senderUsr}`,
+      `${Backend_URL}/hixcoder/userRanking/${senderId}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -509,26 +509,20 @@ export async function getUserRanking(senderUsr: string) {
 
 // ==========================  Game Posts =========================
 
-export async function updateLevel(senderId: string, newLevel: string) {
-  try {
-    const response = await fetch(
-      `${Backend_URL}/hixcoder/updateLevel/${senderId}/${newLevel}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    const data = await response.json();
+// export async function updateLevel(senderId: string, newLevel: string) {
+//   try {
+//     const response = await fetch(
+//       `${Backend_URL}/hixcoder/updateLevel/${senderId}/${newLevel}`,
+//       {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//       }
+//     );
+//     const data = await response.json();
 
-    return data;
-  } catch (error: any) {
-    console.log("updateLevel error: " + error);
-    return null;
-  }
-}
-
-// - in the first 10 levels after wining a game you win 100px
-// - between 10 and 20 you win 200px
-// - and > 20 you win 300px
-
-// - first level need 200px and each level heigher need another 100px
+//     return data;
+//   } catch (error: any) {
+//     console.log("updateLevel error: " + error);
+//     return null;
+//   }
+// }

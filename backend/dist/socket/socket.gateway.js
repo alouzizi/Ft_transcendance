@@ -156,16 +156,6 @@ let SocketGateway = class SocketGateway {
         const player1 = this.rooms.get(roomName)[0];
         const player2 = this.rooms.get(roomName)[1];
         if (score1 + score2 === this.ROUND_LIMIT) {
-            const player1Usr = await this.prisma.user.findUnique({
-                where: {
-                    id: player1,
-                },
-            });
-            const player2Usr = await this.prisma.user.findUnique({
-                where: {
-                    id: player2,
-                },
-            });
             if (score1 == score2) {
                 console.log(player1, player2);
                 this.server.to(roomName).emit("gameOver", "draw");
@@ -180,7 +170,7 @@ let SocketGateway = class SocketGateway {
                 this.server.to(player1).emit("gameOver", "lose");
                 this.server.to(player2).emit("gameOver", "win");
             }
-            this.hixcoder.updateGameHistory(player1Usr.nickname, player2Usr.nickname, score1.toString(), score2.toString());
+            this.hixcoder.updateGameHistory(player1, player2, score1.toString(), score2.toString());
             this.stopEmittingBallPosition(roomName);
         }
     }

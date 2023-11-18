@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import * as argon from "argon2";
 import { isEmpty } from "class-validator";
 import { globalInfoDto } from "./dto";
 import { GameHistory, User } from "@prisma/client";
@@ -27,16 +26,16 @@ export class HixcoderService {
     }
   }
 
-  async getOneUser(recieverId: string) {
+  async getUserByNick(recieverUsr: string) {
     try {
       const oneUser = await this.prisma.user.findFirst({
         where: {
-          id: recieverId,
+          nickname: recieverUsr,
         },
       });
       return oneUser;
     } catch (error) {
-      console.log("getOneUser error: ", error);
+      console.log("getUserByNick error: ", error);
       return null;
     }
   }
@@ -66,7 +65,7 @@ export class HixcoderService {
         isBlocked: false,
       };
     } catch (error) {
-      console.log("getOneUser error: ", error);
+      console.log("getIsBlocked error: ", error);
       return null;
     }
   }
@@ -500,16 +499,14 @@ export class HixcoderService {
       });
 
       const usersWithAvatar = users.map((user) => {
-        const receiverAvatar = allUsers.find(
-          (item) => item.id === user.receiverId
-        ).profilePic;
-        const senderAvatar = allUsers.find(
-          (item) => item.id === user.senderId
-        ).profilePic;
+        const receiver = allUsers.find((item) => item.id === user.receiverId);
+        const sender = allUsers.find((item) => item.id === user.senderId);
         return {
           ...user,
-          receiverAvatar: receiverAvatar,
-          senderAvatar: senderAvatar,
+          receiverAvatar: receiver.profilePic,
+          senderAvatar: sender.profilePic,
+          receiverUsr: receiver.nickname,
+          senderUsr: sender.nickname,
         };
       });
       return usersWithAvatar;
@@ -530,15 +527,29 @@ export class HixcoderService {
       senderPoints = record.receiverPoints;
       receiverPoints = record.senderPoints;
     }
-    if (senderId === user.nickname) {
+    if (senderId === user.id) {
       return parseInt(senderPoints) > parseInt(receiverPoints);
-    } else if (receiverId === user.nickname) {
+    } else if (receiverId === user.id) {
       return parseInt(senderPoints) < parseInt(receiverPoints);
     }
   }
 
+  async getUserById(recieverId: string) {
+    try {
+      const oneUser = await this.prisma.user.findFirst({
+        where: {
+          id: recieverId,
+        },
+      });
+      return oneUser;
+    } catch (error) {
+      console.log("getUserById error: ", error);
+      return null;
+    }
+  }
+
   async getNbrOfMatches(recieverId: string, isWined: number) {
-    const user = await this.getOneUser(recieverId);
+    const user = await this.getUserById(recieverId);
     const gamesHistory = await this.getGameHistory(recieverId);
     let NbrOfMatches = 0;
     if (gamesHistory) {
@@ -572,7 +583,7 @@ export class HixcoderService {
         NbrOfBlockedFriends: 0,
         NbrOfInvitedFriends: 0,
       };
-      const user = await this.getOneUser(recieverId);
+      const user = await this.getUserById(recieverId);
       const gamesHistory = await this.getGameHistory(recieverId);
       if (gamesHistory) {
         globInfo.NbrOfAllMatches = gamesHistory.length;
@@ -608,22 +619,18 @@ export class HixcoderService {
       const allUsers = await this.prisma.user.findMany();
       const usersRank = await Promise.all(
         allUsers.map(async (user) => {
-          const userRank = await this.getNbrOfMatches(user.nickname, 1);
+          const userRank = await this.getNbrOfMatches(user.id, 1);
 
           return {
-            userName: user.nickname,
+            userId: user.id,
             winedGames: userRank,
           };
         })
       );
       const sortedData = usersRank.sort((a, b) => b.winedGames - a.winedGames);
-      // const rankedData = sortedData.map((item, index) => ({
-      //   userName: item.userName,
-      //   rank: index + 1,
-      // }));
-      let userRank = { userName: senderId, rank: 0 };
+      let userRank = { userId: senderId, rank: 0 };
       sortedData.map((item, index) => {
-        if (senderId === item.userName) {
+        if (senderId === item.userId) {
           userRank.rank = index + 1;
         }
       });

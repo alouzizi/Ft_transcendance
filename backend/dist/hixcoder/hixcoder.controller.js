@@ -22,8 +22,8 @@ let HixcoderController = class HixcoderController {
     async getallUsers(sender) {
         return this.hixcoderService.getAllUsers(sender);
     }
-    async getOneUser(reciever) {
-        return this.hixcoderService.getOneUser(reciever);
+    async getUserByNick(reciever) {
+        return this.hixcoderService.getUserByNick(reciever);
     }
     async getIsBlocked(sender, reciever) {
         return this.hixcoderService.getIsBlocked(sender, reciever);
@@ -73,8 +73,8 @@ let HixcoderController = class HixcoderController {
     async getGlobalInfos(recieverId) {
         return this.hixcoderService.getGlobalInfos(recieverId);
     }
-    async getUserRanking(senderUsr) {
-        return this.hixcoderService.getUserRanking(senderUsr);
+    async getUserRanking(recieverId) {
+        return this.hixcoderService.getUserRanking(recieverId);
     }
     async getLeaderBoard() {
         return this.hixcoderService.getLeaderBoard();
@@ -95,12 +95,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HixcoderController.prototype, "getallUsers", null);
 __decorate([
-    (0, common_1.Get)("/oneUser/:recieverUsr"),
+    (0, common_1.Get)("/getUserByNick/:recieverUsr"),
     __param(0, (0, common_1.Param)("recieverUsr")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], HixcoderController.prototype, "getOneUser", null);
+], HixcoderController.prototype, "getUserByNick", null);
 __decorate([
     (0, common_1.Get)("/isBlocked/:sender/:reciever"),
     __param(0, (0, common_1.Param)("sender")),

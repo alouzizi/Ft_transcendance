@@ -1,5 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
-import { AuthDto } from "src/auth/dto";
+import { Controller, Get, Param, Post } from "@nestjs/common";
 import { HixcoderService } from "./hixcoder.service";
 
 @Controller("hixcoder")
@@ -15,9 +14,9 @@ export class HixcoderController {
   }
 
   // for get one user
-  @Get("/oneUser/:recieverUsr")
-  async getOneUser(@Param("recieverUsr") reciever: string) {
-    return this.hixcoderService.getOneUser(reciever);
+  @Get("/getUserByNick/:recieverUsr")
+  async getUserByNick(@Param("recieverUsr") reciever: string) {
+    return this.hixcoderService.getUserByNick(reciever);
   }
 
   // for is Bolcked
@@ -151,8 +150,8 @@ export class HixcoderController {
 
   // for getUserRanking
   @Get("/userRanking/:senderUsr")
-  async getUserRanking(@Param("senderUsr") senderUsr: string) {
-    return this.hixcoderService.getUserRanking(senderUsr);
+  async getUserRanking(@Param("senderUsr") recieverId: string) {
+    return this.hixcoderService.getUserRanking(recieverId);
   }
 
   // for getUserRanking

@@ -7,4 +7,6 @@ type gameHistoryDto = {
   receiverPoints: string;
   receiverAvatar: string;
   senderAvatar: string;
+  receiverUsr: string;
+  senderUsr: string;
 };
