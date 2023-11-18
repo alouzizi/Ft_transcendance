@@ -59,12 +59,14 @@ let AuthController = class AuthController {
         }
         res.cookie('intra_id', req.user.intra_id);
         const diff = ((new Date()).getTime() - (new Date(`${req.user.createdAt}`)).getTime()) / 1000;
-        if (diff < 120)
-            res.redirect("http://localhost:3000/protected/SettingsPage");
+        if (diff < 120) {
+            res.cookie('access_token', ret.access_token);
+            res.redirect("http://10.12.13.5:3000/protected/SettingsPage");
+        }
         if (req.user.isTwoFactorAuthEnabled)
-            res.redirect("http://localhost:3000/Checker2faAuth");
+            res.redirect("http://10.12.13.5:3000/Checker2faAuth");
         res.cookie('access_token', ret.access_token);
-        res.redirect("http://localhost:3000/protected/DashboardPage");
+        res.redirect("http://10.12.13.5:3000/protected/DashboardPage");
     }
 };
 exports.AuthController = AuthController;

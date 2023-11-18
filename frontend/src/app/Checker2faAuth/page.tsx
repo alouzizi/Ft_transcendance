@@ -28,11 +28,8 @@ export default function login() {
         </input>
 
         <Button variant="contained" className='ml-2 bg-blue-600' onClick={async () => {
-
           if (keyQrCode !== "") {
-
             const intra_id = Cookies.get('intra_id');
-
             try {
               const res = await axios.get(
                 Backend_URL + `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`);

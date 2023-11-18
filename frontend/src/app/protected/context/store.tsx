@@ -173,7 +173,7 @@ export const GlobalContextProvider = ({ children }: {
                 const owner = await res.json();
                 setUser(owner);
             } else {
-                // router.push('/auth');
+                router.push('/auth');
             }
         };
         if (user.id === "-1")
