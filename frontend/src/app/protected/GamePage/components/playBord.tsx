@@ -38,7 +38,7 @@ const MyComponent = ({ imageSrc, text, title, link }: MyComponentProps) => {
           onClick={() => {
             if (link == "/protected/GamePage/random") {
               if (socket?.connected) router.push(link);
-              else alert("Refresh the page and try again!");
+              else window.alert("Refresh the page and try again!");
             } else {
               router.push(link);
             }

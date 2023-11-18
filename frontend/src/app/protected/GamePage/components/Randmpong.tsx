@@ -46,7 +46,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
   const ball: Ball = {
     x: 0,
     y: 0,
-    radius: difficulty,
+    radius: 10,
     speed: 5,
     velocityX: 5,
     velocityY: 5,
@@ -161,13 +161,13 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
     };
 
-    function handlePopstate(){
-      console.log("popstate");
-      socket?.emit("opponentLeft", {room: room, userId:user.id});
-      // router.push('/protected/GamePage/random');
-    };
+    // function handlePopstate(){
+    //   console.log("popstate");
+    //   socket?.emit("opponentLeft", {room: room, userId:user.id});
+    //   // router.push('/protected/GamePage/random');
+    // };
 
-    window.addEventListener('popstate', handlePopstate);
+    // window.addEventListener('popstate', handlePopstate);
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener("resize", handleWindowResize);
     window.addEventListener("mousemove", handleMouseMove);

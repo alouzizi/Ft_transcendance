@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function login() {
   const handleLogin = () => {
-    window.location.href = "http://10.12.2.15:4000/auth/login42";
+    window.location.href = "http://10.12.5.1:4000/auth/login42";
   };
 
   return (

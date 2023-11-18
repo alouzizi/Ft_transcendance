@@ -72,191 +72,39 @@ export function drawCanvas(
   player: Padlle,
   canvasMap :number,
 ) {
+if(canvasMap === 1)
+  animation1(ctx, canvas, canvasCtx, ball, computer, player, canvasMap);
+else if(canvasMap === 2)
+  animation2(ctx, canvas, canvasCtx, ball, computer, player, canvasMap);
+else if(canvasMap === 3)
+  animation3(ctx, canvas, canvasCtx, ball, computer, player, canvasMap);
+}
 
 
+export function animation1(
+  ctx: any,
+  canvas: any,
+  canvasCtx: Canvas,
+  ball: Ball,
+  computer: Padlle,
+  player: Padlle,
+  canvasMap :number,
+) {
 
-
-  drawRect(ctx, {
-    x: 0,
-    y: 0,
-    width: canvasCtx.width,
-    height: canvasCtx.height,
-    color: "black",
-    score: 0,
-  });
-
-  // Draw the net
-  drawNet(ctx, canvas, canvasCtx);
-
-  // const gradient = ctx.createLinearGradient(
-  //   0,
-  //   0,
-  //   canvasCtx.width,
-  //   canvasCtx.height
-  // );
-  // gradient.addColorStop(0, "#232323"); // Dark color
-  // gradient.addColorStop(1, "#4d4d4d"); // Light color
-  // ctx.fillStyle = gradient;
-  // ctx.fillRect(0, 0, canvasCtx.width, canvasCtx.height);
-
-
-
-
-
-
-
-
-
-if (canvasMap === 1) {
-  const backgroundColor = "#1a1a1a";
-  ctx.fillStyle = backgroundColor;
+  // ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  ctx.fillStyle = "BLACK";
   ctx.fillRect(0, 0, canvasCtx.width, canvasCtx.height);
-  
-  // Draw a subtle grid pattern for added visual interest
-  ctx.strokeStyle = "#444";
-  ctx.lineWidth = 1;
-  
-  for (let i = 0; i < canvasCtx.width; i += 15) {
-    ctx.beginPath();
-    ctx.moveTo(i, 0);
-    ctx.lineTo(i, canvasCtx.height);
-    ctx.stroke();
-  }
-  
-  for (let i = 0; i < canvasCtx.height; i += 15) {
-    ctx.beginPath();
-    ctx.moveTo(0, i);
-    ctx.lineTo(canvasCtx.width, i);
-    ctx.stroke();
-  }
-  
-  // Redraw the net with a more subtle style
-  ctx.strokeStyle = "#999";
-  ctx.lineWidth = 2;
-  
-  for (let i = 0; i <= canvasCtx.height; i += 20) {
-    ctx.beginPath();
-    ctx.moveTo(canvasCtx.width / 2, i);
-    ctx.lineTo(canvasCtx.width / 2, i + 10);
-    ctx.stroke();
-  }
+  drawNet(ctx, canvas, canvasCtx);
+  drawCircleAnimation4(ctx, ball);
+  drawRectAnimation1(ctx, player);
+  drawRectAnimation1(ctx, computer);
 
-  drawCircle1(ctx, ball);
-  drawRect1(ctx, player);
-  drawRect1(ctx, computer);
-
-
+  drawTextAnimation1(ctx, canvasCtx.width / 4, canvasCtx.height / 6, player.score);
+  drawTextAnimation1(ctx, (3 * canvasCtx.width) / 4, canvasCtx.height / 6, computer.score);
 }
 
 
-
-else if (canvasMap === 2) {
-
-// Set a gradient background for a more dynamic look
-const gradient = ctx.createLinearGradient(0, 0, canvasCtx.width, canvasCtx.height);
-gradient.addColorStop(0, "#2c3e50"); // Dark blue
-gradient.addColorStop(1, "#34495e"); // Dark gray-blue
-ctx.fillStyle = gradient;
-ctx.fillRect(0, 0, canvasCtx.width, canvasCtx.height);
-
-// Redraw the net with a stylish pattern
-ctx.strokeStyle = "#ecf0f1"; // Light gray
-ctx.lineWidth = 2;
-
-for (let i = 0; i <= canvasCtx.height; i += 25) {
-  ctx.beginPath();
-  ctx.moveTo(canvasCtx.width / 2, i);
-  ctx.lineTo(canvasCtx.width / 2, i + 15);
-  ctx.stroke();
-}
-
-
-drawCircle2(ctx, ball);
-drawRect2(ctx, player);
-drawRect2(ctx, computer);
-}
-
-
-
-
-
-
-
-// else if (canvasMap === 3) {
-
-
-
-//   drawCircle3(ctx, ball);
-// drawRect3(ctx, player);
-// drawRect3(ctx, computer);
-// }
-
-
-
-
-
-
-
-
-
-
-  // Draw the ball
-  // drawCircle(ctx, ball);
-  // // Draw the user's paddle
-
-  // drawRect(ctx, player);
-  // drawRect(ctx, computer);
-
-  // // Draw the score
-  // drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
-  // drawText(
-  //   ctx,
-  //   (3 * canvasCtx.width) / 4,
-  //   canvasCtx.height / 5,
-  //   computer.score
-  // );
-
-}
-
-export function drawNet(ctx: any, ref: any, canvasCtx: Canvas) {
-  ctx.fillStyle = "white";
-  ctx.strokeStyle = "white";
-
-  for (let i = 0; i <= canvasCtx.height; i += 15) {
-    ctx.beginPath();
-    ctx.moveTo(canvasCtx.width / 2, i);
-    ctx.lineTo(canvasCtx.width / 2, i + 10);
-    ctx.stroke();
-  }
-}
-
-
-export function drawRect1(ctx: any, p: Padlle) {
-  ctx.fillStyle = p.color;
-  ctx.fillRect(p.x, p.y, p.width, p.height);
-}
-
-
-export function drawCircle1(ctx: any, b: Ball) {
-  ctx.fillStyle = b.color;
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.closePath();
-}
-
-
-export function drawText1(ctx: any, x: number, y: number, score: number) {
-  ctx.fillStyle = "white";
-  ctx.font = "bold 30px sans-serif"; // Adjusted font style and size
-  ctx.textAlign = "center";
-  ctx.fillText(score, x, y);
-}
-
-
-
-
-export function drawRect2(ctx: any, p: Padlle) {
+export function drawRectAnimation1(ctx: any, p: Padlle) {
   ctx.fillStyle = p.color;
   ctx.shadowColor = "#999";
   ctx.shadowBlur = 5;
@@ -264,19 +112,19 @@ export function drawRect2(ctx: any, p: Padlle) {
   ctx.shadowBlur = 0; // Reset shadow after drawing
 }
 
-// export function drawCircle2(ctx: any, b: Ball) {
-//   ctx.fillStyle = b.color;
-//   ctx.shadowColor = "#999";
-//   ctx.shadowBlur = 5;
-//   ctx.beginPath();
-//   ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-//   ctx.fill();
-//   ctx.closePath();
-//   ctx.shadowBlur = 0; // Reset shadow after drawing
-// }
+export function drawCircleAnimation1(ctx: any, b: Ball) {
+  ctx.fillStyle = b.color;
+  ctx.shadowColor = "#999";
+  ctx.shadowBlur = 5;
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.closePath();
+  ctx.shadowBlur = 0; // Reset shadow after drawing
+}
 
 // Improve text rendering with a more modern font and color
-export function drawText2(ctx: any, x: number, y: number, score: number) {
+export function drawTextAnimation1(ctx: any, x: number, y: number, score: number) {
   ctx.fillStyle = "#ccc";
   ctx.font = "bold 40px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
   ctx.textAlign = "center";
@@ -284,87 +132,203 @@ export function drawText2(ctx: any, x: number, y: number, score: number) {
 }
 
 
+export function drawNet(ctx: any, ref: any, canvasCtx: Canvas) {
+  for (let i = 0; i <= canvasCtx.height; i += 15) {
+    drawRectAnimation1(ctx, {
+      x: canvasCtx.width / 2,
+      y: i,
+      width: 2,
+      height: 10,
+      color: "WHITE",
+      score: 0,
+    });
+  }
+}
+
+// animation 2
 
 
+export function animation2(
+  ctx: any,
+  canvas: any,
+  canvasCtx: Canvas,
+  ball: Ball,
+  computer: Padlle,
+  player: Padlle,
+  canvasMap :number,
+) {
 
-// Enhance the paddle and ball with a smoother style
-export function drawRect(ctx: any, p: Padlle) {
-  ctx.fillStyle = p.color;
-  ctx.shadowColor = "#95a5a6"; // Light gray
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvasCtx.height);
+gradient.addColorStop(0, "#1e272e"); // Dark blue-gray
+gradient.addColorStop(1, "#192a35"); // Dark navy
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, canvasCtx.width, canvasCtx.height);
+
+// Draw a subtle grid pattern for added visual interest
+ctx.strokeStyle = "#2c3e50"; // Dark gray-blue
+ctx.lineWidth = 1;
+
+for (let i = 0; i < canvasCtx.width; i += 20) {
+  ctx.beginPath();
+  ctx.moveTo(i, 0);
+  ctx.lineTo(i, canvasCtx.height);
+  ctx.stroke();
+}
+
+for (let i = 0; i < canvasCtx.height; i += 20) {
+  ctx.beginPath();
+  ctx.moveTo(0, i);
+  ctx.lineTo(canvasCtx.width, i);
+  ctx.stroke();
+}
+
+// Redraw the net with a subtle style and animation
+ctx.strokeStyle = "#34495e"; // Dark gray-blue
+ctx.lineWidth = 2;
+
+for (let i = 0; i <= canvasCtx.height; i += 20) {
+  ctx.beginPath();
+  ctx.moveTo(canvasCtx.width / 2, i);
+  ctx.lineTo(canvasCtx.width / 2, i + 10 + Math.sin(Date.now() / 200) * 5); // Add a subtle animation to the net
+  ctx.stroke();
+}
+drawCircleAnimation2(ctx, ball);
+drawRectAnimation2(ctx, player);
+drawRectAnimation2(ctx, computer);
+
+drawTextAnimation2(ctx, canvasCtx.width / 4, canvasCtx.height / 6, player.score);
+drawTextAnimation2(ctx, (3 * canvasCtx.width) / 4, canvasCtx.height / 6, computer.score);
+}
+
+
+export function drawRectAnimation2(ctx: any, p: Padlle) {
+  ctx.fillStyle = "#3498db"; // Dodger blue
+  ctx.shadowColor = "#2980b9"; // Darker dodger blue
   ctx.shadowBlur = 10;
   ctx.fillRect(p.x, p.y, p.width, p.height);
   ctx.shadowBlur = 0; // Reset shadow after drawing
 }
 
-// export function drawCircle(ctx: any, b: Ball) {
-//   ctx.fillStyle = b.color;
-//   ctx.shadowColor = "#95a5a6"; // Light gray
-//   ctx.shadowBlur = 10;
-//   ctx.beginPath();
-//   ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-//   ctx.fill();
-//   ctx.closePath();
-//   ctx.shadowBlur = 0; // Reset shadow after drawing
-// }
+export function drawCircleAnimation2(ctx: any, b: Ball) {
+  // Add a subtle pulsating effect to the ball
+  const pulsatingFactor = Math.sin(Date.now() / 300) * 5;
+  const radius = b.radius + pulsatingFactor;
 
-// Improve text rendering with a more vibrant color and font
-export function drawText(ctx: any, x: number, y: number, score: number) {
-  ctx.fillStyle = "#e74c3c"; // Red
-  ctx.font = "bold 50px 'Arial', sans-serif";
+  ctx.fillStyle = b.color;
+  ctx.shadowColor = "#333";
+  ctx.shadowBlur = 5;
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.closePath();
+  ctx.shadowBlur = 0; // Reset shadow after drawing
+}
+
+// Improve text rendering with a clean and modern style
+export function drawTextAnimation2(ctx: any, x: number, y: number, score: number) {
+  const bounceAmount = Math.sin(Date.now() / 200) * 5; // Add a subtle bouncing animation
+  ctx.fillStyle = "#bdc3c7"; // Silver
+  ctx.font = "bold 40px 'Raleway', sans-serif"; // Use the Raleway font or replace it with your preferred font
+  ctx.textAlign = "center";
+  ctx.fillText(score, x, y + bounceAmount);
+}
+
+
+
+
+// animation 3
+
+
+export function animation3(
+  ctx: any,
+  canvas: any,
+  canvasCtx: Canvas,
+  ball: Ball,
+  computer: Padlle,
+  player: Padlle,
+  canvasMap :number,
+) {
+
+  ctx.fillStyle = "#2c3e50";
+  ctx.fillRect(0, 0, canvasCtx.width, canvasCtx.height);
+  
+  // Draw a subtle grid pattern for added visual interest
+  ctx.strokeStyle = "#34495e";
+  ctx.lineWidth = 1;
+  
+  for (let i = 0; i < canvasCtx.width; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, canvasCtx.height);
+    ctx.stroke();
+  }
+  
+  for (let i = 0; i < canvasCtx.height; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(canvasCtx.width, i);
+    ctx.stroke();
+  }
+  
+  // Redraw the net with a minimalistic style and animation
+  ctx.strokeStyle = "#ecf0f1";
+  ctx.lineWidth = 2;
+  for (let i = 0; i <= canvasCtx.height; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(canvasCtx.width / 2, i);
+    ctx.lineTo(canvasCtx.width / 2, i + 10 + Math.sin(Date.now() / 200) * 5); // Add a subtle animation to the net
+    ctx.stroke();
+  }
+drawCircleAnimation4(ctx, ball);
+drawRectAnimation3(ctx, player);
+drawRectAnimation3(ctx, computer);
+
+drawTextAnimation3(ctx, canvasCtx.width / 4, canvasCtx.height / 6, player.score);
+drawTextAnimation3(ctx, (3 * canvasCtx.width) / 4, canvasCtx.height / 6, computer.score);
+
+}
+
+
+export function drawRectAnimation3(ctx: any, p: Padlle) {
+  ctx.fillStyle = "#ecf0f1";
+  ctx.shadowColor = "#bdc3c7";
+  ctx.shadowBlur = 5;
+  ctx.beginPath();
+  ctx.rect(p.x, p.y, p.width, p.height);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+
+// Improve text rendering with a clean and modern style and animation
+
+
+export function drawTextAnimation3(ctx: any, x: number, y: number, score: number) {
+  ctx.fillStyle = "#ecf0f1";
+  ctx.font = "bold 40px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
   ctx.textAlign = "center";
   ctx.fillText(score, x, y);
 }
 
-// const ballTrail: any[] = [];
 
-export function drawCircle2(ctx: any, b: Ball) {
-  // Add the current ball position to the trail
-  ballTrail.push({ x: b.x, y: b.y });
 
-  // Keep only the last 10 positions in the trail
-  if (ballTrail.length > 10) {
-    ballTrail.shift();
-  }
+export function drawCircleAnimation3(ctx: any, b: Ball) {
+  b.x += b.speed;
+  b.y += b.speed;
 
-  // Draw the main ball
-  ctx.fillStyle = "#ffff00"; // Orange color
+  ctx.fillStyle = "#e74c3c";
+  ctx.shadowColor = "#c0392b";
+  ctx.shadowBlur = 5;
   ctx.beginPath();
   ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
   ctx.fill();
   ctx.closePath();
-
-  // Draw a longer fire trail at the end of the ball
-  const trailLength = 20; // Adjust the length of the trail
-  for (let i = ballTrail.length - trailLength; i < ballTrail.length; i++) {
-    if (i >= 0) {
-      const trailPosition = ballTrail[i];
-      const trailRadius = b.radius * 1.5; // Adjust the radius of the trail
-
-      // Use a gradient of fire colors
-      const gradient = ctx.createRadialGradient(
-        trailPosition.x,
-        trailPosition.y,
-        0,
-        trailPosition.x,
-        trailPosition.y,
-        trailRadius
-      );
-      gradient.addColorStop(0, "rgba(255, 255, 0, 1)");
-      gradient.addColorStop(1, "rgba(255, 165, 0, 0)");
-
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(trailPosition.x, trailPosition.y, trailRadius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.closePath();
-    }
-  }
+  ctx.shadowBlur = 0; // Reset shadow after drawing
 }
-
 
 const ballTrail: any[] = [];
 
-export function drawCircle3(ctx: any, b: Ball) {
+export function drawCircleAnimation4(ctx: any, b: Ball) {
   // Add the current ball position to the trail
   ballTrail.push({ x: b.x, y: b.y });
 
@@ -421,3 +385,4 @@ export function animateBall(ball: Ball, canvasCtx: Canvas, speedX: number, speed
 
   return { speedX, speedY };
 }
+

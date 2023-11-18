@@ -33,6 +33,6 @@ export class AuthController {
     }
     res.cookie("intra_id", req.user.intra_id);
     res.cookie("access_token", ret.access_token);
-    res.redirect("http://10.12.2.15:3000/protected/DashboardPage");
+    res.redirect("http://10.12.5.1:3000/protected/DashboardPage");
   }
 }

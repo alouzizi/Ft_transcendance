@@ -24,7 +24,11 @@ const CustomAlert = ({ message }: { message: string }) => {
     <button type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-warning" aria-label="Close">
         <span className="sr-only">Close</span>
         <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            {/* <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/> */}
+        <path
+  className="stroke-current stroke-linecap-round stroke-linejoin-round stroke-width-2"
+  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+/>
         </svg>
     </button>
 </div>
@@ -41,7 +45,6 @@ export default function Home() {
   const [buttonClicked, setButtonClicked] = useState(false);
 
   const [gameStarted, setGameStarted] = useState(false);
-  // const [selectedDifficulty, setSelectedDifficulty] = useState(10);
   const startGameHandler = () => {
     if (!buttonClicked) {
       setMessage("Waiting ...");
@@ -56,7 +59,7 @@ export default function Home() {
     height: 400,
   };
   if (!socket?.connected) {
-    alert("socket not connected, please refresh the page");
+    window.alert("socket not connected, please refresh the page");
   }
   if (window.innerWidth < 600) {
     canvas.width = window.innerWidth - 80;
@@ -69,6 +72,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined"){
     socket?.on("opponentLeft", () => {
       console.log("opponent left");
       // router.replace("/protected/GamePage/random");
@@ -104,12 +108,36 @@ export default function Home() {
       setLeft(isLeft);
     });
 
+   const handlePopstate= (event: PopStateEvent) => {
+      console.log("aloo: popstate");
+      console.log("aloo: gameStarted", gameStarted);
+      // if(gameStarted)
+      // {
+        // event.preventDefault();
+        // event/
+        socket?.emit("opponentLeft", {room: room, userId:user.id});
+        setButtonClicked(false);
+        // setShowAlert(true);
+        setGameStarted(false);
+        setMessage("Start game!");
+        // router.push('/protected/GamePage/random');
+
+      // }
+    };
+
+    window.addEventListener('popstate', handlePopstate);
+
     return () => {
+      window.removeEventListener('popstate', () => {});
       socket?.off("startGame");
       socket?.off("whichSide");
       socket?.off("alreadyExist");
       socket?.off("opponentLeft");
     };
+  }
+  else
+      return ;
+
   }, [user.id, gameStarted, showAlert, message, buttonClicked]);
 
   return (
@@ -119,9 +147,9 @@ export default function Home() {
         <canvasContext.Provider value={canvas}>
           {!gameStarted && (
             <div className="flex flex-row justify-center items-center mb-16 ">
-              <Mycards onSelect={handleSelectMap} imageSrc="/map1.png" />
-              <Mycards onSelect={handleSelectMap} imageSrc="/map1.png"/>
-              <Mycards onSelect={handleSelectMap} imageSrc="/map1.png"/>
+              <Mycards onSelect={() => handleSelectMap(1)} imageSrc={"/map1.png"} />
+              <Mycards onSelect={() => handleSelectMap(2)} imageSrc={"/map2.png"} />
+              <Mycards onSelect={() => handleSelectMap(3)} imageSrc={"/map3.png"} />
             </div>
           )}
           {!gameStarted && (
@@ -151,7 +179,7 @@ export default function Home() {
             </div>
           )}
           {gameStarted && (
-            <Pong room={room} isLeft={left} difficulty={1} />
+            <Pong room={room} isLeft={left} difficulty={selectedMap} />
           )}
         </canvasContext.Provider>
       </div>
