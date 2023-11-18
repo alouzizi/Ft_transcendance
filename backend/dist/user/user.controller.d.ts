@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { UserService } from './user.service';
 export declare class UserController {
     private userService;
@@ -73,22 +74,14 @@ export declare class UserController {
         error: boolean;
     }>;
     updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
-        id: string;
-        intra_id: string;
-        first_name: string;
-        last_name: string;
-        nickname: string;
-        email: string;
-        profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
-        isTwoFactorAuthEnabled: boolean;
-        twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
+        status: number;
+        error?: undefined;
+    } | {
+        status: number;
+        error: boolean;
+    }>;
+    uploadImage(file: Express.Multer.File, senderId: string): Promise<{
+        message: string;
     }>;
     getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;

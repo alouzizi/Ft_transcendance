@@ -1,11 +1,6 @@
 "use client";
 
 import NavBarProtected from "@/components/navBar/NavBarProtected";
-<<<<<<< HEAD
-
-export default function ProtectedLayout(prompt: { children: React.ReactNode }) {
-  return <NavBarProtected>{prompt.children}</NavBarProtected>;
-=======
 import { GlobalContextProvider } from "./context/store";
 
 export default function ProtectedLayout(prompt: { children: React.ReactNode }) {
@@ -20,5 +15,4 @@ export default function ProtectedLayout(prompt: { children: React.ReactNode }) {
 
 
 
->>>>>>> origin/lhoussin
 }

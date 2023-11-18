@@ -14,35 +14,11 @@ export class ChannelController {
     console.log(typeof createChannelDto.channelType, createChannelDto.channelType);
     const channelData: CreateChannelDto = {
       ...createChannelDto,
-<<<<<<< HEAD
-      channelType: (createChannelDto.channelType == '1') ? ChannelType.Private : ChannelType.Public,
-=======
       channelType: (createChannelDto.channelType == 'Private') ? ChannelType.Private : ChannelType.Public,
->>>>>>> origin/lhoussin
     }
     return this.channelService.createChannel(channelData, senderId);
   }
 
-<<<<<<< HEAD
-  @Get()
-  findAll() {
-    return this.channelService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelService.findChannelById(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(id, updateChannelDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.channelService.remove(id);
-=======
   @Post('/updateChannel/:senderId/:channelId')
   updateChannel(@Body() createChannelDto: any,
     @Param('senderId') senderId: string, @Param('channelId') channelId: string) {
@@ -146,6 +122,5 @@ export class ChannelController {
     // Perform your logic here...
 
     return { success: true, message: 'Joined channel successfully!' };
->>>>>>> origin/lhoussin
   }
 }

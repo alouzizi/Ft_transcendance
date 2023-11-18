@@ -24,14 +24,8 @@ export default function SideBar() {
   ]);
 
   function getIconStyle(index: number) {
-<<<<<<< HEAD
-    const iconStyle = ` mx-auto transition ease-in-out delay-100 ${
-      isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
-    }
-=======
     const iconStyle = ` mx-auto transition ease-in-out delay-100 ${isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
       }
->>>>>>> origin/lhoussin
     
     // small screen
     w-5 h-5
@@ -98,11 +92,6 @@ export default function SideBar() {
   return (
     <div
       id="SideBar"
-<<<<<<< HEAD
-      className=" flex flex-col  pb-8 pt-20 bg-color-main-dark w-28 h-screen fixed top-0 "
-    >
-      <div className=" flex flex-col justify-between h-5/6 ">
-=======
       className=" flex flex-col   bg-color-main-dark w-28 h-screen fixed top-0 "
     >
       <div className="md:h-24 h-20 mx-auto  flex flex-col justify-center">
@@ -110,7 +99,6 @@ export default function SideBar() {
       </div>
 
       <div className="pb-8 pt-18 flex flex-col justify-between h-5/6 ">
->>>>>>> origin/lhoussin
         <SBSection sectionName="Home">
           {sBItemsList.slice(0, 5).map((item) => (
             <SBItems

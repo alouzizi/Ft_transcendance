@@ -1,18 +1,4 @@
 'use client';
-<<<<<<< HEAD
-import { TextField, Avatar, ScrollArea, Box, Text, Flex } from '@radix-ui/themes';
-import { useEffect, useRef, useState } from 'react';
-import { BsFillSendFill } from "react-icons/bs";
-import { useGlobalContext } from '../../../context/store';
-import { IsTypingMsg, ShowMessages } from './widgetMsg';
-import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
-import { GoDotFill } from "react-icons/go";
-import { getColorStatus } from './ListUser';
-import { formatDistance } from 'date-fns'
-import { getVueGeust } from '../api/fetch-users';
-
-const BoxChat = () => {
-=======
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -41,17 +27,12 @@ enum Status {
 
 const BoxChat = () => {
 
->>>>>>> origin/lhoussin
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-<<<<<<< HEAD
-    const { geust, user, socket, setGeust } = useGlobalContext();
-=======
     const { geust, user, socket, setGeust, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
->>>>>>> origin/lhoussin
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -68,23 +49,15 @@ const BoxChat = () => {
 
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);
-<<<<<<< HEAD
-        setGeust(temp);
-=======
         if (temp !== undefined) setGeust(temp);
         else setOpenAlertError(true);
->>>>>>> origin/lhoussin
     };
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
-<<<<<<< HEAD
-                if (data.senderId === geust.id || data.senderId === user.id || !geust.isUser) {
-=======
                 if ((geust.isUser && (data.senderId === geust.id || data.senderId === user.id)) ||
                     ((!geust.isUser && (data.receivedId === geust.id || data.senderId === user.id)))) { // || !geust.isUser
->>>>>>> origin/lhoussin
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
                 }
@@ -96,11 +69,8 @@ const BoxChat = () => {
         }
     }, [geust.id, user.id]);
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> origin/lhoussin
     useEffect(() => {
         async function getData() {
             let msgs;
@@ -108,21 +78,13 @@ const BoxChat = () => {
                 msgs = await getMessageTwoUsers(user.id, geust.id);
             else
                 msgs = await getMessagesChannel(user.id, geust.id);
-<<<<<<< HEAD
-            setAllMessage(msgs);
-=======
             if (msgs !== undefined) setAllMessage(msgs);
             else setOpenAlertError(true);
->>>>>>> origin/lhoussin
         }
         if (geust.id !== "-1" && user.id !== "-1") {
             getData();
         }
-<<<<<<< HEAD
-    }, [geust.id, user.id]);
-=======
     }, [geust.id, user.id, updateInfo]);
->>>>>>> origin/lhoussin
 
 
     useEffect(() => {
@@ -133,14 +95,6 @@ const BoxChat = () => {
                     setIsTyping(false);
                 }
             }
-<<<<<<< HEAD
-            socket.on("updateData", upDateGeust);
-            return () => {
-                socket.off("updateData", upDateGeust);
-            };
-        }
-    }, [geust.id, user.id]);
-=======
             upDateGeust();
         }
     }, [geust.id, user.id, updateInfo]);
@@ -160,7 +114,6 @@ const BoxChat = () => {
             upDateGeust();
         }
     }, [geust.id, user.id, updateInfo]);
->>>>>>> origin/lhoussin
 
     useEffect(() => {
         if (msg != "" && socket) {
@@ -189,56 +142,6 @@ const BoxChat = () => {
         }
     }, [geust.id, user.id]);
 
-<<<<<<< HEAD
-    const handleSendMessage = () => {
-        if (msg.trim() != '' && socket) {
-            socket.emit('createMessage', {
-                isDirectMessage: geust.isUser,
-                content: msg.trim(),
-                senderId: user.id,
-                receivedId: geust.id,
-            });
-        }
-        setMsg('');
-    }
-
-
-    return (geust.id != "-1") ? (
-        <Box
-            style={{
-                width: 500, height: 600,
-                borderRadius: 10, background: "#f1f3f9", marginLeft: 3
-            }}>
-
-            <div className="flex border-b items-center justify-start  bg-white pl-2 pt-2 pb-2 rounded-t-lg">
-                <Avatar
-                    size="3"
-                    src={geust.profilePic}
-                    radius="full"
-                    fallback="T"
-                />
-                <Text className='absolute pt-6 pl-7'>
-                    {geust.isUser ? <GoDotFill size={20} color={getColorStatus(geust.status)} /> : <></>}
-                </Text>
-                <Flex direction="column" className='flex' >
-                    <Text size="2" weight="bold" className='pl-2'>
-                        {geust.nickname}
-                    </Text>
-                    {
-                        (geust.status === 'INACTIF') ?
-                            <Text size="1" weight="light" className='pl-2'>
-                                {geust.isUser ?
-                                    formatDistance(new Date(geust.lastSee), new Date(), { addSuffix: true }) :
-                                    <>{geust.lenUser} members</>}
-                            </Text> :
-                            <></>
-                    }
-                </Flex>
-            </div >
-
-            <div   >
-                <ScrollArea scrollbars="vertical" style={{ height: 500 }} ref={scrollAreaRef}>
-=======
 
 
     const [isMuted, setIsMuted] = useState(false);
@@ -367,7 +270,6 @@ const BoxChat = () => {
 
             <div   >
                 <ScrollArea scrollbars="vertical" style={{ height: 775 }} ref={scrollAreaRef} >
->>>>>>> origin/lhoussin
                     <Box p="1" pr="3">
                         <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}
@@ -378,26 +280,6 @@ const BoxChat = () => {
                     e.preventDefault();
                     handleSendMessage();
                 }}>
-<<<<<<< HEAD
-                    <TextField.Root className="ml-2 mr-2" style={{ width: 480 }} >
-                        <TextField.Input radius="full" placeholder="  Type your message" size="2"
-                            value={msg}
-
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                setMsg(event.target.value);
-                            }} />
-
-                        <TextField.Slot>
-
-                            <BsFillSendFill color='blue'
-                                onClick={() =>
-                                    handleSendMessage()} />
-
-                        </TextField.Slot>
-                    </TextField.Root>
-                </form>
-            </div>
-=======
                     {/* radius="large"  */}
                     <div className="flex bg-white mx-4  p-1 border rounded-[14px]" >
                         <input type={"text"} className="bg-white m-1 flex flex-grow w-px
@@ -455,7 +337,6 @@ const BoxChat = () => {
             </div>
 
 
->>>>>>> origin/lhoussin
         </Box>
     ) : <></>
 }

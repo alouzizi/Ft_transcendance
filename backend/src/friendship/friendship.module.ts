@@ -6,8 +6,4 @@ import { FriendshipController } from './friendship.controller';
   controllers: [FriendshipController],
   providers: [FriendshipService],
 })
-<<<<<<< HEAD
 export class FriendshipModule {}
-=======
-export class FriendshipModule {}
->>>>>>> origin/lhoussin

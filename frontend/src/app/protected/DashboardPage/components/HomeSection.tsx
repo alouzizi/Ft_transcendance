@@ -8,12 +8,7 @@ export default function HomeSection(prompt: {
   return (
     <div
       className="flex flex-col 
-<<<<<<< HEAD
-      transition-all duration-400 ease-in-out 
-
-=======
       transition-all duration-400 ease-in-out
->>>>>>> origin/lhoussin
         
        
         // small screen

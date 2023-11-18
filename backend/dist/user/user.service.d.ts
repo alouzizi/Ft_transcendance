@@ -178,22 +178,14 @@ export declare class UserService {
         lastSee: Date;
     }[]>;
     updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
-        id: string;
-        intra_id: string;
-        first_name: string;
-        last_name: string;
-        nickname: string;
-        email: string;
-        profilePic: string;
-        hash: string;
-        twoFactorAuth: boolean;
-        isTwoFactorAuthEnabled: boolean;
-        twoFactorAuthSecret: string;
-        AsciiSecretQr: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
+        status: number;
+        error?: undefined;
+    } | {
+        status: number;
+        error: boolean;
+    }>;
+    uploadImage(intra_id: string, path: string): Promise<{
+        message: string;
     }>;
     findByIntraId(intra_id: string): Promise<{
         id: string;

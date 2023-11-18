@@ -255,15 +255,49 @@ let UserService = class UserService {
         return this.prisma.user.findMany();
     }
     async updatUserdata(intra_id, nickname, image) {
-        const user = await this.prisma.user.update({
-            where: {
-                intra_id: intra_id,
-            },
-            data: {
-                nickname: nickname,
+        const usr = await this.prisma.user.findUnique({ where: { intra_id } });
+        if (usr.nickname === nickname) {
+            return;
+        }
+        try {
+            const user = await this.prisma.user.update({
+                where: {
+                    intra_id: intra_id,
+                },
+                data: {
+                    nickname: nickname,
+                }
+            });
+            return { status: 200 };
+        }
+        catch (error) {
+            if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    throw new common_1.HttpException('nickname aleady exist', common_1.HttpStatus.CONFLICT);
+                }
+                else {
+                    return { status: 202, error: true };
+                }
             }
-        });
-        return user;
+        }
+    }
+    async uploadImage(intra_id, path) {
+        console.log(intra_id);
+        try {
+            const user = await this.prisma.user.update({
+                where: {
+                    intra_id: intra_id,
+                },
+                data: {
+                    profilePic: `http://localhost:4000/${path}`,
+                }
+            });
+            console.log('File uploaded successfully');
+            return { message: 'File uploaded successfully' };
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async findByIntraId(intra_id) {
         return this.prisma.user.findUnique({

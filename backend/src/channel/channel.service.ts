@@ -1,31 +1,13 @@
 import { Injectable } from '@nestjs/common';
-<<<<<<< HEAD
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateChannelDto } from './dto/create-channel.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
-import { MessagesService } from 'src/messages/messages.service';
-=======
 import { BannedMember, Channel, ChannelMember, ChannelType, MutedMember, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
-
-
->>>>>>> origin/lhoussin
-
-
 
 @Injectable()
 export class ChannelService {
   constructor(
     private prisma: PrismaService,
-<<<<<<< HEAD
-  ) {}
-
-  async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
-=======
   ) { }
 
 
@@ -44,36 +26,18 @@ export class ChannelService {
   }
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
-    const uniqueId = uuidv4();
     let bcryptPassword: string = '';
     if (createChannelDto.channelPassword != '')
       bcryptPassword = await bcrypt.hash(createChannelDto.channelPassword, 10);
->>>>>>> origin/lhoussin
     try {
       const newChannel = await this.prisma.channel.create({
         data: {
           channelOwnerId: senderId,
-<<<<<<< HEAD
-          channelName: createChannelDto.channleName,
-          channelPassword: createChannelDto.channlePassword,
-          channelType: createChannelDto.channelType,
-          avatar: "https://randomuser.me/api/portraits/women/82.jpg"
-        }
-      })
-      await this.prisma.channelMember.create({
-        data: {
-          userId: senderId,
-          isAdmin: false,
-          channelId: newChannel.id,
-        }
-      })
-=======
           channelName: createChannelDto.channelName,
           channelPassword: bcryptPassword,
           channelType: createChannelDto.channelType,
           protected: createChannelDto.protected,
           avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png",
-          inviteLink: uniqueId,
         }
       })
 
@@ -87,7 +51,6 @@ export class ChannelService {
         }
       })
       // add members
->>>>>>> origin/lhoussin
       createChannelDto.channelMember.forEach(async (item: string) => {
         await this.prisma.channelMember.create({
           data: {
@@ -95,45 +58,14 @@ export class ChannelService {
             isAdmin: false,
             channelId: newChannel.id,
           }
-<<<<<<< HEAD
-        })
-      });
-      return newChannel;
-=======
         });
         this.createMessageInfoChannel(senderId, newChannel.id, item, 'added');
       });
       return { ...newChannel, status: 200 };
->>>>>>> origin/lhoussin
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           return { status: 202, error: 'Name is already used' };
-<<<<<<< HEAD
-
-        } else {
-          console.error('Prisma error:', error);
-        }
-      }
-    }
-  }
-
-  async findChannelById(id: string) {
-    return await this.prisma.channel.findUnique({
-      where: {
-        id: id,
-      },
-    });
-  }
-  findAll() {
-    return `This action returns all channel`;
-  }
-  update(id:string, updateChannelDto: UpdateChannelDto) {
-    return `This action updates a #${id} channel`;
-  }
-  remove(id: string) {
-    return `This action removes a #${id} channel`;
-=======
         } else {
           return { error: true }
         }
@@ -172,8 +104,6 @@ export class ChannelService {
         }
       }
     }
-
-
   }
 
   async checkOwnerIsAdmin(senderId: string, channelId: string) {
@@ -623,6 +553,5 @@ export class ChannelService {
     } catch (error) {
       return { error: true }
     }
->>>>>>> origin/lhoussin
   }
 }

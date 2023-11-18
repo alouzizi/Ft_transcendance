@@ -1,15 +1,12 @@
 import { Text, Avatar, Flex } from '@radix-ui/themes';
 import { ThreeDots } from 'react-loader-spinner'
 import { BsCheck2, BsCheck2All } from "react-icons/bs";
-<<<<<<< HEAD
-=======
 import { MdOutlineEditNote } from "react-icons/md";
 import { useState } from 'react';
 
 
 
 
->>>>>>> origin/lhoussin
 
 export function extractHoursAndM(time: number): string {
 
@@ -40,35 +37,16 @@ export function IsTypingMsg() {
 }
 
 export function MessageRight({ message }: { message: messageDto }) {
-<<<<<<< HEAD
-    const cardStyles = {
-        width: 200,
-=======
     const [isHovered, setIsHovered] = useState(false);
 
 
     const cardStyles = {
->>>>>>> origin/lhoussin
         borderTopRightRadius: 0,
         padding: 5,
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         marginLeft: 'auto',
-<<<<<<< HEAD
-        background: "#ddfdfd",
-    };
-    return (
-        <div style={cardStyles} className='relative mb-2 mt-2'>
-            <div className='mb-4 text-sm'> {message.contentMsg}</div>
-            <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
-                <Text size="1" className='pr-1'>
-                    {extractHoursAndM(message.createdAt)}
-                </Text>
-                {message.messageStatus === 'NotReceived' ?
-                    <BsCheck2 /> :
-                    <BsCheck2All />}
-=======
         background: "#E5E9F7", // ddfdfd
     };
     return (
@@ -93,7 +71,6 @@ export function MessageRight({ message }: { message: messageDto }) {
                         : <MdOutlineEditNote style={{ color: '#254BD6' }} />}
 
                 </div>
->>>>>>> origin/lhoussin
             </Flex>
         </div>
     );
@@ -101,10 +78,6 @@ export function MessageRight({ message }: { message: messageDto }) {
 
 export function MessageLeft({ message }: { message: messageDto }) {
     const cardStyles = {
-<<<<<<< HEAD
-        width: 200,
-=======
->>>>>>> origin/lhoussin
         borderTopRightRadius: 10,
         padding: 5,
         borderTopLeftRadius: 0,
@@ -122,21 +95,13 @@ export function MessageLeft({ message }: { message: messageDto }) {
                 radius="full"
                 fallback="T"
             />
-<<<<<<< HEAD
-            <div className='pl-2'>
-=======
             <div className='pl-2 w-[100px] sm:w-[200px]'>
->>>>>>> origin/lhoussin
                 <Text as="span" size="2" weight="bold">
                     {message.senderName}
                 </Text>
                 <div style={cardStyles} className='relative'>
                     <div className='mb-4  text-sm'> {message.contentMsg}</div>
-<<<<<<< HEAD
-                    <Text size="1" className='absolute bottom-1 right-2 mt-2'>
-=======
                     <Text size="1" className='absolute bottom-1 right-2 mt-2 text-[#254BD6]'>
->>>>>>> origin/lhoussin
                         {extractHoursAndM(message.createdAt)}
                     </Text>
                 </div>
@@ -184,11 +149,6 @@ function showDays(currentDate: number, timeMsg: number) {
     return { show: false, data: '' };
 }
 
-<<<<<<< HEAD
-// 
-// 
-export function FirstMessage({ message, isOwner }: { message: messageDto, isOwner: Boolean }) {
-=======
 
 // $owner create group $channelName 
 // You created group $channelName
@@ -199,27 +159,12 @@ export function FirstMessage({ message, isOwner }: { message: messageDto, isOwne
 // You Block this contact. Tap to unblock
 // You unblocked this contact
 export function MessageCenterInfo({ message, user }: { message: messageDto, user: ownerDto }) {
->>>>>>> origin/lhoussin
     const cardStyles = {
         width: 200,
         padding: 5,
         borderRadius: 10,
         margin: 'auto',
         background: "#fefae0",
-<<<<<<< HEAD
-        display: 'flex', // Use flex display
-        alignItems: 'center',
-    };
-    return (
-        <div style={cardStyles} className='mb-2 mt-2'>
-            <Text className='mb-4 text-sm text-center'>
-                {isOwner ?
-                    <Text>You created group</Text> :
-                    <Text>{message.senderName} created group</Text>}
-                {' '}"{message.receivedName}"
-            </Text>
-        </div>
-=======
     };
 
     let messageTmp: string = "";
@@ -258,45 +203,12 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
             </div>
         </div>
 
->>>>>>> origin/lhoussin
     );
 }
 
 export function ShowMessages({ messages, user }: { messages: messageDto[], user: ownerDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
-<<<<<<< HEAD
-    return messages.map((elm, index) => {
-        const temp = showDays(currentDate, elm.createdAt);
-        const tag =
-            <div key={index}>
-                {
-                    temp.show ?
-                        (
-                            <div className="flex items-center pt-2 pb-2">
-                                <div className="flex-grow h-px bg-gray-400 mx-4"></div>
-                                <h2 className="text-sm">{temp.data}</h2>
-                                <div className="flex-grow h-px bg-gray-400 mx-4"></div>
-                            </div>
-                        )
-                        : (<></>)
-                }
-
-                {
-                    (index === 0 && !elm.isDirectMsg) ?
-                        <FirstMessage message={elm} isOwner={elm.OwnerChannelId === user.id} />
-                        : ((elm.senderId == user.id) ? (
-                            <MessageRight message={elm} />
-                        ) : (
-                            <MessageLeft message={elm} />
-                        ))
-                }
-            </div>
-        return tag;
-    })
-
-}
-=======
     if (messages.length)
         return messages.map((elm, index) => {
             const temp = showDays(currentDate, elm.createdAt);
@@ -328,4 +240,3 @@ export function ShowMessages({ messages, user }: { messages: messageDto[], user:
         })
 
 }
->>>>>>> origin/lhoussin

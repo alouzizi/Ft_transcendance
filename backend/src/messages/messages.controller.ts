@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
-=======
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
->>>>>>> origin/lhoussin
 import { MessagesService } from './messages.service';
 
 @Controller('messages')
@@ -26,8 +22,5 @@ export class MessageController {
   async getUserForMsg(@Param('id') senderId: string) {
     return await this.messagesService.getMessageForList(senderId);
   }
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/lhoussin
 }

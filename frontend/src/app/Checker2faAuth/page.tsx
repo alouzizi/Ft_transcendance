@@ -12,26 +12,21 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function login() {
-
   const router = useRouter();
-
-
   const [keyQrCode, setKeyQrCode] = useState("");
-
-
-
-
   return (
     <div className="flex justify-center items-center">
-      <div className='flex my-3'>
-        <input type="text" className="
-                bg-[#f1f3f8] text-black placeholder-gray-300 text-sm outline-none rounded border-2 border-blue-600"
+      <div className='flex my-3 '>
+        <input type="text" className="bg-[#F6F7FA]  p-1.5 flex w-[10rem]  border
+                        text-black placeholder-gray-600 text-sm outline-none rounded-[5px] mr-1"
           value={keyQrCode}
+          placeholder="code 6 digit"
           onChange={(e) => {
             setKeyQrCode(e.target.value);
           }}
         >
         </input>
+
         <Button variant="contained" className='ml-2 bg-blue-600' onClick={async () => {
 
           if (keyQrCode !== "") {

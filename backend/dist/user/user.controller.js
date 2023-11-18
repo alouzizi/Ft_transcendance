@@ -16,6 +16,8 @@ exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const guard_1 = require("../auth/guard");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -44,6 +46,10 @@ let UserController = class UserController {
     }
     async updatUserdata(intra_id, nickname, image) {
         return await this.userService.updatUserdata(intra_id, nickname, image);
+    }
+    uploadImage(file, senderId) {
+        console.log("---> ", file);
+        return this.userService.uploadImage(senderId, file.path);
     }
     async getUsersCanJoinChannel(senderId, channelId) {
         return await this.userService.usersCanJoinChannel(senderId, channelId);
@@ -88,7 +94,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getValideUsers", null);
 __decorate([
-    (0, common_1.Get)('updatUserdata/:intra_id/:nickname/:image'),
+    (0, common_1.Post)('updatUserdata/:intra_id/:nickname/:image'),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('intra_id')),
     __param(1, (0, common_1.Param)('nickname')),
     __param(2, (0, common_1.Param)('image')),
@@ -96,6 +103,23 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updatUserdata", null);
+__decorate([
+    (0, common_1.Post)('/:intra_id/uploadImage'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, cb) => {
+                const filename = `${Date.now()}-${file.originalname}`;
+                cb(null, filename);
+            },
+        })
+    })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Param)('intra_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "uploadImage", null);
 __decorate([
     (0, common_1.Get)('/getUsersCanJoinChannel/:senderId/:channelId'),
     __param(0, (0, common_1.Param)('senderId')),

@@ -155,37 +155,11 @@ export default function AlertsAddUserChannel() {
                     </div >
 
                     <ScrollArea type="always" scrollbars="vertical"
-                        style={{ height: 170 }}>
+                        style={{ height: "15rem" }}>
                         {widgetItem}
                     </ScrollArea>
-                    <div className='flex items-center pb-1'>
-                        <text className='text-sm pl-1'>
-                            Or send a server invite link to a friend
-                        </text>
-                        <SlRefresh className='cursor-pointer ml-1'
-                            size="12"
-                            onClick={() =>
-                                setOpen(false)} />
-                    </div>
-                    <div className="flex justify-between items-center bg-[#F6F7FA]  border rounded-[10px]  w-[100%]" >
-                        <div>
-                            <text className='pl-3 text-sm  w-[80px]' >
-                                {Backend_URL + `/${geust.id.substring(0, 4)}` + `/${channel?.inviteLink.substring(0, 4)}`}
-                            </text>
 
-                        </div>
-                        <div className="flex items-center px-3 bg-[#1f3175] cursor-pointer m-1 rounded-[10px] py-1"
-                            onClick={() => {
-                                const link: string = Backend_URL + `/${geust.id}` + `/${channel?.inviteLink}`
-                                navigator.clipboard.writeText(link)
-                            }}>
 
-                            <Text className='text-white text-sm'>
-                                Copy
-                            </Text>
-
-                        </div>
-                    </div >
                 </DialogContent >
             </Dialog >
         </div >

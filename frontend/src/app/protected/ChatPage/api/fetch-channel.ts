@@ -2,14 +2,6 @@ import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
 
 export async function createChannel(channelData: channelDto, senderId: string) {
-<<<<<<< HEAD
-
-    const res = await axios.post(
-        Backend_URL + `/channel/createChannel/${senderId}`, channelData);
-    const data = await res.data;
-    return data;
-
-=======
     try {
         const res = await axios.post(
             Backend_URL + `/channel/createChannel/${senderId}`, channelData);
@@ -176,5 +168,4 @@ export async function checkIsMuted(senderId: string, channelId: string) {
             throw Error
         return data;
     } catch (error) { }
->>>>>>> origin/lhoussin
 }

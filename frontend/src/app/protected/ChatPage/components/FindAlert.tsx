@@ -1,20 +1,4 @@
 'use client'
-<<<<<<< HEAD
-import * as React from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import { Avatar, Flex, Text, Box, ScrollArea } from '@radix-ui/themes';
-import TextField from '@mui/material/TextField';
-import { useGlobalContext } from '../../../context/store';
-import { AiFillMessage } from "react-icons/ai";
-import { BsPersonFillAdd, } from "react-icons/bs";
-import { FaUserTimes, } from "react-icons/fa";
-import { BiUserCheck } from "react-icons/bi";
-import { GoDotFill } from "react-icons/go";
-import { useEffect, useState } from 'react';
-import { getValideUsers, getVueGeust } from '../api/fetch-users';
-import { TbSquareRoundedPlusFilled } from "react-icons/tb";
-=======
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -34,24 +18,11 @@ import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 import { useGlobalContext } from '../../context/store';
 import { joinChannel, validePassword } from '../api/fetch-channel';
 import { getValideChannels, getValideUsers, getVueGeust } from '../api/fetch-users';
->>>>>>> origin/lhoussin
 import { accepteRequistFriend, removeRequistFriend, sendRequistFriend } from '../api/send-Friend-req';
 import { getColorStatus } from './ListUser';
 
 
 
-<<<<<<< HEAD
-
-export default function AlertDialogFind() {
-    const [open, setOpen] = React.useState(false);
-    const [searsh, setSearsh] = useState('');
-    const [valideUsers, setValideUsers] = useState<userDto[]>([]);
-    const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
-    const { user, setGeust, socket } = useGlobalContext();
-
-    const [clicked, setClicked] = useState<number>(0)
-    const [update, setUpdate] = useState<number>(0)
-=======
 export default function AlertDialogFind() {
 
 
@@ -69,7 +40,6 @@ export default function AlertDialogFind() {
     const [channelsFilter, setChannelsFilter] = useState<validChannelDto[]>([]);
 
 
->>>>>>> origin/lhoussin
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -82,14 +52,6 @@ export default function AlertDialogFind() {
         async function getData() {
             if (user.id !== "-1") {
                 const temp = await getValideUsers(user.id);
-<<<<<<< HEAD
-                setValideUsers(temp);
-            }
-        }
-        getData();
-        setClicked((pre) => pre++);
-    }, [open, update, user.id]);
-=======
                 if (temp !== undefined) setValideUsers(temp);
                 else setOpenAlertError(true);
             }
@@ -101,7 +63,6 @@ export default function AlertDialogFind() {
         }
         getData();
     }, [open, updateInfo, user.id]);
->>>>>>> origin/lhoussin
 
     useEffect(() => {
         const tmp: userDto[] = valideUsers.filter((elm) => {
@@ -109,31 +70,6 @@ export default function AlertDialogFind() {
             return ((username.includes(searsh) && searsh != '') || searsh === "*");
         })
         setUsersFilter(tmp);
-<<<<<<< HEAD
-    }, [searsh, valideUsers])
-
-    useEffect(() => {
-        const updateIcons = () => {
-            setUpdate((pre) => { return pre + 1 });
-        };
-        if (socket) {
-            socket.on("updateData", updateIcons);
-        }
-        return () => {
-            if (socket)
-                socket.off("updateData", updateIcons);
-        };
-    }, [socket]);
-
-    const getDataGeust = async (id: string, isUser: Boolean) => {
-        const temp = await getVueGeust(id, isUser);
-        setGeust(temp);
-    };
-
-    const widgetItem = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
-        return <Box p="1" pr="3" key={index}>
-            <Flex align="center" justify="between" className='border-b py-2'>
-=======
 
         const chnls: validChannelDto[] = valideChannels.filter((elm: validChannelDto) => {
             const username = elm.channelName;
@@ -158,7 +94,6 @@ export default function AlertDialogFind() {
     const widgetItemUser = (usersFilter.length !== 0) ? usersFilter.map((elm, index) => {
         return <Box p="1" pr="3" key={index} className='mx-5'>
             <Flex align="center" justify="between" className='pt-2'>
->>>>>>> origin/lhoussin
                 <div className='flex items-center relative'>
                     <Avatar
                         src={elm.profilePic}
@@ -183,10 +118,6 @@ export default function AlertDialogFind() {
                                 senderId: user.id,
                                 receivedId: elm.id,
                             });
-<<<<<<< HEAD
-                            setClicked((pre) => { return pre + 1 });
-=======
->>>>>>> origin/lhoussin
                         }} /> : <></>}
 
                     {/* accept friends requist */}
@@ -199,10 +130,6 @@ export default function AlertDialogFind() {
                                 senderId: user.id,
                                 receivedId: elm.id,
                             });
-<<<<<<< HEAD
-                            setClicked((pre) => { return pre + 1 });
-=======
->>>>>>> origin/lhoussin
                         }} /> : <></>}
 
                     {/* remove friends requist */}
@@ -215,10 +142,6 @@ export default function AlertDialogFind() {
                                 senderId: user.id,
                                 receivedId: elm.id,
                             });
-<<<<<<< HEAD
-                            setClicked((pre) => { return pre + 1 });
-=======
->>>>>>> origin/lhoussin
                         }} /> : <></>}
 
                     <AiFillMessage size='20' style={{ cursor: 'pointer' }}
@@ -229,12 +152,6 @@ export default function AlertDialogFind() {
                 </div>
             </Flex>
         </Box>
-<<<<<<< HEAD
-    }) : <div className='flex items-center justify-center'>pas user</div>
-
-    return (
-        <div>
-=======
     }) : <div ></div>
 
 
@@ -287,7 +204,6 @@ export default function AlertDialogFind() {
 
     return (
         <Box>
->>>>>>> origin/lhoussin
 
             <TbSquareRoundedPlusFilled style={{ color: 'blue', fontSize: '40px', cursor: 'pointer' }}
                 onClick={handleClickOpen} />
@@ -297,17 +213,6 @@ export default function AlertDialogFind() {
                 keepMounted
                 onClose={handleClose}
             >
-<<<<<<< HEAD
-                <DialogContent className=' w-[30rem] h-[20rem] items-center justify-center'>
-
-                    <TextField fullWidth size="small"
-                        label="Find a friend" variant="outlined"
-                        value={searsh}
-                        onChange={(e) => { setSearsh(e.target.value) }} />
-                    <ScrollArea type="always" scrollbars="vertical"
-                        style={{ height: 240 }}>
-                        {widgetItem}
-=======
 
                 <DialogContent className='w-[30rem] h-[20rem]'
                     style={{ padding: 0 }}>
@@ -336,14 +241,10 @@ export default function AlertDialogFind() {
                             <></>
                         }
                         {widgetItemChannels}
->>>>>>> origin/lhoussin
                     </ScrollArea>
 
                 </DialogContent>
             </Dialog>
-<<<<<<< HEAD
-        </div >
-=======
 
 
             <div>
@@ -399,7 +300,6 @@ export default function AlertDialogFind() {
             </div>
 
         </Box >
->>>>>>> origin/lhoussin
     );
 }
 

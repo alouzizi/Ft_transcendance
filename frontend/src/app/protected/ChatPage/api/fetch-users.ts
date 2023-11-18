@@ -1,9 +1,6 @@
 import { Backend_URL } from '@/lib/Constants';
 import axios from 'axios';
-<<<<<<< HEAD
-=======
 import Error from 'next/error';
->>>>>>> origin/lhoussin
 
 
 export async function getVueGeust(id: string, isUser: Boolean) {
@@ -17,59 +14,6 @@ export async function getVueGeust(id: string, isUser: Boolean) {
 
 
 export async function getUser(id: string) {
-<<<<<<< HEAD
-    const res = await axios.get(
-        Backend_URL + `/user/${id}`,
-    );
-    const user = await res.data;
-    return user;
-}
-
-export async function getAllUsers(author: string) {
-    const res = await axios.get(
-        Backend_URL + '/user/all',
-    );
-    const users = await res.data;
-    return users;
-}
-
-export async function getValideUsers(id: string) {
-    const res = await axios.get(
-        Backend_URL + `/user/getValideUsers/${id}`,
-    );
-    const users = await res.data;
-    return users;
-}
-
-export async function getUserForMsg(senderId: string) {
-    const res = await axios.get(
-        Backend_URL + `/messages/getUserForMsg/${senderId}`,
-    );
-    const users = await res.data;
-    return users;
-}
-
-export async function getUserGeust(id: string) {
-    const res = await axios.get(
-        Backend_URL + `/user/getUserGeust/${id}`,
-    );
-    const geust = await res.data;
-    return geust;
-}
-
-export async function getChannelGeust(id: string) {
-    const res = await axios.get(
-        Backend_URL + `/user/getChannelGeust/${id}`,
-    );
-    const geust = await res.data;
-    return geust;
-}
-
-
-
-
-
-=======
     try {
         const res = await axios.get(
             Backend_URL + `/user/${id}`,
@@ -191,4 +135,3 @@ export async function usersCanJoinChannel(senderId: string, channelId: string) {
         return data;
     } catch (error) { }
 }
->>>>>>> origin/lhoussin

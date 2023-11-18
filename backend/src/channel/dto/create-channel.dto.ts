@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import { ChannelType } from "@prisma/client";
-
-export class CreateChannelDto {
-    channleName: string;
-    channelType: ChannelType;
-    channlePassword: string;
-    channelMember: string[];
-}
-
-=======
 // import { ChannelType } from "@prisma/client";
 
 import { Status } from "@prisma/client";
@@ -29,7 +18,6 @@ export class CreateChannelDto {
     avatar: string;
     channelOwnerId: string;
     protected: boolean;
-    inviteLink: string;
 }
 
 export class memberChannelDto {
@@ -40,4 +28,3 @@ export class memberChannelDto {
     status: Status;
     unmuted_at: number;
 }
->>>>>>> origin/lhoussin
