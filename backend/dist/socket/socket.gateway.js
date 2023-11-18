@@ -28,7 +28,7 @@ let SocketGateway = class SocketGateway {
         this.messagesService = messagesService;
         this.hixcoder = hixcoder;
         this.prisma = prisma;
-        this.ROUND_LIMIT = 10;
+        this.ROUND_LIMIT = 6;
         this.joindRoom = 0;
         this.clients = new Map();
         this.joindClients = new Map();
@@ -87,7 +87,7 @@ let SocketGateway = class SocketGateway {
                 x: 0,
                 y: 0,
                 radius: 10,
-                speed: 1,
+                speed: 5,
                 velocityX: 5,
                 velocityY: 5,
                 color: "#05EDFF",
@@ -193,7 +193,6 @@ let SocketGateway = class SocketGateway {
     identifyClient(client, id) {
         if (this.clients.has(id)) {
             client.emit("alreadyExist");
-            console.log("Client already exists");
         }
         else {
             console.log("Client identified", { id: id });
@@ -264,13 +263,17 @@ let SocketGateway = class SocketGateway {
                 if (otherClient) {
                     console.log("opponentLeft send");
                     this.server.to(otherClient).emit("opponentLeft");
+                    client.leave(data.room);
+                    delete this.joindRoom[otherClient];
                 }
             }
         }
+        console.log("opponentLeft end");
         delete this.rooms[data.room];
         delete this.roomState[data.room];
         delete this.ballPositionInterval[data.room];
         delete this.joindClients[data.userId];
+        this.stopEmittingBallPosition(data.room);
     }
 };
 exports.SocketGateway = SocketGateway;

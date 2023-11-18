@@ -152,6 +152,14 @@ export const GlobalContextProvider = ({
     if (user.id === "-1") getDataUser();
   }, []);
 
+
+  useEffect(() => {
+    socket?.on("invite", data => {
+      alert("aloo");
+    });
+
+
+  }, [user]);
   useEffect(() => {
     const update = async () => {
       setUpdateInfo((preValue) => {

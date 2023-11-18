@@ -3,17 +3,19 @@ import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
 import { useGlobalContext } from "@/app/context/store";
 import Alert from '@mui/joy/Alert';
-import { redirect, useRouter } from "next/navigation";
-import { set } from "date-fns";
-
+import {useRouter } from "next/navigation";
+import { dividerClasses } from "@mui/material";
 
 
 interface PongProps {
   room: string;
   isLeft: boolean;
+  difficulty: number;
 }
 
-const Pong = ({ room, isLeft }: PongProps) => {
+const Pong = ({ room, isLeft, difficulty }: PongProps) => {
+
+  console.log(difficulty);
   const ROUND_LIMIT = 6;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
@@ -21,6 +23,8 @@ const Pong = ({ room, isLeft }: PongProps) => {
   let animationFrameId: number;
   let animationFrameId1: number;
   const router = useRouter();
+  const [alert, setAlert] = useState(0);
+
   const player: Padlle = {
     x: 10,
     y: 0,
@@ -42,7 +46,7 @@ const Pong = ({ room, isLeft }: PongProps) => {
   const ball: Ball = {
     x: 0,
     y: 0,
-    radius: 10,
+    radius: difficulty,
     speed: 5,
     velocityX: 5,
     velocityY: 5,
@@ -101,20 +105,14 @@ const Pong = ({ room, isLeft }: PongProps) => {
       ball.y = ballPosition.y;
       ball.velocityX = ballPosition.velocityX * ratio ;
       ball.velocityY = ballPosition.velocityY;
-      ball.color = ballPosition.color;
-      drawCanvas(ctx, canvas, canvasCtx, ball, computer, player);
+      drawCanvas(ctx, canvas, canvasCtx, ball, computer, player, difficulty);
     });
+
     socket.on("updateScore", (scorePlayer1: number, scorePlayer2: number) => {
       player.score = scorePlayer1;
       computer.score = scorePlayer2;
-      drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
-      drawText(
-        ctx,
-        (3 * canvasCtx.width) / 4,
-        canvasCtx.height / 5,
-        computer.score
-      );
     });
+
     socket.on("clientDisconnected", () => {
       
     });
@@ -123,19 +121,21 @@ const Pong = ({ room, isLeft }: PongProps) => {
         if (state === "win") {
 
           <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
+          setAlert(1);
           // console.log("test");
           router.push('/protected/GamePage');
           // alert("You win!");
         }
         if (state === "lose") {
           <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
+          setAlert(2)
           // console.log("test");
           router.push('/protected/GamePage');
           // alert("You lose!");
         }
         if (state === "draw") {
           <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
-          // console.log("test");
+          setAlert(4);          // console.log("test");
           router.push('/protected/GamePage');
           // alert("Draw!");
         }
@@ -154,24 +154,20 @@ const Pong = ({ room, isLeft }: PongProps) => {
         computer.x = canvasCtx.width - 15;
       }
     }
-    socket.on("opponentLeft" , () => {
-      console.log("opponent left");
-      router.replace('/protected/GamePage');
-      router.push('/protected/GamePage');
-      
-    });
     
     function handleBeforeUnload(event: BeforeUnloadEvent) {
-      console.log({ID:user.id}, "ALOOO");
-      console.log(room);
+      router.replace('/protected/GamePage/random');
       socket?.emit("opponentLeft", {room: room, userId:user.id});
-      // router.push('/protected/GamePage');
-      
-      // window.location.replace('/protected/GamePage');
-      // router.push('/protected/GamePage');
 
     };
 
+    function handlePopstate(){
+      console.log("popstate");
+      socket?.emit("opponentLeft", {room: room, userId:user.id});
+      // router.push('/protected/GamePage/random');
+    };
+
+    window.addEventListener('popstate', handlePopstate);
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener("resize", handleWindowResize);
     window.addEventListener("mousemove", handleMouseMove);
@@ -181,12 +177,19 @@ const Pong = ({ room, isLeft }: PongProps) => {
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);
-      // window.removeEventListener('beforeunload', handleBeforeUnload);
-      socket.off("connect");
-      socket.off("updatePaddle");
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      // socket.emit("opponentLeft", room, user.id);
-      // socket.off("opponentLeft");
+      window.removeEventListener("resize", handleWindowResize);
+      // window.removeEventListener('popstate', () => {
+
+      // });
+
+
+      socket.off("gameOver");
+      // socket.off("clientDisconnected");
+      socket.off("updateScore");
+      socket.off("updateTheBall");
+      socket.off("resivePaddle");
+      socket.off("updatePaddle");
 
     };
   }, [router]);

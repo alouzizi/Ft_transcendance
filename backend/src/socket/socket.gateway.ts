@@ -17,6 +17,7 @@ import { PongServise } from "src/game/game.service";
 import { BallDto, PaddleDto } from "src/game/dto/game.tdo";
 import { PrismaService } from "src/prisma/prisma.service";
 import { HixcoderService } from "src/hixcoder/hixcoder.service";
+import { on } from "events";
 
 @WebSocketGateway()
 export class SocketGateway
@@ -70,7 +71,7 @@ export class SocketGateway
     this.server.to(ids.receivedId).emit("isTyping", ids);
   }
 
-  ROUND_LIMIT = 10;
+  ROUND_LIMIT = 6;
   joindRoom = 0;
   private GameInit(roomName: string) {
     this.roomState.set(roomName, {
@@ -94,7 +95,7 @@ export class SocketGateway
         x: 0,
         y: 0,
         radius: 10,
-        speed: 1,
+        speed: 5,
         velocityX: 5,
         velocityY: 5,
         color: "#05EDFF",
@@ -132,15 +133,11 @@ export class SocketGateway
 
   startEmittingBallPosition(roomName: string, id: string) {
     clearInterval(this.ballPositionInterval.get(roomName));
-    // this.roomState.get(roomName).ball.speed = 1;
+
     this.ballPositionInterval.set(
       roomName,
       setInterval(() => {
-        
-        // console.log({layer1: this.player1, player2: this.player2});
         const ro = this.roomState.get(roomName);
-        // console.log(ro.player1.x, ro.player1.y, ro.player2.x, ro.player2.y);
-        // ro.PongService.startGame(ro.ball, ro.p1, ro.player2);
         ro.ball.x += ro.ball.velocityX;
         ro.ball.y += ro.ball.velocityY;
         if (
@@ -153,7 +150,6 @@ export class SocketGateway
         if (this.collision(ro.ball, user)) {
           let collidePoint = ro.ball.y - (user.y + user.height / 2);
           collidePoint = collidePoint / (user.height / 2);
-          // let angleRad = (Math.PI / 4) * collidePoint;
           let angleRad = (collidePoint * Math.PI) / 4;
           let direction = ro.ball.x < 600 / 2 ? 1 : -1;
           ro.ball.velocityX = direction * ro.ball.speed * Math.cos(angleRad);
@@ -265,7 +261,6 @@ export class SocketGateway
 
     if (this.clients.has(id)) {
       client.emit("alreadyExist");
-      console.log("Client already exists");
     } else {
       console.log("Client identified", { id: id });
 
@@ -308,7 +303,14 @@ export class SocketGateway
       // }, 1000);
     }
   }
+  
+  // @SubscribeMessage("invite")
+  // onInvite(client: Socket, data: any) {
 
+  //   this.
+  //   this.server.to(data.userId).emit("invite", data);
+  // }
+// }
   findRoomByClientId(id: string) {
     let roomName: string;
     this.rooms.forEach((clients, room) => {
@@ -345,15 +347,21 @@ export class SocketGateway
         if (otherClient) {
           console.log("opponentLeft send");
           this.server.to(otherClient).emit("opponentLeft");
+          client.leave(data.room);
+          delete this.joindRoom[otherClient];
         }
       }
     }
+    console.log("opponentLeft end");
+
     delete this.rooms[data.room];
     delete this.roomState[data.room];
     delete this.ballPositionInterval[data.room];
     delete this.joindClients[data.userId];
+    this.stopEmittingBallPosition(data.room);
   }
 }
+
 
 interface RoomState {
   player1: PaddleDto;

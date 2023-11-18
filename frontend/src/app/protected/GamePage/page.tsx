@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import MyComponent from "./components/playBord";
 
 export default function Home() {
@@ -13,7 +12,6 @@ export default function Home() {
           Training
         </h2>
         <MyComponent
-          emit={false}
           imageSrc="/boot.jpg"
           title="pongmaster bot"
           text="Pongmaster BOT is your ultimate training partner in the game, helping you hone your skills to become a true Pong champion."
@@ -26,7 +24,6 @@ export default function Home() {
           Random
         </h2>
         <MyComponent
-          emit={true}
           imageSrc="/random.jpg"
           title="pongmaster random"
           text="Pongmaster RANDOM is when you challenge your skills against unpredictable opponents in thrilling, random-match gameplay!"
