@@ -12,11 +12,12 @@ export default function NotificationPage() {
   const { user } = useGlobalContext();
 
   const [items, setItems] = useState([]);
+  const [Delete, setDelete] = useState<boolean>(false);
 
   useEffect(() => {
 
     const getData = async () => {
-      const response = await axios.get(`http://localhost:4000/notification/getNotifications/11111`); // ${user.id}
+      const response = await axios.get(`http://localhost:4000/notification/getNotifications/${user.id}`); // 
       const data = await response.data;
       console.log(data);
       setItems(data);
@@ -25,35 +26,31 @@ export default function NotificationPage() {
 
 
 
-  }, [user.id]);
+  }, [user.id, Delete]);
 
-  deleteNotif(() => {
-
-    const getData = async () => {
-      const response = await axios.get(`http://localhost:4000/notification/getNotifications/11111`); // ${user.id}
-      const data = await response.data;
-      console.log(data);
-      setItems(data);
-    }
-    if (user.id !== '-1') getData();
+  const DeleteFn = async (id: string) => {
+    const response = await axios.delete(`http://localhost:4000/notification/deletenotifications/${id}`); // ${user.id}
+    const data = await response.data;
+  }
 
 
 
-  }, [user.id]);
+
 
 
   return (
     <div className=" bg-color-main h-screen w-screen pl-32 text-white">
-      <div onClick={() => {
-
+      <button onClick={async (e) => {
+        e.preventDefault()
         const tmp = {
           senderId: user.id,
-          recieverId: "",
-          subject: "",
+          recieverId: "5037fb27-f4c2-4c6b-97cb-ffdf8c3e34ac",
+          subject: "papapapap",
         };
-        createNotification(tmp);
+        await createNotification(tmp);
+        console.log("------");
 
-      }}>create test noti</div>
+      }}>ok</button>
       <h1 className="text-2xl font-bold mb-4">Notification</h1>
       <div className="w-[80%] h-64 ">
         {items.map((item: any, index) => (
@@ -72,7 +69,8 @@ export default function NotificationPage() {
             </div>
 
             <MdCancel size='20' className="cursor-pointer" onClick={() => {
-              console.log("---->");
+              DeleteFn(item.id);
+              setDelete(!Delete)
             }} />
 
 
