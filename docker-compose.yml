@@ -12,7 +12,7 @@ services:
     networks:
       - mynetwork
     volumes:
-      - ./backend/data:/var/lib/postgresql/data
+      - ./database:/var/lib/postgresql/data
     restart: always
 
   backend:
