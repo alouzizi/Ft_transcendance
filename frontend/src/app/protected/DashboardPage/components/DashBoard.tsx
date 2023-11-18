@@ -41,6 +41,9 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
   useEffect(() => {
     async function getData() {
       try {
+        // update friend info
+        const usr = await getUserByNick(prompt.friend.nickname);
+        setFriend(usr);
         // for fetch the ranking
         const rankTmp = await getUserRanking(prompt.friend.id);
         setRank(rankTmp.rank);
@@ -75,10 +78,6 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             globalInfoTmp.NbrOfAllMatches;
           setWinRate(winRate);
         }
-
-        // update friend info
-        const usr = await getUserByNick(prompt.friend.nickname);
-        setFriend(usr);
       } catch (error: any) {
         console.log("getData error: " + error);
       }
@@ -87,7 +86,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     achievementsList = getAchievmentsData(globalInfo).filter(
       (acheiv) => acheiv.isUnlocked
     );
-  }, [updateInfo]);
+  }, [updateInfo, friend.level]);
 
   return (
     <div className="flex flex-col min-h-screen h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
