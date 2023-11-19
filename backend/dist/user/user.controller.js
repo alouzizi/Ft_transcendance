@@ -48,7 +48,10 @@ let UserController = class UserController {
         return await this.userService.updatUserdata(intra_id, nickname, image);
     }
     uploadImage(file, senderId) {
+<<<<<<< HEAD
         console.log("---> ", file);
+=======
+>>>>>>> main
         return this.userService.uploadImage(senderId, file.path);
     }
     async getUsersCanJoinChannel(senderId, channelId) {

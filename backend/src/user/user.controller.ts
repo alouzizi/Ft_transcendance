@@ -64,9 +64,13 @@ export class UserController {
     })
   }))
   uploadImage(@UploadedFile() file: Express.Multer.File, @Param('intra_id') senderId: string) {
+<<<<<<< HEAD
     console.log("---> ", file);
     return this.userService.uploadImage(senderId, file.path)
 
+=======
+    return this.userService.uploadImage(senderId, file.path)
+>>>>>>> main
   }
 
   @Get('/getUsersCanJoinChannel/:senderId/:channelId')

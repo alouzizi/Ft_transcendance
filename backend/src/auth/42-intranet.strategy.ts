@@ -11,9 +11,9 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
     constructor(private userService: UserService) {
         super(
             {
-                clientID: 'u-s4t2ud-7527be8cdb9352288351be959fdbe96d939875e2c2b8cb6f649886e3b5799f4c',
-                clientSecret: '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',
-                callbackURL: 'http://localhost:4000/auth/42-intranet/callback',
+                clientID: process.env.FORTYTWO_CLIENT_ID,
+                clientSecret: process.env.FORTYTWO_CLIENT_SECRET,
+                callbackURL: process.env.CALLBACK_URL,
                 scope: ['public'],
             });
     }
@@ -31,7 +31,7 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(Strategy, '42-int
         return user;
     }
 
-    async validate(accessToken: String, refreshToken: string, profile: Profile, done: VerifyCallback) {  //accessToken: string,refreshToken: string
+    async validate(accessToken: String, refreshToken: string, profile: Profile, done: VerifyCallback) {
         try {
             const user = await this.validateUser(profile);
             let checkuser = await this.userService.findByIntraId(user.intra_id);

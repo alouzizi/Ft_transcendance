@@ -19,6 +19,10 @@ const socket_module_1 = require("./socket/socket.module");
 const hixcoder_module_1 = require("./hixcoder/hixcoder.module");
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
+<<<<<<< HEAD
+=======
+const notification_module_1 = require("./notification/notification.module");
+>>>>>>> main
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -38,6 +42,10 @@ exports.AppModule = AppModule = __decorate([
                 rootPath: (0, path_1.join)(__dirname, '..', 'uploads'),
                 serveRoot: '/uploads',
             }),
+<<<<<<< HEAD
+=======
+            notification_module_1.NotificationModule,
+>>>>>>> main
         ],
     })
 ], AppModule);
