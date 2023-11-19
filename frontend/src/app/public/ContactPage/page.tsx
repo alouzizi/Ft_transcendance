@@ -54,7 +54,7 @@ export default function ContactPage() {
 
           }}
             className="bg-[#4069FF] px-7 py-1 rounded-sm  flex items-center ">
-            <p className="text-white font-outfit pr-2">Submit</p>
+            <p className="text-white pr-2">Submit</p>
 
           </button>
         </div>

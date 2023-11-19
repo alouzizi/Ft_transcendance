@@ -70,7 +70,8 @@ export default function SettingsPage() {
   return (
     <div className="h-fit min-h-screen">
 
-      <div className="pt-5 pl-5 text-white text-2xl/[29px] font-fredoka font-700 mb-5 mt-5">
+      <div className="pt-5 pl-5 text-white text-2xl/[29px] mb-5 mt-5">
+        {/* //  font-fredoka font-700 */}
         <Text weight="bold">Edit Profile</Text>
       </div>
 
@@ -203,7 +204,7 @@ export default function SettingsPage() {
               }
             }}
               className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center mb-5 mt-3">
-              <div className="text-white font-outfit pr-2">Save</div>
+              <div className="text-white  pr-2">Save</div>
 
             </button>
           </div>

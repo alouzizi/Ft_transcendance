@@ -4,11 +4,7 @@ import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 
 const inter = Inter({ subsets: ["latin"] });
-export const metadata = {
-  icons: {
-    icon: '/icon.png',
-  },
-};
+
 
 
 export default function RootLayout({

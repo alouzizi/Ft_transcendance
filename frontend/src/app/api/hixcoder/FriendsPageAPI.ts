@@ -8,6 +8,7 @@ export async function getAllUsers(userId: string) {
     const response = await fetch(`${Backend_URL}/hixcoder/allUsers/${userId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
+
     });
     const data = await response.json();
     return data;

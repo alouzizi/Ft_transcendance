@@ -75,7 +75,6 @@ export declare class UserController {
         status: number;
         error: boolean;
     }>;
-    private getImageDimensions;
     uploadImage(file: Express.Multer.File, senderId: string): Promise<{
         message: string;
     }>;

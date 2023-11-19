@@ -18,7 +18,6 @@ const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const guard_1 = require("../auth/guard");
 const user_service_1 = require("./user.service");
-const imageSize = require("image-size");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -48,17 +47,6 @@ let UserController = class UserController {
     }
     async updatUserdata(intra_id, nickname) {
         return await this.userService.updatUserdata(intra_id, nickname);
-    }
-    async getImageDimensions(filePath) {
-        try {
-            const dimensions = await imageSize.imageSize(filePath);
-            return dimensions;
-            ;
-        }
-        catch (error) {
-            console.error('Error getting image dimensions:', error);
-            return null;
-        }
     }
     uploadImage(file, senderId) {
         return this.userService.uploadImage(senderId, file.path);
@@ -124,8 +112,6 @@ __decorate([
                 cb(null, filename);
             },
         }),
-        fileFilter: async (req, file, cb) => {
-        },
     })),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Param)("intra_id")),

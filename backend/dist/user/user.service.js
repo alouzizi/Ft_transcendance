@@ -294,7 +294,7 @@ let UserService = class UserService {
                     intra_id: intra_id,
                 },
                 data: {
-                    profilePic: `http://10.12.4.13:4000/${path}`,
+                    profilePic: `http://10.12.3.3:4000/${path}`,
                 },
             });
             console.log("File uploaded successfully");

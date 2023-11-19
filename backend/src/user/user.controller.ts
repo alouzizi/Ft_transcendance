@@ -13,7 +13,6 @@ import { User } from "@prisma/client";
 import { diskStorage } from "multer";
 import { JwtGuard } from "src/auth/guard";
 import { UserService } from "./user.service";
-import * as imageSize from 'image-size';
 
 @Controller("user")
 export class UserController {
@@ -64,32 +63,18 @@ export class UserController {
     return await this.userService.updatUserdata(intra_id, nickname);
   }
 
-
-
-  private async getImageDimensions(filePath: string) {
-    try {
-      const dimensions = await imageSize.imageSize(filePath);
-      return dimensions;;
-    } catch (error) {
-      console.error('Error getting image dimensions:', error);
-      return null;
-    }
-  }
-
   @Post("/:intra_id/uploadImage")
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const filename = `${Date.now()}-${file.originalname}`;
-          cb(null, filename);
-        },
-      }),
-      fileFilter: async (req, file, cb) => {
-
-      },
-    })
+    FileInterceptor('file',
+      {
+        storage: diskStorage({
+          destination: './uploads',
+          filename: (req, file, cb) => {
+            const filename = `${Date.now()}-${file.originalname}`;
+            cb(null, filename);
+          },
+        }),
+      })
   )
   uploadImage(
     @UploadedFile() file: Express.Multer.File,
@@ -130,8 +115,4 @@ export class UserController {
 
 
 
-
-// function getImageDimensions(path: string) {
-//   throw new Error("Function not implemented.");
-// }
 

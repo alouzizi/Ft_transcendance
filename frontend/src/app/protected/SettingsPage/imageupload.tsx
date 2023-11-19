@@ -20,6 +20,7 @@ const ImageUpload = () => {
       reader.onload = () => {
         setSelectedImage(reader.result as string);
       };
+      console.log(reader.result);
       reader.readAsDataURL(file);
 
       const formData = new FormData();
