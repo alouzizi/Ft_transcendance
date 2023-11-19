@@ -385,4 +385,3 @@ export function animateBall(ball: Ball, canvasCtx: Canvas, speedX: number, speed
 
   return { speedX, speedY };
 }
-

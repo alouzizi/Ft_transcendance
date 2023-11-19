@@ -1,10 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
-import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
+import  { drawCanvas } from "./pongUtils";
 import { useGlobalContext } from "@/app/context/store";
-import Alert from '@mui/joy/Alert';
 import {useRouter } from "next/navigation";
-import { dividerClasses } from "@mui/material";
 
 
 interface PongProps {
@@ -119,25 +117,13 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     socket.on("gameOver", (state: string) => {
       setTimeout(() => {
         if (state === "win") {
-
-          <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
-          setAlert(1);
-          // console.log("test");
-          router.push('/protected/GamePage');
-          // alert("You win!");
+          router.replace('/protected/GamePage');
         }
         if (state === "lose") {
-          <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
-          setAlert(2)
-          // console.log("test");
-          router.push('/protected/GamePage');
-          // alert("You lose!");
+          router.replace('/protected/GamePage');
         }
         if (state === "draw") {
-          <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
-          setAlert(4);          // console.log("test");
-          router.push('/protected/GamePage');
-          // alert("Draw!");
+          router.replace('/protected/GamePage');
         }
       }, 1000);
     });

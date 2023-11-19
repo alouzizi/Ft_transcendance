@@ -275,6 +275,8 @@ let SocketGateway = class SocketGateway {
         delete this.joindClients[data.userId];
         this.stopEmittingBallPosition(data.room);
     }
+    onIvite(client, data) {
+    }
 };
 exports.SocketGateway = SocketGateway;
 __decorate([
@@ -329,6 +331,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "onOpponentLeft", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("invite"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "onIvite", null);
 exports.SocketGateway = SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(),
     __metadata("design:paramtypes", [game_service_1.PongServise,

@@ -17,7 +17,7 @@ import { PongServise } from "src/game/game.service";
 import { BallDto, PaddleDto } from "src/game/dto/game.tdo";
 import { PrismaService } from "src/prisma/prisma.service";
 import { HixcoderService } from "src/hixcoder/hixcoder.service";
-import { on } from "events";
+
 
 @WebSocketGateway()
 export class SocketGateway
@@ -304,13 +304,6 @@ export class SocketGateway
     }
   }
   
-  // @SubscribeMessage("invite")
-  // onInvite(client: Socket, data: any) {
-
-  //   this.
-  //   this.server.to(data.userId).emit("invite", data);
-  // }
-// }
   findRoomByClientId(id: string) {
     let roomName: string;
     this.rooms.forEach((clients, room) => {
@@ -360,7 +353,53 @@ export class SocketGateway
     delete this.joindClients[data.userId];
     this.stopEmittingBallPosition(data.room);
   }
+
+  private inviteRoom: Map<string, Socket>= new Map();
+
+  @SubscribeMessage("invite")
+  onIvite(client: Socket, data: any) {
+
+    this.inviteRoom.set(data.userId1, client);    
+
+    // this.rooms.set(roomName, [data.userId1, data.userId2]);
+    client.join(data.userId1);
+    this.server.to(data.userId2).emit("invite", data);
+
+  }
+
+  @SubscribeMessage("accept")
+  onAccept(client: Socket, data: any) {
+    this.inviteRoom.set(data.userId2, client);
+    client.join(data.userId2);
+
+    this.server.to(data.userId2).emit("accepted", data);
+    const roomName = `room-${Date.now()}`;
+    const sockets: Socket[] = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
+
+    this.rooms.set(roomName, [data.userId1, data.userId2]);
+
+
+    this.server.to(data.userId1).emit("whichSide", true);
+    this.server.to(data.userId2).emit("whichSide", false);
+
+
+    sockets.forEach((socket) => {
+      socket.join(roomName);
+    });
+
+    this.server.to(roomName).emit("startGame", roomName);
+    this.GameInit(roomName);
+
+    this.PongService.resetBall(this.roomState.get(roomName).ball);
+    this.startEmittingBallPosition(roomName, data.userId1);
+    this.clients.clear();
+  }
+
 }
+
+
+
+
 
 
 interface RoomState {

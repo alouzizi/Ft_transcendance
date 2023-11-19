@@ -1,16 +1,23 @@
 "use client";
-import { Backend_URL } from "../../../lib/Constants";
-import {
-  createContext,
-  useContext,
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-} from "react";
-import { io, Socket } from "Socket.IO-client";
+import { Socket, io } from "Socket.IO-client";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Backend_URL } from "../../../lib/Constants";
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import * as React from 'react';
+
 
 enum Status {
   ACTIF = "ACTIF",
@@ -170,6 +177,16 @@ export const GlobalContextProvider = ({
       socket.on("updateData", update);
     }
   }, [socket]);
+
+  
+  useEffect(() => {
+    const update = async () => {
+      // setOpenConfirm(true)
+      // socket here <<< ---------------------------------->>>
+    }
+  }, [socket]);
+
+  const [openConfirm, setOpenConfirm] = useState(true);
   return (
     <GlobalContext.Provider
       value={{
@@ -184,6 +201,33 @@ export const GlobalContextProvider = ({
         setSaveChanges,
       }}
     >
+<div>
+                <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
+                    <DialogTitle>Confirme Action</DialogTitle>
+                    <DialogContent className='flex flex-col'>
+                        <div className='flex bg-[#f1f3f8] text-black border border-[#1f3175]
+                      placeholder-gray-300 text-sm focus:border-white
+                        rounded-lg  w-full p-1.5 outline-none'
+                             
+                        >
+                            
+                            
+                        </div>
+                        
+
+                    </DialogContent>
+                    <DialogActions>
+                        <button onClick={async () => {}}
+                            className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
+                            text-xs px-2
+                            md:text-sm lg:text-md lg:px-4">
+                            Confirm
+                        </button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+
+
       {children}
     </GlobalContext.Provider>
   );

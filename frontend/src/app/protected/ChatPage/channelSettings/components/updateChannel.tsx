@@ -1,25 +1,20 @@
 'use client';
 import { useGlobalContext } from '@/app/context/store';
-import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import TextField from '@mui/material/TextField';
 import { Avatar, Text } from '@radix-ui/themes';
+import MiniCropper from 'mini-react-cropper';
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
-import Badge from "@mui/material/Badge";
-import MiniCropper from 'mini-react-cropper';
-import { IoMdPhotos } from "react-icons/io";
 
 import { getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
 
