@@ -1,12 +1,13 @@
 'use client'
 import { useEffect, useState } from "react";
-import { IoNotificationsCircleOutline } from "react-icons/io5";
+import { IoGameController, IoNotificationsCircleOutline } from "react-icons/io5";
 import axios from "axios";
 import { useGlobalContext } from "../context/store";
-import { MdCancel } from "react-icons/md";
+import { MdCancel, MdGroupAdd, MdMessage } from "react-icons/md";
 import { createNotification } from "./api/createNotification";
 import Lottie from "lottie-react";
 import { boolean } from "zod";
+import { FaUserFriends } from "react-icons/fa";
 
 
 function formatDateAndTime(dateTimeString: string): string {
@@ -41,7 +42,7 @@ export default function NotificationPage() {
     "Friend request incoming",
     "New message received",
     "Invitation to play a game",
-    "Reminder for upcoming event"
+    "you've been invited to group"
   ];
   let randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
 
@@ -62,10 +63,10 @@ export default function NotificationPage() {
         setCurrentAnimationData("Invitation to play a game");
         break;
       case subjects[3]:
-        setCurrentAnimationData("Reminder for upcoming event");
+        setCurrentAnimationData("you've been invited to group");
         break;
       default:
-        setCurrentAnimationData("Reminder for upcoming event");
+        setCurrentAnimationData("you've been invited to group");
         break;
       }
     });
@@ -132,22 +133,29 @@ export default function NotificationPage() {
           //   return  <div className='text-[10px]   '>
           //   <img className='text-[10px]' src='https://w7.pngwing.com/pngs/715/287/png-transparent-gold-1-numerical-digit-number-number-1-text-gold-cartoon.png' alt='Your Image' />
           // </div>;
-          <Lottie
-          animationData={"animationData"}
-          className="flex justify-center items-center"
-          loop={true}
-        />
-          case subjects[1]:
-            return  <div className='text-[10px]   '>
-            <img className='text-[10px]' src='https://product-image.juniqe-production.juniqe.com/media/catalog/product/seo-cache/x800/768/89/768-89-101P/Number-2-daylight-design-studio-Affiche.jpg' alt='Your Image' />
+        //   <Lottie
+        //   animationData={"animationData"}
+        //   className="flex justify-center items-center"
+        //   loop={true}
+        // />
+        return <div className='text-[60px]   '>
+                   
+          <MdGroupAdd />
+          </div>;
+          case subjects[1]:            
+            return  <div className='text-[60px]   '>
+                             
+                                  <MdMessage />
+
           </div>;
           case subjects[2]:
-            return  <div className='text-[10px]   '>
-            <img className='text-[10px]' src='https://cdn.pixabay.com/photo/2012/04/23/17/07/three-39116_1280.png' alt='Your Image' />
+            return  <div className='text-[60px]   '>
+           <IoGameController />
           </div>;
           case subjects[3]:
-            return  <div className='text-[10px]   '>
-            <img className='text-[10px]' src='https://w7.pngwing.com/pngs/715/287/png-transparent-gold-1-numerical-digit-number-number-1-text-gold-cartoon.png' alt='Your Image' />
+            return  <div className='text-[60px]   '>
+                     <FaUserFriends />
+
           </div>;
           default:
             return <img className='text-[10px]' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNPEynHTWV5x710fDm2rN3Ds1rB6KjI5tvlg&usqp=CAU' alt='Your Image' />
