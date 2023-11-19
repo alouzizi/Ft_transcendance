@@ -13,6 +13,7 @@ import { User } from "@prisma/client";
 import { diskStorage } from "multer";
 import { JwtGuard } from "src/auth/guard";
 import { UserService } from "./user.service";
+import sharp from "sharp";
 
 @Controller("user")
 export class UserController {
@@ -64,25 +65,31 @@ export class UserController {
   }
 
   @Post("/:intra_id/uploadImage")
-  @UseInterceptors(
-    FileInterceptor('file',
-      {
-        storage: diskStorage({
-          destination: './uploads',
-          filename: (req, file, cb) => {
-            const filename = `${Date.now()}-${file.originalname}`;
-            cb(null, filename);
-          },
-        }),
-      })
-  )
-  uploadImage(
-    @UploadedFile() file: Express.Multer.File,
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const name = file.originalname.split(".")[0];
+        const fileExtension = file.originalname.split(".")[1];
+        const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
+        cb(null, newFileName);
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+        return cb(null, false);
+
+      cb(null, true);
+    }
+  }))
+  uploadImage(@UploadedFile() file: Express.Multer.File,
     @Param("intra_id") senderId: string
   ) {
+    // const roundedCornerResizer = sharp()
+    //   .resize(200, 200)
+    //   .toBuffer();
     return this.userService.uploadImage(senderId, file.path);
   }
-
 
 
   @Get("/getUsersCanJoinChannel/:senderId/:channelId")

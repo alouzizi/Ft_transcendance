@@ -108,10 +108,17 @@ __decorate([
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
             filename: (req, file, cb) => {
-                const filename = `${Date.now()}-${file.originalname}`;
-                cb(null, filename);
+                const name = file.originalname.split(".")[0];
+                const fileExtension = file.originalname.split(".")[1];
+                const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
+                cb(null, newFileName);
             },
         }),
+        fileFilter: (req, file, cb) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+                return cb(null, false);
+            cb(null, true);
+        }
     })),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Param)("intra_id")),

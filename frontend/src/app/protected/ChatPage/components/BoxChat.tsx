@@ -184,7 +184,6 @@ const BoxChat = () => {
 
     }
 
-    // 
     return (geust.id != "-1") ? (
         <Box
             className={`
@@ -338,7 +337,7 @@ const BoxChat = () => {
 
 
         </Box>
-    ) : <></>
+    ) : <div></div>
 }
 
 export default BoxChat
