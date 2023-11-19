@@ -1,16 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  IoGameController,
-  IoNotificationsCircleOutline,
-} from "react-icons/io5";
 import axios from "axios";
 import { useGlobalContext } from "../context/store";
-import { MdCancel, MdGroupAdd, MdMessage } from "react-icons/md";
 import { createNotification } from "./api/createNotification";
-import Lottie from "lottie-react";
-import { boolean } from "zod";
-import { FaUserFriends } from "react-icons/fa";
 import { FaTrashCan } from "react-icons/fa6";
 import React from "react";
 
@@ -88,6 +80,7 @@ export default function NotificationPage() {
       `http://localhost:4000/notification/deletenotifications/${id}`
     ); // ${user.id}
     const data = await response.data;
+    setDelete((prevDelete) => !prevDelete);
   };
 
   function handleDecline(): void {
@@ -183,7 +176,7 @@ export default function NotificationPage() {
                 <div id="lottie-container"></div>
               </div>
               <div>
-                <p className="text-md lg:text-lg xl:text-2xl hover:underline">
+                <p className="text-md lg:text-lg xl:text-2xl ">
                   <strong>{item.user.nickname}</strong> {item.subjet}
                 </p>
 
@@ -191,7 +184,7 @@ export default function NotificationPage() {
                 {item.subjet === subjects[1] ? (
                   <React.Fragment>
                     <button
-                      className="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
                       onClick={() => handleDecline()}
                     >
                       Decline
@@ -199,7 +192,7 @@ export default function NotificationPage() {
                     <span style={{ marginRight: "8px" }} />{" "}
                     {/* Add a space of 8px */}
                     <button
-                      className="bg-blue-900 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
+                      className="bg-blue-900 text-white font-bold py-2 px-4 rounded"
                       onClick={() => handleAccept()}
                     >
                       Accept
@@ -214,7 +207,6 @@ export default function NotificationPage() {
               className="cursor-pointer text-[60px] bg-blue-900 rounded-full hover:bg-red-500 pt-3 pb-2 text-white"
               onClick={() => {
                 DeleteFn(item.id);
-                setDelete(!Delete);
               }}
             />
           </div>
