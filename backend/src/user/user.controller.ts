@@ -10,14 +10,11 @@ import { diskStorage } from 'multer';
 export class UserController {
   constructor(private userService: UserService) { }
 
-
-
   // @UseGuards(JwtGuard)
   @Get(':id')
   async getUserProfile(@Param('id') id: string) {
     return await this.userService.findById(id);
   }
-
 
   @UseGuards(JwtGuard)
   @Get('/intra/:id_intra')
@@ -40,8 +37,6 @@ export class UserController {
   async getAllUser() {
     return await this.userService.findAllUsers();
   }
-
-
   @Get('/getValideUsers/:id')
   async getValideUsers(@Param('id') senderId: string) {
     return await this.userService.getValideUsers(senderId);
@@ -64,31 +59,22 @@ export class UserController {
     })
   }))
   uploadImage(@UploadedFile() file: Express.Multer.File, @Param('intra_id') senderId: string) {
-<<<<<<< HEAD
     console.log("---> ", file);
     return this.userService.uploadImage(senderId, file.path)
 
-=======
-    return this.userService.uploadImage(senderId, file.path)
->>>>>>> main
   }
-
   @Get('/getUsersCanJoinChannel/:senderId/:channelId')
   async getUsersCanJoinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return await this.userService.usersCanJoinChannel(senderId, channelId);
   }
-
-
   @Get('getUserGeust/:id')
   async getUserGeust(@Param('id') id: string) {
     return await this.userService.getUserGeust(id);
   }
-
   @Get('getChannelGeust/:id')
   async getChannelGeust(@Param('id') id: string) {
     return await this.userService.getChannelGeust(id);
   }
-
   @Get('checkIsBlocked/:senderId/:receivedId')
   async checkIsBlocked(@Param('senderId') senderId: string, @Param('receivedId') receivedId: string) {
     return await this.userService.checkIsBlocked(senderId, receivedId);

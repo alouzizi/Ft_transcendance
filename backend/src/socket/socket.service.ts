@@ -8,9 +8,7 @@ import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 export class SocketGatewayService {
 
   constructor(
-    private prisma: PrismaService,) { }
-
-
+    private prisma: PrismaService,) {}
 
   async handleConnection(client: Socket, wss: Server) {
     console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
@@ -76,8 +74,6 @@ export class SocketGatewayService {
       }
     }
   }
-
-
   async updateData(ids: CreateMessageDto, wss: Server) {
     wss.to(ids.senderId).emit('updateData', {});
     if (ids.isDirectMessage === false) {
@@ -88,5 +84,4 @@ export class SocketGatewayService {
     } else
       wss.to(ids.receivedId).emit('updateData', ids.content);
   }
-
 }

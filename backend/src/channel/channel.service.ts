@@ -10,7 +10,6 @@ export class ChannelService {
     private prisma: PrismaService,
   ) { }
 
-
   async createMessageInfoChannel(senderId: string, channelId: string, userId: string, msg: string) {
     const user: User = await this.prisma.user.findUnique({ where: { id: userId } })
     await this.prisma.message.create({
@@ -73,7 +72,6 @@ export class ChannelService {
     }
 
   }
-
   async updateChannel(senderId: string, channelId: string, updateChannelDto: CreateChannelDto) {
     const saltRounds = 10;
     let pass: string = '';
@@ -105,7 +103,6 @@ export class ChannelService {
       }
     }
   }
-
   async checkOwnerIsAdmin(senderId: string, channelId: string) {
     try {
       const user: ChannelMember = await this.prisma.channelMember.findUnique({
@@ -142,7 +139,6 @@ export class ChannelService {
       return { error: true }
     }
   }
-
   async getChannel(senderId: string, channelId: string) {
     try {
       const channel = await this.prisma.channel.findUnique({
@@ -454,7 +450,6 @@ export class ChannelService {
       return { error: true }
     }
   }
-
   async joinChannel(senderId: string, channelId: string) {
     try {
       await this.prisma.channelMember.create({
@@ -469,7 +464,6 @@ export class ChannelService {
       return { error: true }
     }
   }
-
   async muteUserChannel(senderId: string, channelId: string, userId: string, timer: string) {
     try {
       const admin = await this.prisma.channelMember.findFirst({ where: { userId: senderId, channelId: channelId } });

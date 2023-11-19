@@ -1,15 +1,42 @@
 version: '3.8'
 
 services:
-  dev-db:
-    image: postgres:13
+
+  database:
+    container_name: app-database
+    image: postgres:13 
     ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: db
+      - '5432:5432'
+    env_file:
+      - .env
     networks:
-      - 42_network
+      - mynetwork
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    restart: always
+
+  backend:
+    container_name: app-backend
+    build: ./backend 
+    ports:
+      - '4000:4000' 
+    depends_on:
+      - database
+    networks:
+      - mynetwork
+    env_file:
+      - .env
+    restart: always
+
+  frontend:
+    container_name: app-frontend
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    restart: always
+
 networks:
-  42_network:
+  mynetwork:
+    driver: bridge

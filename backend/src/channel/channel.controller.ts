@@ -18,7 +18,6 @@ export class ChannelController {
     }
     return this.channelService.createChannel(channelData, senderId);
   }
-
   @Post('/updateChannel/:senderId/:channelId')
   updateChannel(@Body() createChannelDto: any,
     @Param('senderId') senderId: string, @Param('channelId') channelId: string) {
@@ -44,18 +43,14 @@ export class ChannelController {
   addUserToChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
     return this.channelService.addUserToChannel(senderId, channelId, userId);
   }
-
   @Get('/getChannel/:senderId/:channelId')
   getChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.getChannel(senderId, channelId);
   }
-
   @Get('/getMembersChannel/:id')
   getMembersChannel(@Param('id') id: string) {
     return this.channelService.getMembersChannel(id);
   }
-
-
   @Get('/changeStatusAdmin/:senderId/:channelId/:userId')
   changeStatusAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
     return this.channelService.changeStatusAdmin(senderId, channelId, userId);
@@ -83,41 +78,31 @@ export class ChannelController {
     , @Param('password') password: string) {
     return this.channelService.validePassword(senderId, channelId, password);
   }
-
-
   @Get('/getValideChannels/:senderId')
   getValideChannels(@Param('senderId') senderId: string) {
     return this.channelService.getValideChannels(senderId);
   }
-
   @Get('/joinChannel/:senderId/:channelId/')
   joinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.joinChannel(senderId, channelId);
   }
-
   @Get('/muteUserChannel/:senderId/:channelId/:userId/:timer')
   muteUserChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string,
     @Param('userId') userId: string, @Param('timer') timer: string) {
     return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
   }
-
-
   @Get('/checkIsMuted/:senderId/:channelId')
   checkIsMuted(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
     return this.channelService.checkIsMuted(senderId, channelId);
   }
-
   @Get('/cancelTimeOutByAdmin/:senderId/:channelId/:userId')
   cancelTimeOutByAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string
     , @Param('userId') userId: string) {
     return this.channelService.cancelTimeOutByAdmin(senderId, channelId, userId);
   }
 
-
   @Post('/joinChannelWithLink/:senderId/:channelId/:uuid')
   async joinChannelWithLink(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('uuid') uuid: string) {
-
-
 
     // Perform your logic here...
 

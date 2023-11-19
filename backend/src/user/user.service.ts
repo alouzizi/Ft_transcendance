@@ -8,8 +8,7 @@ import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 export class UserService {
   constructor(
     private prisma: PrismaService,
-  ) { }
-
+  ) {}
 
   async findById(id: string) {
     try {
@@ -23,7 +22,6 @@ export class UserService {
       return { error: true }
     }
   }
-
   async findAllUsers() {
     try {
       return await this.prisma.user.findMany();
@@ -132,7 +130,6 @@ export class UserService {
       return { error: true }
     }
   }
-
   // 0 if users is friend
   // 1 if sender block received
   // 2 if receiver block sender
@@ -192,7 +189,6 @@ export class UserService {
       return { error: true }
     }
   }
-
   async getChannelGeust(id: string) {
     try {
       const channel = await this.prisma.channel.findUnique({ where: { id } });
@@ -230,8 +226,6 @@ export class UserService {
     return user;
   }
 
-
-
   async setTwoFactorAuthSecret(secret: string, intra_id: string) {
     await this.prisma.user.update({
       where: { intra_id: intra_id },
@@ -250,7 +244,6 @@ export class UserService {
       }
     })
   }
-
   async turnOffTwoFactorAuth(intra_id: string) {
     const user = await this.prisma.user.findUnique({ where: { intra_id: intra_id } })
     console.log(user);
@@ -261,11 +254,9 @@ export class UserService {
       }
     })
   }
-
   async getUsers() {
     return this.prisma.user.findMany();
   }
-
   async updatUserdata(intra_id: string, nickname: string, image: string) {
 
     const usr = await this.prisma.user.findUnique({ where: { intra_id } });
@@ -325,11 +316,9 @@ export class UserService {
 
     });
   }
-
   async deleteUser(id: string) {
     return this.prisma.user.delete({
       where: { id: id },
     });
   }
-
 }

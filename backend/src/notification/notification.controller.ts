@@ -5,12 +5,7 @@ import { NotFoundException } from '@nestjs/common';
 
 @Controller('notification')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) { }
-
-
-
-
-
+  constructor(private readonly notificationService: NotificationService) {}
   @Post('/createNotification')
   createNotification(@Body() createNotificationDto: any) {
     
@@ -37,8 +32,6 @@ export class NotificationController {
       }
     }
   }
-
-
   @Get('/getNotifications/:senderId')
   async fetchNotifications(@Param('senderId') senderId: string) {
     const notifications = await this.notificationService.fetchNotifications(senderId);

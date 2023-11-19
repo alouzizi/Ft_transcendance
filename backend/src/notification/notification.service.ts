@@ -21,7 +21,6 @@ export class NotificationService {
     console.log(notification)
     return 'Notification created succesfully';
   }
-
   async deleteNotification(notificationId: string) {
     const notification = await this.prisma.notificationTable.findUnique({
       where: { id: notificationId },
@@ -41,8 +40,6 @@ export class NotificationService {
 
     return;
   }
-
-
   async fetchNotifications(senderId: string) {
     const notifications = await this.prisma.notificationTable.findMany({
       where: {
@@ -56,8 +53,4 @@ export class NotificationService {
     console.log(notifications);
     return notifications;
   }
-
-
-
-
 }
