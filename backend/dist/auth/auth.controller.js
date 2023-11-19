@@ -25,16 +25,12 @@ let AuthController = class AuthController {
     }
     async loginWith42(req) {
     }
-    async checkTockenIsValide(req, intra_id) {
-        return true;
-    }
     async register(req) {
         const { otpAuthUrl } = await this.authService.generateTwoFactorAuthSecret(req.user);
         const qrcode = await this.authService.generateQrCodeDataURL(otpAuthUrl);
         return qrcode;
     }
     async turnOffTwoFactorAuthentication(intra_id) {
-        console.log("intraid", intra_id);
         await this.userService.turnOffTwoFactorAuth(intra_id);
     }
     async turnOnTwoFactorAuthentication(res, intra_id, authCode) {
@@ -62,12 +58,12 @@ let AuthController = class AuthController {
             1000;
         if (diff < 120) {
             res.cookie("access_token", ret.access_token);
-            res.redirect("http://10.11.8.5:3000/protected/SettingsPage");
+            return res.redirect("http://10.12.4.13:3000/protected/SettingsPage");
         }
         if (req.user.isTwoFactorAuthEnabled)
-            res.redirect("http://10.11.8.5:3000/Checker2faAuth");
+            return res.redirect("http://10.12.4.13:3000/Checker2faAuth");
         res.cookie("access_token", ret.access_token);
-        res.redirect("http://10.11.8.5:3000/protected/DashboardPage");
+        res.redirect("http://10.12.4.13:3000/protected/DashboardPage");
     }
 };
 exports.AuthController = AuthController;
@@ -80,15 +76,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginWith42", null);
-__decorate([
-    (0, common_1.Get)("checkTokenIsValide/:intra_id"),
-    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Param)("intra_id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "checkTockenIsValide", null);
 __decorate([
     (0, common_1.Get)("2fa/generate"),
     (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),

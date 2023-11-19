@@ -76,6 +76,7 @@ const ImageUpload = () => {
           width={100}
           height={100}
           src={selectedImage || user.profilePic}
+
           alt="Preview"
           className="w-20 h-20 rounded-full bg-cover object-contain "
         />

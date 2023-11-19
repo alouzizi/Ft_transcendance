@@ -1,24 +1,25 @@
 import {
-  Body,
+  BadRequestException,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
-  Res,
   UploadedFile,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { JwtGuard } from "src/auth/guard";
-import { User } from "@prisma/client";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { User } from "@prisma/client";
 import { diskStorage } from "multer";
+import { JwtGuard } from "src/auth/guard";
+import { UserService } from "./user.service";
+import * as imageSize from 'image-size';
 
 @Controller("user")
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,) {
+
+  }
 
   // @UseGuards(JwtGuard)
   @Get(":id")
@@ -38,6 +39,7 @@ export class UserController {
       nickname: user.nickname,
       profilePic: user.profilePic,
       isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
+      level: user.level
     };
     return temp;
   }
@@ -62,16 +64,31 @@ export class UserController {
     return await this.userService.updatUserdata(intra_id, nickname);
   }
 
+
+
+  private async getImageDimensions(filePath: string) {
+    try {
+      const dimensions = await imageSize.imageSize(filePath);
+      return dimensions;;
+    } catch (error) {
+      console.error('Error getting image dimensions:', error);
+      return null;
+    }
+  }
+
   @Post("/:intra_id/uploadImage")
   @UseInterceptors(
-    FileInterceptor("file", {
+    FileInterceptor('file', {
       storage: diskStorage({
-        destination: "./uploads",
+        destination: './uploads',
         filename: (req, file, cb) => {
           const filename = `${Date.now()}-${file.originalname}`;
           cb(null, filename);
         },
       }),
+      fileFilter: async (req, file, cb) => {
+
+      },
     })
   )
   uploadImage(
@@ -80,6 +97,8 @@ export class UserController {
   ) {
     return this.userService.uploadImage(senderId, file.path);
   }
+
+
 
   @Get("/getUsersCanJoinChannel/:senderId/:channelId")
   async getUsersCanJoinChannel(
@@ -106,4 +125,13 @@ export class UserController {
   ) {
     return await this.userService.checkIsBlocked(senderId, receivedId);
   }
+
 }
+
+
+
+
+// function getImageDimensions(path: string) {
+//   throw new Error("Function not implemented.");
+// }
+

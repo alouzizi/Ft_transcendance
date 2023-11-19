@@ -26,7 +26,6 @@ export default function SettingsPage() {
   const [keyQrCode, setKeyQrCode] = useState("");
 
   const getUrlQr = async () => {
-    const token = Cookies.get("access_token");
     const res = await axios.get(Backend_URL + `/auth/2fa/generate`, {
       method: "GET",
       headers: {
@@ -39,7 +38,6 @@ export default function SettingsPage() {
   };
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-
     if (user && user.id !== "-1" && !event.target.checked && user.isTwoFactorAuthEnabled) {
       const res = await fetch(
         `${Backend_URL}/auth/2fa/turn-off/${user.intra_id}`,
@@ -70,7 +68,7 @@ export default function SettingsPage() {
   }, [user.id]);
 
   return (
-    <div className="h-screen  ">
+    <div className="h-fit min-h-screen">
 
       <div className="pt-5 pl-5 text-white text-2xl/[29px] font-fredoka font-700 mb-5 mt-5">
         <Text weight="bold">Edit Profile</Text>
@@ -106,7 +104,7 @@ export default function SettingsPage() {
           <div className="md:w-[30rem] w-[10rem] mt-3">
             <div className="flex items-center justify-start ">
               <Switch checked={checked} color="info" onChange={handleChange} />
-              <label className="text-white">Two-factor Authentification</label>
+              <label className="text-white text-sm md:text-lg">Two-factor Authentification</label>
             </div>
 
             {urlImage === "" ? (
@@ -139,29 +137,35 @@ export default function SettingsPage() {
                   variant="contained"
                   className="ml-2 bg-[#4069FF]"
                   onClick={async () => {
-                    if (keyQrCode !== "") {
-                      const response = await fetch(
-                        Backend_URL +
-                        `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
-                        {
-                          method: "POST",
-                          headers: {
-                            authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                          },
-                        }
-                      );
-                      if (response.ok) {
-                        setChecked(true);
-                        setUrlImage("");
-                        toast.success(
-                          "2fa authentication turned on successfully"
+                    try {
+                      if (keyQrCode !== "") {
+                        console.log("=====");
+                        const response = await fetch(
+                          Backend_URL +
+                          `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
+                          {
+                            method: "Get",
+                            headers: {
+                              authorization: `Bearer ${token}`,
+                              "Content-Type": "application/json",
+                            },
+                          }
                         );
+                        console.log("---> ", response);
+                        // if (response.ok) {
+                        //   setChecked(true);
+                        //   setUrlImage("");
+                        //   toast.success(
+                        //     "2fa authentication turned on successfully"
+                        //   );
+                        // } else {
+                        //   toast.error("Wrong authentication code");
+                        // }
                       } else {
                         toast.error("Wrong authentication code");
                       }
-                    } else {
-                      toast.error("Wrong authentication code");
+                    } catch (e) {
+                      console.log(e);
                     }
                   }}
                 >
@@ -173,31 +177,33 @@ export default function SettingsPage() {
           <div className="flex items-end justify-end md:w-[30rem] w-[10rem]">
             <button onClick={async (e) => {
               e.preventDefault();
-              if (newNickName.length > 20 || newNickName.length < 3) {
-                toast.error("nickname error");
-              } else {
-                try {
-                  const response = await fetch(
-                    Backend_URL +
-                    `/user/updatUserdata/${user.intra_id}/${newNickName.toLowerCase()}`,
-                    {
-                      method: "POST",
-                      headers: {
-                        authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                      },
+              if (1) {
+                if (newNickName.length > 20 || newNickName.length < 3) {
+                  toast.error("nickname error");
+                } else {
+                  try {
+                    const response = await fetch(
+                      Backend_URL +
+                      `/user/updatUserdata/${user.intra_id}/${newNickName.toLowerCase()}`,
+                      {
+                        method: "POST",
+                        headers: {
+                          authorization: `Bearer ${token}`,
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    );
+                    if (response.status === 409)
+                      toast.error("nickname aleady exist");
+                    else if (response.status === 201) {
+                      toast.success("nickname has been change");
                     }
-                  );
-                  if (response.status === 409)
-                    toast.error("nickname aleady exist");
-                  else if (response.status === 201) {
-                    toast.success("nickname has been change");
-                  }
-                } catch (error) { }
+                  } catch (error) { }
+                }
               }
             }}
-              className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center ">
-              <text className="text-white font-outfit pr-2">Save</text>
+              className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center mb-5 mt-3">
+              <div className="text-white font-outfit pr-2">Save</div>
 
             </button>
           </div>

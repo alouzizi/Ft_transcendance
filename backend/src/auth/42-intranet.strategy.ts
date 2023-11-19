@@ -15,7 +15,7 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(
         "u-s4t2ud-7527be8cdb9352288351be959fdbe96d939875e2c2b8cb6f649886e3b5799f4c",
       clientSecret:
         "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",
-      callbackURL: "http://10.11.8.5:4000/auth/42-intranet/callback",
+      callbackURL: "http://10.12.4.13:4000/auth/42-intranet/callback",
       scope: ["public"],
     });
   }

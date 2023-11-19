@@ -11,7 +11,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
   const pathname = usePathname();
 
   const handleLogin = () => {
-    window.location.href = "http://10.11.8.5:4000/auth/login42";
+    window.location.href = "http://10.12.4.13:4000/auth/login42";
   };
 
   const [openAlert, setOpenAlert] = useState(false);
@@ -76,7 +76,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
             <img className="h-20" src="/PongMaster.svg" alt="PongMaster" />
 
 
-            <text className='text-white text-xl'>open account using</text>
+            <p className='text-white text-xl'>open account using</p>
 
             <Button onClick={handleLogin}>
               <div className="border-2 shadow-xl bg-white border-[#4069FF] mt-3 rounded-xl flex justify-center mx-auto items-center w-36 h-12">

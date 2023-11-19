@@ -14,10 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
-const user_service_1 = require("./user.service");
-const guard_1 = require("../auth/guard");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
+const guard_1 = require("../auth/guard");
+const user_service_1 = require("./user.service");
+const imageSize = require("image-size");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -35,6 +36,7 @@ let UserController = class UserController {
             nickname: user.nickname,
             profilePic: user.profilePic,
             isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
+            level: user.level
         };
         return temp;
     }
@@ -46,6 +48,17 @@ let UserController = class UserController {
     }
     async updatUserdata(intra_id, nickname) {
         return await this.userService.updatUserdata(intra_id, nickname);
+    }
+    async getImageDimensions(filePath) {
+        try {
+            const dimensions = await imageSize.imageSize(filePath);
+            return dimensions;
+            ;
+        }
+        catch (error) {
+            console.error('Error getting image dimensions:', error);
+            return null;
+        }
     }
     uploadImage(file, senderId) {
         return this.userService.uploadImage(senderId, file.path);
@@ -103,14 +116,16 @@ __decorate([
 ], UserController.prototype, "updatUserdata", null);
 __decorate([
     (0, common_1.Post)("/:intra_id/uploadImage"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
-            destination: "./uploads",
+            destination: './uploads',
             filename: (req, file, cb) => {
                 const filename = `${Date.now()}-${file.originalname}`;
                 cb(null, filename);
             },
         }),
+        fileFilter: async (req, file, cb) => {
+        },
     })),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Param)("intra_id")),

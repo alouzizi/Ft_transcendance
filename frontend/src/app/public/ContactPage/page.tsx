@@ -10,9 +10,9 @@ export default function ContactPage() {
   const [message, setMessage] = useState('');
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex md:flex-row flex-col-reverse justify-center items-center">
 
-      <div className="flex flex-col w-[50%] items-center">
+      <div className="flex  flex-col w-[50%] items-center">
         <Text weight='bold' className="text-center text-[20px] ">
           Contact Us
         </Text>
@@ -37,20 +37,26 @@ export default function ContactPage() {
         >
         </input>
 
-        <input type="text" className="bg-[#F6F7FA] pl-5  p-1.5 mt-3 flex w-[15rem] h-[15rem]  border
-                        text-black placeholder-gray-400 text-sm outline-none rounded-[5px] text-left
+        <textarea value={message} placeholder="Message"
+          className="bg-[#F6F7FA] pl-5  p-1.5 mt-3 flex w-[15rem]   border
+                        text-black placeholder-gray-400 text-sm outline-none rounded-[5px]  
                         "
-          value={message}
-          placeholder="Message"
           onChange={(e) => {
             setMessage(e.target.value);
+          }}>
+
+        </textarea>
+
+
+        <div className="mt-3">
+          <button onClick={async (e) => {
+            e.preventDefault();
+
           }}
-        >
-        </input>
+            className="bg-[#4069FF] px-7 py-1 rounded-sm  flex items-center ">
+            <p className="text-white font-outfit pr-2">Submit</p>
 
-
-        <div className="text-white bg-[#4069FF] rounded-lg p-1 mt-4">
-          <Text size='3' weight='medium'> Submit </Text>
+          </button>
         </div>
 
       </div>

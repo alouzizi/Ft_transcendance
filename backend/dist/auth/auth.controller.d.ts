@@ -6,7 +6,6 @@ export declare class AuthController {
     private userService;
     constructor(authService: AuthService, userService: UserService);
     loginWith42(req: any): Promise<void>;
-    checkTockenIsValide(req: any, intra_id: string): Promise<boolean>;
     register(req: any): Promise<any>;
     turnOffTwoFactorAuthentication(intra_id: string): Promise<void>;
     turnOnTwoFactorAuthentication(res: Response, intra_id: string, authCode: string): Promise<void>;
