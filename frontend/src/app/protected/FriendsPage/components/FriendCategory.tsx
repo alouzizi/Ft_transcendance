@@ -1,6 +1,5 @@
 "use client";
 
-import { useGlobalContext } from "@/app/context/store";
 import { Backend_URL } from "../../../../../lib/Constants";
 import {
   useState,
@@ -16,6 +15,7 @@ import {
   getOnlineFriends,
   getPendingFriends,
 } from "@/app/api/hixcoder/FriendsPageAPI";
+import { useGlobalContext } from "../../context/store";
 
 // ====================== create context ======================
 interface ContextProps {

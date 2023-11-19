@@ -1,5 +1,5 @@
 'use client';
-import { useGlobalContext } from '@/app/context/store';
+import { useGlobalContext } from '@/app/protected/context/store';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,13 +10,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { Avatar, Text } from '@radix-ui/themes';
-import MiniCropper from 'mini-react-cropper';
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
-
-import { getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
+import { checkOwnerIsAdmin, getChannel, updateChannel, validePassword } from "../../api/fetch-channel";
 
 enum ChannelType {
     Public = 'Public',
@@ -26,43 +24,41 @@ enum ChannelType {
 export default function UpdateChannel() {
 
 
-    const { user, geust, saveChanges, setSaveChanges } = useGlobalContext();
+    const { user, geust, saveChanges, setSaveChanges, updateInfo, socket } = useGlobalContext();
+
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
-    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#!.]+$/.test(name))
+    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
     const [errorName, setErrorName] = useState("");
     const [errorKey, setErrorKey] = useState("");
 
     const handleChannelType = (event: React.ChangeEvent<HTMLInputElement>) => {
-
         if (user.id === geust.idUserOwner) {
-            if (!validToChange) {
-                setOpenConfirm(true);
-            } else {
-                setSaveChanges((pre) => { return pre + 1 });
+            setSaveChanges((pre) => { return pre + 1 });
+            setChannelData((prevState) => {
+                return { ...prevState, channelType: ChannelType.Public };
+            });
+            if (event.target.value === 'private') {
                 setChannelData((prevState) => {
-                    return { ...prevState, channelType: ChannelType.Public };
+                    return { ...prevState, channelType: ChannelType.Private };
                 });
-                if (event.target.value === 'private') {
-                    setChannelData((prevState) => {
-                        return { ...prevState, channelType: ChannelType.Private };
-                    });
-                }
             }
+
         }
     };
 
     const [channelData, setChannelData] = useState<channelDto>({
-        channleName: '',
+        channelName: '',
         channelType: ChannelType.Public,
-        channlePassword: '',
+        channelPassword: '',
         channelOwnerId: '',
         avatar: '',
         protected: false,
         channelMember: []
     })
+
     const [channel, setChannel] = useState<channelDto>(channelData);
 
     useEffect(() => {
@@ -70,44 +66,60 @@ export default function UpdateChannel() {
             const tmp: channelDto = await getChannel(user.id, geust.id);
             setChannel(tmp);
             setChannelData(tmp);
-            setValidToChange(!tmp.protected);
         }
         if (geust.id !== '-1' && !geust.isUser) getData();
-        return () => {
-        };
-    }, []);
+
+    }, [updateInfo]);
+
+
+    const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
+    useEffect(() => {
+        const getData = async () => {
+            const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
+            setIsOwnerAdmin(tmp);
+        }
+        if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData();
+    }, [updateInfo]);
 
     const isSameChannel = (channel1: channelDto, channel2: channelDto): boolean => {
-        return channel1.channleName === channel2.channleName &&
+        return channel1.channelName === channel2.channelName &&
             channel1.channelType === channel2.channelType &&
             channel1.protected === channel2.protected &&
-            channel1.channlePassword === channel2.channlePassword &&
+            channel1.channelPassword === channel2.channelPassword &&
             channel1.avatar === channel2.avatar
     }
 
     useEffect(() => {
         const updateChan = async () => {
             const res = await updateChannel(channelData, user.id, geust.id);
+
             if (res.status === 202) {
                 setErrorName(res.error)
-
             } else if (res.status === 200) {
-                console.log(res);
                 setSaveChanges(1);
                 setChannel(res.channel);
-                setValidToChange(res.channel.protected);
+                setChannelData(res.channel);
+                socket?.emit('updateData', {
+                    content: '',
+                    senderId: user.id,
+                    isDirectMessage: false,
+                    receivedId: geust.id,
+                });
             }
         }
         if (isSameChannel(channel, channelData)) setSaveChanges(1);
         if (saveChanges === -1) {
             setChannelData(channel);
             setIsPasswordVisible(false);
+            setErrorKey('');
+            setErrorName('');
             setSaveChanges(1);
-        } else if (saveChanges === -2) {
-            const parsName = channelNameSchema.safeParse(channelData.channleName);
-            const parskey = channelkeySchema.safeParse(channelData.channlePassword);
+        } else if (saveChanges < -2) {
+            const parsName = channelNameSchema.safeParse(channelData.channelName);
+            const parskey = channelkeySchema.safeParse(channelData.channelPassword);
             if (parsName.success && (parskey.success || !channelData.protected)) {
                 updateChan();
+                setOpenConfirm(false);
             } else {
                 if (!parsName.success) setErrorName('Invalid channel name');
                 if (!parskey.success && channelData.protected) setErrorKey('Invalid channel key');
@@ -118,7 +130,6 @@ export default function UpdateChannel() {
 
 
 
-
     // alert confirm password
     const [openConfirm, setOpenConfirm] = useState(false);
     const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
@@ -126,45 +137,14 @@ export default function UpdateChannel() {
     const [notMatch, setNotMatch] = useState('');
     const [validToChange, setValidToChange] = useState(false);
 
-    useEffect(() => {
-        let timerId: any;
-        if (validToChange && channel.protected) {
-            timerId = setTimeout(() => {
-                if (channel.protected) {
-                    setValidToChange(false);
-                    setIsPasswordVisible(false);
-                }
-            }, 5000);
-        }
-        return () => { clearTimeout(timerId) }
-    }, [validToChange]);
 
-
-    const [miniCropper, setMiniCropper] = useState(false);
-
-
-    if (channelData.avatar === '') return <div></div>
     return (
-        <div className="flex flex-col items-center justify-centser">
-
-
-            <Dialog open={miniCropper}
-                onClose={() => setMiniCropper(false)}>
-                <DialogTitle>Update Avatar</DialogTitle>
-                <DialogContent className='w-[30rem] h-[30rem] flex items-center justify-center'>
-
-                    <MiniCropper image={channelData.avatar} onSubmit={(croppedImage: any) => {
-                        setSaveChanges((pre) => { return pre + 1 });
-                        setMiniCropper(false);
-                        setChannelData((prevState) => {
-                            return { ...prevState, avatar: croppedImage };
-                        })
-                    }} />
-
-                </DialogContent>
-            </Dialog>
-
-            <div className="flex items-center justify-start pt-2 pb-2">
+        <div className="flex flex-col items-center">
+            <div className="flex items-center justify-center pt-2 pb-2
+                    flex-col
+                    md:flex-row
+                    
+            ">
 
                 <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'>
                     <Avatar
@@ -173,20 +153,19 @@ export default function UpdateChannel() {
                         radius="full"
                         fallback="T"
                     />
-                    <input type="file" accept="image/*"
+                    {/* <input type="file" accept="image/*"
+                        disabled={!(isOwnerAdmin || !channel.protected)}
                         style={{ display: 'none' }}
                         onChange={(event: any) => {
                             const file = event.target.files[0];
                             if (file) {
-                                console.log(file);
+                                setSaveChanges((pre) => { return pre + 1 });
                                 const imageURL = URL.createObjectURL(file);
-                                setMiniCropper(true);
                                 setChannelData((prevState) => {
                                     return { ...prevState, avatar: imageURL };
                                 })
                             }
-                        }} />
-
+                        }} /> */}
                 </label>
 
 
@@ -194,19 +173,19 @@ export default function UpdateChannel() {
                     <Text as='div' className='pb-1 text-gray-400'
                         style={{ fontSize: 18 }}>CHANNEL NAME</Text>
                     <input type="text" className="bg-[#111623] text-white border border-[#1f3175]
-                      placeholder-gray-300 text-sm focus:border-white
-                        rounded-lg block w-full p-1.5 outline-none"
-                        placeholder={channelData.channleName}
-                        value={channelData.channleName}
+                  placeholder-gray-300 text-sm focus:border-white
+                    rounded-lg block w-full p-1.5 outline-none"
+                        disabled={!(isOwnerAdmin || !channel.protected)}
+                        placeholder={channelData.channelName}
+                        value={channelData.channelName}
                         onChange={(e) => {
-                            if (validToChange === false) {
-                                setOpenConfirm(true);
-                            } else {
+                            if (isOwnerAdmin || !channel.protected) {
                                 setSaveChanges((pre) => { return pre + 1 });
                                 setErrorName("");
                                 setChannelData((prevState) => {
-                                    return { ...prevState, channleName: e.target.value };
+                                    return { ...prevState, channelName: e.target.value };
                                 })
+
                             }
                         }}
                     ></input>
@@ -214,16 +193,15 @@ export default function UpdateChannel() {
                 </div>
 
                 <FormControl >
-
                     <RadioGroup
-                        className='flex flex-col items-start justify-start pl-6'
-                    >
+                        className='flex flex-row items-start justify-start pl-6   md:flex-col'>
 
                         <FormControlLabel
                             className='text-white'
                             control={
                                 <Radio checked={channelData.channelType === ChannelType.Public}
                                     value="public"
+                                    className='text-white'
                                     onChange={handleChannelType}
                                 />} label="Public"
                         />
@@ -233,6 +211,7 @@ export default function UpdateChannel() {
                             control={
                                 <Radio checked={channelData.channelType === ChannelType.Private}
                                     value="private"
+                                    className='text-white'
                                     onChange={handleChannelType}
 
                                 />} label="Private" />
@@ -243,62 +222,54 @@ export default function UpdateChannel() {
 
                 <div className="flex flex-col items-start justify-start pl-6">
                     <FormControlLabel className='text-white'
-                        control={<Checkbox checked={channelData.protected} onChange={(event) => {
-                            console.log(event.target.checked);
+                        control={<Checkbox className='text-white' checked={channelData.protected} onChange={(event) => {
+
                             if (user.id === geust.idUserOwner) {
-
-                                if (channel.protected && !validToChange) {
-                                    setOpenConfirm(true);
-                                }
-                                if (validToChange) {
-
+                                setChannelData((prevState) => {
+                                    return { ...prevState, protected: event.target.checked };
+                                })
+                                if (event.target.checked) {
                                     setChannelData((prevState) => {
-                                        return { ...prevState, protected: event.target.checked };
+                                        return { ...prevState, channelPassword: channel.channelPassword };
                                     })
-                                    if (event.target.checked) {
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channlePassword: channelData.channlePassword };
-                                        })
-                                    } else {
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channlePassword: '' };
-                                        })
-                                    }
-                                    setSaveChanges((pre) => { return pre + 1 });
+                                } else {
+                                    setChannelData((prevState) => {
+                                        return { ...prevState, channelPassword: '' };
+                                    })
                                 }
+                                setSaveChanges((pre) => { return pre + 1 });
+
                             }
                         }} />} label="Protected" />
                     <div className='flex bg-[#111623] text-white border border-[#1f3175]
-                      placeholder-gray-300 text-sm focus:border-white
-                        rounded-lg  w-full p-1.5 outline-none'>
+                  placeholder-gray-300 text-sm focus:border-white
+                    rounded-lg  w-full p-1.5 outline-none'>
                         <input type={isPasswordVisible ? "text" : "password"} className="bg-[#111623] text-white
-                      placeholder-gray-300 text-sm outline-none"
-                            placeholder={channelData.channlePassword}
-                            disabled={!channelData.protected}
+                  placeholder-gray-300 text-sm outline-none"
+                            placeholder={channelData.channelPassword}
+                            disabled={!channelData.protected || (user.id !== geust.idUserOwner)}
                             required={channelData.protected}
-                            value={channelData.channlePassword}
+                            value={channelData.channelPassword}
                             onChange={(e) => {
                                 if (user.id === geust.idUserOwner) {
-                                    if (!validToChange) {
-                                        setOpenConfirm(true);
-                                    } else {
+                                    if (!channel.protected || validToChange) {
                                         setSaveChanges((pre) => { return pre + 1 });
                                         setErrorKey('');
                                         setChannelData((prevState) => {
-                                            return { ...prevState, channlePassword: e.target.value };
+                                            return { ...prevState, channelPassword: e.target.value };
                                         })
-                                    }
+                                    } else
+                                        setOpenConfirm(true);
                                 }
                             }}
                         >
                         </input>
                         <div className='cursor-pointer' onClick={() => {
                             if (user.id === geust.idUserOwner) {
-                                if (!validToChange) {
-                                    setOpenConfirm(true);
-                                } else {
+                                if (!channel.protected || validToChange) {
                                     setIsPasswordVisible((pre) => { return !pre })
-                                }
+                                } else
+                                    setOpenConfirm(true);
                             }
                         }}>
                             {!isPasswordVisible ?
@@ -311,8 +282,7 @@ export default function UpdateChannel() {
 
 
             </div>
-            <hr className="border-b-[0.5px] border-gray-600 w-3/4" />
-
+            {/* <hr className="border-b-[0.5px] border-gray-600 w-3/4" /> */}
 
             <div>
                 <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
@@ -347,10 +317,14 @@ export default function UpdateChannel() {
 
                             const vld = await validePassword(user.id, geust.id, password);
                             if (vld) {
+                                console.log(password);
                                 setOpenConfirm(false);
                                 setValidToChange(true);
                                 setChannelData((prevState) => {
-                                    return { ...prevState, channlePassword: password };
+                                    return { ...prevState, channelPassword: password };
+                                })
+                                setChannel((prevState) => {
+                                    return { ...prevState, channelPassword: password };
                                 })
                                 setPassword('');
 
@@ -368,5 +342,5 @@ export default function UpdateChannel() {
             </div>
 
         </div>
-    );
+    )
 }

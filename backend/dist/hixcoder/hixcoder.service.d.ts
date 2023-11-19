@@ -12,10 +12,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -31,10 +30,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -54,10 +52,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -72,10 +69,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -90,10 +86,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -109,10 +104,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -200,6 +194,16 @@ export declare class HixcoderService {
     } | {
         error: any;
     }>;
+    getLeaderBoard(): Promise<{
+        userName: string;
+        userAvatar: string;
+        level: string;
+        nbrOfMatches: string;
+        winRate: string;
+        rank: string;
+    }[] | {
+        error: any;
+    }>;
     updateGameHistory(senderUsr: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
         id: string;
         createdAt: Date;
@@ -218,10 +222,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
@@ -237,10 +240,9 @@ export declare class HixcoderService {
         nickname: string;
         email: string;
         profilePic: string;
-        hash: string;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
         level: string;
-        twoFactorAuth: boolean;
-        AsciiSecretQr: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;

@@ -1,5 +1,6 @@
-import { useGlobalContext } from "@/app/context/store";
+
 import React, { useContext, useEffect, useState } from "react";
+import { useGlobalContext } from "../../context/store";
 // import { WebsocketContext } from "../random/contexts/WebsocketContext";
 
 const WaitingForPlayer = () => {

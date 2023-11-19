@@ -9,6 +9,10 @@ const nextConfig = {
       },
     ];
   },
+
+  images: {
+    domains: ["cdn.intra.42.fr", "10.12.3.5"],
+  },
 };
 
 module.exports = nextConfig;

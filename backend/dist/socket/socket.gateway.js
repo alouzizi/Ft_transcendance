@@ -35,6 +35,7 @@ let SocketGateway = class SocketGateway {
         this.rooms = new Map();
         this.roomState = new Map();
         this.ballPositionInterval = new Map();
+        this.inviteRoom = new Map();
     }
     afterInit(server) {
         console.log("Gateway Initialized");
@@ -276,6 +277,27 @@ let SocketGateway = class SocketGateway {
         this.stopEmittingBallPosition(data.room);
     }
     onIvite(client, data) {
+        this.inviteRoom.set(data.userId1, client);
+        client.join(data.userId1);
+        this.server.to(data.userId2).emit("invite", data);
+    }
+    onAccept(client, data) {
+        this.inviteRoom.set(data.userId2, client);
+        client.join(data.userId2);
+        this.server.to(data.userId2).emit("accepted", data);
+        const roomName = `room-${Date.now()}`;
+        const sockets = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
+        this.rooms.set(roomName, [data.userId1, data.userId2]);
+        this.server.to(data.userId1).emit("whichSide", true);
+        this.server.to(data.userId2).emit("whichSide", false);
+        sockets.forEach((socket) => {
+            socket.join(roomName);
+        });
+        this.server.to(roomName).emit("startGame", roomName);
+        this.GameInit(roomName);
+        this.PongService.resetBall(this.roomState.get(roomName).ball);
+        this.startEmittingBallPosition(roomName, data.userId1);
+        this.clients.clear();
     }
 };
 exports.SocketGateway = SocketGateway;
@@ -337,6 +359,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "onIvite", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("accept"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "onAccept", null);
 exports.SocketGateway = SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(),
     __metadata("design:paramtypes", [game_service_1.PongServise,

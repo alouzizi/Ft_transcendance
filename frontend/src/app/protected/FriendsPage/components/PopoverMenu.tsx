@@ -4,8 +4,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useGlobalDataContext } from "./FriendCategory";
-import { useGlobalContext } from "@/app/context/store";
+
 import { blockFriend, removeFriend } from "@/app/api/hixcoder/FriendsPageAPI";
+import { useGlobalContext } from "../../context/store";
 
 export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(

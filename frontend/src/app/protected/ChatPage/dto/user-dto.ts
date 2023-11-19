@@ -5,12 +5,19 @@ enum Status {
 
 type userDto = {
   id: string;
-  email: string;
   nickname: string;
   profilePic: string;
   status: Status;
   lastSee: number;
   friendship: number;
+};
+
+type validChannelDto = {
+  id: string;
+  channelName: string;
+  avatar: string;
+  protected: boolean;
+  Status: string;
 };
 
 type ownerDto = {
@@ -20,6 +27,7 @@ type ownerDto = {
   last_name: string;
   nickname: string;
   profilePic: string;
+  isTwoFactorAuthEnabled: boolean;
   level: string;
 };
 
@@ -64,6 +72,7 @@ type messageDto = {
   receivedStatus: Status; // in DirectMsg
 
   OwnerChannelId: String;
+  isChannProtected: Boolean;
 };
 
 type reqFriendsDto = {
@@ -79,9 +88,9 @@ enum ChannelType {
 }
 
 type channelDto = {
-  channleName: string;
+  channelName: string;
   channelType: ChannelType;
-  channlePassword: string;
+  channelPassword: string;
   avatar: string;
   channelOwnerId: string;
   protected: boolean;
@@ -94,4 +103,5 @@ type memberChannelDto = {
   profilePic: string;
   role: string;
   status: Status;
+  unmuted_at: number;
 };

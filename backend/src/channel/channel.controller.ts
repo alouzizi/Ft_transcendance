@@ -30,6 +30,16 @@ export class ChannelController {
   }
 
 
+  @Get('/checkOwnerIsAdmin/:senderId/:channelId')
+  checkOwnerIsAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.checkOwnerIsAdmin(senderId, channelId);
+  }
+
+  @Get('/checkUserIsInChannel/:senderId/:channelId')
+  checkUserIsInChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.checkUserIsInChannel(senderId, channelId);
+  }
+
   @Get('/addUserToChannel/:senderId/:channelId/:userId')
   addUserToChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('userId') userId: string) {
     return this.channelService.addUserToChannel(senderId, channelId, userId);
@@ -72,5 +82,45 @@ export class ChannelController {
   validePassword(@Param('senderId') senderId: string, @Param('channelId') channelId: string
     , @Param('password') password: string) {
     return this.channelService.validePassword(senderId, channelId, password);
+  }
+
+
+  @Get('/getValideChannels/:senderId')
+  getValideChannels(@Param('senderId') senderId: string) {
+    return this.channelService.getValideChannels(senderId);
+  }
+
+  @Get('/joinChannel/:senderId/:channelId/')
+  joinChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.joinChannel(senderId, channelId);
+  }
+
+  @Get('/muteUserChannel/:senderId/:channelId/:userId/:timer')
+  muteUserChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string,
+    @Param('userId') userId: string, @Param('timer') timer: string) {
+    return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+  }
+
+
+  @Get('/checkIsMuted/:senderId/:channelId')
+  checkIsMuted(@Param('senderId') senderId: string, @Param('channelId') channelId: string) {
+    return this.channelService.checkIsMuted(senderId, channelId);
+  }
+
+  @Get('/cancelTimeOutByAdmin/:senderId/:channelId/:userId')
+  cancelTimeOutByAdmin(@Param('senderId') senderId: string, @Param('channelId') channelId: string
+    , @Param('userId') userId: string) {
+    return this.channelService.cancelTimeOutByAdmin(senderId, channelId, userId);
+  }
+
+
+  @Post('/joinChannelWithLink/:senderId/:channelId/:uuid')
+  async joinChannelWithLink(@Param('senderId') senderId: string, @Param('channelId') channelId: string, @Param('uuid') uuid: string) {
+
+
+
+    // Perform your logic here...
+
+    return { success: true, message: 'Joined channel successfully!' };
   }
 }

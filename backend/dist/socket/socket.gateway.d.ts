@@ -44,5 +44,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     findRoomByClientId(id: string): string;
     onUpdatePaddle(client: Socket, data: any): void;
     onOpponentLeft(client: Socket, data: any): void;
+    private inviteRoom;
     onIvite(client: Socket, data: any): void;
+    onAccept(client: Socket, data: any): void;
 }

@@ -1,4 +1,4 @@
-import { MessageStatus, Status } from "@prisma/client";
+import { ChannelType, MessageStatus, Status } from "@prisma/client";
 
 
 export class CreateMessageDto {
@@ -35,6 +35,8 @@ export class messageDto {
 
 
   OwnerChannelId: String;
+  isChannProtected: boolean
+  // status: Status;
 
 }
 

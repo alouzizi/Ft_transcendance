@@ -1,5 +1,5 @@
 "use client";
-import { useGlobalContext } from "@/app/context/store";
+
 import Pong from "../components/Randmpong";
 import { Canvas, canvasContext } from "../components/interface";
 
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 import { CustomAlert } from "../components/taost";
 import Mycards from "../components/Cards";
+import { useGlobalContext } from "../../context/store";
 
 export default function Home() {
 

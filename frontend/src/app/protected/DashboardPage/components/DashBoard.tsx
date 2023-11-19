@@ -5,7 +5,7 @@ import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useGlobalContext } from "@/app/context/store";
+
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import PopoverMenuDash from "./PopoverMenuDash";
 import {
@@ -17,6 +17,7 @@ import {
 } from "@/app/api/hixcoder/FriendsPageAPI";
 import { promise } from "zod";
 import { resolve } from "path";
+import { useGlobalContext } from "../../context/store";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
@@ -67,12 +68,11 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         setGlobalInfo(globalInfoTmp);
 
         //for set the win rate
-        if (globalInfo.NbrOfAllMatches > 0) {
-          setWinRate(
-            Math.round(
-              (globalInfo.NbrOfWinnedMatches * 100) / globalInfo.NbrOfAllMatches
-            )
-          );
+        if (globalInfoTmp.NbrOfAllMatches > 0) {
+          const winRate =
+            (globalInfoTmp.NbrOfWinnedMatches * 100) /
+            globalInfoTmp.NbrOfAllMatches;
+          setWinRate(winRate);
         }
       } catch (error: any) {
         console.log("getData error: " + error);
@@ -155,6 +155,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
            // small screen
            flex flex-row  w-fit justify-center  mt-4 mb-6
            // Big screen
+           
            2xl:mt-4 2xl:w-2/3 2xl:justify-end 2xl:mr-4  2xl:mb-0
           "
           >
@@ -171,7 +172,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             <CardInfo
               cardImg="/win-rate.png"
               cardName="Win Rate"
-              value={`${winRate}%`}
+              value={`${winRate.toFixed(0)}%`}
             />
           </div>
         </div>

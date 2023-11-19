@@ -1,4 +1,3 @@
-import { useGlobalContext } from "@/app/context/store";
 import { Backend_URL } from "../../../../lib/Constants";
 import axios from "axios";
 
@@ -9,6 +8,7 @@ export async function getAllUsers(userId: string) {
     const response = await fetch(`${Backend_URL}/hixcoder/allUsers/${userId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
+
     });
     const data = await response.json();
     return data;
@@ -326,6 +326,24 @@ export async function getGameHistory(senderUsr: string) {
     return def;
   } catch (error: any) {
     console.log("getGameHistory error: " + error);
+    return def;
+  }
+}
+
+export async function getLeaderBoard() {
+  const def: LeaderBoard[] = [];
+  try {
+    const response = await fetch(`${Backend_URL}/hixcoder/LeaderBoard/`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.ok) {
+      const data: LeaderBoard[] = await response.json();
+      return data;
+    }
+    return def;
+  } catch (error: any) {
+    console.log("getLeaderBoard error: " + error);
     return def;
   }
 }

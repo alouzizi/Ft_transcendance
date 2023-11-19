@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtGuard = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const jwt_1 = require("@nestjs/jwt");
 let JwtGuard = class JwtGuard {
     constructor(jwtService, config) {
         this.jwtService = jwtService;
@@ -37,7 +37,7 @@ let JwtGuard = class JwtGuard {
     }
     extractTokenFromHeader(request) {
         const [type, token] = request.headers.authorization.split(" ") ?? [];
-        return type === "Bearer" ? token : undefined;
+        return (type === "Bearer") ? token : undefined;
     }
 };
 exports.JwtGuard = JwtGuard;

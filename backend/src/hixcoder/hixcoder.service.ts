@@ -643,6 +643,44 @@ export class HixcoderService {
     }
   }
 
+  async getLeaderBoard() {
+    try {
+      const allUsers = await this.prisma.user.findMany();
+      const usersRank = await Promise.all(
+        allUsers.map(async (user) => {
+          const winedGames = await this.getNbrOfMatches(user.nickname, 1);
+          const nbrOfMatches = await this.getNbrOfMatches(user.nickname, 3);
+          let winRate = 0;
+          if (nbrOfMatches != 0) {
+            winRate = (winedGames * 100) / nbrOfMatches;
+          }
+          return {
+            userName: user.nickname,
+            userAvatar: user.profilePic,
+            level: user.level,
+            nbrOfMatches: nbrOfMatches.toString(),
+            winRate: winRate.toFixed(0),
+            winedGames: winedGames,
+          };
+        })
+      );
+      const sortedData = usersRank.sort((a, b) => b.winedGames - a.winedGames);
+      const rankedData = sortedData.map((item, index) => ({
+        userName: item.userName,
+        userAvatar: item.userAvatar,
+        level: item.level,
+        nbrOfMatches: item.nbrOfMatches,
+        winRate: item.winRate,
+        rank: (index + 1).toString(),
+      }));
+      return rankedData;
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  }
+
   // ==========================  Game Posts =========================
 
   async updateGameHistory(

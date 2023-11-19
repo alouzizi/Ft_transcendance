@@ -17,7 +17,7 @@ import { PongServise } from "src/game/game.service";
 import { BallDto, PaddleDto } from "src/game/dto/game.tdo";
 import { PrismaService } from "src/prisma/prisma.service";
 import { HixcoderService } from "src/hixcoder/hixcoder.service";
-
+import { on } from "events";
 
 @WebSocketGateway()
 export class SocketGateway
@@ -304,6 +304,13 @@ export class SocketGateway
     }
   }
   
+  // @SubscribeMessage("invite")
+  // onInvite(client: Socket, data: any) {
+
+  //   this.
+  //   this.server.to(data.userId).emit("invite", data);
+  // }
+// }
   findRoomByClientId(id: string) {
     let roomName: string;
     this.rooms.forEach((clients, room) => {
@@ -354,6 +361,8 @@ export class SocketGateway
     this.stopEmittingBallPosition(data.room);
   }
 
+
+
   private inviteRoom: Map<string, Socket>= new Map();
 
   @SubscribeMessage("invite")
@@ -394,12 +403,8 @@ export class SocketGateway
     this.startEmittingBallPosition(roomName, data.userId1);
     this.clients.clear();
   }
-
+  
 }
-
-
-
-
 
 
 interface RoomState {
@@ -407,3 +412,4 @@ interface RoomState {
   player2: PaddleDto;
   ball: BallDto;
 }
+

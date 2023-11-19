@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 
-import { useGlobalContext } from "@/app/context/store";
+import { useGlobalContext } from "../../context/store";
 
 type MyComponentProps = {
   imageSrc: string;

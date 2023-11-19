@@ -8,6 +8,8 @@ import { FriendshipModule } from "./friendship/friendship.module";
 import { ChannelModule } from "./channel/channel.module";
 import { SocketGatewayModule } from "./socket/socket.module";
 import { HixcoderModule } from "./hixcoder/hixcoder.module";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
 
 @Module({
   imports: [
@@ -20,7 +22,10 @@ import { HixcoderModule } from "./hixcoder/hixcoder.module";
     ChannelModule,
     SocketGatewayModule,
     HixcoderModule,
-    SocketGatewayModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "uploads"),
+      serveRoot: "/uploads",
+    }),
   ],
 })
 export class AppModule {}

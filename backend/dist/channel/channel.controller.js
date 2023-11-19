@@ -35,6 +35,12 @@ let ChannelController = class ChannelController {
         };
         return this.channelService.updateChannel(senderId, channelId, channelData);
     }
+    checkOwnerIsAdmin(senderId, channelId) {
+        return this.channelService.checkOwnerIsAdmin(senderId, channelId);
+    }
+    checkUserIsInChannel(senderId, channelId) {
+        return this.channelService.checkUserIsInChannel(senderId, channelId);
+    }
     addUserToChannel(senderId, channelId, userId) {
         return this.channelService.addUserToChannel(senderId, channelId, userId);
     }
@@ -59,6 +65,24 @@ let ChannelController = class ChannelController {
     validePassword(senderId, channelId, password) {
         return this.channelService.validePassword(senderId, channelId, password);
     }
+    getValideChannels(senderId) {
+        return this.channelService.getValideChannels(senderId);
+    }
+    joinChannel(senderId, channelId) {
+        return this.channelService.joinChannel(senderId, channelId);
+    }
+    muteUserChannel(senderId, channelId, userId, timer) {
+        return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+    }
+    checkIsMuted(senderId, channelId) {
+        return this.channelService.checkIsMuted(senderId, channelId);
+    }
+    cancelTimeOutByAdmin(senderId, channelId, userId) {
+        return this.channelService.cancelTimeOutByAdmin(senderId, channelId, userId);
+    }
+    async joinChannelWithLink(senderId, channelId, uuid) {
+        return { success: true, message: 'Joined channel successfully!' };
+    }
 };
 exports.ChannelController = ChannelController;
 __decorate([
@@ -78,6 +102,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "updateChannel", null);
+__decorate([
+    (0, common_1.Get)('/checkOwnerIsAdmin/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "checkOwnerIsAdmin", null);
+__decorate([
+    (0, common_1.Get)('/checkUserIsInChannel/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "checkUserIsInChannel", null);
 __decorate([
     (0, common_1.Get)('/addUserToChannel/:senderId/:channelId/:userId'),
     __param(0, (0, common_1.Param)('senderId')),
@@ -146,6 +186,57 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "validePassword", null);
+__decorate([
+    (0, common_1.Get)('/getValideChannels/:senderId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "getValideChannels", null);
+__decorate([
+    (0, common_1.Get)('/joinChannel/:senderId/:channelId/'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "joinChannel", null);
+__decorate([
+    (0, common_1.Get)('/muteUserChannel/:senderId/:channelId/:userId/:timer'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('userId')),
+    __param(3, (0, common_1.Param)('timer')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "muteUserChannel", null);
+__decorate([
+    (0, common_1.Get)('/checkIsMuted/:senderId/:channelId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "checkIsMuted", null);
+__decorate([
+    (0, common_1.Get)('/cancelTimeOutByAdmin/:senderId/:channelId/:userId'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "cancelTimeOutByAdmin", null);
+__decorate([
+    (0, common_1.Post)('/joinChannelWithLink/:senderId/:channelId/:uuid'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('channelId')),
+    __param(2, (0, common_1.Param)('uuid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "joinChannelWithLink", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])

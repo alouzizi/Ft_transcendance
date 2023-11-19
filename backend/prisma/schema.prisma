@@ -34,11 +34,11 @@ model User {
   nickname   String  @unique
   email      String? @unique
   profilePic String?
-  hash       String?
-  level      String  @default("0.0")
 
-  twoFactorAuth Boolean @default(false)
-  AsciiSecretQr String?
+  isTwoFactorAuthEnabled Boolean @default(false)
+  twoFactorAuthSecret    String?
+
+  level String @default("0.0")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,6 +71,7 @@ model Channel {
 
   ChannelMember ChannelMember[]
   BannedMember  BannedMember[]
+  MutedMember   MutedMember[]
 }
 
 model Message {
@@ -78,14 +79,15 @@ model Message {
 
   isDirectMessage Boolean @default(true)
 
-  senderId      String
-  content       String
-  createdAt     DateTime      @default(now())
-  showed        Boolean       @default(true)
+  senderId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  notSendTo String @default("")
+
   messageStatus MessageStatus @default(NotReceived)
 
-  user User? @relation(fields: [senderId], references: [id])
-
+  user       User?   @relation(fields: [senderId], references: [id])
   receivedId String?
 
   Channel   Channel? @relation(fields: [channelId], references: [id])
@@ -130,6 +132,9 @@ model ChannelMember {
   userId  String
   isAdmin Boolean
 
+  // test      String   @default("88")
+  createdAt DateTime @default(now())
+
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String
 
@@ -141,6 +146,18 @@ model BannedMember {
 
   userId    String
   banned_at DateTime @default(now())
+
+  Channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  @@unique([userId, channelId], name: "Unique_userId_channelId")
+}
+
+model MutedMember {
+  id String @id @default(uuid())
+
+  userId     String
+  unmuted_at DateTime
 
   Channel   Channel @relation(fields: [channelId], references: [id])
   channelId String

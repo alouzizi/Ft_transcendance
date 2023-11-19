@@ -14,7 +14,7 @@ const Mycards = ({
         >
           <img className="rounded-t-lg" src={imageSrc} alt="" />
           <a href="#!">
-            <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed rounded-t-lg opacity-0 transition duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"></div>
           </a>
         </div>
         <div className="pl-8  pt-1 bg-color-main-dark">
