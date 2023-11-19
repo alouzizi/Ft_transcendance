@@ -11,6 +11,8 @@ import { createNotification } from "./api/createNotification";
 import Lottie from "lottie-react";
 import { boolean } from "zod";
 import { FaUserFriends } from "react-icons/fa";
+import { FaTrashCan } from "react-icons/fa6";
+import React from "react";
 
 function formatDateAndTime(dateTimeString: string): string {
   const dateTime = new Date(dateTimeString);
@@ -39,9 +41,8 @@ export default function NotificationPage() {
   let loadFirstAnimation = true;
 
   const subjects = [
-    "Friend request incoming",
-    "New message received",
-    "Invitation to play a game",
+    "send you friend request",
+    "invite you to a PongMaster game",
     "you've been invited to group",
   ];
   let randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
@@ -54,18 +55,12 @@ export default function NotificationPage() {
     // Load the appropriate animation based on the current subject
     switch (currentSubject) {
       case subjects[0]:
-        setCurrentAnimationData("Friend request incoming");
-        break;
-      case subjects[1]:
-        setCurrentAnimationData("New message received");
+        setCurrentAnimationData("send you friend request");
         break;
       case subjects[2]:
-        setCurrentAnimationData("Invitation to play a game");
+        setCurrentAnimationData("invite you to a PongMaster game");
         break;
       case subjects[3]:
-        setCurrentAnimationData("you've been invited to group");
-        break;
-      default:
         setCurrentAnimationData("you've been invited to group");
         break;
     }
@@ -95,6 +90,14 @@ export default function NotificationPage() {
     const data = await response.data;
   };
 
+  function handleDecline(): void {
+    throw new Error("Function not implemented.");
+  }
+
+  function handleAccept(): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className=" bg-color-main h-screen w-screen pl-32 text-white">
       <button
@@ -114,58 +117,63 @@ export default function NotificationPage() {
         ok
       </button>
       <h1 className="text-2xl font-bold mb-4">Notification</h1>
+      <p className="text-sm">ALL- {items.length}</p>
       <div className="w-[80%] h-64 ">
         {items.map((item: any, index) => (
-          
           <div
             key={index}
-            className="text-black flex  justify-between bg-white border-4 border-white p-4 my-2 rounded-tr-3xl rounded-bl-3xl
+            className="text-black flex  justify-between bg-white border-4 border-white p-4 my-2 rounded-3xl 
 
-            bg-gradient-to-l from-blue-500 to-teal-400 hover:bg-teal-500 hover:border-yellow-400"
+            "
           >
             <div className="flex">
               <div className="flex-shrink-0 w-20 h-20 mr-4">
                 {/* Your conditionally rendered component */}
                 {(() => {
                   switch (item.subjet) {
-                    case subjects[0]:
-                      //   return  <div className='text-[10px]   '>
-                      //   <img className='text-[10px]' src='https://w7.pngwing.com/pngs/715/287/png-transparent-gold-1-numerical-digit-number-number-1-text-gold-cartoon.png' alt='Your Image' />
-                      // </div>;
-                      //   <Lottie
-                      //   animationData={"animationData"}
-                      //   className="flex justify-center items-center"
-                      //   loop={true}
-                      // />
-                      return (
-                        <div className="text-[60px]   ">
-                          <MdGroupAdd />
-                        </div>
-                      );
-                    case subjects[1]:
-                      return (
-                        <div className="text-[60px]   ">
-                          <MdMessage />
-                        </div>
-                      );
-                    case subjects[2]:
-                      return (
-                        <div className="text-[60px]   ">
-                          <IoGameController />
-                        </div>
-                      );
-                    case subjects[3]:
-                      return (
-                        <div className="text-[60px]   ">
-                          <FaUserFriends />
-                        </div>
-                      );
+                    // case subjects[0]:
+                    //   //   return  <div className='text-[10px]   '>
+                    //   //   <img className='text-[10px]' src='https://w7.pngwing.com/pngs/715/287/png-transparent-gold-1-numerical-digit-number-number-1-text-gold-cartoon.png' alt='Your Image' />
+                    //   // </div>;
+                    //   //   <Lottie
+                    //   //   animationData={"animationData"}
+                    //   //   className="flex justify-center items-center"
+                    //   //   loop={true}
+                    //   // />
+                    //   return (
+                    //     <div className="text-[60px]   ">
+                    //       <MdGroupAdd />
+                    //     </div>
+                    //   );
+                    // case subjects[1]:
+                    //   return (
+                    //     <div className="text-[60px]   ">
+                    //       <MdMessage />
+                    //     </div>
+                    //   );
+                    // case subjects[2]:
+                    //   return (
+                    //     <div className="text-[60px]   ">
+                    //       <img
+                    //         className="text-[60px]   "
+                    //         src={item.user.profilePic}
+                    //         alt=""
+                    //       />
+                    //       <IoGameController />
+                    //     </div>
+                    //   );
+                    // case subjects[3]:
+                    //   return (
+                    //     <div className="h-[60px] w-[60px]  ">
+                    //       <FaUserFriends />
+                    //     </div>
+                    //   );
                     default:
                       return (
                         <img
-                          className="text-[10px]"
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNPEynHTWV5x710fDm2rN3Ds1rB6KjI5tvlg&usqp=CAU"
-                          alt="Your Image"
+                          className="text-[60px] rounded-full  "
+                          src={item.user.profilePic}
+                          alt=""
                         />
                       );
                   }
@@ -175,17 +183,35 @@ export default function NotificationPage() {
                 <div id="lottie-container"></div>
               </div>
               <div>
-                <p className="font-bold text-md lg:text-lg xl:text-2xl hover:underline">
-                  Sender ID: {item.user.nickname}
+                <p className="text-md lg:text-lg xl:text-2xl hover:underline">
+                  <strong>{item.user.nickname}</strong> {item.subjet}
                 </p>
-                <p>Subject: {item.subjet}</p>
-                <p>Time: {formatDateAndTime(item.createdAt)}</p>
+
+                <p>{formatDateAndTime(item.createdAt)}</p>
+                {item.subjet === subjects[1] ? (
+                  <React.Fragment>
+                    <button
+                      className="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => handleDecline()}
+                    >
+                      Decline
+                    </button>
+                    <span style={{ marginRight: "8px" }} />{" "}
+                    {/* Add a space of 8px */}
+                    <button
+                      className="bg-blue-900 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => handleAccept()}
+                    >
+                      Accept
+                    </button>
+                  </React.Fragment>
+                ) : null}
               </div>
             </div>
 
-            <MdCancel
-              size="20"
-              className="cursor-pointer"
+            <FaTrashCan
+              size="40"
+              className="cursor-pointer text-[60px] bg-blue-900 rounded-full hover:bg-red-500 pt-3 pb-2 text-white"
               onClick={() => {
                 DeleteFn(item.id);
                 setDelete(!Delete);
