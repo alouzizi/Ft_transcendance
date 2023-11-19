@@ -1,8 +1,4 @@
 "use client";
-import {
-  getNavSearchUsers,
-  getPendingFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
 
 import { Popper } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -10,6 +6,7 @@ import React, { ChangeEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import NavSearchItem from "./NavSearchItem";
 import { useGlobalContext } from "@/app/protected/context/store";
+import { getNavSearchUsers } from "@/app/MyApi/friendshipApi";
 
 export default function SerachNav() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -23,17 +20,14 @@ export default function SerachNav() {
 
   // ================== fetch users ==================
   const [data, setData] = React.useState<friendDto[]>([]);
-  const [PendingFriendsList, setPendingFriendsList] = React.useState<
-    friendDto[]
-  >([]);
   let filteredData: friendDto[] = [];
   const { user } = useGlobalContext();
   React.useEffect(() => {
     async function getData() {
       try {
-        const AllPossibleFriendsDataTmp = await getNavSearchUsers(user.id);
-        const pendingFriendsList = await getPendingFriends(user.id);
-        setPendingFriendsList(pendingFriendsList);
+        const AllPossibleFriendsDataTmp: friendDto[] = await getNavSearchUsers(
+          user.id
+        );
         setData(AllPossibleFriendsDataTmp);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
@@ -117,7 +111,6 @@ export default function SerachNav() {
               <NavSearchItem
                 key={element.id}
                 userInfo={element}
-                pendingFriendsList={PendingFriendsList}
                 onClick={() => {
                   router.push(`/protected/DashboardPage/${element?.nickname}`);
                   setInputSearch("");

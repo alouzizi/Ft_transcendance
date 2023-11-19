@@ -14,7 +14,7 @@ import {
   getBlockedFriends,
   getOnlineFriends,
   getPendingFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+} from "@/app/MyApi/friendshipApi";
 import { useGlobalContext } from "../../context/store";
 
 // ====================== create context ======================

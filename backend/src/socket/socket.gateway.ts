@@ -13,20 +13,18 @@ import { Server, Socket } from "socket.io";
 import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { SocketGatewayService } from "./socket.service";
-import { PongServise } from "src/game/game.service";
-import { BallDto, PaddleDto } from "src/game/dto/game.tdo";
 import { PrismaService } from "src/prisma/prisma.service";
-import { HixcoderService } from "src/hixcoder/hixcoder.service";
+import { GameService } from "src/game/game.service";
+import { BallDto, PaddleDto } from "src/game/dto";
 
 @WebSocketGateway()
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private PongService: PongServise,
     private socketGatewayService: SocketGatewayService,
     private messagesService: MessagesService,
-    private hixcoder: HixcoderService,
+    private gameService: GameService,
     private prisma: PrismaService
   ) {}
 
@@ -144,7 +142,7 @@ export class SocketGateway
         // console.log({layer1: this.player1, player2: this.player2});
         const ro = this.roomState.get(roomName);
         // console.log(ro.player1.x, ro.player1.y, ro.player2.x, ro.player2.y);
-        // ro.PongService.startGame(ro.ball, ro.p1, ro.player2);
+        // ro.GameService.startGame(ro.ball, ro.p1, ro.player2);
         ro.ball.x += ro.ball.velocityX;
         ro.ball.y += ro.ball.velocityY;
         if (
@@ -167,7 +165,7 @@ export class SocketGateway
           else ro.ball.speed += 0.5;
         }
         if (ro.ball.x - ro.ball.radius <= 0) {
-          this.PongService.resetBall(ro.ball);
+          this.gameService.resetBall(ro.ball);
           // the computer win
           ro.player2.score++;
           // alert("Computer Win");
@@ -176,7 +174,7 @@ export class SocketGateway
             .emit("updateScore", ro.player1.score, ro.player2.score);
           this.gameState(roomName, ro.player1.score, ro.player2.score);
         } else if (ro.ball.x + ro.ball.radius >= 600) {
-          this.PongService.resetBall(ro.ball);
+          this.gameService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
           ro.player1.score++;
@@ -186,7 +184,7 @@ export class SocketGateway
 
           this.gameState(roomName, ro.player1.score, ro.player2.score);
         }
-        // const ballPosition = ro.PongService.ball;
+        // const ballPosition = ro.gameService.ball;
         this.server.to(roomName).emit("updateTheBall", ro.ball);
       }, 20)
     );
@@ -210,7 +208,7 @@ export class SocketGateway
         this.server.to(player1).emit("gameOver", "lose");
         this.server.to(player2).emit("gameOver", "win");
       }
-      this.hixcoder.updateGameHistory(
+      this.gameService.updateGameHistory(
         player1,
         player2,
         score1.toString(),
@@ -250,9 +248,9 @@ export class SocketGateway
       });
       // setTimeout(() => {
       this.server.to(roomName).emit("startGame", roomName);
-      // this.PongService.startGame();
+      // this.gameService.startGame();
       this.GameInit(roomName);
-      this.PongService.resetBall(this.roomState.get(roomName).ball);
+      this.gameService.resetBall(this.roomState.get(roomName).ball);
       this.startEmittingBallPosition(roomName);
       this.clients.clear();
       // }, 1000);
@@ -282,7 +280,7 @@ export class SocketGateway
         if (otherClient) {
           // console.log({ otherClient: otherClient });
           // otherClient.emit("resivePaddle", data.paddle);
-          // this.PongService.player2 = data.paddle;
+          // this.gameService.player2 = data.paddle;
           // this.player1 = data.paddle;
           if (data.isLeft) this.roomState.get(data.room).player1 = data.paddle;
           else this.roomState.get(data.room).player2 = data.paddle;

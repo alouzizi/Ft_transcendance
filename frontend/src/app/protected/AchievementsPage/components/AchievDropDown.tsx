@@ -11,11 +11,8 @@ import {
 } from "@/app/components/ui/dropdown-menu";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import AchievementItem from "./AchievementItem";
-import {
-  getAchievmentsData,
-  getGlobalInfos,
-} from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "../../context/store";
+import { getAchievmentsData, getGlobalInfos } from "@/app/MyApi/gameApi";
 
 export default function AchievDropDown(prompt: {
   items: string[];

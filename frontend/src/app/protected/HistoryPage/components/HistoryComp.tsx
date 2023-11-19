@@ -5,8 +5,8 @@ import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import MyDropDown from "@/app/protected/HistoryPage/components/HistoryDropDown";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getGameHistory } from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "../../context/store";
+import { getGameHistory } from "@/app/MyApi/gameApi";
 
 export default function HistoryComp(prompt: { friend: ownerDto }) {
   const items = ["All", "Wins", "Loses", "Draws"];

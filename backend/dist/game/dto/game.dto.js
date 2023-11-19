@@ -10,4 +10,4 @@ exports.BallDto = BallDto;
 class GameStateDto {
 }
 exports.GameStateDto = GameStateDto;
-//# sourceMappingURL=game.tdo.js.map
+//# sourceMappingURL=game.dto.js.map

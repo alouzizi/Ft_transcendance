@@ -3,7 +3,7 @@ import {
   getAllUsers,
   getPendingFriends,
   sendFriendRequest,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+} from "@/app/MyApi/friendshipApi";
 import { useGlobalContext } from "@/app/protected/context/store";
 
 import Link from "next/link";

@@ -6,21 +6,19 @@ import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import {
-  getAchievmentsData,
-  getAllFriends,
-  getGameHistory,
-  getGlobalInfos,
-  getUserByNick,
-  getUserRanking,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+import { getAllFriends, getUserByNick } from "@/app/MyApi/friendshipApi";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import { useGlobalContext } from "../../context/store";
 import PopoverMenuDash from "./PopoverMenuDash";
+import {
+  getAchievmentsData,
+  getUserRanking,
+  getGameHistory,
+  getGlobalInfos,
+} from "@/app/MyApi/gameApi";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
-  const [friend, setFriend] = useState<ownerDto>(prompt.friend);
   const { user, updateInfo } = useGlobalContext();
   const [isFriend, setIsFriend] = useState(false);
   const [gameHistory, setGameHistory] = useState<gameHistoryDto[]>([]);
@@ -41,16 +39,14 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
   useEffect(() => {
     async function getData() {
       try {
-        // update friend info
-        const usr = await getUserByNick(prompt.friend.nickname);
-        setFriend(usr);
         // for fetch the ranking
         const rankTmp = await getUserRanking(prompt.friend.id);
         setRank(rankTmp.rank);
         console.log("globalInfoTmp", rankTmp.rank);
 
         // for fetch the level
-        const levelTmp = friend.level.split(".");
+        const usr = await getUserByNick(prompt.friend.nickname);
+        const levelTmp = usr.level.split(".");
         setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
 
         // for fetch the gameHistory
@@ -86,7 +82,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     achievementsList = getAchievmentsData(globalInfo).filter(
       (acheiv) => acheiv.isUnlocked
     );
-  }, [updateInfo, friend.level]);
+  }, [updateInfo]);
 
   return (
     <div className="flex flex-col min-h-screen h-fit 2xl:h-screen max-w-[120rem] mx-auto bg-color-main  justify-start pt-8">
@@ -192,7 +188,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
       "
       >
-        {/* ========================= Game Section =========================*/}
+        {/* ========================= Game history Section =========================*/}
         <HomeSection
           sectionName="Last Games"
           btnName="See All History"
@@ -219,7 +215,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             <p className="mx-auto  my-12 text-gray-500 text-lg">No Matches!</p>
           )}
         </HomeSection>
-        {/* ========================= /Game Section =========================*/}
+        {/* ========================= /Game history Section =========================*/}
         {/* ========================= Achievement Section =========================*/}
         <HomeSection
           sectionName="Achievements"

@@ -1,5 +1,5 @@
 "use client";
-import { getIsBlocked, getUserByNick } from "@/app/api/hixcoder/FriendsPageAPI";
+import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashBoard from "../components/DashBoard";
@@ -20,13 +20,11 @@ export default function DashboardPage() {
     async function getData() {
       try {
         const usr = await getUserByNick(lastSegment);
-        console.log("-----usr", usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         console.log(isBlocked);
         if (isBlocked.isBlocked) {
           setIsBlocked(false);
-          console.log("blocked-=--=-");
           return;
         }
         setFriend(usr);

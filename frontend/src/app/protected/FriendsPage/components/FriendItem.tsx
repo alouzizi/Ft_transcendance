@@ -6,7 +6,7 @@ import {
   rejectFriendRequest,
   unblockFriend,
   unsendFriendRequest,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+} from "@/app/MyApi/friendshipApi";
 
 import Badge from "@mui/material/Badge";
 import Tooltip from "@mui/material/Tooltip";

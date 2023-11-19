@@ -11,11 +11,8 @@ import {
 } from "@/app/components/ui/dropdown-menu";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import HistoryItem from "./HistoryItem";
-import {
-  getGameHistory,
-  getAllFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "../../context/store";
+import { getGameHistory } from "@/app/MyApi/gameApi";
 
 export default function HistoryDropDown(prompt: {
   items: string[];

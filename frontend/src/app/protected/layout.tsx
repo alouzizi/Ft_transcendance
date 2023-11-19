@@ -5,8 +5,8 @@ import { GlobalContextProvider } from "./context/store";
 
 export default function ProtectedLayout(prompt: { children: React.ReactNode }) {
   return (
-    <NavBarProtected>
-      <GlobalContextProvider>{prompt.children}</GlobalContextProvider>
-    </NavBarProtected>
+    <GlobalContextProvider>
+      <NavBarProtected>{prompt.children}</NavBarProtected>
+    </GlobalContextProvider>
   );
 }

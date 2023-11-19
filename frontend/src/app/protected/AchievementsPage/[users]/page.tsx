@@ -1,5 +1,5 @@
 "use client";
-import { getIsBlocked, getUserByNick } from "@/app/api/hixcoder/FriendsPageAPI";
+import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

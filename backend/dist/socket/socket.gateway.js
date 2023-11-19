@@ -18,15 +18,13 @@ const socket_io_1 = require("socket.io");
 const messages_service_1 = require("../messages/messages.service");
 const create_message_dto_1 = require("../messages/dto/create-message.dto");
 const socket_service_1 = require("./socket.service");
-const game_service_1 = require("../game/game.service");
 const prisma_service_1 = require("../prisma/prisma.service");
-const hixcoder_service_1 = require("../hixcoder/hixcoder.service");
+const game_service_1 = require("../game/game.service");
 let SocketGateway = class SocketGateway {
-    constructor(PongService, socketGatewayService, messagesService, hixcoder, prisma) {
-        this.PongService = PongService;
+    constructor(socketGatewayService, messagesService, gameService, prisma) {
         this.socketGatewayService = socketGatewayService;
         this.messagesService = messagesService;
-        this.hixcoder = hixcoder;
+        this.gameService = gameService;
         this.prisma = prisma;
         this.ROUND_LIMIT = 4;
         this.joindRoom = 0;
@@ -134,7 +132,7 @@ let SocketGateway = class SocketGateway {
                     ro.ball.speed += 0.5;
             }
             if (ro.ball.x - ro.ball.radius <= 0) {
-                this.PongService.resetBall(ro.ball);
+                this.gameService.resetBall(ro.ball);
                 ro.player2.score++;
                 this.server
                     .to(roomName)
@@ -142,7 +140,7 @@ let SocketGateway = class SocketGateway {
                 this.gameState(roomName, ro.player1.score, ro.player2.score);
             }
             else if (ro.ball.x + ro.ball.radius >= 600) {
-                this.PongService.resetBall(ro.ball);
+                this.gameService.resetBall(ro.ball);
                 ro.player1.score++;
                 this.server
                     .to(roomName)
@@ -170,7 +168,7 @@ let SocketGateway = class SocketGateway {
                 this.server.to(player1).emit("gameOver", "lose");
                 this.server.to(player2).emit("gameOver", "win");
             }
-            this.hixcoder.updateGameHistory(player1, player2, score1.toString(), score2.toString());
+            this.gameService.updateGameHistory(player1, player2, score1.toString(), score2.toString());
             this.stopEmittingBallPosition(roomName);
         }
     }
@@ -201,7 +199,7 @@ let SocketGateway = class SocketGateway {
             });
             this.server.to(roomName).emit("startGame", roomName);
             this.GameInit(roomName);
-            this.PongService.resetBall(this.roomState.get(roomName).ball);
+            this.gameService.resetBall(this.roomState.get(roomName).ball);
             this.startEmittingBallPosition(roomName);
             this.clients.clear();
         }
@@ -280,10 +278,9 @@ __decorate([
 ], SocketGateway.prototype, "onUpdatePaddle", null);
 exports.SocketGateway = SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(),
-    __metadata("design:paramtypes", [game_service_1.PongServise,
-        socket_service_1.SocketGatewayService,
+    __metadata("design:paramtypes", [socket_service_1.SocketGatewayService,
         messages_service_1.MessagesService,
-        hixcoder_service_1.HixcoderService,
+        game_service_1.GameService,
         prisma_service_1.PrismaService])
 ], SocketGateway);
 //# sourceMappingURL=socket.gateway.js.map

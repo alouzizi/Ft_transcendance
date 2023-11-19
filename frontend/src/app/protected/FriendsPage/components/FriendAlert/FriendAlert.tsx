@@ -3,7 +3,7 @@
 import {
   getAllPossibleFriends,
   getPendingFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+} from "@/app/MyApi/friendshipApi";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as React from "react";
