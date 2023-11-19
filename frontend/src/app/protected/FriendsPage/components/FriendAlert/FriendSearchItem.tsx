@@ -1,9 +1,5 @@
 "use client";
-import {
-  getAllUsers,
-  getPendingFriends,
-  sendFriendRequest,
-} from "@/app/MyApi/friendshipApi";
+import { sendFriendRequest } from "@/app/MyApi/friendshipApi";
 import { useGlobalContext } from "@/app/protected/context/store";
 
 import Link from "next/link";

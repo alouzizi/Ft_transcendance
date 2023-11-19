@@ -35,7 +35,8 @@ export function FriendAlert(props: SimpleDialogProps) {
   React.useEffect(() => {
     async function getData() {
       try {
-        const AllPossibleFriendsDataTmp = await getAllPossibleFriends(user.id);
+        const AllPossibleFriendsDataTmp: friendDto[] =
+          await getAllPossibleFriends(user.id);
         const pendingFriendsListTmp = await getPendingFriends(user.id);
         setPendingFriendsList(pendingFriendsListTmp);
         setData(AllPossibleFriendsDataTmp);

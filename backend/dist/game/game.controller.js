@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameController = void 0;
 const common_1 = require("@nestjs/common");
 const game_service_1 = require("./game.service");
+const common_2 = require("@nestjs/common");
+const guard_1 = require("../auth/guard");
 let GameController = class GameController {
     constructor(gameService) {
         this.gameService = gameService;
@@ -41,6 +43,7 @@ let GameController = class GameController {
 exports.GameController = GameController;
 __decorate([
     (0, common_1.Get)("/gameHistory/:senderId"),
+    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

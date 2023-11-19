@@ -19,6 +19,7 @@ export default function AchievementsPage() {
     async function getData() {
       try {
         const usr = await getUserByNick(lastSegment);
+        setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         console.log(isBlocked);
@@ -26,7 +27,6 @@ export default function AchievementsPage() {
           setFriend(undefined);
           return;
         }
-        setFriend(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }

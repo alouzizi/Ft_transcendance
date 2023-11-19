@@ -42,7 +42,6 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         // for fetch the ranking
         const rankTmp = await getUserRanking(prompt.friend.id);
         setRank(rankTmp.rank);
-        console.log("globalInfoTmp", rankTmp.rank);
 
         // for fetch the level
         const usr = await getUserByNick(prompt.friend.nickname);
@@ -50,9 +49,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
 
         // for fetch the gameHistory
-        const gameHistoryTmp: gameHistoryDto[] = await getGameHistory(
-          prompt.friend.id
-        );
+        const gameHistoryTmp = await getGameHistory(prompt.friend.id);
         if (gameHistoryTmp.length !== 0) {
           setGameHistory(gameHistoryTmp);
         }

@@ -6,3 +6,8 @@ type globalInfoDto = {
   NbrOfBlockedFriends: number;
   NbrOfInvitedFriends: number;
 };
+
+type userRank = {
+  userId: string;
+  rank: number;
+};

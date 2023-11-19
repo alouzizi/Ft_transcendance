@@ -20,6 +20,7 @@ export default function DashboardPage() {
     async function getData() {
       try {
         const usr = await getUserByNick(lastSegment);
+        setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         console.log(isBlocked);
@@ -27,7 +28,6 @@ export default function DashboardPage() {
           setIsBlocked(false);
           return;
         }
-        setFriend(usr);
         // console.log(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);

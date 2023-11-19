@@ -84,13 +84,6 @@ const GlobalContext = createContext<ContextProps>({
   socket: null, // Initialize socket as null
 });
 
-// id: string;
-// intra_id: string;
-// first_name: string;
-// last_name: string;
-// nickname: string;
-// profilePic: string;
-
 export const GlobalContextProvider = ({
   children,
 }: {

@@ -35,7 +35,7 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
   useEffect(() => {
     async function getData() {
       try {
-        let dataTmp = [];
+        let dataTmp: friendDto[] = [];
         if (prompt.itemsStatus === "Online") {
           dataTmp = await getOnlineFriends(user.id);
         } else if (prompt.itemsStatus === "All") {

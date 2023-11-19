@@ -1,56 +1,62 @@
-// ==========================  Game Gets ==========================
-// ==========================  Game Gets ==========================
-// ==========================  Game Gets ==========================
-// ==========================  Game Gets ==========================
-// ==========================  Game Gets ==========================
-// ==========================  Game Gets ==========================
-
 import { Backend_URL } from "../../../lib/Constants";
+import Cookies from "js-cookie";
+
+// ================================================================
+// ================================================================
+// ==========================  Game Gets ==========================
+// ================================================================
+// ================================================================
 
 export async function getGameHistory(senderId: string) {
-  const def: gameHistoryDto[] = [];
+  let res: gameHistoryDto[] = [];
   try {
     if (!senderId) {
-      return def;
+      return res;
     }
+    const token = Cookies.get("access_token");
     const response = await fetch(
       `${Backend_URL}/game/gameHistory/${senderId}`,
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
       }
     );
     if (response.ok) {
-      const data: gameHistoryDto[] = await response.json();
-      return data;
+      res = await response.json();
     }
-    return def;
+    return res;
   } catch (error: any) {
     console.log("getGameHistory error: " + error);
-    return def;
+    return res;
   }
 }
 
 export async function getLeaderBoard() {
-  const def: LeaderBoard[] = [];
+  let res: LeaderBoard[] = [];
   try {
+    const token = Cookies.get("access_token");
     const response = await fetch(`${Backend_URL}/game/LeaderBoard/`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
     });
     if (response.ok) {
-      const data: LeaderBoard[] = await response.json();
-      return data;
+      res = await response.json();
     }
-    return def;
+    return res;
   } catch (error: any) {
     console.log("getLeaderBoard error: " + error);
-    return def;
+    return res;
   }
 }
 
 export async function getGlobalInfos(senderId: string) {
-  const def = {
+  let res: globalInfo = {
     NbrOfAllMatches: 0,
     NbrOfWinnedMatches: 0,
     NbrOfLosedMatches: 0,
@@ -58,22 +64,30 @@ export async function getGlobalInfos(senderId: string) {
     NbrOfBlockedFriends: 0,
     NbrOfInvitedFriends: 0,
   };
+
   try {
-    if (senderId === "") {
-      return def;
+    if (!senderId) {
+      return res;
     }
+    const token = Cookies.get("access_token");
+
     const response = await fetch(
       `${Backend_URL}/game/globalInfos/${senderId}`,
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
       }
     );
-    const data = await response.json();
-    return data;
+    if (response.ok) {
+      res = await response.json();
+    }
+    return res;
   } catch (error: any) {
     console.log("getGlobalInfos error: " + error);
-    return def;
+    return res;
   }
 }
 
@@ -186,25 +200,31 @@ export function getAchievmentsData(globalInfo: globalInfoDto) {
 }
 
 export async function getUserRanking(senderId: string) {
-  const def = {
-    userName: "",
+  let res: userRank = {
+    userId: "",
     rank: 0,
   };
   try {
     if (!senderId) {
-      return def;
+      return res;
     }
+    const token = Cookies.get("access_token");
     const response = await fetch(
       `${Backend_URL}/game/userRanking/${senderId}`,
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
       }
     );
-    const data = await response.json();
-    return data;
+    if (response.ok) {
+      res = await response.json();
+    }
+    return res;
   } catch (error: any) {
     console.log("getUserRanking error: " + error);
-    return def;
+    return res;
   }
 }

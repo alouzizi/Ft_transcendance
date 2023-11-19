@@ -1,6 +1,9 @@
 import { Controller, Get, Param, Post } from "@nestjs/common";
 import { GameService } from "./game.service";
+import { UseGuards } from "@nestjs/common";
+import { JwtGuard } from "src/auth/guard";
 
+// @UseGuards(JwtGuard)
 @Controller("game")
 export class GameController {
   constructor(private gameService: GameService) {}
@@ -8,6 +11,7 @@ export class GameController {
   // ==========================  Game Gets ==========================
   // for get gameHistory
   @Get("/gameHistory/:senderId")
+  @UseGuards(JwtGuard)
   async getGameHistory(@Param("senderId") sender: string) {
     return this.gameService.getGameHistory(sender);
   }

@@ -13,12 +13,14 @@ import { IoIosArrowDropdownCircle } from "react-icons/io";
 import HistoryItem from "./HistoryItem";
 import { useGlobalContext } from "../../context/store";
 import { getGameHistory } from "@/app/MyApi/gameApi";
+import { useRouter } from "next/navigation";
 
 export default function HistoryDropDown(prompt: {
   items: string[];
   gameHistory: gameHistoryDto[];
   friend: ownerDto;
 }) {
+  const router = useRouter();
   const [position, setPosition] = React.useState("All");
   const { updateInfo } = useGlobalContext();
   const [gameHistoryFormated, setGameHistoryFormated] = React.useState<
@@ -69,7 +71,6 @@ export default function HistoryDropDown(prompt: {
     async function getData() {
       try {
         const gameHistoryTmp = await getGameHistory(prompt.friend.id);
-
         setGameHistoryFormated(gameHistoryTmp);
       } catch (error: any) {
         console.log("getData error: " + error);
@@ -77,6 +78,7 @@ export default function HistoryDropDown(prompt: {
     }
     getData();
   }, []);
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center mb-6 md:mb-12 ">

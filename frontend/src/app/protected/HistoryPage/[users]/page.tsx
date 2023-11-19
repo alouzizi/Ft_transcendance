@@ -17,14 +17,13 @@ export default function HistoryPage() {
     async function getData() {
       try {
         const usr = await getUserByNick(lastSegment);
+        setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         if (isBlocked.isBlocked) {
           setFriend(undefined);
           return;
         }
-        setFriend(usr);
-        // console.log(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }

@@ -11,7 +11,6 @@ export default function LeaderboardPage() {
     async function getData() {
       try {
         const leaderBoardTmp = await getLeaderBoard();
-
         setLeaderBoardList(leaderBoardTmp);
       } catch (error: any) {
         console.log("getData error: " + error);
