@@ -43,7 +43,7 @@ let FriendshipService = class FriendshipService {
             return allUsers;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getUserByNick(recieverUsr) {
@@ -56,7 +56,7 @@ let FriendshipService = class FriendshipService {
             return oneUser;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getIsBlocked(recieverId, senderId) {
@@ -85,7 +85,7 @@ let FriendshipService = class FriendshipService {
             };
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getOnlineFriends(senderId) {
@@ -100,7 +100,7 @@ let FriendshipService = class FriendshipService {
             return onlineFriends;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getAllFriends(senderId) {
@@ -131,7 +131,7 @@ let FriendshipService = class FriendshipService {
             return allFriends;
         }
         catch (error) {
-            throw error;
+            return null;
         }
     }
     async getPendingFriends(senderId) {
@@ -170,7 +170,7 @@ let FriendshipService = class FriendshipService {
             return formattedPendingFriends;
         }
         catch (error) {
-            throw error;
+            return null;
         }
     }
     async getBlockedFriends(senderId) {
@@ -195,7 +195,7 @@ let FriendshipService = class FriendshipService {
             return blockedFriends;
         }
         catch (error) {
-            throw error;
+            return null;
         }
     }
     async getAllPossibleFriends(senderId) {
@@ -239,7 +239,7 @@ let FriendshipService = class FriendshipService {
             return possibleFriends;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getNavSearchUsers(senderId) {
@@ -271,7 +271,7 @@ let FriendshipService = class FriendshipService {
             return possibleFriends;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async sendFriendRequest(senderId, recieverId) {
@@ -302,7 +302,7 @@ let FriendshipService = class FriendshipService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async acceptFriendRequest(senderId, recieverId) {
@@ -337,7 +337,7 @@ let FriendshipService = class FriendshipService {
             return { error: "null" };
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async unsendFriendRequest(senderId, recieverId) {
@@ -353,7 +353,7 @@ let FriendshipService = class FriendshipService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async rejectFriendRequest(senderId, recieverId) {
@@ -369,7 +369,7 @@ let FriendshipService = class FriendshipService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async blockFriend(senderId, recieverId) {
@@ -397,7 +397,7 @@ let FriendshipService = class FriendshipService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async unblockFriend(senderId, recieverId) {
@@ -413,7 +413,7 @@ let FriendshipService = class FriendshipService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async removeFriend(senderId, recieverId) {
@@ -443,7 +443,7 @@ let FriendshipService = class FriendshipService {
             return friendToDelete;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
 };

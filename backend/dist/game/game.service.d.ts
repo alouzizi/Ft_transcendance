@@ -37,11 +37,17 @@ export declare class GameService {
         lastSee: Date;
     }>;
     getNbrOfMatches(recieverId: string, isWined: number): Promise<number>;
-    catch(error: any): void;
-    getGlobalInfos(recieverId: string): Promise<globalInfoDto>;
+    catch(error: any): {
+        error: any;
+    };
+    getGlobalInfos(recieverId: string): Promise<globalInfoDto | {
+        error: any;
+    }>;
     getUserRanking(senderId: string): Promise<{
         userId: string;
         rank: number;
+    } | {
+        error: any;
     }>;
     getLeaderBoard(): Promise<{
         userName: string;
@@ -50,7 +56,9 @@ export declare class GameService {
         nbrOfMatches: string;
         winRate: string;
         rank: string;
-    }[]>;
+    }[] | {
+        error: any;
+    }>;
     updateGameHistory(senderId: string, recieverId: string, senderPt: string, recieverPt: string): Promise<{
         id: string;
         createdAt: Date;
@@ -58,6 +66,8 @@ export declare class GameService {
         receiverId: string;
         senderPoints: string;
         receiverPoints: string;
+    } | {
+        error: any;
     }>;
     updateLevel(senderId: string, newLevel: string): Promise<{
         id: string;
@@ -94,6 +104,8 @@ export declare class GameService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    } | {
+        error: any;
     }>;
     collision(ball: any, player: any): boolean;
     resetBall(ball: BallDto): void;

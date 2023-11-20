@@ -35,7 +35,10 @@ export class messageDto {
 
 
   OwnerChannelId: String;
-  isChannProtected: boolean
+  isChannProtected: boolean;
+
+  inGaming: boolean;
+
   // status: Status;
 
 }

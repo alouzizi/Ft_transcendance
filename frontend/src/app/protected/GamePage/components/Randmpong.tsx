@@ -1,23 +1,30 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
-import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
-
-import { set } from "date-fns";
+import updateCanvas, { drawCanvas, drawRectAnimation2, drawText, drawTextAnimation2, resetBall } from "./pongUtils";
 import { useGlobalContext } from "../../context/store";
+import Alert from '@mui/joy/Alert';
+import {useRouter } from "next/navigation";
+
+// import { dividerClasses } from "@mui/material";
+
 
 interface PongProps {
   room: string;
   isLeft: boolean;
+  difficulty: number;
 }
 
-const Pong = ({ room, isLeft }: PongProps) => {
+const Pong = ({ room, isLeft, difficulty }: PongProps) => {
+
   const ROUND_LIMIT = 6;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
   const { user, socket } = useGlobalContext();
-  // const socket = useContext(WebsocketContext);
   let animationFrameId: number;
   let animationFrameId1: number;
+  const router = useRouter();
+  const [alert, setAlert] = useState(0);
+
   const player: Padlle = {
     x: 10,
     y: 0,
@@ -46,7 +53,16 @@ const Pong = ({ room, isLeft }: PongProps) => {
     color: "#05EDFF",
   };
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+
+  let ratio = 1;
+
+  if (canvasCtx.width < 600) {
+    ratio = (canvasCtx.width) / 600;
+  }
+
   useEffect(() => {
+
     if (!socket) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -54,116 +70,150 @@ const Pong = ({ room, isLeft }: PongProps) => {
     const handleMouseMove = (e: any) => {
       const rect = canvas.getBoundingClientRect();
       if (!isLeft) {
-        const mouseY = e.clientY - rect.top - computer.height / 2;
-        computer.color = "red";
-        computer.y = Math.min(
-          Math.max(mouseY, 0),
-          canvas.height - computer.height
-        );
+        // const mouseY = e.clientY - rect.top - computer.height / 2;
+        // computer.color = "red";
+        // computer.y = Math.min(
+        //   Math.max(mouseY, 0),
+        //   canvas.height - computer.height
+        // );
+        computer.y = e.clientY - rect.top - player.height/2;
       } else {
-        const mouseY = e.clientY - rect.top - player.height / 2;
+        // const mouseY = e.clientY - rect.top - player.height / 2;
         player.color = "red";
-        player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
+        player.y = e.clientY - rect.top - player.height/2;
+        // player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
       }
-      // console.log("mouseY: ", player.y);
 
       socket.emit("updatePaddle", {
         userId: user.id,
         room: room,
-        paddle: isLeft ? player : computer,
+        paddle: isLeft ? player.y : computer.y,
         isLeft: isLeft,
       });
-      console.log("allo: sending paddle update!");
-    };
-    // let test: number;
-    socket.on("resivePaddle", (data: any) => {
-      // console.log('Paddle update received --------------->');
-      // console.log(data);
-      if (!isLeft) {
-        player.y = data.y;
-        player.score = data.score;
-      } else {
-        computer.y = data.y;
-        computer.score = data.score;
+    }; 
+  
+    const handleKey = (e: any) => {
+      if (e.key === "ArrowUp") {
+        if (!isLeft){
+          computer.y -= 25;
+        }else{
+
+          player.y -= 25;
+        }
       }
-      // console.log({data: data});
-      console.log({ computer: computer.y });
+      if (e.key === "ArrowDown") {
+        if (!isLeft){
+          computer.y += 25;
+          }else{
+
+            player.y += 25;
+          }
+      }
+      socket.emit("updatePaddle", {
+        userId: user.id,
+        room: room,
+        paddle: isLeft ? player.y : computer.y,
+        isLeft: isLeft,
+      });
+    };
+
+  
+
+    socket.on("resivePaddle", (data: any) => {
+      if (!isLeft) {
+        player.y = data;
+        // player.score = data.score;
+      } else {
+        computer.y = data;
+        // computer.score = data;
+      }
     });
 
-    // resetBall(canvasCtx, ball);
-    // function update() {
-    // let computerLevel = 1;
-    // let desiredComputerY = ball.y - computer.height / 2;
-    // desiredComputerY = Math.min(
-    //   Math.max(desiredComputerY, 0),
-    //   canvasCtx.height - computer.height
-    // );
-    // computer.y += (desiredComputerY - computer.y) * computerLevel;
-    // computer.y = test;
-    // console.log("computer.y: ", computer.y);
-
-    // updateCanvas(canvasCtx, ball, computer, player);
     socket.on("updateTheBall", (ballPosition: Ball) => {
-      // console.log({ballPosition: ballPosition});
-      // console.log({ballPosition: ballPosition.color})
-      ball.x = ballPosition.x;
+      ball.x = ballPosition.x * ratio;
       ball.y = ballPosition.y;
-      ball.velocityX = ballPosition.velocityX;
+      ball.velocityX = ballPosition.velocityX * ratio ;
       ball.velocityY = ballPosition.velocityY;
-      ball.color = ballPosition.color;
-      drawCanvas(ctx, canvas, canvasCtx, ball, computer, player);
+      drawCanvas(ctx, canvas, canvasCtx, ball, computer, player, difficulty);
     });
+
     socket.on("updateScore", (scorePlayer1: number, scorePlayer2: number) => {
       player.score = scorePlayer1;
       computer.score = scorePlayer2;
-      console.log({ player: player.score, computer: computer.score });
-      drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
-      drawText(
-        ctx,
-        (3 * canvasCtx.width) / 4,
-        canvasCtx.height / 5,
-        computer.score
-      );
     });
 
-    socket.on("gameOver", (state: string) => {
-      // drawText(ctx, canvasCtx.width / 4, canvasCtx.height / 5, player.score);
-      // drawText(
-      //   ctx,
-      //   (3 * canvasCtx.width) / 4,
-      //   canvasCtx.height / 5,
-      //   computer.score
-      // );
-      setTimeout(() => {
-        if (state === "win") {
-          console.log("test");
-          // alert("You win!");
-        }
-        if (state === "lose") {
-          console.log("test");
-          // alert("You lose!");
-        }
-        if (state === "draw") {
-          console.log("test");
-          // alert("Draw!");
-        }
-      }, 1000);
+    socket.on("clientDisconnected", () => {
+      
     });
-    // animationFrameId1 = window.requestAnimationFrame(update);
-    // }
-    // setInterval(update, 5);
-    // animationFrameId = window.requestAnimationFrame(update);
+    socket.on("gameOver", (state: string) => {
+      setInterval(() => {
+      if (state === "win") {
+        drawText(ctx, "You win!", canvasCtx.width / 2, canvasCtx.height / 2);
+      }
+      if (state === "lose") {
+        drawText(ctx, "You Lose!", canvasCtx.width / 2, canvasCtx.height / 2);
+      }
+      if (state === "draw") {
+        drawText(ctx, "You draw!", canvasCtx.width / 2, canvasCtx.height / 2);
+      }
+    },20);
+      setTimeout(() => {
+        router.push('/protected/GamePage');
+      }, 2500);
+    });
+    function handleWindowResize() {
+      setWidth(window.innerWidth);
+      if (window.innerWidth < 600) {
+        ratio = (window.innerWidth - 80) / 600;
+      canvasCtx.width = window.innerWidth - 80;
+      computer.x = canvasCtx.width - 15;
+      }
+      else if (window.innerWidth > 600) {
+        ratio = 1;
+        canvasCtx.width = 600;
+        computer.x = canvasCtx.width - 15;
+      }
+    }
+    
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+      router.replace('/protected/GamePage/random');
+      socket?.emit("opponentLeft", {room: room, userId:user.id});
+
+    };
+
+    // function handlePopstate(){
+    //   socket?.emit("opponentLeft", {room: room, userId:user.id});
+    //   // router.push('/protected/GamePage/random');
+    // };
+
+    // window.addEventListener('popstate', handlePopstate);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("resize", handleWindowResize);
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("keydown", handleKey);
+
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);
-      console.log("allo: unregistering Events !");
-      socket.off("connect");
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("keydown", handleKey);
+      // window.removeEventListener('popstate', () => {
+
+      // });
+
+
+      socket.off("gameOver");
+      // socket.off("clientDisconnected");
+      socket.off("updateScore");
+      socket.off("updateTheBall");
+      socket.off("resivePaddle");
       socket.off("updatePaddle");
+
     };
-  }, []);
+  }, [router]);
 
   return (
     <canvas

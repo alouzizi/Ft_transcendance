@@ -11,7 +11,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ["cdn.intra.42.fr", "10.13.10.9"],
+    domains: ["cdn.intra.42.fr", "10.13.10.7"],
   },
 };
 

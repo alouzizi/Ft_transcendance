@@ -172,4 +172,4 @@ export default function AlertsAddUserChannel() {
     </div>
   );
 }
-//http://10.13.10.9:4000/3a444534-0846-40f5-a4f2-2d4cfcf34c2a/643810b5-1467-4502-a22f-0321ac75d411
+//http://10.13.10.7:4000/3a444534-0846-40f5-a4f2-2d4cfcf34c2a/643810b5-1467-4502-a22f-0321ac75d411

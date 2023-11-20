@@ -4,7 +4,6 @@ import React from "react";
 import { useGlobalContext } from "../../context/store";
 
 type MyComponentProps = {
-  emit: boolean;
   imageSrc: string;
   text: string;
   title: string;
@@ -16,7 +15,6 @@ const MyComponent = ({
   text,
   title,
   link,
-  emit,
 }: MyComponentProps) => {
   const { user, socket } = useGlobalContext();
   const router = useRouter();
@@ -58,16 +56,14 @@ const MyComponent = ({
           sm:py-2 sm:px-6 sm:m-4  
           sm:self-end
           "
-        onClick={() => {
-          if (emit) {
-            if (socket?.connected) {
-              socket.emit("clientId", user.id);
-              router.push(link);
+          onClick={() => {
+            if (link == "/protected/GamePage/random") {
+              if (socket?.connected) router.push(link);
+              else window.alert("Refresh the page and try again!");
             } else {
-              alert("Refresh the page and try again!");
+              router.push(link);
             }
-          }
-        }}
+          }}
       >
         Play
       </button>

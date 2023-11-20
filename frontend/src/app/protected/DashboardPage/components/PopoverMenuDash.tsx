@@ -11,6 +11,7 @@ import {
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
 import { useState } from "react";
 import { useGlobalContext } from "../../context/store";
+import PlayInvite from "../../GamePage/components/Invite";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;
@@ -38,6 +39,7 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
+    PlayInvite({userId1: user.id, userId2: prompt.friendInfo.id, socket: socket})
     console.log("play match with friend: " + prompt.friendInfo.nickname);
     handleClose();
   }

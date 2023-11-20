@@ -16,12 +16,14 @@ import { SocketGatewayService } from "./socket.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { GameService } from "src/game/game.service";
 import { BallDto, PaddleDto } from "src/game/dto";
+// import { PongServise } from "src/game/game.service";
 
 @WebSocketGateway()
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
+    // private gameService: PongServise,
     private socketGatewayService: SocketGatewayService,
     private messagesService: MessagesService,
     private gameService: GameService,
@@ -40,6 +42,17 @@ export class SocketGateway
 
   async handleDisconnect(client: Socket) {
     this.socketGatewayService.handleDisconnect(client, this.server);
+    if (this.clients.has(client.id)) {
+
+      this.clients.delete(client.id);
+      const room = this.findRoomByClientId(client.id);
+      if (room) {
+        this.server.to(room).emit("clientDisconnected");
+        this.stopEmittingBallPosition(room);
+        this.rooms.delete(room);
+        this.roomState.delete(room);
+      }
+    }
   }
 
   @SubscribeMessage("createMessage")
@@ -57,7 +70,7 @@ export class SocketGateway
     this.server.to(ids.receivedId).emit("isTyping", ids);
   }
 
-  ROUND_LIMIT = 4;
+  ROUND_LIMIT = 6;
   joindRoom = 0;
   private GameInit(roomName: string) {
     this.roomState.set(roomName, {
@@ -90,19 +103,18 @@ export class SocketGateway
   }
 
   private clients: Map<string, Socket> = new Map();
+  private joindClients: Map<string, number> = new Map();
   private rooms: Map<string, string[]> = new Map();
   private roomState: Map<string, RoomState> = new Map();
   private ballPositionInterval: Map<string, NodeJS.Timeout> = new Map();
 
-  // newRoom: string[] = [];
-
   onModuleInit() {}
 
   collision(ball: any, player: any) {
-    ball.top = ball.y - ball.radius;
-    ball.bottom = ball.y + ball.radius;
-    ball.left = ball.x - ball.radius;
-    ball.right = ball.x + ball.radius;
+    ball.top = ball.y - (ball.radius + 1) ;
+    ball.bottom = ball.y + (ball.radius + 1);
+    ball.left = ball.x - (ball.radius + 1);
+    ball.right = ball.x + (ball.radius + 1);
 
     let top = player.y;
     let bottom = player.y + player.height;
@@ -117,32 +129,28 @@ export class SocketGateway
     );
   }
 
-  @SubscribeMessage("clientId")
-  identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
-    console.log("client ---> ", client, id);
-    console.log({ id: id, client: client.id });
 
-    if (this.clients.has(id)) {
-      client.emit("alreadyExist");
-      console.log("Client already exists");
-    } else {
-      console.log("Client identified", { id: id });
+  async startEmittingBallPosition(roomName: string, id: string) {
+    const notherId = this.rooms.get(roomName).find((c) => c !== id);
 
-      this.clients.set(id, client);
+    await this.prisma.user.update({
+      where: {id:notherId},
+      data:{inGaming: true}
+    })
 
-      client.join(id);
-    }
-  }
+    await this.prisma.user.update({
+      where: {id:id},
+      data:{inGaming: true}
+    })
+    this.server.to(notherId).emit('updateData', {});
+    this.server.to(id).emit('updateData', {});
 
-  startEmittingBallPosition(roomName: string) {
     clearInterval(this.ballPositionInterval.get(roomName));
+
     this.ballPositionInterval.set(
       roomName,
       setInterval(() => {
-        // console.log({layer1: this.player1, player2: this.player2});
         const ro = this.roomState.get(roomName);
-        // console.log(ro.player1.x, ro.player1.y, ro.player2.x, ro.player2.y);
-        // ro.GameService.startGame(ro.ball, ro.p1, ro.player2);
         ro.ball.x += ro.ball.velocityX;
         ro.ball.y += ro.ball.velocityY;
         if (
@@ -153,11 +161,10 @@ export class SocketGateway
         }
         let user: any = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
         if (this.collision(ro.ball, user)) {
-          let collidePoint = ro.ball.y - (user.y + user.height / 2);
+          let collidePoint = (ro.ball.y - (user.y + user.height / 2));
           collidePoint = collidePoint / (user.height / 2);
-          // let angleRad = (Math.PI / 4) * collidePoint;
-          let angleRad = (collidePoint * Math.PI) / 4;
-          let direction = ro.ball.x < 600 / 2 ? 1 : -1;
+          let angleRad = (Math.PI / 4) * collidePoint;
+          let direction = (ro.ball.x < 600/2) ? 1 : -1;
           ro.ball.velocityX = direction * ro.ball.speed * Math.cos(angleRad);
           ro.ball.velocityY = ro.ball.speed * Math.sin(angleRad);
           // ball.speed += 0.5;
@@ -168,12 +175,27 @@ export class SocketGateway
           this.gameService.resetBall(ro.ball);
           // the computer win
           ro.player2.score++;
+
           // alert("Computer Win");
           this.server
             .to(roomName)
             .emit("updateScore", ro.player1.score, ro.player2.score);
-          this.gameState(roomName, ro.player1.score, ro.player2.score);
+
+          if (id === this.rooms.get(roomName)[0])
+            this.gameState(
+              roomName,
+              { player: id, score: ro.player1.score },
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score }
+            );
+          else
+            this.gameState(
+              roomName,
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score },
+              { player: this.rooms.get(roomName)[0], score: ro.player1.score }
+            );
+          // this.gameState(roomName, ro.player1.score, ro.player2.score);
         } else if (ro.ball.x + ro.ball.radius >= 600) {
+      
           this.gameService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
@@ -181,25 +203,36 @@ export class SocketGateway
           this.server
             .to(roomName)
             .emit("updateScore", ro.player1.score, ro.player2.score);
-
-          this.gameState(roomName, ro.player1.score, ro.player2.score);
+          if (id === this.rooms.get(roomName)[0])
+            this.gameState(
+              roomName,
+              { player: id, score: ro.player1.score },
+              { player: this.rooms.get(roomName)[1], score: ro.player1.score }
+            );
+          else
+            this.gameState(
+              roomName,
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score },
+              { player: this.rooms.get(roomName)[0], score: ro.player1.score }
+            );
+          // this.gameState(roomName, ro.player1.score, ro.player2.score);
         }
-        // const ballPosition = ro.gameService.ball;
         this.server.to(roomName).emit("updateTheBall", ro.ball);
       }, 20)
     );
   }
 
-  async gameState(roomName: string, score1: number, score2: number) {
+  async gameState(roomName: string, p1: { player: string; score: number },
+    p2: { player: string; score: number }) {
     const player1 = this.rooms.get(roomName)[0];
     const player2 = this.rooms.get(roomName)[1];
 
-    if (score1 + score2 === this.ROUND_LIMIT) {
-      if (score1 == score2) {
+    if (p1.score + p2.score === this.ROUND_LIMIT) {
+      if (p1.score == p2.score) {
         console.log(player1, player2);
         this.server.to(roomName).emit("gameOver", "draw");
       }
-      if (score1 > score2) {
+      if (p1.score > p2.score) {
         console.log(player1, player2);
         this.server.to(player1).emit("gameOver", "win");
         this.server.to(player2).emit("gameOver", "lose");
@@ -211,25 +244,59 @@ export class SocketGateway
       this.gameService.updateGameHistory(
         player1,
         player2,
-        score1.toString(),
-        score2.toString()
+        p1.score.toString(),
+        p2.score.toString()
       );
 
       this.stopEmittingBallPosition(roomName);
     }
   }
+  async stopEmittingBallPosition(roomName: string) {
+    const id = this.rooms.get(roomName)[0];
+    const id2 = this.rooms.get(roomName)[1];
+    await this.prisma.user.update({
+      where: {id:id},
+      data:{inGaming: false}
+    })
+    await this.prisma.user.update({
+      where: {id:id2},
+      data:{inGaming: false}
+    })
+    this.server.to(id2).emit('updateData', {});
+    this.server.to(id).emit('updateData', {});
 
-  stopEmittingBallPosition(roomName: string) {
+    // id2.leave(roomName);
+    // id2.leave(id2);
+    delete this.rooms[roomName];
+    delete this.roomState[roomName];
+    delete this.ballPositionInterval[roomName];
+    delete this.joindClients[id];
+    delete this.joindClients[id2];
     clearInterval(this.ballPositionInterval.get(roomName));
+  }
+
+
+
+  @SubscribeMessage("clientId")
+  identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
+
+
+    if (this.clients.has(id)) {
+      client.emit("alreadyExist");
+    } else {
+
+      this.clients.set(id, client);
+      this.joindClients.set(id, 0);
+
+      client.join(id);
+    }
   }
 
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
-    console.log({ size: this.clients.size });
     this.joindRoom++;
-    if (this.clients.size === 2 && this.joindRoom == 2) {
+    if (this.clients.size === 2 && this.joindRoom > 1 ) {
       this.joindRoom = 0;
-      console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
       this.rooms.set(roomName, Array.from(this.clients.keys()));
       const clientArray = Array.from(this.clients.keys());
@@ -251,12 +318,19 @@ export class SocketGateway
       // this.gameService.startGame();
       this.GameInit(roomName);
       this.gameService.resetBall(this.roomState.get(roomName).ball);
-      this.startEmittingBallPosition(roomName);
+      this.startEmittingBallPosition(roomName, id);
       this.clients.clear();
       // }, 1000);
     }
   }
+  
+  // @SubscribeMessage("invite")
+  // onInvite(client: Socket, data: any) {
 
+  //   this.
+  //   this.server.to(data.userId).emit("invite", data);
+  // }
+// }
   findRoomByClientId(id: string) {
     let roomName: string;
     this.rooms.forEach((clients, room) => {
@@ -269,30 +343,101 @@ export class SocketGateway
 
   @SubscribeMessage("updatePaddle")
   onUpdatePaddle(client: Socket, data: any) {
-    // console.log('updatePaddle', data);
-
     if (data.room) {
       const clientsRoom = this.rooms.get(data.room);
-      //   room.emit()
       if (clientsRoom) {
         const otherClient = clientsRoom.find((c) => c !== data.userId);
-        // this.player2 = data.paddle;
         if (otherClient) {
-          // console.log({ otherClient: otherClient });
-          // otherClient.emit("resivePaddle", data.paddle);
-          // this.gameService.player2 = data.paddle;
-          // this.player1 = data.paddle;
-          if (data.isLeft) this.roomState.get(data.room).player1 = data.paddle;
-          else this.roomState.get(data.room).player2 = data.paddle;
+          if (data.isLeft) this.roomState.get(data.room).player1.y = data.paddle;
+          else this.roomState.get(data.room).player2.y = data.paddle;
           this.server.to(otherClient).emit("resivePaddle", data.paddle);
         }
       }
     }
   }
+
+  @SubscribeMessage("opponentLeft")
+  onOpponentLeft(client: Socket, data: any) {
+
+    if (data.room) {
+      const clientsRoom = this.rooms.get(data.room);
+      if (clientsRoom) {
+        const otherClient = clientsRoom.find((c) => c !== data.userId);
+        const otherclientValue = this.clients.get(otherClient);
+        if (otherClient) {
+          this.server.to(otherClient).emit("opponentLeft");
+          // otherClient.leave(otherClient);
+          // this.stopEmittingBallPosition(data.room);
+          // delete this.rooms[data.room];
+          // delete this.roomState[data.room];
+          // delete this.ballPositionInterval[data.room];
+          // delete this.joindRoom[otherClient];
+        }
+      }
+      // otherclientValue.leave(data.room);
+      // otherclientValue.leave(otherClient);
+      client.leave(data.room);
+      client.leave(data.userId);
+      client.leave(data.userId);
+      client.leave(data.room);
+    }
+
+    this.stopEmittingBallPosition(data.room);
+    // delete this.rooms[data.room];
+    // delete this.roomState[data.room];
+    // delete this.ballPositionInterval[data.room];
+    // delete this.joindClients[data.userId];
+  }
+
+
+
+  private inviteRoom: Map<string, Socket>= new Map();
+
+  @SubscribeMessage("invite")
+  onIvite(client: Socket, data: any) {
+
+    this.inviteRoom.set(data.userId1, client);
+    client.join(data.userId1);
+
+    // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
+    this.server.to(data.userId2).emit("invite", data);
+
+  }
+
+  @SubscribeMessage("accept")
+  onAccept(client: Socket, data: any) {
+    this.inviteRoom.set(data.userId2, client);
+    client.join(data.userId2);
+
+    this.server.to(data.userId2).emit("accepted", data);
+    const roomName = data.userId1 + data.userId2;
+    const sockets: Socket[] = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
+
+    this.rooms.set(roomName, [data.userId1, data.userId2]);
+
+
+    // this.server.to(data.userId1).emit("whichSide", true);
+    // this.server.to(data.userId2).emit("whichSide", false);
+
+
+    sockets.forEach((socket) => {
+      socket.join(roomName);
+    });
+
+    this.server.to(roomName).emit("startGame", data);
+    this.GameInit(roomName);
+
+    this.gameService.resetBall(this.roomState.get(roomName).ball);
+    this.startEmittingBallPosition(roomName, data.userId2);
+    this.clients.clear();
+  }
+  
 }
+
 
 interface RoomState {
   player1: PaddleDto;
   player2: PaddleDto;
   ball: BallDto;
 }
+

@@ -8,7 +8,7 @@ import { FaArrowCircleRight } from "react-icons/fa";
 
 export default function HomePage() {
   const handleLogin = () => {
-    window.location.href = "http://10.13.10.9:4000/auth/login42";
+    window.location.href = "http://10.13.10.7:4000/auth/login42";
   };
 
   const [openAlert, setOpenAlert] = useState(false);

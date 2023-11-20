@@ -57,7 +57,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         // for fetch the friends
         const dataTmp = await getAllFriends(prompt.friend.id);
         setIsFriend(
-          dataTmp.some((element: userDto) => element.id === prompt.friend.id)
+          dataTmp.some((element: friendDto) => element.id === prompt.friend.id)
         );
 
         // for fetch the globalInfoTmp

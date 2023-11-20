@@ -21,6 +21,7 @@ import Badge from "@mui/material/Badge";
 import { FaRegStopCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { FaGamepad } from "react-icons/fa";
+import PlayInvite from '../../GamePage/components/Invite';
 
 enum Status {
     ACTIF = "ACTIF",
@@ -282,7 +283,7 @@ const BoxChat = () => {
                         <IoSettingsSharp size={16} />
                     </Link> :
                         <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { console.log("ali ali") }}
+                            onClick={() => { PlayInvite({userId1: user.id, userId2: geust.id, socket: socket})}}
                         />}
                 </div>
             </div >

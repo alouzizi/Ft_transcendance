@@ -21,7 +21,9 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: any;
+    }>;
     getUserByNick(reciever: string): Promise<{
         id: string;
         intra_id: string;
@@ -38,11 +40,19 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+    } | {
+        error: any;
     }>;
     getIsBlocked(sender: string, reciever: string): Promise<{
         isBlocked: boolean;
+        error?: undefined;
+    } | {
+        error: any;
+        isBlocked?: undefined;
     }>;
-    getOnlineFriends(sender: string): Promise<any[]>;
+    getOnlineFriends(sender: string): Promise<any[] | {
+        error: any;
+    }>;
     getAllFriends(sender: string): Promise<{
         id: string;
         intra_id: string;
@@ -95,7 +105,9 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: any;
+    }>;
     getNavSearchUsers(sender: string): Promise<{
         id: string;
         intra_id: string;
@@ -112,41 +124,53 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
-    }[]>;
+    }[] | {
+        error: any;
+    }>;
     sendFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
     acceptFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         senderId: string;
         receivedId: string;
     } | {
-        error: string;
+        error: any;
     }>;
     unsendFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
     rejectFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
     blockFriend(sender: string, reciever: string): Promise<{
         id: string;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
     unblockFriend(sender: string, reciever: string): Promise<{
         id: string;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
     removeFriend(sender: string, reciever: string): Promise<{
         id: string;
@@ -156,5 +180,7 @@ export declare class FriendshipController {
         id: string;
         senderId: string;
         receivedId: string;
-    }[]>;
+    }[] | {
+        error: any;
+    }>;
 }

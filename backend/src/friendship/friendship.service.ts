@@ -6,161 +6,6 @@ import { isEmpty } from "class-validator";
 export class FriendshipService {
   constructor(private prisma: PrismaService) { }
 
-  // async sendFriendRequist(sendId: string, recivedId: string) {
-  //   try {
-  //     let req = await this.prisma.friendRequest.findUnique({
-  //       where: {
-  //         Unique_Sender_Receiver: {
-  //           senderId: sendId,
-  //           receivedId: recivedId,
-  //         },
-  //       },
-  //     });
-  //     if (!req) {
-  //       req = await this.prisma.friendRequest.create({
-  //         data: {
-  //           senderId: sendId,
-  //           receivedId: recivedId,
-  //         },
-  //       });
-  //     }
-  //     return req;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async removeFriendRequist(sendId: string, recivedId: string) {
-  //   try {
-  //     let req = await this.prisma.friendRequest.deleteMany({
-  //       where: {
-  //         senderId: sendId,
-  //         receivedId: recivedId,
-  //       },
-  //     });
-  //     return req;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async accepteFriendRequest(sendId: string, recivedId: string) {
-  //   try {
-  //     let req = await this.prisma.friend.findUnique({
-  //       where: {
-  //         Unique_Sender_Receiver: {
-  //           senderId: sendId,
-  //           receivedId: recivedId,
-  //         },
-  //       },
-  //     });
-  //     if (!req) {
-  //       req = await this.prisma.friend.create({
-  //         data: {
-  //           senderId: sendId,
-  //           receivedId: recivedId,
-  //         },
-  //       });
-  //     }
-  //     return req;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async deleteFriend(sendId: string, recivedId: string) {
-  //   try {
-  //     let req = await this.prisma.friend.deleteMany({
-  //       where: {
-  //         OR: [
-  //           { senderId: sendId, receivedId: recivedId },
-  //           { senderId: recivedId, receivedId: sendId },
-  //         ],
-  //       },
-  //     });
-  //     return req;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async blockedUser(sendId: string, recivedId: string) {
-  //   try {
-  //     let req = await this.prisma.blockedUser.findUnique({
-  //       where: {
-  //         Unique_Sender_Receiver: {
-  //           senderId: sendId,
-  //           receivedId: recivedId,
-  //         },
-  //       },
-  //     });
-  //     if (!req) {
-  //       req = await this.prisma.blockedUser.create({
-  //         data: {
-  //           senderId: sendId,
-  //           receivedId: recivedId,
-  //         },
-  //       });
-  //     }
-  //     return req;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-
-
-  // async getSendRequistFriends(senderId: string) {
-  //   try {
-  //     const sendRequests = await this.prisma.friendRequest.findMany({
-  //       where: {
-  //         senderId: senderId,
-  //       },
-  //     });
-  //     return sendRequests;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async getRecivedRequistFriends(senderId: string) {
-  //   try {
-  //     const sendRequests = await this.prisma.friendRequest.findMany({
-  //       where: {
-  //         receivedId: senderId,
-  //       },
-  //     });
-  //     return sendRequests;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async getFriends(senderId: string) {
-  //   try {
-  //     const sendRequests = await this.prisma.friend.findMany({
-  //       where: {
-  //         OR: [{ senderId: senderId }, { receivedId: senderId }],
-  //       },
-  //     });
-  //     return sendRequests;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
-
-  // async getBlockedUser(senderId: string) {
-  //   try {
-  //     const sendRequests = await this.prisma.blockedUser.findMany({
-  //       where: {
-  //         OR: [{ senderId: senderId }, { receivedId: senderId }],
-  //       },
-  //     });
-  //     return sendRequests;
-  //   } catch (error) {
-  //     return { error: true };
-  //   }
-  // }
   async unBlockedUser_2(sendId: string, recivedId: string) {
     try {
       let req = await this.prisma.blockedUser.deleteMany({
@@ -199,7 +44,7 @@ export class FriendshipService {
       });
       return allUsers;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -212,7 +57,7 @@ export class FriendshipService {
       });
       return oneUser;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -241,7 +86,7 @@ export class FriendshipService {
         isBlocked: false,
       };
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -256,7 +101,7 @@ export class FriendshipService {
       }
       return onlineFriends;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -287,7 +132,7 @@ export class FriendshipService {
       });
       return allFriends;
     } catch (error) {
-      throw error;
+      return null
     }
   }
 
@@ -332,7 +177,7 @@ export class FriendshipService {
       });
       return formattedPendingFriends;
     } catch (error) {
-      throw error;
+      return null
     }
   }
 
@@ -357,7 +202,7 @@ export class FriendshipService {
       }
       return blockedFriends;
     } catch (error) {
-      throw error;
+      return null
     }
   }
 
@@ -407,7 +252,7 @@ export class FriendshipService {
       });
       return possibleFriends;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -443,7 +288,7 @@ export class FriendshipService {
       });
       return possibleFriends;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -476,7 +321,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -511,7 +356,7 @@ export class FriendshipService {
       }
       return { error: "null" };
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -527,7 +372,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
   async rejectFriendRequest(senderId: string, recieverId: string) {
@@ -542,7 +387,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -572,7 +417,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -588,7 +433,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -621,7 +466,7 @@ export class FriendshipService {
       }
       return friendToDelete;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 }

@@ -41,7 +41,7 @@ const ListUser = () => {
       socket.on("findMsg2UsersResponse", getListUsers);
     }
     return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
-  }, [socket])
+  }, [socket,updateInfo])
 
   useEffect(() => {
     const getListUsers = async () => {
@@ -122,7 +122,7 @@ const ListUser = () => {
           <Badge
             badgeContent=
             {<div>
-              {geust.inGaming ? <FaGamepad /> : <></>}
+              {el.inGaming ? <FaGamepad /> : <></>}
             </div>}
             sx={{
               "& .MuiBadge-badge": {
@@ -133,7 +133,7 @@ const ListUser = () => {
                 border: "2px solid #ffffff",
               },
             }}
-            variant={geust.inGaming ? "standard" : "dot"}
+            variant={el.inGaming ? "standard" : "dot"}
             overlap="circular"
             anchorOrigin={{
               vertical: "bottom",

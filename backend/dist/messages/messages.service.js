@@ -81,7 +81,8 @@ let MessagesService = class MessagesService {
                 receivedPic: receivedUser.profilePic,
                 receivedStatus: receivedUser.status,
                 OwnerChannelId: '',
-                isChannProtected: false
+                isChannProtected: false,
+                inGaming: false
             };
             if (notSendTo === "") {
                 server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
@@ -143,7 +144,8 @@ let MessagesService = class MessagesService {
                     receivedPic: channel.avatar,
                     receivedStatus: client_1.Status.INACTIF,
                     OwnerChannelId: channel.channelOwnerId,
-                    isChannProtected: channel.protected
+                    isChannProtected: channel.protected,
+                    inGaming: false
                 };
                 server.to(member.userId).emit('findMsg2UsersResponse', temp);
             }
@@ -182,7 +184,8 @@ let MessagesService = class MessagesService {
                     receivedPic: receivedUser.profilePic,
                     receivedStatus: receivedUser.status,
                     OwnerChannelId: '',
-                    isChannProtected: false
+                    isChannProtected: false,
+                    inGaming: false
                 };
                 return temp;
             }));
@@ -230,7 +233,8 @@ let MessagesService = class MessagesService {
                         receivedPic: channel.avatar,
                         receivedStatus: client_1.Status.INACTIF,
                         OwnerChannelId: channel.channelOwnerId,
-                        isChannProtected: channel.protected
+                        isChannProtected: channel.protected,
+                        inGaming: false
                     };
                     return temp;
                 }));
@@ -298,7 +302,8 @@ let MessagesService = class MessagesService {
                 receivedPic: channel.avatar,
                 receivedStatus: client_1.Status.INACTIF,
                 OwnerChannelId: channel.channelOwnerId,
-                isChannProtected: channel.protected
+                isChannProtected: channel.protected,
+                inGaming: false
             };
             result.push(temp);
         }
@@ -329,7 +334,8 @@ let MessagesService = class MessagesService {
                 receivedPic: chl.avatar,
                 receivedStatus: client_1.Status.INACTIF,
                 OwnerChannelId: chl.channelOwnerId,
-                isChannProtected: chl.protected
+                isChannProtected: chl.protected,
+                inGaming: false
             };
             result.push(temp);
         }
@@ -379,7 +385,8 @@ let MessagesService = class MessagesService {
                     receivedPic: user.profilePic,
                     receivedStatus: user.status,
                     OwnerChannelId: '',
-                    isChannProtected: false
+                    isChannProtected: false,
+                    inGaming: user.inGaming
                 };
                 resultDirect.push(tmp);
             }
@@ -414,7 +421,8 @@ let MessagesService = class MessagesService {
                     receivedPic: user.profilePic,
                     receivedStatus: user.status,
                     OwnerChannelId: '',
-                    isChannProtected: false
+                    isChannProtected: false,
+                    inGaming: false
                 };
                 resultDirect.push(tmp);
             }
