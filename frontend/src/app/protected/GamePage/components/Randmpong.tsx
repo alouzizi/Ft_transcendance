@@ -148,21 +148,12 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     socket.on("gameOver", (state: string) => {
       setInterval(() => {
       if (state === "win") {
-
-        <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
-
         drawText(ctx, "You win!", canvasCtx.width / 2, canvasCtx.height / 2);
-        
-        // router.push('/protected/GamePage');
       }
       if (state === "lose") {
-        <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
-
         drawText(ctx, "You Lose!", canvasCtx.width / 2, canvasCtx.height / 2);
-        // router.push('/protected/GamePage');
       }
       if (state === "draw") {
-        <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
         drawText(ctx, "You draw!", canvasCtx.width / 2, canvasCtx.height / 2);
       }
     },20);

@@ -303,9 +303,11 @@ export const GlobalContextProvider = ({
               <div className="flex flex-row items-center justify-center"></div>
               <button
                 onClick={async () => {
-                  socket?.emit("accept", data);
+                  // socket?.emit("accept", data);
                   setOpenConfirm(false);
-                  router.push("/protected/GamePage/invite");
+                  // router.push("/protected/GamePage/invite");
+
+                  
                 }}
                 className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
                             text-xs  px-4 py-2 mx-2
