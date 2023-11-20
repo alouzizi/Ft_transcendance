@@ -18,7 +18,9 @@ import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import Badge from "@mui/material/Badge";
-
+import { FaRegStopCircle } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaGamepad } from "react-icons/fa";
 
 enum Status {
     ACTIF = "ACTIF",
@@ -26,6 +28,8 @@ enum Status {
 }
 
 const BoxChat = () => {
+
+    const router = useRouter();
 
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
@@ -102,6 +106,7 @@ const BoxChat = () => {
 
     const [isBlocked, setIsBlocked] = useState<number>(0)
     const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
+
     useEffect(() => {
         setIsMuted(false);
         if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
@@ -156,6 +161,12 @@ const BoxChat = () => {
                         setIsMuted(true);
                         const timeoutId = setTimeout(() => {
                             setIsMuted(false);
+                            socket?.emit('updateData', {
+                                content: '',
+                                senderId: user.id,
+                                isDirectMessage: false,
+                                receivedId: geust.id,
+                            });
                         }, timer);
                         return () => clearTimeout(timeoutId);
                     }
@@ -206,7 +217,10 @@ const BoxChat = () => {
                     </div>
                     {geust.isUser ?
                         <Badge
-                            badgeContent={4}
+                            badgeContent=
+                            {<div>
+                                {geust.inGaming ? <FaGamepad /> : <></>}
+                            </div>}
                             sx={{
                                 "& .MuiBadge-badge": {
                                     backgroundColor: `${(geust.status === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
@@ -216,7 +230,7 @@ const BoxChat = () => {
                                     border: "2px solid #ffffff",
                                 },
                             }}
-                            variant="dot"
+                            variant={geust.inGaming ? "standard" : "dot"}
                             overlap="circular"
                             anchorOrigin={{
                                 vertical: "bottom",
@@ -240,7 +254,13 @@ const BoxChat = () => {
                     }
 
                     <Flex direction="column" className='flex' >
-                        <Text size="2" weight="bold" className='pl-2'>
+                        <Text onClick={() => {
+                            if (geust.isUser) {
+                                router.push(`/protected/DashboardPage/${geust.nickname}`);
+                            }
+                        }} size="2" weight="bold"
+
+                            className={`${geust.isUser ? "hover:underline cursor-pointer pl-2" : "pl-2"}`}>
                             {geust.nickname}
                         </Text>
                         {
@@ -284,6 +304,7 @@ const BoxChat = () => {
                         <input type={"text"} className="bg-white m-1 flex flex-grow w-px
                         text-black placeholder-gray-600 text-sm outline-none "
                             value={msg}
+                            disabled={isMuted}
                             placeholder={!isMuted ? "  Type your message" : " Your muted from this channel"}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setMsg(event.target.value);
@@ -292,11 +313,13 @@ const BoxChat = () => {
                         </input>
 
 
-                        <div className='flex items-center justify-center w-[30px] h-[30px] 
-                rounded-[10px] bg-[#254BD6] cursor-pointer m-[1px]'>
-                            <BsFillSendFill color='white'
-                                onClick={() =>
-                                    handleSendMessage()} />
+                        <div className={`flex items-center justify-center w-[30px] h-[30px] 
+                rounded-[10px] bg-[#254BD6]  m-[1px] ${isMuted ? "" : "cursor-pointer"} `}>
+                            {!isMuted ?
+                                <BsFillSendFill color='white'
+                                    onClick={() =>
+                                        handleSendMessage()} /> :
+                                <FaRegStopCircle color='white' />}
                         </div>
 
                     </div >

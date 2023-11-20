@@ -14,19 +14,15 @@ import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '..
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
 import Badge from "@mui/material/Badge";
+import { useRouter } from "next/navigation";
+import { FaGamepad } from "react-icons/fa";
 
-
-export function getColorStatus(status: any): string {
-  if (status === "ACTIF") {
-    return '#30f32d';
-  } else if (status === "INACTIF") {
-    return 'red';
-  }
-  return 'blue';
-}
 
 
 const ListUser = () => {
+
+  const router = useRouter();
+
   const { setGeust, geust, socket, user, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
@@ -124,7 +120,10 @@ const ListUser = () => {
         }}>
         {el.isDirectMessage ?
           <Badge
-            badgeContent={4}
+            badgeContent=
+            {<div>
+              {geust.inGaming ? <FaGamepad /> : <></>}
+            </div>}
             sx={{
               "& .MuiBadge-badge": {
                 backgroundColor: `${(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
@@ -134,7 +133,7 @@ const ListUser = () => {
                 border: "2px solid #ffffff",
               },
             }}
-            variant="dot"
+            variant={geust.inGaming ? "standard" : "dot"}
             overlap="circular"
             anchorOrigin={{
               vertical: "bottom",
@@ -156,10 +155,14 @@ const ListUser = () => {
             fallback="T"
           />
         }
-
-
         <Flex direction="column" className='items-start pl-2'>
-          <Text size="2" weight="bold" className=''>
+          <Text onClick={() => {
+            if (el.isDirectMessage) {
+              router.push(`/protected/DashboardPage/${el.receivedName}`);
+            }
+          }}
+            size="2" weight="bold"
+            className={`${el.isDirectMessage ? "hover:underline cursor-pointer" : ""}`}>
             {el.receivedName}
           </Text>
           {el.contentMsg === "" ? <></> :
@@ -246,8 +249,7 @@ const ListUser = () => {
 
 
 
-  if (user.id === "-1")
-    return <></>
+
   let styles: string = 'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
     <Box
@@ -311,8 +313,7 @@ const ListUser = () => {
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setNotMatch('');
-                }}
-              >
+                }}>
               </input>
               <div className='cursor-pointer' onClick={() => { setIsPasswordVisibleAlert((pre) => { return !pre }) }}>
                 {!isPasswordVisibleAlert ?
@@ -353,10 +354,6 @@ const ListUser = () => {
           </DialogActions>
         </Dialog>
       </div>
-
-
-
-
     </Box>
   );
 };

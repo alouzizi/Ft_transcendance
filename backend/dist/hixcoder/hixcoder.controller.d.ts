@@ -10,6 +10,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -28,6 +29,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -50,6 +52,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -67,6 +70,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -84,6 +88,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -102,6 +107,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -205,6 +211,7 @@ export declare class HixcoderController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;

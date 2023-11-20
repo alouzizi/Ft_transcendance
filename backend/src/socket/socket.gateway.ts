@@ -21,15 +21,14 @@ import { on } from "events";
 
 @WebSocketGateway()
 export class SocketGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private PongService: PongServise,
     private socketGatewayService: SocketGatewayService,
     private messagesService: MessagesService,
     private hixcoder: HixcoderService,
     private prisma: PrismaService
-  ) {}
+  ) { }
 
   @WebSocketServer() server: Server;
 
@@ -43,6 +42,7 @@ export class SocketGateway
 
   async handleDisconnect(client: Socket) {
     this.socketGatewayService.handleDisconnect(client, this.server);
+
     if (this.clients.has(client.id)) {
       console.log("Client disconnected", { id: client.id });
       this.clients.delete(client.id);
@@ -109,7 +109,7 @@ export class SocketGateway
   private roomState: Map<string, RoomState> = new Map();
   private ballPositionInterval: Map<string, NodeJS.Timeout> = new Map();
 
-  onModuleInit() {}
+  onModuleInit() { }
 
   collision(ball: any, player: any) {
     ball.top = ball.y - ball.radius;
@@ -181,7 +181,7 @@ export class SocketGateway
               { player: this.rooms.get(roomName)[0], score: ro.player2.score }
             );
         } else if (ro.ball.x + ro.ball.radius >= 600) {
-      
+
           this.PongService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
@@ -274,7 +274,7 @@ export class SocketGateway
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
     this.joindRoom++;
-    if (this.clients.size === 2 && this.joindRoom > 1 ) {
+    if (this.clients.size === 2 && this.joindRoom > 1) {
       this.joindRoom = 0;
       console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
@@ -303,14 +303,14 @@ export class SocketGateway
       // }, 1000);
     }
   }
-  
+
   // @SubscribeMessage("invite")
   // onInvite(client: Socket, data: any) {
 
   //   this.
   //   this.server.to(data.userId).emit("invite", data);
   // }
-// }
+  // }
   findRoomByClientId(id: string) {
     let roomName: string;
     this.rooms.forEach((clients, room) => {

@@ -44,6 +44,8 @@ type geustDto = {
   lenUser: number;
 
   idUserOwner: string;
+
+  inGaming: boolean
 };
 
 enum MessageStatus {

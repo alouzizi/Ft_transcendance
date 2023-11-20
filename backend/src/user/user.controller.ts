@@ -39,7 +39,8 @@ export class UserController {
       nickname: user.nickname,
       profilePic: user.profilePic,
       isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
-      level: user.level
+      level: user.level,
+      inGaming: user.inGaming
     };
     return temp;
   }
@@ -116,6 +117,20 @@ export class UserController {
     @Param("receivedId") receivedId: string
   ) {
     return await this.userService.checkIsBlocked(senderId, receivedId);
+  }
+
+  @Post("startGameing/:senderId")
+  async startGameing(
+    @Param("senderId") senderId: string,
+  ) {
+    return await this.userService.startGameing(senderId);
+  }
+
+  @Post("finishGaming/:senderId")
+  async finishGaming(
+    @Param("senderId") senderId: string,
+  ) {
+    return await this.userService.finishGaming(senderId);
   }
 
 }

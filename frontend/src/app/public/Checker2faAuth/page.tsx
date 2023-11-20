@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Backend_URL } from "../../../lib/Constants";
+import { Backend_URL } from "../../../../lib/Constants";
 
 export default function login() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function login() {
               try {
                 const res = await axios.get(
                   Backend_URL +
-                    `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`
+                  `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`
                 );
                 const token = await res.data;
                 Cookies.set("access_token", token);

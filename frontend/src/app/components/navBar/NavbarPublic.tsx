@@ -11,7 +11,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
   const pathname = usePathname();
 
   const handleLogin = () => {
-    window.location.href = "http://10.12.3.3:4000/auth/login42";
+    window.location.href = "http://10.12.5.3:4000/auth/login42";
   };
 
   const [openAlert, setOpenAlert] = useState(false);
@@ -26,7 +26,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
             <img className="h-8" src="/PongMaster.svg" alt="PongMaster" />
           </Link>
 
-          <div className="space-x-4">
+          <div className="space-x-4 flex">
             <Link
               href="/public/HomePage"
               className={
@@ -35,7 +35,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
                   : "text-gray-400"
               }
             >
-              <text> HOME</text>
+              <div> HOME</div>
             </Link>
             <Link
               href="/public/AboutPage"
@@ -43,14 +43,14 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
                 pathname === "/public/AboutPage" ? "" : "text-gray-400"
               }
             >
-              <text> ABOUT</text>
+              <div> ABOUT</div>
             </Link>
             <Link
               href="/public/ContactPage"
               className={
                 pathname === "/public/ContactPage" ? "" : "text-gray-400"}
             >
-              <text>CONTACT</text>
+              <div>CONTACT</div>
             </Link>
           </div>
 

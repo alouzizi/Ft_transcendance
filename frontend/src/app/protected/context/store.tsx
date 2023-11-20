@@ -78,6 +78,7 @@ const GlobalContext = createContext<ContextProps>({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
+    inGaming: false
   },
   setGeust: () => { },
 
@@ -112,6 +113,7 @@ export const GlobalContextProvider = ({
     profilePic: "",
     isTwoFactorAuthEnabled: true,
     level: "0.0",
+
   });
 
   const [geust, setGeust] = useState<geustDto>({
@@ -123,6 +125,7 @@ export const GlobalContextProvider = ({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
+    inGaming: false
   });
 
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -147,15 +150,27 @@ export const GlobalContextProvider = ({
     return () => {
       // if (user.id !== - 1 && socket) {
       //     socket.disconnect();
-      // }
+      // } stopMultiSession
     };
   }, [user.id]);
+
+
+  // useEffect(() => {
+  //   const update = async () => {
+  //     console.log("stopMultiSession")
+  //     Cookies.remove("access_token");
+  //     Cookies.remove("intra_id");
+  //   };
+  //   if (socket) {
+  //     socket.on("stopMultiSession", update);
+  //   }
+  // }, [socket]);
+
 
   useEffect(() => {
     const getDataUser = async () => {
       const id_intra = Cookies.get("intra_id");
       const token = Cookies.get("access_token");
-
       const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
         method: "GET",
         headers: {

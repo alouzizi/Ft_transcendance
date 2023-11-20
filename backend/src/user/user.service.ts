@@ -176,6 +176,7 @@ export class UserService {
           lastSee: user.lastSee,
           lenUser: 0,
           idUserOwner: 0,
+          inGaming: user.inGaming
         };
       return {
         isUser: true,
@@ -301,7 +302,7 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://10.12.3.5:4000/${path}`,
+          profilePic: `http://10.12.5.3:4000/${path}`,
         },
       });
       console.log("File uploaded successfully");
@@ -331,6 +332,19 @@ export class UserService {
   }
 
 
+  async startGameing(senderId: string) {
+    await this.prisma.user.update({
+      where: { id: senderId },
+      data: { inGaming: true }
+    })
+  }
 
+
+  async finishGaming(senderId: string) {
+    await this.prisma.user.update({
+      where: { id: senderId },
+      data: { inGaming: false }
+    })
+  }
 
 }
