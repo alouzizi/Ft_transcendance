@@ -68,7 +68,7 @@ to do:
 to do:
 - fix the invited ✅
 - fix game page responsive✅
-- fix responsive for static pages about
+- fix responsive for static pages about✅
 - fix notification responsive
 - fix the find blocked or not exist friend page [error page]
 
