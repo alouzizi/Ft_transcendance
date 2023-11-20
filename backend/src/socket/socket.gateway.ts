@@ -142,8 +142,11 @@ export class SocketGateway
       where: {id:id},
       data:{inGaming: true}
     })
-    this.server.to(notherId).emit('updateData', {});
-    this.server.to(id).emit('updateData', {});
+    
+    const users = await this.prisma.user.findMany();
+    for(const user of users) {
+      this.server.to(user.id).emit('updateData', {});
+    }
 
     clearInterval(this.ballPositionInterval.get(roomName));
 
@@ -254,6 +257,7 @@ export class SocketGateway
   async stopEmittingBallPosition(roomName: string) {
     const id = this.rooms.get(roomName)[0];
     const id2 = this.rooms.get(roomName)[1];
+    
     await this.prisma.user.update({
       where: {id:id},
       data:{inGaming: false}
@@ -262,8 +266,10 @@ export class SocketGateway
       where: {id:id2},
       data:{inGaming: false}
     })
-    this.server.to(id2).emit('updateData', {});
-    this.server.to(id).emit('updateData', {});
+    const users = await this.prisma.user.findMany();
+    for(const user of users) {
+      this.server.to(user.id).emit('updateData', {});
+    }
 
     // id2.leave(roomName);
     // id2.leave(id2);

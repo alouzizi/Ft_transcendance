@@ -117,8 +117,10 @@ let SocketGateway = class SocketGateway {
             where: { id: id },
             data: { inGaming: true }
         });
-        this.server.to(notherId).emit('updateData', {});
-        this.server.to(id).emit('updateData', {});
+        const users = await this.prisma.user.findMany();
+        for (const user of users) {
+            this.server.to(user.id).emit('updateData', {});
+        }
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
             const ro = this.roomState.get(roomName);
@@ -199,8 +201,10 @@ let SocketGateway = class SocketGateway {
             where: { id: id2 },
             data: { inGaming: false }
         });
-        this.server.to(id2).emit('updateData', {});
-        this.server.to(id).emit('updateData', {});
+        const users = await this.prisma.user.findMany();
+        for (const user of users) {
+            this.server.to(user.id).emit('updateData', {});
+        }
         delete this.rooms[roomName];
         delete this.roomState[roomName];
         delete this.ballPositionInterval[roomName];

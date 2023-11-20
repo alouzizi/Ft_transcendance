@@ -41,10 +41,11 @@ const ListUser = () => {
       socket.on("findMsg2UsersResponse", getListUsers);
     }
     return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
-  }, [socket,updateInfo])
+  }, [socket])
 
   useEffect(() => {
     const getListUsers = async () => {
+      console.log("helloeleoeleoe");
       const usersList = await getUserForMsg(user.id);
       if (usersList !== undefined) setItemList(usersList);
       else setOpenAlertError(true);
