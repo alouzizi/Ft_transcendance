@@ -98,13 +98,13 @@ export class AuthController {
       1000;
     if (diff < 120) {
       res.cookie("access_token", ret.access_token);
-      return res.redirect("http://10.13.8.2:3000/protected/SettingsPage");
+      return res.redirect("http://10.13.8.4:3000/protected/SettingsPage");
     }
 
     if (req.user.isTwoFactorAuthEnabled)
-      return res.redirect("http://10.13.8.2:3000/public/Checker2faAuth");
+      return res.redirect("http://10.13.8.4:3000/public/Checker2faAuth");
 
     res.cookie("access_token", ret.access_token);
-    res.redirect("http://10.13.8.2:3000/protected/DashboardPage");
+    res.redirect("http://10.13.8.4:3000/protected/DashboardPage");
   }
 }

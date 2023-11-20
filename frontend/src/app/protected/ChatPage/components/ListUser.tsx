@@ -41,17 +41,8 @@ const ListUser = () => {
       socket.on("findMsg2UsersResponse", getListUsers);
     }
     return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
-  }, [socket])
+  }, [socket, updateInfo])
 
-  useEffect(() => {
-    const getListUsers = async () => {
-      console.log("helloeleoeleoe");
-      const usersList = await getUserForMsg(user.id);
-      if (usersList !== undefined) setItemList(usersList);
-      else setOpenAlertError(true);
-    };
-    getListUsers();
-  }, [updateInfo])
 
   const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
@@ -64,15 +55,9 @@ const ListUser = () => {
   };
 
 
-  const [check, setCheck] = useState(false);
+
   useEffect(() => {
-    const checked = async () => {
-      const temp = await checkUserIsInChannel(user.id, geust.id);
-      if (temp !== undefined && !temp) setCheck(true);
-      if (temp === undefined) setOpenAlertError(true);
-    }
-    if (geust.id != '-1' && !geust.isUser) checked();
-    if (geust.id === '-1' || check) {
+    if (geust.id === '-1') {
       if (direct) {
         if (itemListDirect.length !== 0) {
           getDataGeust(itemListDirect[0]);
@@ -86,14 +71,45 @@ const ListUser = () => {
           getDataGeust(itemListDirect[0]);
         }
       }
-      setCheck(false);
     }
-  }, [direct, itemList, updateInfo, check])
+  }, [direct, itemList, updateInfo,])
+
+
+
+
+  useEffect(() => {
+    if (user.id !== "-1" && socket) {
+      const kickedFromChannel = async () => {
+        const temp = await checkUserIsInChannel(user.id, geust.id);
+        if (temp) {
+          setGeust({
+            isUser: true,
+            id: '-1',
+            nickname: '',
+            profilePic: '',
+            status: Status.INACTIF,
+            lastSee: 0,
+            lenUser: 0,
+            idUserOwner: '',
+            inGaming: false
+          });
+        }
+      };
+
+      socket.on("kickedFromChannel", kickedFromChannel);
+      return () => {
+        socket.off("kickedFromChannel", kickedFromChannel);
+      };
+    }
+  }, []);
+
 
   useEffect(() => {
     if (geust.id !== '-1')
       setDirect(geust.isUser);
   }, [geust.id]);
+
+
   const [isBlocked, setIsBlocked] = useState<number>(0)
 
   useEffect(() => {
@@ -288,15 +304,13 @@ const ListUser = () => {
         </input>
       </div >
 
-      <ScrollArea scrollbars="vertical" style={{ height: 430 }}>
+      <ScrollArea scrollbars="vertical" style={{ height: 800 }}>
         <Box>
           <Flex direction="column" >
             {direct ? userWidgetDirect : userWidgetChannel}
           </Flex>
         </Box>
       </ScrollArea>
-
-
 
       <div>
         <Dialog open={openConfirm} onClose={() => { setOpenConfirm(false) }}>

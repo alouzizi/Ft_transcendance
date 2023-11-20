@@ -146,7 +146,6 @@ export default function MembersChannel() {
             <div className="flex-grow flex items-between justify-between w-[300px]
             md:w-[450px]
             ">
-
                 <input type="text" className="bg-[#111623] text-white border border-[#1f3175]
                       placeholder-gray-300 text-sm focus:border-white
                         rounded-lg block p-1.5 outline-none"
@@ -188,7 +187,8 @@ export default function MembersChannel() {
                         status: Status.INACTIF,
                         lastSee: 0,
                         lenUser: 0,
-                        idUserOwner: ''
+                        idUserOwner: '',
+                        inGaming: false
                     });
                     const tmp = await leaveChannel(user.id, geust.id);
                     socket?.emit('updateData', {

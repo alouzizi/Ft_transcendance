@@ -189,6 +189,12 @@ const BoxChat = () => {
                         senderId: user.id,
                         receivedId: geust.id,
                     });
+
+                    socket.emit('newMessage', {
+                        content: '',
+                        senderId: user.id,
+                        receivedId: geust.id,
+                    });
                 }
                 setMsg('');
             }
@@ -283,7 +289,7 @@ const BoxChat = () => {
                         <IoSettingsSharp size={16} />
                     </Link> :
                         <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { PlayInvite({userId1: user.id, userId2: geust.id, socket: socket})}}
+                            onClick={() => { PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket }) }}
                         />}
                 </div>
             </div >

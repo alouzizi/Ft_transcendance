@@ -59,11 +59,10 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                 await ChangeStatusBanned(user.id, geust.id, member.userId);
             } else if ('kick from Group' === e) {
                 await kickMember(user.id, geust.id, member.userId);
-                socket?.emit('updateData', {
-                    content: 'kick',
+                socket?.emit('kickedFromChannel', {
+                    content: '',
                     senderId: user.id,
-                    isDirectMessage: true,
-                    receivedId: member.userId,
+                    receivedId: geust.id,
                 });
             } else if ('Cancel Timeout' === e) {
                 await cancelTimeOut(user.id, geust.id, member.userId);
@@ -163,10 +162,10 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                 </div>
                                 :
                                 timeout.map((tm: string, index: number) =>
-                                    <Text key={index} 
-                                    className={`border border-black text-[14px] p-1 cursor-pointer m-2 
-                                    ${ (index === timeSelected) ? 'bg-[#4069FF] text-white' : "" }`
-                                }
+                                    <Text key={index}
+                                        className={`border border-black text-[14px] p-1 cursor-pointer m-2 
+                                    ${(index === timeSelected) ? 'bg-[#4069FF] text-white' : ""}`
+                                        }
 
                                         onClick={() => {
                                             setTimeSelected(index)

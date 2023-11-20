@@ -20,15 +20,14 @@ import { BallDto, PaddleDto } from "src/game/dto";
 
 @WebSocketGateway()
 export class SocketGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     // private gameService: PongServise,
     private socketGatewayService: SocketGatewayService,
     private messagesService: MessagesService,
     private gameService: GameService,
     private prisma: PrismaService
-  ) {}
+  ) { }
 
   @WebSocketServer() server: Server;
 
@@ -69,6 +68,21 @@ export class SocketGateway
     this.server.to(ids.receivedId).emit("isTyping", ids);
   }
 
+  @SubscribeMessage("newMessage")
+  async newMessage(@MessageBody() ids: CreateMessageDto) {
+    this.server.to(ids.receivedId).emit("newMessage", ids);
+  }
+
+
+  @SubscribeMessage("kickedFromChannel")
+  async kickedFromChannel(@MessageBody() ids: CreateMessageDto) {
+    this.server.to(ids.receivedId).emit("kickedFromChannel", ids);
+  }
+
+
+
+  // ---------------------------------------------
+
   ROUND_LIMIT = 6;
   joindRoom = 0;
   private GameInit(roomName: string) {
@@ -107,7 +121,7 @@ export class SocketGateway
   private roomState: Map<string, RoomState> = new Map();
   private ballPositionInterval: Map<string, NodeJS.Timeout> = new Map();
 
-  onModuleInit() {}
+  onModuleInit() { }
 
   collision(ball: any, player: any) {
     ball.top = ball.y - (ball.radius + 1);
