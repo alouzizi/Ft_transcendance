@@ -1,0 +1,17 @@
++ check list from subject:
+
+1] general:
+- Check the server for server-side validation/sanitization on forms and any user input. ❓
+- A profile contains basic informations such as their nickname, their avatar, or a button to add them as friends. ✅
+- User can block other users. This means they won't receive private messages from the accounts they blocked nor view their messages in public/private channels.✅
+
+
+2] game:
+- When a game is over, either a kind of end-game screen is displayed or the game page just exits.✅
+- Unexpected disconnections and lags have to be handled ❓
+- The game and the website must not crash when a user is experiencing lags or is disconnected. ✅
+- Handling such issues in an efficient way is appreciated but not mandatory: ✅
+    * Pause the game for a defined duration.
+    * Disconnected users can reconnect.
+    * Lagging users can catch up to the match.
+    * And so forth. Any solution is acceptable. The only requirement is: the game should not crash.

@@ -71,5 +71,6 @@ to do:
 - fix responsive for static pages about✅
 - fix notification responsive
 - fix the find blocked or not exist friend page [error page]
+- check if banned before store it in history
 
-
+==========================
