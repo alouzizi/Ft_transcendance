@@ -1,8 +1,10 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChannelDto, memberChannelDto } from "./dto/create-channel.dto";
+import { NotificationService } from "src/notification/notification.service";
 export declare class ChannelService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private readonly notificationService;
+    constructor(prisma: PrismaService, notificationService: NotificationService);
     createMessageInfoChannel(senderId: string, channelId: string, userId: string, msg: string): Promise<void>;
     createChannel(createChannelDto: CreateChannelDto, senderId: string): Promise<{
         status: number;

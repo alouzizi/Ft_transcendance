@@ -9,6 +9,7 @@ import { FortyTwoIntranetStrategy } from "./42-intranet.strategy";
 import { MessagesService } from "src/messages/messages.service";
 import { ChannelService } from "src/channel/channel.service";
 import { UserService } from "src/user/user.service";
+import { NotificationService } from "src/notification/notification.service";
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UserService } from "src/user/user.service";
     PrismaService,
     ChannelService,
     MessagesService,
+    NotificationService
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

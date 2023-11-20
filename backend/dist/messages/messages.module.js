@@ -13,13 +13,14 @@ const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
 const messages_controller_1 = require("./messages.controller");
 const channel_service_1 = require("../channel/channel.service");
+const notification_service_1 = require("../notification/notification.service");
 let MessagesModule = class MessagesModule {
 };
 exports.MessagesModule = MessagesModule;
 exports.MessagesModule = MessagesModule = __decorate([
     (0, common_1.Module)({
         controllers: [messages_controller_1.MessageController],
-        providers: [prisma_service_1.PrismaService, user_service_1.UserService, messages_service_1.MessagesService, channel_service_1.ChannelService],
+        providers: [prisma_service_1.PrismaService, user_service_1.UserService, messages_service_1.MessagesService, channel_service_1.ChannelService, notification_service_1.NotificationService],
         exports: [messages_service_1.MessagesService]
     })
 ], MessagesModule);

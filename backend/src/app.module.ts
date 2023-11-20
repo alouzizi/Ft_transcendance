@@ -11,6 +11,7 @@ import { SocketGatewayModule } from "./socket/socket.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { GameModule } from "./game/game.module";
+import { NotificationModule } from "./notification/notification.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { GameModule } from "./game/game.module";
       rootPath: join(__dirname, "..", "uploads"),
       serveRoot: "/uploads",
     }),
+    NotificationModule
   ],
 })
 export class AppModule { }

@@ -3,13 +3,14 @@ import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
 import { BlockedUser, Channel, ChannelMember, Friend, Message, MessageStatus, Status, User } from '@prisma/client';
+import { NotificationService } from 'src/notification/notification.service';
 // import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     private prisma: PrismaService,
-    // private userService: UserService,
+    private readonly notificationService: NotificationService
   ) { }
 
 
@@ -24,7 +25,6 @@ export class MessagesService {
     try {
       let notSendTo: string = "";
       let messageStatus: MessageStatus = "NotReceived"
-
       const blockerUser: BlockedUser = await this.prisma.blockedUser.findFirst({
         where: {
           OR: [
@@ -89,8 +89,14 @@ export class MessagesService {
         isChannProtected: false // no matter
 
       }
-      if (notSendTo === "")
+      if (notSendTo === "") {
         server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
+        this.notificationService.createNotification({
+          senderId: msg.senderId,
+          recieverId: msg.receivedId,
+          subject: "send message",
+        })
+      }
       server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
     } catch (error) {
       return { error: true }

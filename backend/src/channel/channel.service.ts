@@ -11,10 +11,12 @@ import {
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChannelDto, memberChannelDto } from "./dto/create-channel.dto";
 import * as bcrypt from "bcrypt";
+import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class ChannelService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService,
+    private readonly notificationService: NotificationService) { }
 
   async createMessageInfoChannel(
     senderId: string,
@@ -70,6 +72,11 @@ export class ChannelService {
       });
       // add members
       createChannelDto.channelMember.forEach(async (item: string) => {
+        this.notificationService.createNotification({
+          senderId: senderId,
+          recieverId: item,
+          subject: "you've been invited to group",
+        })
         await this.prisma.channelMember.create({
           data: {
             userId: item,
@@ -158,6 +165,13 @@ export class ChannelService {
           },
         });
         this.createMessageInfoChannel(senderId, channelId, userId, "added");
+
+        this.notificationService.createNotification({
+          senderId: senderId,
+          recieverId: userId,
+          subject: "you've been invited to group",
+        })
+
       }
     } catch (error) {
       return { error: true };

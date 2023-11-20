@@ -13,9 +13,11 @@ exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
+const notification_service_1 = require("../notification/notification.service");
 let MessagesService = class MessagesService {
-    constructor(prisma) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
     }
     async createMessage(server, createMessageDto) {
         if (createMessageDto.isDirectMessage == true)
@@ -81,8 +83,14 @@ let MessagesService = class MessagesService {
                 OwnerChannelId: '',
                 isChannProtected: false
             };
-            if (notSendTo === "")
+            if (notSendTo === "") {
                 server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
+                this.notificationService.createNotification({
+                    senderId: msg.senderId,
+                    recieverId: msg.receivedId,
+                    subject: "send message",
+                });
+            }
             server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
         }
         catch (error) {
@@ -426,6 +434,7 @@ let MessagesService = class MessagesService {
 exports.MessagesService = MessagesService;
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        notification_service_1.NotificationService])
 ], MessagesService);
 //# sourceMappingURL=messages.service.js.map

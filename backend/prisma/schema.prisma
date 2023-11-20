@@ -44,14 +44,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  status       Status          @default(INACTIF)
-  lastSee      DateTime        @default(now())
-  message      Message[]
-  frienRequest FriendRequest[]
-  Friend       Friend[]
-  BlockedUser  BlockedUser[]
-  Channel      Channel[]
-  GameHistory  GameHistory[]
+  status            Status              @default(INACTIF)
+  lastSee           DateTime            @default(now())
+  message           Message[]
+  frienRequest      FriendRequest[]
+  Friend            Friend[]
+  BlockedUser       BlockedUser[]
+  Channel           Channel[]
+  GameHistory       GameHistory[]
+  NotificationTable NotificationTable[]
 }
 
 model Channel {
@@ -177,4 +178,13 @@ model GameHistory {
 
   senderPoints   String
   receiverPoints String
+}
+
+model NotificationTable {
+  id         String   @id @default(uuid())
+  subjet     String
+  senderId   String
+  recieverId String
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [senderId], references: [id])
 }

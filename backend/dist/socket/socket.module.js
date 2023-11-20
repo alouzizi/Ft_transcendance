@@ -16,6 +16,7 @@ const channel_service_1 = require("../channel/channel.service");
 const game_service_1 = require("../game/game.service");
 const prisma_service_1 = require("../prisma/prisma.service");
 const friendship_service_1 = require("../friendship/friendship.service");
+const notification_service_1 = require("../notification/notification.service");
 let SocketGatewayModule = class SocketGatewayModule {
 };
 exports.SocketGatewayModule = SocketGatewayModule;
@@ -30,6 +31,7 @@ exports.SocketGatewayModule = SocketGatewayModule = __decorate([
             game_service_1.GameService,
             friendship_service_1.FriendshipService,
             prisma_service_1.PrismaService,
+            notification_service_1.NotificationService
         ],
     })
 ], SocketGatewayModule);
