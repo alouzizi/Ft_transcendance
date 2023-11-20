@@ -4,9 +4,10 @@ import { SocketGatewayService } from "./socket.service";
 import { MessagesService } from "src/messages/messages.service";
 import { UserService } from "src/user/user.service";
 import { ChannelService } from "src/channel/channel.service";
-import { PongServise } from "src/game/game.service";
-import { HixcoderService } from "src/hixcoder/hixcoder.service";
+import { GameService } from "src/game/game.service";
 import { PrismaService } from "src/prisma/prisma.service";
+import { FriendshipController } from "src/friendship/friendship.controller";
+import { FriendshipService } from "src/friendship/friendship.service";
 
 @Module({
   providers: [
@@ -15,8 +16,8 @@ import { PrismaService } from "src/prisma/prisma.service";
     MessagesService,
     UserService,
     ChannelService,
-    PongServise,
-    HixcoderService,
+    GameService,
+    FriendshipService,
     PrismaService,
   ],
 })

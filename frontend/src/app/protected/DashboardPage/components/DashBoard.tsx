@@ -1,23 +1,21 @@
 "use client";
 import CardInfo from "@/app/protected/DashboardPage/components/CardInfo";
-import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
+import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { getAllFriends, getUserByNick } from "@/app/MyApi/friendshipApi";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
+import { useGlobalContext } from "../../context/store";
 import PopoverMenuDash from "./PopoverMenuDash";
 import {
   getAchievmentsData,
-  getAllFriends,
+  getUserRanking,
   getGameHistory,
   getGlobalInfos,
-  getUserRanking,
-} from "@/app/api/hixcoder/FriendsPageAPI";
-import { promise } from "zod";
-import { resolve } from "path";
-import { useGlobalContext } from "../../context/store";
+} from "@/app/MyApi/gameApi";
 
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
@@ -42,17 +40,16 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     async function getData() {
       try {
         // for fetch the ranking
-        const rankTmp = await getUserRanking(prompt.friend.nickname);
+        const rankTmp = await getUserRanking(prompt.friend.id);
         setRank(rankTmp.rank);
 
         // for fetch the level
-        const levelTmp = prompt.friend.level.split(".");
+        const usr = await getUserByNick(prompt.friend.nickname);
+        const levelTmp = usr.level.split(".");
         setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
 
         // for fetch the gameHistory
-        const gameHistoryTmp: gameHistoryDto[] = await getGameHistory(
-          prompt.friend.nickname
-        );
+        const gameHistoryTmp = await getGameHistory(prompt.friend.id);
         if (gameHistoryTmp.length !== 0) {
           setGameHistory(gameHistoryTmp);
         }
@@ -64,7 +61,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         );
 
         // for fetch the globalInfoTmp
-        const globalInfoTmp = await getGlobalInfos(prompt.friend.nickname);
+        const globalInfoTmp = await getGlobalInfos(prompt.friend.id);
         setGlobalInfo(globalInfoTmp);
 
         //for set the win rate
@@ -188,7 +185,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
       "
       >
-        {/* ========================= Game Section =========================*/}
+        {/* ========================= Game history Section =========================*/}
         <HomeSection
           sectionName="Last Games"
           btnName="See All History"
@@ -215,7 +212,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             <p className="mx-auto  my-12 text-gray-500 text-lg">No Matches!</p>
           )}
         </HomeSection>
-        {/* ========================= /Game Section =========================*/}
+        {/* ========================= /Game history Section =========================*/}
         {/* ========================= Achievement Section =========================*/}
         <HomeSection
           sectionName="Achievements"

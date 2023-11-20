@@ -6,8 +6,8 @@ import {
   rejectFriendRequest,
   unblockFriend,
   unsendFriendRequest,
-} from "@/app/api/hixcoder/FriendsPageAPI";
-import { useRouter } from "next/navigation";
+} from "@/app/MyApi/friendshipApi";
+
 import Badge from "@mui/material/Badge";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
@@ -17,14 +17,12 @@ import { RxCross1 } from "react-icons/rx";
 import { useGlobalDataContext } from "./FriendCategory";
 import PopoverMenu from "./PopoverMenu";
 import { useGlobalContext } from "../../context/store";
-import { getUserGeust } from "../../ChatPage/api/fetch-users";
 export default function FriendItem(prompt: {
   friendInfo: friendDto;
   itemsStatus: string;
 }) {
-  const router = useRouter();
   // ==================== handleUnblock =====================
-  const { user, socket, setGeust } = useGlobalContext();
+  const { user, socket } = useGlobalContext();
   const contxt = useGlobalDataContext();
   async function handleUnblock(): Promise<void> {
     try {
@@ -209,11 +207,7 @@ export default function FriendItem(prompt: {
             text-md p-1 mr-2
                 md:text-lg md:p-2 md:mr-4"
             >
-              <FaMessage onClick={async () => {
-                const geustTemp: geustDto = await getUserGeust(prompt.friendInfo.id);
-                setGeust(geustTemp)
-                router.push("/protected/ChatPage");
-              }} />
+              <FaMessage />
             </div>
           </Tooltip>
         </div>

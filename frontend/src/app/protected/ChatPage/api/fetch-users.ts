@@ -1,6 +1,7 @@
 import axios from "axios";
 import Error from "next/error";
 import { Backend_URL } from "../../../../../lib/Constants";
+import Cookies from "js-cookie";
 
 export async function getVueGeust(id: string, isUser: Boolean) {
   let geustTemp: geustDto;
@@ -9,9 +10,31 @@ export async function getVueGeust(id: string, isUser: Boolean) {
   return geustTemp;
 }
 
+
+export async function getUserGeust(id: string) {
+  try {
+    const token = Cookies.get("access_token");
+    const res = await axios.get(Backend_URL + `/user/getUserGeust/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
+    );
+
+    const geust = await res.data;
+    if (geust.error) throw Error;
+    return geust;
+  } catch (error) { }
+}
+
 export async function getUser(id: string) {
   try {
-    const res = await axios.get(Backend_URL + `/user/${id}`);
+    const token = Cookies.get("access_token");
+    const res = await axios.get(Backend_URL + `/user/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
     const user = await res.data;
     if (user.error) throw Error;
     return user;
@@ -20,7 +43,12 @@ export async function getUser(id: string) {
 
 export async function getAllUsers(author: string) {
   try {
-    const res = await axios.get(Backend_URL + "/user/all");
+    const token = Cookies.get("access_token");
+    const res = await axios.get(Backend_URL + "/user/all", {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
     const users = await res.data;
     if (users.error) throw Error;
     return users;
@@ -29,7 +57,12 @@ export async function getAllUsers(author: string) {
 
 export async function getValideUsers(id: string) {
   try {
-    const res = await axios.get(Backend_URL + `/user/getValideUsers/${id}`);
+    const token = Cookies.get("access_token");
+    const res = await axios.get(Backend_URL + `/user/getValideUsers/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
     const users = await res.data;
     if (users.error) throw Error;
     return users;
@@ -38,8 +71,13 @@ export async function getValideUsers(id: string) {
 
 export async function getValideChannels(id: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/getValideChannels/${id}`
+      Backend_URL + `/channel/getValideChannels/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const users = await res.data;
     if (users.error) throw Error;
@@ -49,8 +87,13 @@ export async function getValideChannels(id: string) {
 
 export async function getUserForMsg(senderId: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/messages/getUserForMsg/${senderId}`
+      Backend_URL + `/messages/getUserForMsg/${senderId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const users = await res.data;
     if (users.error) throw Error;
@@ -60,8 +103,13 @@ export async function getUserForMsg(senderId: string) {
 
 export async function checkIsBlocked(senderId: string, receivedId: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/user/checkIsBlocked/${senderId}/${receivedId}`
+      Backend_URL + `/user/checkIsBlocked/${senderId}/${receivedId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const data = await res.data;
     if (data.error) throw Error;
@@ -69,18 +117,15 @@ export async function checkIsBlocked(senderId: string, receivedId: string) {
   } catch (error) { }
 }
 
-export async function getUserGeust(id: string) {
-  try {
-    const res = await axios.get(Backend_URL + `/user/getUserGeust/${id}`);
-    const geust = await res.data;
-    if (geust.error) throw Error;
-    return geust;
-  } catch (error) { }
-}
 
 export async function getChannelGeust(id: string) {
   try {
-    const res = await axios.get(Backend_URL + `/user/getChannelGeust/${id}`);
+    const token = Cookies.get("access_token");
+    const res = await axios.get(Backend_URL + `/user/getChannelGeust/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
     const geust = await res.data;
     if (geust.error) throw Error;
     return geust;
@@ -89,8 +134,13 @@ export async function getChannelGeust(id: string) {
 
 export async function getMembersChannel(id: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/getMembersChannel/${id}`
+      Backend_URL + `/channel/getMembersChannel/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const members = await res.data;
     if (members.error) throw Error;
@@ -100,8 +150,13 @@ export async function getMembersChannel(id: string) {
 
 export async function usersCanJoinChannel(senderId: string, channelId: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/user/getUsersCanJoinChannel/${senderId}/${channelId}`
+      Backend_URL + `/user/getUsersCanJoinChannel/${senderId}/${channelId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const data = await res.data;
     if (data.error) throw Error;
@@ -111,8 +166,13 @@ export async function usersCanJoinChannel(senderId: string, channelId: string) {
 
 export async function startGameing(senderId: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.post(
-      Backend_URL + `/user/startGameing/${senderId}`
+      Backend_URL + `/user/startGameing/${senderId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const data = await res.data;
     if (data.error) throw Error;
@@ -122,8 +182,13 @@ export async function startGameing(senderId: string) {
 
 export async function finishGaming(senderId: string) {
   try {
+    const token = Cookies.get("access_token");
     const res = await axios.post(
-      Backend_URL + `/user/finishGaming/${senderId}`
+      Backend_URL + `/user/finishGaming/${senderId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
     const data = await res.data;
     if (data.error) throw Error;

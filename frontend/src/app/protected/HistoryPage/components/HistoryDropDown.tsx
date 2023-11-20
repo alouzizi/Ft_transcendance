@@ -11,17 +11,16 @@ import {
 } from "@/app/components/ui/dropdown-menu";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import HistoryItem from "./HistoryItem";
-import {
-  getGameHistory,
-  getAllFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "../../context/store";
+import { getGameHistory } from "@/app/MyApi/gameApi";
+import { useRouter } from "next/navigation";
 
 export default function HistoryDropDown(prompt: {
   items: string[];
   gameHistory: gameHistoryDto[];
   friend: ownerDto;
 }) {
+  const router = useRouter();
   const [position, setPosition] = React.useState("All");
   const { updateInfo } = useGlobalContext();
   const [gameHistoryFormated, setGameHistoryFormated] = React.useState<
@@ -30,19 +29,19 @@ export default function HistoryDropDown(prompt: {
 
   React.useEffect(() => {
     function isWined(record: gameHistoryDto, isWined: boolean) {
-      let senderUsr = record.receiverUsr;
-      let receiverUsr = record.senderUsr;
+      let senderId = record.receiverId;
+      let receiverId = record.senderId;
       let senderPoints = record.senderPoints;
       let receiverPoints = record.receiverPoints;
       if (isWined) {
-        senderUsr = record.receiverUsr;
-        receiverUsr = record.senderUsr;
+        senderId = record.receiverId;
+        receiverId = record.senderId;
         senderPoints = record.receiverPoints;
         receiverPoints = record.senderPoints;
       }
-      if (senderUsr === prompt.friend.nickname) {
+      if (senderId === prompt.friend.id) {
         return parseInt(senderPoints) > parseInt(receiverPoints);
-      } else if (receiverUsr === prompt.friend.nickname) {
+      } else if (receiverId === prompt.friend.id) {
         return parseInt(senderPoints) < parseInt(receiverPoints);
       }
     }
@@ -71,8 +70,7 @@ export default function HistoryDropDown(prompt: {
   React.useEffect(() => {
     async function getData() {
       try {
-        const gameHistoryTmp = await getGameHistory(prompt.friend.nickname);
-
+        const gameHistoryTmp = await getGameHistory(prompt.friend.id);
         setGameHistoryFormated(gameHistoryTmp);
       } catch (error: any) {
         console.log("getData error: " + error);
@@ -80,6 +78,7 @@ export default function HistoryDropDown(prompt: {
     }
     getData();
   }, []);
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center mb-6 md:mb-12 ">

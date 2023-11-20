@@ -21,14 +21,15 @@ export class UserController {
 
   }
 
-  // @UseGuards(JwtGuard)
+
   @Get(":id")
+  @UseGuards(JwtGuard)
   async getUserProfile(@Param("id") id: string) {
     return await this.userService.findById(id);
   }
 
-  @UseGuards(JwtGuard)
   @Get("/intra/:id_intra")
+  @UseGuards(JwtGuard)
   async getUserByIdintr(@Param("id_intra") id_intra: string) {
     const user: User = await this.userService.findByIntraId(id_intra);
     const temp = {
@@ -45,8 +46,9 @@ export class UserController {
     return temp;
   }
 
-  // @UseGuards(JwtGuard)
+
   @Get("/all")
+  @UseGuards(JwtGuard)
   async getAllUser() {
     return await this.userService.findAllUsers();
   }
@@ -66,6 +68,7 @@ export class UserController {
   }
 
   @Post("/:intra_id/uploadImage")
+  @UseGuards(JwtGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: './uploads',
@@ -86,14 +89,12 @@ export class UserController {
   uploadImage(@UploadedFile() file: Express.Multer.File,
     @Param("intra_id") senderId: string
   ) {
-    // const roundedCornerResizer = sharp()
-    //   .resize(200, 200)
-    //   .toBuffer();
     return this.userService.uploadImage(senderId, file.path);
   }
 
 
   @Get("/getUsersCanJoinChannel/:senderId/:channelId")
+  @UseGuards(JwtGuard)
   async getUsersCanJoinChannel(
     @Param("senderId") senderId: string,
     @Param("channelId") channelId: string
@@ -102,16 +103,19 @@ export class UserController {
   }
 
   @Get("getUserGeust/:id")
+  @UseGuards(JwtGuard)
   async getUserGeust(@Param("id") id: string) {
     return await this.userService.getUserGeust(id);
   }
 
   @Get("getChannelGeust/:id")
+  @UseGuards(JwtGuard)
   async getChannelGeust(@Param("id") id: string) {
     return await this.userService.getChannelGeust(id);
   }
 
   @Get("checkIsBlocked/:senderId/:receivedId")
+  @UseGuards(JwtGuard)
   async checkIsBlocked(
     @Param("senderId") senderId: string,
     @Param("receivedId") receivedId: string
@@ -120,6 +124,7 @@ export class UserController {
   }
 
   @Post("startGameing/:senderId")
+  @UseGuards(JwtGuard)
   async startGameing(
     @Param("senderId") senderId: string,
   ) {
@@ -127,6 +132,7 @@ export class UserController {
   }
 
   @Post("finishGaming/:senderId")
+  @UseGuards(JwtGuard)
   async finishGaming(
     @Param("senderId") senderId: string,
   ) {

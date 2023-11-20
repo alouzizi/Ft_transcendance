@@ -70,8 +70,7 @@ export default function SettingsPage() {
   return (
     <div className="h-fit min-h-screen">
 
-      <div className="pt-5 pl-5 text-white text-2xl/[29px] mb-5 mt-5">
-        {/* //  font-fredoka font-700 */}
+      <div className="pt-5 pl-20  text-white text-2xl/[29px] mb-5 mt-5">
         <Text weight="bold">Edit Profile</Text>
       </div>
 
@@ -140,33 +139,32 @@ export default function SettingsPage() {
                   onClick={async () => {
                     try {
                       if (keyQrCode !== "") {
-                        console.log("=====");
-                        const response = await fetch(
+                        const response = await axios(
                           Backend_URL +
-                          `/auth/2fa/turn-on/${user.intra_id}/${keyQrCode}`,
+                          `/auth/2fa/turnOn/${user.intra_id}/${keyQrCode}`,
                           {
-                            method: "Get",
+                            method: "get",
                             headers: {
                               authorization: `Bearer ${token}`,
-                              "Content-Type": "application/json",
+                              // "Content-Type": "application/json",
                             },
                           }
                         );
-                        console.log("---> ", response);
-                        // if (response.ok) {
-                        //   setChecked(true);
-                        //   setUrlImage("");
-                        //   toast.success(
-                        //     "2fa authentication turned on successfully"
-                        //   );
-                        // } else {
-                        //   toast.error("Wrong authentication code");
-                        // }
+                        const data = await response.data;
+                        if (data) {
+                          setChecked(true);
+                          setUrlImage("");
+                          toast.success(
+                            "2fa authentication turned on successfully"
+                          );
+                        } else {
+                          toast.error("Wrong authentication code");
+                        }
                       } else {
                         toast.error("Wrong authentication code");
                       }
                     } catch (e) {
-                      console.log(e);
+                      console.log(e)
                     }
                   }}
                 >
@@ -178,7 +176,7 @@ export default function SettingsPage() {
           <div className="flex items-end justify-end md:w-[30rem] w-[10rem]">
             <button onClick={async (e) => {
               e.preventDefault();
-              if (1) {
+              if (newNickName !== user.nickname) {
                 if (newNickName.length > 20 || newNickName.length < 3) {
                   toast.error("nickname error");
                 } else {

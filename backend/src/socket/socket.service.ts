@@ -39,6 +39,7 @@ export class SocketGatewayService {
               messageStatus: MessageStatus.Received,
             },
           });
+
           const activeUsers = await this.prisma.user.findMany({
             where: {
               status: Status.ACTIF,
@@ -50,7 +51,6 @@ export class SocketGatewayService {
         } catch (error) {
           console.error('Error while handling connection:', error);
         }
-
       }
     }
   }
@@ -58,7 +58,6 @@ export class SocketGatewayService {
   async handleDisconnect(client: Socket, wss: Server) {
     console.log(`Client disconnected: ---> ${client.id}`);
     if (typeof client.handshake.query.senderId === 'string') {
-
       await this.prisma.user.update({
         where: {
           id: client.handshake.query.senderId

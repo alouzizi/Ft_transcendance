@@ -1,57 +1,101 @@
 "use client";
 
 import { Text } from "@radix-ui/themes";
-
+import AboutItem from "./AboutItem";
 export default function AboutPage() {
   return (
-    <div className="flex flex-col bg-color-main w-screen h-full items-center justify-around">
-
-
-
-      <Text weight='bold' className="text-lg ">About Us</Text>
-
-      <div className="w-[40%]">
-        <div className="relative">
+    <div className="flex flex-col bg-color-main w-screen h-fit h-min-screen items-center justify-around ">
+      <div className="min-w-fit max-w-[48rem] w-[70%] m-8 sm:m-12 h-fit ">
+        <div className="relative mx-auto h-fit">
           <img
             src="/rt2.png"
             alt="Your Image Alt Text"
-            className="rounded-md"
+            className="rounded-md w-full"
           />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white">
-            <Text weight='bold' className="text-lg">
-              Dive into the passion and hard work that brought PingPongMaster to life.
-              Discover how our dedicated team of students crafted an exhilarating online
-              ping pong experience just for you.
-            </Text>
+          <p
+            className="absolute  
+            h-fit w-full p-6  top-0 text-xs
+          md:top-[20%] md:p-12 md:text-lg
+          lg:text-4xl lg:p-16
+          text-md  text-center  text-white"
+          >
+            Dive into the passion and hard work that brought PingPongMaster to
+            life. Discover how our dedicated team of students crafted an
+            exhilarating online ping pong experience just for you.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col  w-screen justify-center text-center mb-12 ">
+        {/* text */}
+        <div className="flex flex-col text-center flex-grow m-4 sm:m-12 p-4">
+          <p className="lg:text-4xl sm:text-2xl text-md">
+            Let's meet our developers
+          </p>
+          <p className="lg:text-xl pt-3 mb-4 md:mb-8 mt-4 text-xs sm:text-lg">
+            who've crafted PongMaster. Connect with us for all things Pong -
+            strategy, feedback, or just to say hello!
+          </p>
+        </div>
+        {/* /text */}
+
+        <div className="w-full bg-[#111623]">
+          <div
+            className="py-6 my-6   max-w-4xl mx-auto
+        
+        grid 
+          
+         // small screen
+         grid-cols-2 gap-x-5 gap-y-3 w-[70%]
+
+         sm:grid-cols-2 sm:gap-x-10 sm:w-[60%] sm:gap-y-6 
+
+         // Big screen
+         lg:grid-cols-3 lg:gap-x-12
+        
+        "
+          >
+            <AboutItem
+              name={"Hamza Boumahdi"}
+              role={"Software developer"}
+              image={"https://avatars.githubusercontent.com/u/93520723?v=4"}
+            />
+            <AboutItem
+              name={"Ali Louzizi"}
+              role={"Software developer"}
+              image={
+                "https://cdn.intra.42.fr/users/67e2a8e9ce8710fe1d6df41c600895b7/alouzizi.jpg"
+              }
+            />
+            <AboutItem
+              name={"Lhoussaine Ahammam"}
+              role={"Software developer"}
+              image={
+                "https://cdn.intra.42.fr/users/e812cee4ab5714ce8d741370f87db885/lahammam.jpg"
+              }
+            />
+            <AboutItem
+              name={"Saliha Lammari"}
+              role={"Software developer"}
+              image={
+                "https://cdn.intra.42.fr/users/d375c15c56b88f37ea3f5a2a26942aa1/slammari.jpg"
+              }
+            />
+            <AboutItem
+              name={"Younes Jarhbou"}
+              role={"Software developer"}
+              image={
+                "https://cdn.intra.42.fr/users/7c758168152fe135cf85b9f3b4f229d5/yjarhbou.jpg"
+              }
+            />
           </div>
         </div>
       </div>
-
-      <div className="flex flex-col  w-screen justify-center text-center">
-
-        <div className="flex flex-col text-center flex-grow">
-          <Text weight='bold' className="text-lg">
-            Let's meet our developers
-          </Text>
-          <Text weight='bold' className="text-sm pt-3">
-            who've crafted PongMaster. Connect with us for all things Pong - strategy, feedback, or just to say hello!
-          </Text>
-        </div>
-
-        <div className="flex justify-center py-6 mt-5 bg-[#111623] w-screen">
-          {[1, 2, 3, 5, 5].map((el, index) => {
-            return <div key={index} className="flex flex-col items-center p-1" >
-              <img className="w-[10rem] border-2 border-[#4069FF] rounded-lg"
-                src='https://cdn.intra.42.fr/users/387a7e5f508f0a29a7cb90b87924713f/hboumahd.jpg' />
-              <Text weight='bold' className="pt-2">Hamza Boumahd</Text>
-              <Text weight='light' size='1' className="">Full stack developer</Text>
-            </div>
-          })}
-        </div>
-      </div>
-
-      <div> </div>
-
+      <footer className="w-full  bg-color-main-dark mt-16">
+        <p className="text-[#A4A4A4] my-4 w-full text-center text-xs lg:text-lg">
+          Copyright © 2023 PongMaster All rights reserved.
+        </p>
+      </footer>
     </div>
   );
 }

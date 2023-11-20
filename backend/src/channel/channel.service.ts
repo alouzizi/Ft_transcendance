@@ -14,7 +14,7 @@ import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class ChannelService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createMessageInfoChannel(
     senderId: string,
@@ -247,8 +247,8 @@ export class ChannelService {
           member.userId === channel.channelOwnerId
             ? "Owner"
             : member.isAdmin
-            ? "Admin"
-            : "User",
+              ? "Admin"
+              : "User",
         unmuted_at,
       };
       result.push(temp);

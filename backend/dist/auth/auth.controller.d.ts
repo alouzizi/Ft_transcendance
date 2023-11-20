@@ -8,7 +8,7 @@ export declare class AuthController {
     loginWith42(req: any): Promise<void>;
     register(req: any): Promise<any>;
     turnOffTwoFactorAuthentication(intra_id: string): Promise<void>;
-    turnOnTwoFactorAuthentication(res: Response, intra_id: string, authCode: string): Promise<void>;
+    turnOnTwoFactorAuthentication(intra_id: string, authCode: string): Promise<boolean>;
     authenticate(intra_id: string, authCode: string): Promise<string>;
     callbackWith42(req: any, res: Response): Promise<void>;
 }

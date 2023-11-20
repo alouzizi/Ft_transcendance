@@ -7,7 +7,7 @@ import {
   blockFriend,
   removeFriend,
   sendFriendRequest,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+} from "@/app/MyApi/friendshipApi";
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
 import { useState } from "react";
 import { useGlobalContext } from "../../context/store";

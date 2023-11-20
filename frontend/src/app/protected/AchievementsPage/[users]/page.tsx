@@ -1,5 +1,5 @@
 "use client";
-import { getIsBlocked, getOneUser } from "@/app/api/hixcoder/FriendsPageAPI";
+import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,7 +18,8 @@ export default function AchievementsPage() {
     console.log(lastSegment);
     async function getData() {
       try {
-        const usr = await getOneUser(lastSegment);
+        const usr = await getUserByNick(lastSegment);
+        setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         console.log(isBlocked);
@@ -26,7 +27,6 @@ export default function AchievementsPage() {
           setFriend(undefined);
           return;
         }
-        setFriend(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }

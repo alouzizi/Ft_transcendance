@@ -9,14 +9,13 @@ import {
   useEffect,
 } from "react";
 import { io, Socket } from "socket.io-client";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import { Backend_URL } from "../../../../lib/Constants";
-
+import Cookies from "js-cookie";
 enum Status {
   ACTIF = "ACTIF",
   INACTIF = "INACTIF",
@@ -82,15 +81,8 @@ const GlobalContext = createContext<ContextProps>({
   },
   setGeust: () => { },
 
-  socket: null, // Initialize socket as null
+  socket: null,
 });
-
-// id: string;
-// intra_id: string;
-// first_name: string;
-// last_name: string;
-// nickname: string;
-// profilePic: string;
 
 export const GlobalContextProvider = ({
   children,
@@ -150,27 +142,16 @@ export const GlobalContextProvider = ({
     return () => {
       // if (user.id !== - 1 && socket) {
       //     socket.disconnect();
-      // } stopMultiSession
+      // } 
     };
   }, [user.id]);
 
 
-  // useEffect(() => {
-  //   const update = async () => {
-  //     console.log("stopMultiSession")
-  //     Cookies.remove("access_token");
-  //     Cookies.remove("intra_id");
-  //   };
-  //   if (socket) {
-  //     socket.on("stopMultiSession", update);
-  //   }
-  // }, [socket]);
-
-
   useEffect(() => {
     const getDataUser = async () => {
-      const id_intra = Cookies.get("intra_id");
       const token = Cookies.get("access_token");
+      const id_intra = Cookies.get("intra_id");
+
       const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
         method: "GET",
         headers: {
@@ -222,11 +203,8 @@ export const GlobalContextProvider = ({
         <Snackbar open={openAlertErro} autoHideDuration={6000}>
           <Alert
             severity="error"
-            onClose={() => {
-              setOpenAlertError(false);
-            }}
-          >
-            This is an error message!
+            onClose={() => { setOpenAlertError(false); }}>
+            This is an error in the server!
           </Alert>
         </Snackbar>
       </Stack>

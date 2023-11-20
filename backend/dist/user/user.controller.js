@@ -74,14 +74,15 @@ let UserController = class UserController {
 exports.UserController = UserController;
 __decorate([
     (0, common_1.Get)(":id"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, common_1.Get)("/intra/:id_intra"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("id_intra")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -89,6 +90,7 @@ __decorate([
 ], UserController.prototype, "getUserByIdintr", null);
 __decorate([
     (0, common_1.Get)("/all"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -111,6 +113,7 @@ __decorate([
 ], UserController.prototype, "updatUserdata", null);
 __decorate([
     (0, common_1.Post)("/:intra_id/uploadImage"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
@@ -135,6 +138,7 @@ __decorate([
 ], UserController.prototype, "uploadImage", null);
 __decorate([
     (0, common_1.Get)("/getUsersCanJoinChannel/:senderId/:channelId"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __param(1, (0, common_1.Param)("channelId")),
     __metadata("design:type", Function),
@@ -143,6 +147,7 @@ __decorate([
 ], UserController.prototype, "getUsersCanJoinChannel", null);
 __decorate([
     (0, common_1.Get)("getUserGeust/:id"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -150,6 +155,7 @@ __decorate([
 ], UserController.prototype, "getUserGeust", null);
 __decorate([
     (0, common_1.Get)("getChannelGeust/:id"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -157,6 +163,7 @@ __decorate([
 ], UserController.prototype, "getChannelGeust", null);
 __decorate([
     (0, common_1.Get)("checkIsBlocked/:senderId/:receivedId"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __param(1, (0, common_1.Param)("receivedId")),
     __metadata("design:type", Function),
@@ -165,6 +172,7 @@ __decorate([
 ], UserController.prototype, "checkIsBlocked", null);
 __decorate([
     (0, common_1.Post)("startGameing/:senderId"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -172,6 +180,7 @@ __decorate([
 ], UserController.prototype, "startGameing", null);
 __decorate([
     (0, common_1.Post)("finishGaming/:senderId"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

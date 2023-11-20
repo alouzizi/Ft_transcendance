@@ -419,7 +419,6 @@ let MessagesService = class MessagesService {
             return result;
         }
         catch (error) {
-            console.log("error = ", error);
             return { error: true };
         }
     }

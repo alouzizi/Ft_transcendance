@@ -11,8 +11,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { Backend_URL } from "../../../../lib/Constants";
 
 export default function login() {
+
   const router = useRouter();
   const [keyQrCode, setKeyQrCode] = useState("");
+
   return (
     <div className="flex justify-center items-center">
       <div className="flex my-3 ">

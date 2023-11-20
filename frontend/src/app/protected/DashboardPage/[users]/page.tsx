@@ -1,16 +1,11 @@
 "use client";
-import DashBoard from "../components/DashBoard";
+import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  getBlockedFriends,
-  getIsBlocked,
-  getOneUser,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+import DashBoard from "../components/DashBoard";
 
-import ErrorPage from "../components/ErrorPage";
-import { CircularProgress } from "@mui/material";
 import { useGlobalContext } from "../../context/store";
+import ErrorPage from "../components/ErrorPage";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();
@@ -24,17 +19,15 @@ export default function DashboardPage() {
     console.log(lastSegment);
     async function getData() {
       try {
-        const usr = await getOneUser(lastSegment);
-        console.log("-----usr", usr);
+        const usr = await getUserByNick(lastSegment);
+        setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
         console.log(isBlocked);
         if (isBlocked.isBlocked) {
           setIsBlocked(false);
-          console.log("blocked-=--=-");
           return;
         }
-        setFriend(usr);
         // console.log(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);

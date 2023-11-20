@@ -6,7 +6,7 @@ import { useGlobalContext } from "@/app/protected/context/store";
 
 import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
-import { Backend_URL } from "../../../../lib/Constants";
+import { Backend_URL, token } from "../../../../lib/Constants";
 
 const ImageUpload = () => {
   const intra_id = Cookies.get("intra_id");
@@ -32,7 +32,7 @@ const ImageUpload = () => {
             method: "POST",
             body: formData,
             headers: {
-              // authorization: `Bearer ${token}`,
+              authorization: `Bearer ${token}`,
             },
           }
         );

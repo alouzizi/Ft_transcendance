@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
@@ -494,8 +494,8 @@ export class MessagesService {
         return myDate2.getTime() - myDate1.getTime();
       });
       return result;
+
     } catch (error) {
-      console.log("error = ", error);
       return { error: true }
     }
   }

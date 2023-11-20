@@ -8,7 +8,7 @@ import { FaArrowCircleRight } from "react-icons/fa";
 
 export default function HomePage() {
   const handleLogin = () => {
-    window.location.href = "http://10.12.5.3:4000/auth/login42";
+    window.location.href = "http://10.13.10.9:4000/auth/login42";
   };
 
   const [openAlert, setOpenAlert] = useState(false);
@@ -20,13 +20,13 @@ export default function HomePage() {
           Welcome to PongMaster Where Pong Legends Are Born! 🏓💥
         </Text>
 
-        <button onClick={(e) => {
+        <div onClick={(e) => {
           e.preventDefault()
           setOpenAlert(true)
         }} className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center">
           <p className="text-white  pr-2">Open Account</p>
           <FaArrowCircleRight size="20" />
-        </button>
+        </div>
 
       </div>
 
@@ -34,11 +34,16 @@ export default function HomePage() {
         <img src="/home.png" />
       </div>
 
-
       <div>
         <Dialog open={openAlert}
+          PaperProps={{
+            style: {
+              backgroundColor: "transparent",
+              boxShadow: "none",
+            },
+          }}
           onClose={() => setOpenAlert(false)}>
-          <DialogContent className='flex flex-col items-center p-10 justify-around  bg-[#7D7676] '>
+          <DialogContent className='flex flex-col items-center p-10 justify-around  bg-[#7D7676] bg-opacity-70 rounded-lg'>
 
 
             <img className="h-20" src="/PongMaster.svg" alt="PongMaster" />

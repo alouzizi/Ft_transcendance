@@ -302,7 +302,7 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://10.12.5.3:4000/${path}`,
+          profilePic: `http://10.13.10.9:4000/${path}`,
         },
       });
       console.log("File uploaded successfully");
@@ -312,14 +312,12 @@ export class UserService {
     }
   }
   async findByIntraId(intra_id: string) {
-    // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
   }
 
   async findByIds(id: string) {
-    // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { id: id },
     });
@@ -331,14 +329,12 @@ export class UserService {
     });
   }
 
-
   async startGameing(senderId: string) {
     await this.prisma.user.update({
       where: { id: senderId },
       data: { inGaming: true }
     })
   }
-
 
   async finishGaming(senderId: string) {
     await this.prisma.user.update({

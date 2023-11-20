@@ -16,7 +16,6 @@ import { z } from "zod";
 import { useGlobalContext } from '../../context/store';
 import { createChannel } from '../api/fetch-channel';
 import { getValideUsers, getVueGeust } from '../api/fetch-users';
-import { getColorStatus } from './ListUser';
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 
