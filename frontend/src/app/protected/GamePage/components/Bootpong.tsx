@@ -54,7 +54,7 @@ const Pong = () => {
       );
       computer.y += (desiredComputerY - computer.y) * computerLevel;
       updateCanvas(canvasCtx, ball, computer, player);
-      drawCanvas(ctx, canvas, canvasCtx, ball, computer, player);
+      drawCanvas(ctx, canvas, canvasCtx, ball, computer, player,2);
       animationFrameId1 = window.requestAnimationFrame(update);
     }
     animationFrameId = window.requestAnimationFrame(update);

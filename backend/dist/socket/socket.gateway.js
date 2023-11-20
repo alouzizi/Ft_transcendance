@@ -111,6 +111,7 @@ let SocketGateway = class SocketGateway {
             ball.top < bottom);
     }
     startEmittingBallPosition(roomName, id) {
+        console.log({ alooo: roomName });
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
             const ro = this.roomState.get(roomName);
@@ -240,6 +241,7 @@ let SocketGateway = class SocketGateway {
         return roomName;
     }
     onUpdatePaddle(client, data) {
+        console.log("updatePaddle");
         if (data.room) {
             const clientsRoom = this.rooms.get(data.room);
             if (clientsRoom) {
@@ -282,21 +284,21 @@ let SocketGateway = class SocketGateway {
         this.server.to(data.userId2).emit("invite", data);
     }
     onAccept(client, data) {
+        console.log("accept");
         this.inviteRoom.set(data.userId2, client);
         client.join(data.userId2);
         this.server.to(data.userId2).emit("accepted", data);
-        const roomName = `room-${Date.now()}`;
+        const roomName = data.userId1 + data.userId2;
         const sockets = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
         this.rooms.set(roomName, [data.userId1, data.userId2]);
-        this.server.to(data.userId1).emit("whichSide", true);
-        this.server.to(data.userId2).emit("whichSide", false);
         sockets.forEach((socket) => {
+            console.log("socket", socket.id);
             socket.join(roomName);
         });
-        this.server.to(roomName).emit("startGame", roomName);
+        this.server.to(roomName).emit("startGame", data);
         this.GameInit(roomName);
         this.PongService.resetBall(this.roomState.get(roomName).ball);
-        this.startEmittingBallPosition(roomName, data.userId1);
+        this.startEmittingBallPosition(roomName, data.userId2);
         this.clients.clear();
     }
 };

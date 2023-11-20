@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {
   createContext,
   useContext,
-  Dispatch,
+  Dispatch, 
   SetStateAction,
   useState,
   useEffect,
@@ -32,6 +32,10 @@ interface ContextProps {
   updateInfo: number;
   setUpdateInfo: Dispatch<SetStateAction<number>>;
 
+
+  inviteData: any;
+  setInviteData: Dispatch<SetStateAction<any>>;
+
   displayChat: boolean;
   setDisplayChat: Dispatch<SetStateAction<boolean>>;
 
@@ -51,6 +55,10 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
+
+  inviteData:  {userId1: "-1", userId2: "-1", room:"-1", selectedMap: "isLeft", isLeft: true},
+  setInviteData:() => { }, 
+
   displayChat: false,
   setDisplayChat: () => { },
 
@@ -108,6 +116,11 @@ export const GlobalContextProvider = ({
   const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
   const [saveChanges, setSaveChanges] = useState<number>(0);
+   
+
+  const [ inviteData, setInviteData] = useState<any>({userId1: "-1", 
+  userId2: "-1", room:"-1", selectedMap: "isLeft", isLeft: true});
+
 
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
@@ -190,16 +203,47 @@ export const GlobalContextProvider = ({
     }
   }, [socket]);
 
+  const [data, setData] = useState('');
+
   useEffect(() => {
-    const update = async () => {
+    // const update = async () => {
       // setOpenConfirm(true)
       // socket here <<< ---------------------------------->>>
+      if(socket){
+        socket.on("invite", (data) => {
+
+          setData(data);
+          console.log(data);
+          setInviteData({
+            userId1: data.userId1,
+            userId2: data.userId2,
+            room: data.userId1 + data.userId2,
+            selectedMap: 2,
+            isLeft: true,
+          });
+          // console.log('');
+          setOpenConfirm(true)  
+          
+
+        });
+        socket.on("startGame", (data) => {
+          setInviteData({
+            userId1: data.userId1,
+            userId2: data.userId2,
+            room: data.userId1 + data.userId2,
+            selectedMap: 2,
+            isLeft: (data.userId1 == user.id) ? false: true,
+          });
+          router.push('/protected/GamePage/invite');
+        });
+      // }
     }
-  }, [socket]);
+  }, [socket,data]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
   if (user.id === "-1") return <div></div>;
+
   return (
     <GlobalContext.Provider
       value={{
@@ -216,6 +260,7 @@ export const GlobalContextProvider = ({
         setOpenAlertError,
         displayChat,
         setDisplayChat,
+        inviteData, setInviteData
       }}
     >
 
@@ -235,7 +280,11 @@ export const GlobalContextProvider = ({
 
                     </DialogContent>
                     <DialogActions>
-                        <button onClick={async () => {}}
+                        <button onClick={async () => {
+                          socket?.emit("accept", data);
+                          setOpenConfirm(false);
+                          // router.push('/protected/GamePage/invite');
+                        }}
                             className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
                             text-xs px-2
                             md:text-sm lg:text-md lg:px-4">

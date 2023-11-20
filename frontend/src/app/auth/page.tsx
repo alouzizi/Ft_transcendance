@@ -4,7 +4,7 @@ import { Text } from "@radix-ui/themes";
 
 export default function login() {
   const handleLogin = () => {
-    window.location.href = "http://10.12.3.5:4000/auth/login42";
+    window.location.href = "http://10.12.5.1:4000/auth/login42";
   };
 
   return (

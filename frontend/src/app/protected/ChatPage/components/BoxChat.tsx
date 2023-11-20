@@ -18,6 +18,8 @@ import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import Badge from "@mui/material/Badge";
+import Invite from '../../GamePage/components/Invite';
+import PlayInvite from '../../GamePage/components/Invite';
 
 
 enum Status {
@@ -263,7 +265,8 @@ const BoxChat = () => {
                         <IoSettingsSharp size={16} />
                     </Link> :
                         <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { console.log("ali ali") }}
+                        // Invite implementation <----------------------------------------------------------------->
+                            onClick={() => { PlayInvite({userId1: user.id, userId2: geust.id, socket: socket})}}
                         />}
                 </div>
             </div >

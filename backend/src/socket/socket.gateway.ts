@@ -132,6 +132,7 @@ export class SocketGateway
 
 
   startEmittingBallPosition(roomName: string, id: string) {
+    console.log({alooo:roomName});
     clearInterval(this.ballPositionInterval.get(roomName));
 
     this.ballPositionInterval.set(
@@ -323,6 +324,7 @@ export class SocketGateway
 
   @SubscribeMessage("updatePaddle")
   onUpdatePaddle(client: Socket, data: any) {
+    console.log("updatePaddle");
     if (data.room) {
       const clientsRoom = this.rooms.get(data.room);
       if (clientsRoom) {
@@ -368,39 +370,41 @@ export class SocketGateway
   @SubscribeMessage("invite")
   onIvite(client: Socket, data: any) {
 
-    this.inviteRoom.set(data.userId1, client);    
-
-    // this.rooms.set(roomName, [data.userId1, data.userId2]);
+    this.inviteRoom.set(data.userId1, client);
     client.join(data.userId1);
+
+    // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
     this.server.to(data.userId2).emit("invite", data);
 
   }
 
   @SubscribeMessage("accept")
   onAccept(client: Socket, data: any) {
+    console.log("accept");
     this.inviteRoom.set(data.userId2, client);
     client.join(data.userId2);
 
     this.server.to(data.userId2).emit("accepted", data);
-    const roomName = `room-${Date.now()}`;
+    const roomName = data.userId1 + data.userId2;
     const sockets: Socket[] = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
 
     this.rooms.set(roomName, [data.userId1, data.userId2]);
 
 
-    this.server.to(data.userId1).emit("whichSide", true);
-    this.server.to(data.userId2).emit("whichSide", false);
+    // this.server.to(data.userId1).emit("whichSide", true);
+    // this.server.to(data.userId2).emit("whichSide", false);
 
 
     sockets.forEach((socket) => {
+      console.log("socket", socket.id);
       socket.join(roomName);
     });
 
-    this.server.to(roomName).emit("startGame", roomName);
+    this.server.to(roomName).emit("startGame", data);
     this.GameInit(roomName);
 
     this.PongService.resetBall(this.roomState.get(roomName).ball);
-    this.startEmittingBallPosition(roomName, data.userId1);
+    this.startEmittingBallPosition(roomName, data.userId2);
     this.clients.clear();
   }
   

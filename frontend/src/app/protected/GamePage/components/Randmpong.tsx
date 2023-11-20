@@ -4,7 +4,8 @@ import updateCanvas, { drawCanvas, resetBall } from "./pongUtils";
 import { useGlobalContext } from "../../context/store";
 import Alert from '@mui/joy/Alert';
 import {useRouter } from "next/navigation";
-import { dividerClasses } from "@mui/material";
+
+// import { dividerClasses } from "@mui/material";
 
 
 interface PongProps {
@@ -15,7 +16,8 @@ interface PongProps {
 
 const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
-  console.log(difficulty);
+  console.log(isLeft);
+  console.log(room);
   const ROUND_LIMIT = 6;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
@@ -90,6 +92,32 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
       });
     }; 
   
+    const handleKey = (e: any) => {
+      if (e.key === "ArrowUp") {
+        if (!isLeft){
+          computer.y -= 25;
+        }else{
+
+          player.y -= 25;
+        }
+      }
+      if (e.key === "ArrowDown") {
+        if (!isLeft){
+          computer.y += 25;
+          }else{
+
+            player.y += 25;
+          }
+      }
+      socket.emit("updatePaddle", {
+        userId: user.id,
+        room: room,
+        paddle: isLeft ? player.y : computer.y,
+        isLeft: isLeft,
+      });
+    };
+
+
     socket.on("resivePaddle", (data: any) => {
       if (!isLeft) {
         player.y = data;
@@ -170,7 +198,8 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     // window.addEventListener('popstate', handlePopstate);
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener("resize", handleWindowResize);
-    window.addEventListener("mousemove", handleMouseMove);
+    // window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("keydown", handleKey);
 
 
     return () => {
@@ -179,6 +208,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("keydown", handleKey);
       // window.removeEventListener('popstate', () => {
 
       // });
