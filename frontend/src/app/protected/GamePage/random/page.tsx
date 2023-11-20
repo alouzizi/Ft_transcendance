@@ -11,7 +11,6 @@ import Mycards from "../components/Cards";
 import { useGlobalContext } from "../../context/store";
 
 export default function Home() {
-
   const { user, socket } = useGlobalContext();
   const router = useRouter();
   const [message, setMessage] = useState("Start game!");
@@ -42,89 +41,94 @@ export default function Home() {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedMap, setSelectedMap] = useState(1);
 
-  const handleSelectMap = (mapNumber:any) => {
+  const handleSelectMap = (mapNumber: any) => {
     setSelectedMap(mapNumber);
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined"){
-    socket?.on("opponentLeft", () => {
-      console.log("opponent left");
-      // router.replace("/protected/GamePage/random");
-      setShowAlert(true);
-      setGameStarted(false);
-      setButtonClicked(false);
-    });
+    if (typeof window !== "undefined") {
+      socket?.on("opponentLeft", () => {
+        console.log("opponent left");
+        // router.replace("/protected/GamePage/random");
+        setShowAlert(true);
+        setGameStarted(false);
+        setButtonClicked(false);
+      });
 
-    if (showAlert) {
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    }
+      if (showAlert) {
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      }
 
+      socket?.on("startGame", (room: string) => {
+        setRoom(room);
+        setGameStarted(true);
+        console.log({ isLeft: left });
+        setMessage("Play again!");
+        console.log("aloo: game started");
+      });
 
-    socket?.on("startGame", (room: string) => {
-      setRoom(room);
-      setGameStarted(true);
-      console.log({ isLeft: left });
-      setMessage("Play again!");
-      console.log("aloo: game started");
-    });
+      socket?.on("alreadyExist", () => {
+        setButtonClicked(false);
+        setShowAlert(true);
+        setGameStarted(false);
+        setMessage("Start game!");
+        router.replace("/protected/GamePage/random");
+      });
 
-    socket?.on("alreadyExist", () => {
-      setButtonClicked(false);
-      setShowAlert(true);
-      setGameStarted(false);
-      setMessage("Start game!");
-      router.replace("/protected/GamePage/random");
-    });
+      socket?.on("whichSide", (isLeft: boolean) => {
+        setLeft(isLeft);
+      });
 
-    socket?.on("whichSide", (isLeft: boolean) => {
-      setLeft(isLeft);
-    });
-
-   const handlePopstate= (event: PopStateEvent) => {
-      console.log("aloo: popstate");
-      console.log("aloo: gameStarted", gameStarted);
-      // if(gameStarted)
-      // {
+      const handlePopstate = (event: PopStateEvent) => {
+        console.log("aloo: popstate");
+        console.log("aloo: gameStarted", gameStarted);
+        // if(gameStarted)
+        // {
         // event.preventDefault();
         // event/
-        socket?.emit("opponentLeft", {room: room, userId:user.id});
+        socket?.emit("opponentLeft", { room: room, userId: user.id });
         setButtonClicked(false);
         // setShowAlert(true);
         setGameStarted(false);
         setMessage("Start game!");
         // router.push('/protected/GamePage/random');
 
-      // }
-    };
+        // }
+      };
 
-    window.addEventListener('popstate', handlePopstate);
+      window.addEventListener("popstate", handlePopstate);
 
-    return () => {
-      window.removeEventListener('popstate', () => {});
-      socket?.off("startGame");
-      socket?.off("whichSide");
-      socket?.off("alreadyExist");
-      socket?.off("opponentLeft");
-    };
-  }
-  else
-      return ;
-
+      return () => {
+        window.removeEventListener("popstate", () => {});
+        socket?.off("startGame");
+        socket?.off("whichSide");
+        socket?.off("alreadyExist");
+        socket?.off("opponentLeft");
+      };
+    } else return;
   }, [user.id, gameStarted, showAlert, message, buttonClicked]);
 
   return (
     <div>
-      {showAlert && <CustomAlert message="Opponent Left"/>}
-      <div className="w-screen h-screen flex flex-col justify-center items-center bg-color-main">
+      {showAlert && <CustomAlert message="Opponent Left" />}
+      <div className="w-screen min-h-screen h-fit flex flex-col justify-center items-center bg-color-main">
         <canvasContext.Provider value={canvas}>
           {!gameStarted && (
-            <div className="flex flex-row justify-center items-center mb-16 ">
-              <Mycards onSelect={() => handleSelectMap(1)} imageSrc={"/map1.png"} />
-              <Mycards onSelect={() => handleSelectMap(2)} imageSrc={"/map2.png"} />
-              <Mycards onSelect={() => handleSelectMap(3)} imageSrc={"/map3.png"} />
+            <div className="flex flex-col lg:flex-row justify-center items-center my-10">
+              <Mycards
+                onSelect={() => handleSelectMap(1)}
+                imageSrc={"/map1.png"}
+              />
+              <Mycards
+                onSelect={() => handleSelectMap(2)}
+                imageSrc={"/map2.png"}
+              />
+              <Mycards
+                onSelect={() => handleSelectMap(3)}
+                imageSrc={"/map3.png"}
+              />
             </div>
           )}
           {!gameStarted && (
@@ -138,15 +142,15 @@ export default function Home() {
                   >
                   {message}
                 </button> */}
-                <button className="bg-color-main relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
-                
-                disabled={buttonClicked}
-                onClick={startGameHandler}
+                <button
+                  className="bg-color-main relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                  disabled={buttonClicked}
+                  onClick={startGameHandler}
                 >
                   <span className="bg-color-main relative px-5 py-2.5 transition-all ease-in duration-75  text-white rounded-md group-hover:bg-opacity-0">
-                  {message}
+                    {message}
                   </span>
-               </button>
+                </button>
                 <div className="h-3/6 border-r-2 w-0 border-dotted mx-auto" />
               </div>
 

@@ -21,7 +21,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UserService
-  ) { }
+  ) {}
 
   @Get("login42")
   @UseGuards(AuthGuard("42-intranet"))
@@ -30,7 +30,6 @@ export class AuthController {
     // const userWithoutPsw: any = req.user;
     // return this.authService.loginWith2fa(userWithoutPsw);
   }
-
 
   @Get("2fa/generate")
   @UseGuards(JwtGuard)
@@ -99,13 +98,13 @@ export class AuthController {
       1000;
     if (diff < 120) {
       res.cookie("access_token", ret.access_token);
-      return res.redirect("http://10.12.5.1:3000/protected/SettingsPage");
+      return res.redirect("http://localhost:3000/protected/SettingsPage");
     }
 
     if (req.user.isTwoFactorAuthEnabled)
-      return res.redirect("http://10.12.5.1:3000/Checker2faAuth");
+      return res.redirect("http://localhost:3000/Checker2faAuth");
 
     res.cookie("access_token", ret.access_token);
-    res.redirect("http://10.12.5.1:3000/protected/DashboardPage");
+    res.redirect("http://localhost:3000/protected/DashboardPage");
   }
 }

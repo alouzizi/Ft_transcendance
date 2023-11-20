@@ -10,7 +10,7 @@ import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findById(id: string) {
     try {
@@ -301,7 +301,7 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://10.12.5.1:4000/${path}`,
+          profilePic: `http://localhost:4000/${path}`,
         },
       });
       console.log("File uploaded successfully");
@@ -329,8 +329,4 @@ export class UserService {
       where: { id: id },
     });
   }
-
-
-
-
 }
