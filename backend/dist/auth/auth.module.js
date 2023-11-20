@@ -17,6 +17,7 @@ const _42_intranet_strategy_1 = require("./42-intranet.strategy");
 const messages_service_1 = require("../messages/messages.service");
 const channel_service_1 = require("../channel/channel.service");
 const user_service_1 = require("../user/user.service");
+const notification_service_1 = require("../notification/notification.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -38,6 +39,7 @@ exports.AuthModule = AuthModule = __decorate([
             prisma_service_1.PrismaService,
             channel_service_1.ChannelService,
             messages_service_1.MessagesService,
+            notification_service_1.NotificationService
         ],
     })
 ], AuthModule);

@@ -18,15 +18,13 @@ const socket_io_1 = require("socket.io");
 const messages_service_1 = require("../messages/messages.service");
 const create_message_dto_1 = require("../messages/dto/create-message.dto");
 const socket_service_1 = require("./socket.service");
-const game_service_1 = require("../game/game.service");
 const prisma_service_1 = require("../prisma/prisma.service");
-const hixcoder_service_1 = require("../hixcoder/hixcoder.service");
+const game_service_1 = require("../game/game.service");
 let SocketGateway = class SocketGateway {
-    constructor(PongService, socketGatewayService, messagesService, hixcoder, prisma) {
-        this.PongService = PongService;
+    constructor(socketGatewayService, messagesService, gameService, prisma) {
         this.socketGatewayService = socketGatewayService;
         this.messagesService = messagesService;
-        this.hixcoder = hixcoder;
+        this.gameService = gameService;
         this.prisma = prisma;
         this.ROUND_LIMIT = 6;
         this.joindRoom = 0;
@@ -38,6 +36,7 @@ let SocketGateway = class SocketGateway {
         this.inviteRoom = new Map();
     }
     afterInit(server) {
+        console.log("Gateway Initialized");
     }
     async handleConnection(client) {
         this.socketGatewayService.handleConnection(client, this.server);
@@ -108,7 +107,20 @@ let SocketGateway = class SocketGateway {
             ball.left < right &&
             ball.top < bottom);
     }
-    startEmittingBallPosition(roomName, id) {
+    async startEmittingBallPosition(roomName, id) {
+        const notherId = this.rooms.get(roomName).find((c) => c !== id);
+        await this.prisma.user.update({
+            where: { id: notherId },
+            data: { inGaming: true }
+        });
+        await this.prisma.user.update({
+            where: { id: id },
+            data: { inGaming: true }
+        });
+        const users = await this.prisma.user.findMany();
+        for (const user of users) {
+            this.server.to(user.id).emit('updateData', {});
+        }
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
             const ro = this.roomState.get(roomName);
@@ -132,7 +144,7 @@ let SocketGateway = class SocketGateway {
                     ro.ball.speed += 0.5;
             }
             if (ro.ball.x - ro.ball.radius <= 0) {
-                this.PongService.resetBall(ro.ball);
+                this.gameService.resetBall(ro.ball);
                 ro.player2.score++;
                 this.server
                     .to(roomName)
@@ -140,50 +152,64 @@ let SocketGateway = class SocketGateway {
                 if (id === this.rooms.get(roomName)[0])
                     this.gameState(roomName, { player: id, score: ro.player1.score }, { player: this.rooms.get(roomName)[1], score: ro.player2.score });
                 else
-                    this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player1.score }, { player: this.rooms.get(roomName)[0], score: ro.player2.score });
+                    this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player2.score }, { player: this.rooms.get(roomName)[0], score: ro.player1.score });
             }
             else if (ro.ball.x + ro.ball.radius >= 600) {
-                this.PongService.resetBall(ro.ball);
+                this.gameService.resetBall(ro.ball);
                 ro.player1.score++;
                 this.server
                     .to(roomName)
                     .emit("updateScore", ro.player1.score, ro.player2.score);
                 if (id === this.rooms.get(roomName)[0])
-                    this.gameState(roomName, { player: id, score: ro.player1.score }, { player: this.rooms.get(roomName)[1], score: ro.player2.score });
+                    this.gameState(roomName, { player: id, score: ro.player1.score }, { player: this.rooms.get(roomName)[1], score: ro.player1.score });
                 else
-                    this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player1.score }, { player: this.rooms.get(roomName)[0], score: ro.player2.score });
+                    this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player2.score }, { player: this.rooms.get(roomName)[0], score: ro.player1.score });
             }
             this.server.to(roomName).emit("updateTheBall", ro.ball);
         }, 20));
     }
     async gameState(roomName, p1, p2) {
+        const player1 = this.rooms.get(roomName)[0];
+        const player2 = this.rooms.get(roomName)[1];
         if (p1.score + p2.score === this.ROUND_LIMIT) {
-            const player1Usr = await this.prisma.user.findUnique({
-                where: {
-                    id: p1.player,
-                },
-            });
-            const player2Usr = await this.prisma.user.findUnique({
-                where: {
-                    id: p2.player,
-                },
-            });
             if (p1.score == p2.score) {
+                console.log(player1, player2);
                 this.server.to(roomName).emit("gameOver", "draw");
             }
             if (p1.score > p2.score) {
-                this.server.to(p1.player).emit("gameOver", "win");
-                this.server.to(p2.player).emit("gameOver", "lose");
+                console.log(player1, player2);
+                this.server.to(player1).emit("gameOver", "win");
+                this.server.to(player2).emit("gameOver", "lose");
             }
             else {
-                this.server.to(p1.player).emit("gameOver", "lose");
-                this.server.to(p2.player).emit("gameOver", "win");
+                console.log(player1, player2);
+                this.server.to(player1).emit("gameOver", "lose");
+                this.server.to(player2).emit("gameOver", "win");
             }
-            this.hixcoder.updateGameHistory(player1Usr.nickname, player2Usr.nickname, p1.score.toString(), p2.score.toString());
+            this.gameService.updateGameHistory(player1, player2, p1.score.toString(), p2.score.toString());
             this.stopEmittingBallPosition(roomName);
         }
     }
-    stopEmittingBallPosition(roomName) {
+    async stopEmittingBallPosition(roomName) {
+        const id = this.rooms.get(roomName)[0];
+        const id2 = this.rooms.get(roomName)[1];
+        await this.prisma.user.update({
+            where: { id: id },
+            data: { inGaming: false }
+        });
+        await this.prisma.user.update({
+            where: { id: id2 },
+            data: { inGaming: false }
+        });
+        const users = await this.prisma.user.findMany();
+        for (const user of users) {
+            this.server.to(user.id).emit('updateData', {});
+        }
+        delete this.rooms[roomName];
+        delete this.roomState[roomName];
+        delete this.ballPositionInterval[roomName];
+        delete this.joindClients[id];
+        delete this.joindClients[id2];
         clearInterval(this.ballPositionInterval.get(roomName));
     }
     identifyClient(client, id) {
@@ -218,7 +244,7 @@ let SocketGateway = class SocketGateway {
             });
             this.server.to(roomName).emit("startGame", roomName);
             this.GameInit(roomName);
-            this.PongService.resetBall(this.roomState.get(roomName).ball);
+            this.gameService.resetBall(this.roomState.get(roomName).ball);
             this.startEmittingBallPosition(roomName, id);
             this.clients.clear();
         }
@@ -263,10 +289,6 @@ let SocketGateway = class SocketGateway {
             client.leave(data.room);
         }
         this.stopEmittingBallPosition(data.room);
-        delete this.rooms[data.room];
-        delete this.roomState[data.room];
-        delete this.ballPositionInterval[data.room];
-        delete this.joindClients[data.userId];
     }
     onIvite(client, data) {
         this.inviteRoom.set(data.userId1, client);
@@ -285,7 +307,7 @@ let SocketGateway = class SocketGateway {
         });
         this.server.to(roomName).emit("startGame", data);
         this.GameInit(roomName);
-        this.PongService.resetBall(this.roomState.get(roomName).ball);
+        this.gameService.resetBall(this.roomState.get(roomName).ball);
         this.startEmittingBallPosition(roomName, data.userId2);
         this.clients.clear();
     }
@@ -357,10 +379,9 @@ __decorate([
 ], SocketGateway.prototype, "onAccept", null);
 exports.SocketGateway = SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(),
-    __metadata("design:paramtypes", [game_service_1.PongServise,
-        socket_service_1.SocketGatewayService,
+    __metadata("design:paramtypes", [socket_service_1.SocketGatewayService,
         messages_service_1.MessagesService,
-        hixcoder_service_1.HixcoderService,
+        game_service_1.GameService,
         prisma_service_1.PrismaService])
 ], SocketGateway);
 //# sourceMappingURL=socket.gateway.js.map

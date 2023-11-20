@@ -174,6 +174,7 @@ let UserService = class UserService {
                     lastSee: user.lastSee,
                     lenUser: 0,
                     idUserOwner: 0,
+                    inGaming: user.inGaming
                 };
             return {
                 isUser: true,
@@ -317,6 +318,18 @@ let UserService = class UserService {
     async deleteUser(id) {
         return this.prisma.user.delete({
             where: { id: id },
+        });
+    }
+    async startGameing(senderId) {
+        await this.prisma.user.update({
+            where: { id: senderId },
+            data: { inGaming: true }
+        });
+    }
+    async finishGaming(senderId) {
+        await this.prisma.user.update({
+            where: { id: senderId },
+            data: { inGaming: false }
         });
     }
 };

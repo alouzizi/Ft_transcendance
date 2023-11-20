@@ -1,9 +1,5 @@
 "use client";
-import {
-  getAllUsers,
-  getPendingFriends,
-  sendFriendRequest,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+import { sendFriendRequest } from "@/app/MyApi/friendshipApi";
 import { useGlobalContext } from "@/app/protected/context/store";
 
 import Link from "next/link";
@@ -77,7 +73,15 @@ export default function FriendSearchItem(prompt: {
       </Link>
       <div className="flex flex-row ">
         {isPending ? (
-          <button className="bg-gray-600 rounded-md text-white px-3 py-1 my-auto mx-2 h-fit text-xs cursor-default">
+          <button
+            className="bg-gray-600 rounded-md text-white 
+           my-auto  h-fit  cursor-default
+          
+          text-[0.5rem] mx-2  px-2 py-1
+            md:text-xs md:mx-2  md:px-3 
+            lg:text-sm
+          "
+          >
             pending
           </button>
         ) : (
@@ -88,21 +92,12 @@ export default function FriendSearchItem(prompt: {
             className="bg-color-main rounded-md text-white my-auto  h-fit
             
             text-[0.5rem] mx-2  px-2 py-1
-        md:text-xs md:mx-2  md:px-3 
-        lg:text-sm"
+            md:text-xs md:mx-2  md:px-3 
+            lg:text-sm"
           >
             invite
           </button>
         )}
-        <div
-          className=" cursor-pointer my-auto mr-2 hover: bg-color-main text-white p-2 rounded-full
-        
-        text-[0.5rem]
-        sm:text-xs
-        md:text-sm"
-        >
-          <FaMessage />
-        </div>
       </div>
     </div>
   );

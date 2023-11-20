@@ -92,8 +92,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
     const [openTimeout, setOpenTimeout] = useState(false);
     const [timeSelected, setTimeSelected] = useState(0);
     const timeout: string[] = ["60 SECS", "5 MINS", "10 MINS", "1 HOUR", "1 DAY", "1 WEEK"];
-    const timeInSecond: string[] = ["6000", "300000", "600000", "3600000", "86400000", "604800000"];
-    // 60000
+    const timeInSecond: string[] = ["60000", "300000", "600000", "3600000", "86400000", "604800000"];
 
     return (
         <div >
@@ -164,9 +163,14 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                 </div>
                                 :
                                 timeout.map((tm: string, index: number) =>
-                                    <Text key={index} className='border border-black text-[14px] p-1 cursor-pointer m-2'
-                                        style={{ background: (index === timeSelected) ? '#0077b6' : "" }}
-                                        onClick={() => setTimeSelected(index)}
+                                    <Text key={index} 
+                                    className={`border border-black text-[14px] p-1 cursor-pointer m-2 
+                                    ${ (index === timeSelected) ? 'bg-[#4069FF] text-white' : "" }`
+                                }
+
+                                        onClick={() => {
+                                            setTimeSelected(index)
+                                        }}
                                     >{tm}</Text>
                                 )
                             }
@@ -181,6 +185,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                         </button>
 
                         <button onClick={async () => {
+                            console.log(timeInSecond[timeSelected]);
                             if (showInput) {
                                 const parsTimer = timerSchema.safeParse(timerInput);
                                 if (!parsTimer.success) {
@@ -208,7 +213,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                 });
                             }
                         }}
-                            className="w-fit font-meduim  py-1 rounded-md text-white bg-[#0077b6]
+                            className="w-fit font-meduim  py-1 rounded-md text-white bg-[#4069FF]
                             text-xs  
                                 md:text-sm lg:text-md px-2">
                             Time-out

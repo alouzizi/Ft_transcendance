@@ -1,6 +1,6 @@
 "use client";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import { Button } from "@radix-ui/themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,20 +16,26 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
 
   const [openAlert, setOpenAlert] = useState(false);
 
+
   return (
     <div className="flex flex-col  h-screen  text-white ">
       <div className="w-full bg-color-main  flex flex-row justify-center items-center py-4 pt-8">
         <div className="container flex items-center justify-between  ">
+
           <Link href="/public/HomePage">
             <img className="h-8" src="/PongMaster.svg" alt="PongMaster" />
           </Link>
 
-          <div className="space-x-4">
+          <div className="space-x-4 flex">
             <Link
               href="/public/HomePage"
-              className={pathname === "/public/HomePage" ? "" : "text-gray-400"}
+              className={
+                pathname === "/public/HomePage"
+                  ? ""
+                  : "text-gray-400"
+              }
             >
-              <text> HOME</text>
+              <div> HOME</div>
             </Link>
             <Link
               href="/public/AboutPage"
@@ -37,38 +43,40 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
                 pathname === "/public/AboutPage" ? "" : "text-gray-400"
               }
             >
-              <text> ABOUT</text>
+              <div> ABOUT</div>
             </Link>
             <Link
               href="/public/ContactPage"
               className={
-                pathname === "/public/ContactPage" ? "" : "text-gray-400"
-              }
+                pathname === "/public/ContactPage" ? "" : "text-gray-400"}
             >
-              <text>CONTACT</text>
+              <div>CONTACT</div>
             </Link>
           </div>
 
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setOpenAlert(true);
-            }}
-            className="bg-[#4069FF] px-4 py-2 rounded-md   flex items-center"
-          >
-            <text className="text-white font-outfit pr-2">Open Account</text>
+          <div onClick={(e) => {
+            e.preventDefault()
+            setOpenAlert(true)
+          }} className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center">
+            <p className="text-white font-outfit pr-2">Open Account</p>
             <FaArrowCircleRight size="20" />
-          </button>
+          </div>
         </div>
+
       </div>
       {prompt.children}
 
+
       <div>
-        <Dialog open={openAlert} onClose={() => setOpenAlert(false)}>
-          <DialogContent className="flex flex-col items-center p-10 justify-around  bg-[#7D7676] ">
+        <Dialog open={openAlert}
+          onClose={() => setOpenAlert(false)}>
+          <DialogContent className='flex flex-col items-center p-10 justify-around  bg-[#7D7676] bg-opacity-70 '>
+
+
             <img className="h-20" src="/PongMaster.svg" alt="PongMaster" />
 
-            <p className="text-white text-xl">open account using</p>
+
+            <p className='text-white text-xl'>open account using</p>
 
             <Button onClick={handleLogin}>
               <div className="border-2 shadow-xl bg-white border-[#4069FF] mt-3 rounded-xl flex justify-center mx-auto items-center w-36 h-12">
@@ -76,9 +84,12 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
                 <p className="ml-1"> school </p>
               </div>
             </Button>
+
           </DialogContent>
         </Dialog>
       </div>
+
+
     </div>
   );
 }

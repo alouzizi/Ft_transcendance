@@ -44,6 +44,8 @@ type geustDto = {
   lenUser: number;
 
   idUserOwner: string;
+
+  inGaming: Boolean;
 };
 
 enum MessageStatus {
@@ -73,6 +75,8 @@ type messageDto = {
 
   OwnerChannelId: String;
   isChannProtected: Boolean;
+
+  inGaming: Boolean;
 };
 
 type reqFriendsDto = {

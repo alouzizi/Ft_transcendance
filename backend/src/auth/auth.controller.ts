@@ -21,7 +21,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UserService
-  ) {}
+  ) { }
 
   @Get("login42")
   @UseGuards(AuthGuard("42-intranet"))
@@ -30,6 +30,7 @@ export class AuthController {
     // const userWithoutPsw: any = req.user;
     // return this.authService.loginWith2fa(userWithoutPsw);
   }
+
 
   @Get("2fa/generate")
   @UseGuards(JwtGuard)
@@ -47,10 +48,9 @@ export class AuthController {
     await this.userService.turnOffTwoFactorAuth(intra_id);
   }
 
-  @Post("2fa/turn-on/:intra_id/:authCode")
+  @Get("2fa/turnOn/:intra_id/:authCode")
   @UseGuards(JwtGuard)
   async turnOnTwoFactorAuthentication(
-    @Res() res: Response,
     @Param("intra_id") intra_id: string,
     @Param("authCode") authCode: string
   ) {
@@ -59,10 +59,10 @@ export class AuthController {
       intra_id
     );
     if (!isCodeValid) {
-      throw new UnauthorizedException("Wrong authentication code");
+      return isCodeValid
     }
     await this.userService.turnOnTwoFactorAuth(intra_id);
-    res.send({ isCodeValid: isCodeValid });
+    return isCodeValid
   }
 
   @Get("2fa/authenticate/:intra_id/:authCode")
@@ -102,7 +102,7 @@ export class AuthController {
     }
 
     if (req.user.isTwoFactorAuthEnabled)
-      return res.redirect("http://10.13.10.7:3000/Checker2faAuth");
+      return res.redirect("http://10.13.10.7:3000/public/Checker2faAuth");
 
     res.cookie("access_token", ret.access_token);
     res.redirect("http://10.13.10.7:3000/protected/DashboardPage");

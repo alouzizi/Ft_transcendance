@@ -1,26 +1,25 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-
-import {
-  createContext,
-  useContext,
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-} from "react";
-import { io, Socket } from "socket.io-client";
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import Alert from "@mui/material/Alert";
-import Stack from "@mui/material/Stack";
-import Snackbar from "@mui/material/Snackbar";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Socket, io } from "socket.io-client";
 import { Backend_URL } from "../../../../lib/Constants";
+
 import { ImCross } from "react-icons/im";
 
 enum Status {
@@ -64,16 +63,19 @@ const GlobalContext = createContext<ContextProps>({
   setInviteData: () => {},
 
   displayChat: false,
-  setDisplayChat: () => {},
+  setDisplayChat: () => { },
 
   updateInfo: 1,
-  setUpdateInfo: () => {},
+  setUpdateInfo: () => { },
 
   openAlertErro: false,
-  setOpenAlertError: () => {},
+  setOpenAlertError: () => { },
 
   saveChanges: 0,
-  setSaveChanges: () => {},
+  setSaveChanges: () => { },
+  
+
+
 
   user: {
     id: "-1",
@@ -85,7 +87,7 @@ const GlobalContext = createContext<ContextProps>({
     isTwoFactorAuthEnabled: true,
     level: "0.0",
   },
-  setUser: () => {},
+  setUser: () => { },
 
   geust: {
     isUser: true,
@@ -96,18 +98,12 @@ const GlobalContext = createContext<ContextProps>({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
+    inGaming: false
   },
-  setGeust: () => {},
+  setGeust: () => { },
 
-  socket: null, // Initialize socket as null
+  socket: null,
 });
-
-// id: string;
-// intra_id: string;
-// first_name: string;
-// last_name: string;
-// nickname: string;
-// profilePic: string;
 
 export const GlobalContextProvider = ({
   children,
@@ -121,14 +117,6 @@ export const GlobalContextProvider = ({
   const [updateInfo, setUpdateInfo] = useState<number>(1);
   const [saveChanges, setSaveChanges] = useState<number>(0);
 
-  const [inviteData, setInviteData] = useState<any>({
-    userId1: "-1",
-    userId2: "-1",
-    room: "-1",
-    selectedMap: "isLeft",
-    isLeft: true,
-  });
-
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
     intra_id: "",
@@ -138,6 +126,15 @@ export const GlobalContextProvider = ({
     profilePic: "",
     isTwoFactorAuthEnabled: true,
     level: "0.0",
+
+  });
+
+  const [inviteData, setInviteData] = useState<any>({
+    userId1: "-1",
+    userId2: "-1",
+    room: "-1",
+    selectedMap: "isLeft",
+    isLeft: true,
   });
 
   const [geust, setGeust] = useState<geustDto>({
@@ -149,6 +146,7 @@ export const GlobalContextProvider = ({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
+    inGaming: false
   });
 
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -163,22 +161,25 @@ export const GlobalContextProvider = ({
       });
       setSocket(socket);
       socket.on("connect", () => {
+        console.log("socket --> user connected");
       });
       socket.on("disconnect", () => {
+        console.log("socket --> user disconnected");
       });
     }
 
     return () => {
       // if (user.id !== - 1 && socket) {
       //     socket.disconnect();
-      // }
+      // } 
     };
   }, [user.id]);
 
+ 
   useEffect(() => {
     const getDataUser = async () => {
-      const id_intra = Cookies.get("intra_id");
       const token = Cookies.get("access_token");
+      const id_intra = Cookies.get("intra_id");
 
       const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
         method: "GET",
@@ -207,6 +208,7 @@ export const GlobalContextProvider = ({
       socket.on("updateData", update);
     }
   }, [socket]);
+
 
   const [data, setData] = useState("");
 
@@ -240,8 +242,8 @@ export const GlobalContextProvider = ({
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  if (user.id === "-1") return <div></div>;
 
+  if (user.id === "-1") return <div></div>;
   return (
     <GlobalContext.Provider
       value={{
@@ -262,7 +264,7 @@ export const GlobalContextProvider = ({
         setInviteData,
       }}
     >
-      <div>
+         <div>
         <Dialog
           PaperProps={{
             style: {
@@ -331,15 +333,13 @@ export const GlobalContextProvider = ({
           </div>
         </Dialog>
       </div>
+
       <Stack spacing={2} sx={{ width: "100%" }}>
         <Snackbar open={openAlertErro} autoHideDuration={6000}>
           <Alert
             severity="error"
-            onClose={() => {
-              setOpenAlertError(false);
-            }}
-          >
-            This is an error message!
+            onClose={() => { setOpenAlertError(false); }}>
+            This is an error in the server!
           </Alert>
         </Snackbar>
       </Stack>

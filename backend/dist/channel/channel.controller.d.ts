@@ -113,8 +113,4 @@ export declare class ChannelController {
     cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<{
         error: boolean;
     }>;
-    joinChannelWithLink(senderId: string, channelId: string, uuid: string): Promise<{
-        success: boolean;
-        message: string;
-    }>;
 }

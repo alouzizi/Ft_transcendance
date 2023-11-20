@@ -1,6 +1,5 @@
 "use client";
 
-import { Backend_URL } from "../../../../../lib/Constants";
 import {
   useState,
   useEffect,
@@ -14,7 +13,7 @@ import {
   getBlockedFriends,
   getOnlineFriends,
   getPendingFriends,
-} from "@/app/api/hixcoder/FriendsPageAPI";
+} from "@/app/MyApi/friendshipApi";
 import { useGlobalContext } from "../../context/store";
 
 // ====================== create context ======================
@@ -35,7 +34,7 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
   useEffect(() => {
     async function getData() {
       try {
-        let dataTmp = [];
+        let dataTmp: friendDto[] = [];
         if (prompt.itemsStatus === "Online") {
           dataTmp = await getOnlineFriends(user.id);
         } else if (prompt.itemsStatus === "All") {

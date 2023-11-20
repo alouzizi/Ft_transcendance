@@ -3,16 +3,14 @@ import { Server, Socket } from "socket.io";
 import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { SocketGatewayService } from "./socket.service";
-import { PongServise } from "src/game/game.service";
 import { PrismaService } from "src/prisma/prisma.service";
-import { HixcoderService } from "src/hixcoder/hixcoder.service";
+import { GameService } from "src/game/game.service";
 export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-    private PongService;
     private socketGatewayService;
     private messagesService;
-    private hixcoder;
+    private gameService;
     private prisma;
-    constructor(PongService: PongServise, socketGatewayService: SocketGatewayService, messagesService: MessagesService, hixcoder: HixcoderService, prisma: PrismaService);
+    constructor(socketGatewayService: SocketGatewayService, messagesService: MessagesService, gameService: GameService, prisma: PrismaService);
     server: Server;
     afterInit(server: any): void;
     handleConnection(client: Socket): Promise<void>;
@@ -30,7 +28,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     private ballPositionInterval;
     onModuleInit(): void;
     collision(ball: any, player: any): boolean;
-    startEmittingBallPosition(roomName: string, id: string): void;
+    startEmittingBallPosition(roomName: string, id: string): Promise<void>;
     gameState(roomName: string, p1: {
         player: string;
         score: number;
@@ -38,7 +36,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
         player: string;
         score: number;
     }): Promise<void>;
-    stopEmittingBallPosition(roomName: string): void;
+    stopEmittingBallPosition(roomName: string): Promise<void>;
     identifyClient(client: Socket, id: string): void;
     handleJoinRoom(client: Socket, id: string): void;
     findRoomByClientId(id: string): string;

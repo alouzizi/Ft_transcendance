@@ -14,9 +14,11 @@ const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcrypt");
+const notification_service_1 = require("../notification/notification.service");
 let ChannelService = class ChannelService {
-    constructor(prisma) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
     }
     async createMessageInfoChannel(senderId, channelId, userId, msg) {
         const user = await this.prisma.user.findUnique({
@@ -57,6 +59,11 @@ let ChannelService = class ChannelService {
                 },
             });
             createChannelDto.channelMember.forEach(async (item) => {
+                this.notificationService.createNotification({
+                    senderId: senderId,
+                    recieverId: item,
+                    subject: "you've been invited to group",
+                });
                 await this.prisma.channelMember.create({
                     data: {
                         userId: item,
@@ -144,6 +151,11 @@ let ChannelService = class ChannelService {
                     },
                 });
                 this.createMessageInfoChannel(senderId, channelId, userId, "added");
+                this.notificationService.createNotification({
+                    senderId: senderId,
+                    recieverId: userId,
+                    subject: "you've been invited to group",
+                });
             }
         }
         catch (error) {
@@ -584,6 +596,7 @@ let ChannelService = class ChannelService {
 exports.ChannelService = ChannelService;
 exports.ChannelService = ChannelService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        notification_service_1.NotificationService])
 ], ChannelService);
 //# sourceMappingURL=channel.service.js.map

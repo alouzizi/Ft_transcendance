@@ -34,6 +34,7 @@ model User {
   nickname   String  @unique
   email      String? @unique
   profilePic String?
+  inGaming   Boolean @default(false)
 
   isTwoFactorAuthEnabled Boolean @default(false)
   twoFactorAuthSecret    String?
@@ -43,14 +44,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  status       Status          @default(INACTIF)
-  lastSee      DateTime        @default(now())
-  message      Message[]
-  frienRequest FriendRequest[]
-  Friend       Friend[]
-  BlockedUser  BlockedUser[]
-  Channel      Channel[]
-  GameHistory  GameHistory[]
+  status            Status              @default(INACTIF)
+  lastSee           DateTime            @default(now())
+  message           Message[]
+  frienRequest      FriendRequest[]
+  Friend            Friend[]
+  BlockedUser       BlockedUser[]
+  Channel           Channel[]
+  GameHistory       GameHistory[]
+  NotificationTable NotificationTable[]
 }
 
 model Channel {
@@ -169,11 +171,20 @@ model MutedMember {
 model GameHistory {
   id String @id @default(uuid())
 
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [senderUsr], references: [nickname])
-  senderUsr   String
-  receiverUsr String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [senderId], references: [id])
+  senderId   String
+  receiverId String
 
   senderPoints   String
   receiverPoints String
+}
+
+model NotificationTable {
+  id         String   @id @default(uuid())
+  subjet     String
+  senderId   String
+  recieverId String
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [senderId], references: [id])
 }

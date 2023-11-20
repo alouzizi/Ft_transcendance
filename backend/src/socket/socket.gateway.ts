@@ -13,27 +13,27 @@ import { Server, Socket } from "socket.io";
 import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { SocketGatewayService } from "./socket.service";
-import { PongServise } from "src/game/game.service";
-import { BallDto, PaddleDto } from "src/game/dto/game.tdo";
 import { PrismaService } from "src/prisma/prisma.service";
-import { HixcoderService } from "src/hixcoder/hixcoder.service";
-import { on } from "events";
+import { GameService } from "src/game/game.service";
+import { BallDto, PaddleDto } from "src/game/dto";
+// import { PongServise } from "src/game/game.service";
 
 @WebSocketGateway()
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private PongService: PongServise,
+    // private gameService: PongServise,
     private socketGatewayService: SocketGatewayService,
     private messagesService: MessagesService,
-    private hixcoder: HixcoderService,
+    private gameService: GameService,
     private prisma: PrismaService
   ) {}
 
   @WebSocketServer() server: Server;
 
   afterInit(server: any) {
+    console.log("Gateway Initialized");
   }
 
   async handleConnection(client: Socket) {
@@ -130,7 +130,24 @@ export class SocketGateway
   }
 
 
-  startEmittingBallPosition(roomName: string, id: string) {
+  async startEmittingBallPosition(roomName: string, id: string) {
+    const notherId = this.rooms.get(roomName).find((c) => c !== id);
+
+    await this.prisma.user.update({
+      where: {id:notherId},
+      data:{inGaming: true}
+    })
+
+    await this.prisma.user.update({
+      where: {id:id},
+      data:{inGaming: true}
+    })
+    
+    const users = await this.prisma.user.findMany();
+    for(const user of users) {
+      this.server.to(user.id).emit('updateData', {});
+    }
+
     clearInterval(this.ballPositionInterval.get(roomName));
 
     this.ballPositionInterval.set(
@@ -158,7 +175,7 @@ export class SocketGateway
           else ro.ball.speed += 0.5;
         }
         if (ro.ball.x - ro.ball.radius <= 0) {
-          this.PongService.resetBall(ro.ball);
+          this.gameService.resetBall(ro.ball);
           // the computer win
           ro.player2.score++;
 
@@ -176,12 +193,13 @@ export class SocketGateway
           else
             this.gameState(
               roomName,
-              { player: this.rooms.get(roomName)[1], score: ro.player1.score },
-              { player: this.rooms.get(roomName)[0], score: ro.player2.score }
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score },
+              { player: this.rooms.get(roomName)[0], score: ro.player1.score }
             );
+          // this.gameState(roomName, ro.player1.score, ro.player2.score);
         } else if (ro.ball.x + ro.ball.radius >= 600) {
       
-          this.PongService.resetBall(ro.ball);
+          this.gameService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
           ro.player1.score++;
@@ -192,58 +210,74 @@ export class SocketGateway
             this.gameState(
               roomName,
               { player: id, score: ro.player1.score },
-              { player: this.rooms.get(roomName)[1], score: ro.player2.score }
+              { player: this.rooms.get(roomName)[1], score: ro.player1.score }
             );
           else
             this.gameState(
               roomName,
-              { player: this.rooms.get(roomName)[1], score: ro.player1.score },
-              { player: this.rooms.get(roomName)[0], score: ro.player2.score }
+              { player: this.rooms.get(roomName)[1], score: ro.player2.score },
+              { player: this.rooms.get(roomName)[0], score: ro.player1.score }
             );
+          // this.gameState(roomName, ro.player1.score, ro.player2.score);
         }
         this.server.to(roomName).emit("updateTheBall", ro.ball);
       }, 20)
     );
   }
 
-  async gameState(
-    roomName: string,
-    p1: { player: string; score: number },
-    p2: { player: string; score: number }
-  ) {
+  async gameState(roomName: string, p1: { player: string; score: number },
+    p2: { player: string; score: number }) {
+    const player1 = this.rooms.get(roomName)[0];
+    const player2 = this.rooms.get(roomName)[1];
 
     if (p1.score + p2.score === this.ROUND_LIMIT) {
-      const player1Usr = await this.prisma.user.findUnique({
-        where: {
-          id: p1.player,
-        },
-      });
-      const player2Usr = await this.prisma.user.findUnique({
-        where: {
-          id: p2.player,
-        },
-      });
       if (p1.score == p2.score) {
+        console.log(player1, player2);
         this.server.to(roomName).emit("gameOver", "draw");
       }
       if (p1.score > p2.score) {
-        this.server.to(p1.player).emit("gameOver", "win");
-        this.server.to(p2.player).emit("gameOver", "lose");
+        console.log(player1, player2);
+        this.server.to(player1).emit("gameOver", "win");
+        this.server.to(player2).emit("gameOver", "lose");
       } else {
-        this.server.to(p1.player).emit("gameOver", "lose");
-        this.server.to(p2.player).emit("gameOver", "win");
+        console.log(player1, player2);
+        this.server.to(player1).emit("gameOver", "lose");
+        this.server.to(player2).emit("gameOver", "win");
       }
-      this.hixcoder.updateGameHistory(
-        player1Usr.nickname,
-        player2Usr.nickname,
+      this.gameService.updateGameHistory(
+        player1,
+        player2,
         p1.score.toString(),
         p2.score.toString()
       );
+
       this.stopEmittingBallPosition(roomName);
     }
   }
+  async stopEmittingBallPosition(roomName: string) {
+    const id = this.rooms.get(roomName)[0];
+    const id2 = this.rooms.get(roomName)[1];
+    
+    await this.prisma.user.update({
+      where: {id:id},
+      data:{inGaming: false}
+    })
+    await this.prisma.user.update({
+      where: {id:id2},
+      data:{inGaming: false}
+    })
+    const users = await this.prisma.user.findMany();
+    for(const user of users) {
+      this.server.to(user.id).emit('updateData', {});
+    }
 
-  stopEmittingBallPosition(roomName: string) {
+    // id2.leave(roomName);
+    // id2.leave(id2);
+    delete this.rooms[roomName];
+    delete this.roomState[roomName];
+    delete this.ballPositionInterval[roomName];
+    delete this.joindClients[id];
+    delete this.joindClients[id2];
     clearInterval(this.ballPositionInterval.get(roomName));
   }
 
@@ -287,9 +321,9 @@ export class SocketGateway
       });
       // setTimeout(() => {
       this.server.to(roomName).emit("startGame", roomName);
-      // this.PongService.startGame();
+      // this.gameService.startGame();
       this.GameInit(roomName);
-      this.PongService.resetBall(this.roomState.get(roomName).ball);
+      this.gameService.resetBall(this.roomState.get(roomName).ball);
       this.startEmittingBallPosition(roomName, id);
       this.clients.clear();
       // }, 1000);
@@ -355,10 +389,10 @@ export class SocketGateway
     }
 
     this.stopEmittingBallPosition(data.room);
-    delete this.rooms[data.room];
-    delete this.roomState[data.room];
-    delete this.ballPositionInterval[data.room];
-    delete this.joindClients[data.userId];
+    // delete this.rooms[data.room];
+    // delete this.roomState[data.room];
+    // delete this.ballPositionInterval[data.room];
+    // delete this.joindClients[data.userId];
   }
 
 
@@ -399,7 +433,7 @@ export class SocketGateway
     this.server.to(roomName).emit("startGame", data);
     this.GameInit(roomName);
 
-    this.PongService.resetBall(this.roomState.get(roomName).ball);
+    this.gameService.resetBall(this.roomState.get(roomName).ball);
     this.startEmittingBallPosition(roomName, data.userId2);
     this.clients.clear();
   }

@@ -10,7 +10,7 @@ import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findById(id: string) {
     try {
@@ -176,6 +176,7 @@ export class UserService {
           lastSee: user.lastSee,
           lenUser: 0,
           idUserOwner: 0,
+          inGaming: user.inGaming
         };
       return {
         isUser: true,
@@ -311,14 +312,12 @@ export class UserService {
     }
   }
   async findByIntraId(intra_id: string) {
-    // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
   }
 
   async findByIds(id: string) {
-    // console.log("untra id = ", intra_id);
     return this.prisma.user.findUnique({
       where: { id: id },
     });
@@ -329,4 +328,19 @@ export class UserService {
       where: { id: id },
     });
   }
+
+  async startGameing(senderId: string) {
+    await this.prisma.user.update({
+      where: { id: senderId },
+      data: { inGaming: true }
+    })
+  }
+
+  async finishGaming(senderId: string) {
+    await this.prisma.user.update({
+      where: { id: senderId },
+      data: { inGaming: false }
+    })
+  }
+
 }

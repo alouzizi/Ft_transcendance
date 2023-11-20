@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
 import { BlockedUser, Channel, ChannelMember, Friend, Message, MessageStatus, Status, User } from '@prisma/client';
+import { NotificationService } from 'src/notification/notification.service';
 // import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     private prisma: PrismaService,
-    // private userService: UserService,
+    private readonly notificationService: NotificationService
   ) { }
 
 
@@ -24,7 +25,6 @@ export class MessagesService {
     try {
       let notSendTo: string = "";
       let messageStatus: MessageStatus = "NotReceived"
-
       const blockerUser: BlockedUser = await this.prisma.blockedUser.findFirst({
         where: {
           OR: [
@@ -86,11 +86,19 @@ export class MessagesService {
         receivedStatus: receivedUser.status,
 
         OwnerChannelId: '', // no matter
-        isChannProtected: false // no matter
+        isChannProtected: false ,// no matter
+
+        inGaming: false
 
       }
-      if (notSendTo === "")
+      if (notSendTo === "") {
         server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
+        this.notificationService.createNotification({
+          senderId: msg.senderId,
+          recieverId: msg.receivedId,
+          subject: "send message",
+        })
+      }
       server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
     } catch (error) {
       return { error: true }
@@ -157,7 +165,9 @@ export class MessagesService {
           receivedStatus: Status.INACTIF, // not matter
 
           OwnerChannelId: channel.channelOwnerId,
-          isChannProtected: channel.protected
+          isChannProtected: channel.protected,
+
+          inGaming: false
 
 
         }
@@ -204,7 +214,9 @@ export class MessagesService {
             receivedStatus: receivedUser.status,
 
             OwnerChannelId: '', // no matter
-            isChannProtected: false // no matter
+            isChannProtected: false ,// no matter
+
+            inGaming: false
 
 
 
@@ -263,7 +275,8 @@ export class MessagesService {
                 receivedStatus: Status.INACTIF, // not matter
 
                 OwnerChannelId: channel.channelOwnerId,
-                isChannProtected: channel.protected
+                isChannProtected: channel.protected,
+                inGaming: false
 
 
               }
@@ -345,7 +358,9 @@ export class MessagesService {
         receivedStatus: Status.INACTIF, // no matter
 
         OwnerChannelId: channel.channelOwnerId,
-        isChannProtected: channel.protected
+        isChannProtected: channel.protected,
+
+        inGaming: false
 
       }
       result.push(temp);
@@ -384,7 +399,9 @@ export class MessagesService {
         receivedStatus: Status.INACTIF, // no matter
 
         OwnerChannelId: chl.channelOwnerId,
-        isChannProtected: chl.protected
+        isChannProtected: chl.protected,
+
+        inGaming: false
       }
       result.push(temp);
     }
@@ -442,7 +459,9 @@ export class MessagesService {
           receivedStatus: user.status,
 
           OwnerChannelId: '', // no matter
-          isChannProtected: false // no matter
+          isChannProtected: false, // no matter
+
+          inGaming: user.inGaming
         }
         resultDirect.push(tmp);
       }
@@ -480,7 +499,12 @@ export class MessagesService {
           receivedStatus: user.status,
 
           OwnerChannelId: '', // no matter
-          isChannProtected: false // no matter
+          isChannProtected: false,// no matter
+
+          inGaming: false
+          
+        
+
         }
         resultDirect.push(tmp);
 
@@ -494,8 +518,8 @@ export class MessagesService {
         return myDate2.getTime() - myDate1.getTime();
       });
       return result;
+
     } catch (error) {
-      console.log("error = ", error);
       return { error: true }
     }
   }

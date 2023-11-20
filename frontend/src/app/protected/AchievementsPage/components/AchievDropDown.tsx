@@ -11,11 +11,8 @@ import {
 } from "@/app/components/ui/dropdown-menu";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import AchievementItem from "./AchievementItem";
-import {
-  getAchievmentsData,
-  getGlobalInfos,
-} from "@/app/api/hixcoder/FriendsPageAPI";
 import { useGlobalContext } from "../../context/store";
+import { getAchievmentsData, getGlobalInfos } from "@/app/MyApi/gameApi";
 
 export default function AchievDropDown(prompt: {
   items: string[];
@@ -61,7 +58,7 @@ export default function AchievDropDown(prompt: {
   React.useEffect(() => {
     async function getData() {
       try {
-        const globalInfoTmp = await getGlobalInfos(prompt.friend.nickname);
+        const globalInfoTmp = await getGlobalInfos(prompt.friend.id);
         setGlobalInfo(globalInfoTmp);
       } catch (error: any) {
         console.log("getData error: " + error);
