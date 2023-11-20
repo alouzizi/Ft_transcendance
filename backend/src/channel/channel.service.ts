@@ -15,8 +15,10 @@ import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class ChannelService {
-  constructor(private prisma: PrismaService,
-    private readonly notificationService: NotificationService) { }
+  constructor(
+    private prisma: PrismaService,
+    private readonly notificationService: NotificationService
+  ) {}
 
   async createMessageInfoChannel(
     senderId: string,
@@ -76,7 +78,7 @@ export class ChannelService {
           senderId: senderId,
           recieverId: item,
           subject: "you've been invited to group",
-        })
+        });
         await this.prisma.channelMember.create({
           data: {
             userId: item,
@@ -122,7 +124,7 @@ export class ChannelService {
         status: 200,
         channel: {
           ...channelUpdate,
-          channelPassword: channelUpdate.protected ? "****" : "",
+          channelPassword: "",
         },
       };
     } catch (error) {
@@ -170,8 +172,7 @@ export class ChannelService {
           senderId: senderId,
           recieverId: userId,
           subject: "you've been invited to group",
-        })
-
+        });
       }
     } catch (error) {
       return { error: true };
@@ -189,7 +190,7 @@ export class ChannelService {
         return {
           channelName: channel.channelName,
           channelType: channel.channelType,
-          channelPassword: channel.protected ? "****" : "",
+          channelPassword: "",
           protected: channel.protected,
           avatar: channel.avatar,
           channelOwnerId: channel.channelOwnerId,
@@ -261,8 +262,8 @@ export class ChannelService {
           member.userId === channel.channelOwnerId
             ? "Owner"
             : member.isAdmin
-              ? "Admin"
-              : "User",
+            ? "Admin"
+            : "User",
         unmuted_at,
       };
       result.push(temp);

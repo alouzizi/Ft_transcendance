@@ -18,75 +18,81 @@ let SocketGatewayService = class SocketGatewayService {
         this.prisma = prisma;
     }
     async handleConnection(client, wss) {
-        console.log(`Client connected:--------------------------------------- ---> ${client.id}`);
-        if (typeof client.handshake.query.senderId === 'string') {
-            client.join(client.handshake.query.senderId);
-            const senderId = client.handshake.query.senderId;
-            const userExists = await this.prisma.user.findUnique({
-                where: {
-                    id: senderId,
-                },
-            });
-            if (userExists) {
-                try {
-                    await this.prisma.user.update({
-                        where: { id: senderId },
-                        data: {
-                            status: client_1.Status.ACTIF,
-                        },
-                    });
-                    await this.prisma.message.updateMany({
-                        where: {
-                            receivedId: senderId,
-                            messageStatus: client_1.MessageStatus.NotReceived,
-                        },
-                        data: {
-                            messageStatus: client_1.MessageStatus.Received,
-                        },
-                    });
-                    const activeUsers = await this.prisma.user.findMany({
-                        where: {
-                            status: client_1.Status.ACTIF,
-                        },
-                    });
-                    for (const user of activeUsers) {
-                        wss.to(user.id.toString()).emit('updateData', {});
+        try {
+            if (typeof client.handshake.query.senderId === "string") {
+                client.join(client.handshake.query.senderId);
+                const senderId = client.handshake.query.senderId;
+                const userExists = await this.prisma.user.findUnique({
+                    where: {
+                        id: senderId,
+                    },
+                });
+                if (userExists) {
+                    try {
+                        await this.prisma.user.update({
+                            where: { id: senderId },
+                            data: {
+                                status: client_1.Status.ACTIF,
+                            },
+                        });
+                        await this.prisma.message.updateMany({
+                            where: {
+                                receivedId: senderId,
+                                messageStatus: client_1.MessageStatus.NotReceived,
+                            },
+                            data: {
+                                messageStatus: client_1.MessageStatus.Received,
+                            },
+                        });
+                        const activeUsers = await this.prisma.user.findMany({
+                            where: {
+                                status: client_1.Status.ACTIF,
+                            },
+                        });
+                        for (const user of activeUsers) {
+                            wss.to(user.id.toString()).emit("updateData", {});
+                        }
+                    }
+                    catch (error) {
+                        console.error("Error while handling connection:", error);
                     }
                 }
-                catch (error) {
-                    console.error('Error while handling connection:', error);
-                }
             }
         }
+        catch (error) { }
     }
     async handleDisconnect(client, wss) {
-        console.log(`Client disconnected: ---> ${client.id}`);
-        if (typeof client.handshake.query.senderId === 'string') {
-            await this.prisma.user.update({
-                where: {
-                    id: client.handshake.query.senderId
-                },
-                data: {
-                    status: client_1.Status.INACTIF,
-                    lastSee: new Date()
+        try {
+            if (typeof client.handshake.query.senderId === "string") {
+                await this.prisma.user.update({
+                    where: {
+                        id: client.handshake.query.senderId,
+                    },
+                    data: {
+                        status: client_1.Status.INACTIF,
+                        lastSee: new Date(),
+                    },
+                });
+                const users = await this.prisma.user.findMany();
+                for (let i = 0; i < users.length; i++) {
+                    wss.to(users[i].id).emit("updateData", {});
                 }
-            });
-            const users = await this.prisma.user.findMany();
-            for (let i = 0; i < users.length; i++) {
-                wss.to(users[i].id).emit('updateData', {});
             }
         }
+        catch (error) { }
     }
     async updateData(ids, wss) {
-        wss.to(ids.senderId).emit('updateData', {});
+        wss.to(ids.senderId).emit("updateData", {});
         if (ids.isDirectMessage === false) {
-            const channelMembers = await this.prisma.channelMember.findMany({ where: { channelId: ids.receivedId } });
+            const channelMembers = await this.prisma.channelMember.findMany({
+                where: { channelId: ids.receivedId },
+            });
             for (const member of channelMembers) {
-                wss.to(member.userId).emit('updateData', {});
+                wss.to(member.userId).emit("updateData", {});
             }
         }
         else
-            wss.to(ids.receivedId).emit('updateData', {});
+            wss.to(ids.receivedId).emit("updateData", {});
     }
 };
 exports.SocketGatewayService = SocketGatewayService;

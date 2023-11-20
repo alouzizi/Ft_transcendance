@@ -43,7 +43,6 @@ export class SocketGateway
   async handleDisconnect(client: Socket) {
     this.socketGatewayService.handleDisconnect(client, this.server);
     if (this.clients.has(client.id)) {
-
       this.clients.delete(client.id);
       const room = this.findRoomByClientId(client.id);
       if (room) {
@@ -111,7 +110,7 @@ export class SocketGateway
   onModuleInit() {}
 
   collision(ball: any, player: any) {
-    ball.top = ball.y - (ball.radius + 1) ;
+    ball.top = ball.y - (ball.radius + 1);
     ball.bottom = ball.y + (ball.radius + 1);
     ball.left = ball.x - (ball.radius + 1);
     ball.right = ball.x + (ball.radius + 1);
@@ -129,23 +128,22 @@ export class SocketGateway
     );
   }
 
-
   async startEmittingBallPosition(roomName: string, id: string) {
     const notherId = this.rooms.get(roomName).find((c) => c !== id);
 
     await this.prisma.user.update({
-      where: {id:notherId},
-      data:{inGaming: true}
-    })
+      where: { id: notherId },
+      data: { inGaming: true },
+    });
 
     await this.prisma.user.update({
-      where: {id:id},
-      data:{inGaming: true}
-    })
-    
+      where: { id: id },
+      data: { inGaming: true },
+    });
+
     const users = await this.prisma.user.findMany();
-    for(const user of users) {
-      this.server.to(user.id).emit('updateData', {});
+    for (const user of users) {
+      this.server.to(user.id).emit("updateData", {});
     }
 
     clearInterval(this.ballPositionInterval.get(roomName));
@@ -164,10 +162,10 @@ export class SocketGateway
         }
         let user: any = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
         if (this.collision(ro.ball, user)) {
-          let collidePoint = (ro.ball.y - (user.y + user.height / 2));
+          let collidePoint = ro.ball.y - (user.y + user.height / 2);
           collidePoint = collidePoint / (user.height / 2);
           let angleRad = (Math.PI / 4) * collidePoint;
-          let direction = (ro.ball.x < 600/2) ? 1 : -1;
+          let direction = ro.ball.x < 600 / 2 ? 1 : -1;
           ro.ball.velocityX = direction * ro.ball.speed * Math.cos(angleRad);
           ro.ball.velocityY = ro.ball.speed * Math.sin(angleRad);
           // ball.speed += 0.5;
@@ -198,7 +196,6 @@ export class SocketGateway
             );
           // this.gameState(roomName, ro.player1.score, ro.player2.score);
         } else if (ro.ball.x + ro.ball.radius >= 600) {
-      
           this.gameService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
@@ -225,8 +222,11 @@ export class SocketGateway
     );
   }
 
-  async gameState(roomName: string, p1: { player: string; score: number },
-    p2: { player: string; score: number }) {
+  async gameState(
+    roomName: string,
+    p1: { player: string; score: number },
+    p2: { player: string; score: number }
+  ) {
     const player1 = this.rooms.get(roomName)[0];
     const player2 = this.rooms.get(roomName)[1];
 
@@ -255,20 +255,23 @@ export class SocketGateway
     }
   }
   async stopEmittingBallPosition(roomName: string) {
-    const id = this.rooms.get(roomName)[0];
-    const id2 = this.rooms.get(roomName)[1];
-    
-    await this.prisma.user.update({
-      where: {id:id},
-      data:{inGaming: false}
-    })
-    await this.prisma.user.update({
-      where: {id:id2},
-      data:{inGaming: false}
-    })
-    const users = await this.prisma.user.findMany();
-    for(const user of users) {
-      this.server.to(user.id).emit('updateData', {});
+    if (this.rooms.get(roomName) && this.rooms.get(roomName).length > 1) {
+      const id = this.rooms.get(roomName)[0];
+      const id2 = this.rooms.get(roomName)[1];
+      await this.prisma.user.update({
+        where: { id: id },
+        data: { inGaming: false },
+      });
+      await this.prisma.user.update({
+        where: { id: id2 },
+        data: { inGaming: false },
+      });
+      const users = await this.prisma.user.findMany();
+      for (const user of users) {
+        this.server.to(user.id).emit("updateData", {});
+      }
+      delete this.joindClients[id];
+      delete this.joindClients[id2];
     }
 
     // id2.leave(roomName);
@@ -276,21 +279,14 @@ export class SocketGateway
     delete this.rooms[roomName];
     delete this.roomState[roomName];
     delete this.ballPositionInterval[roomName];
-    delete this.joindClients[id];
-    delete this.joindClients[id2];
     clearInterval(this.ballPositionInterval.get(roomName));
   }
 
-
-
   @SubscribeMessage("clientId")
   identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
-
-
     if (this.clients.has(id)) {
       client.emit("alreadyExist");
     } else {
-
       this.clients.set(id, client);
       this.joindClients.set(id, 0);
 
@@ -301,7 +297,7 @@ export class SocketGateway
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
     this.joindRoom++;
-    if (this.clients.size === 2 && this.joindRoom > 1 ) {
+    if (this.clients.size === 2 && this.joindRoom > 1) {
       this.joindRoom = 0;
       const roomName = `room-${Date.now()}`;
       this.rooms.set(roomName, Array.from(this.clients.keys()));
@@ -329,14 +325,14 @@ export class SocketGateway
       // }, 1000);
     }
   }
-  
+
   // @SubscribeMessage("invite")
   // onInvite(client: Socket, data: any) {
 
   //   this.
   //   this.server.to(data.userId).emit("invite", data);
   // }
-// }
+  // }
   findRoomByClientId(id: string) {
     let roomName: string;
     this.rooms.forEach((clients, room) => {
@@ -354,7 +350,8 @@ export class SocketGateway
       if (clientsRoom) {
         const otherClient = clientsRoom.find((c) => c !== data.userId);
         if (otherClient) {
-          if (data.isLeft) this.roomState.get(data.room).player1.y = data.paddle;
+          if (data.isLeft)
+            this.roomState.get(data.room).player1.y = data.paddle;
           else this.roomState.get(data.room).player2.y = data.paddle;
           this.server.to(otherClient).emit("resivePaddle", data.paddle);
         }
@@ -364,7 +361,6 @@ export class SocketGateway
 
   @SubscribeMessage("opponentLeft")
   onOpponentLeft(client: Socket, data: any) {
-
     if (data.room) {
       const clientsRoom = this.rooms.get(data.room);
       if (clientsRoom) {
@@ -395,19 +391,15 @@ export class SocketGateway
     // delete this.joindClients[data.userId];
   }
 
-
-
-  private inviteRoom: Map<string, Socket>= new Map();
+  private inviteRoom: Map<string, Socket> = new Map();
 
   @SubscribeMessage("invite")
   onIvite(client: Socket, data: any) {
-
     this.inviteRoom.set(data.userId1, client);
     client.join(data.userId1);
 
     // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
     this.server.to(data.userId2).emit("invite", data);
-
   }
 
   @SubscribeMessage("accept")
@@ -417,14 +409,15 @@ export class SocketGateway
 
     this.server.to(data.userId2).emit("accepted", data);
     const roomName = data.userId1 + data.userId2;
-    const sockets: Socket[] = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
+    const sockets: Socket[] = [
+      this.inviteRoom.get(data.userId1),
+      this.inviteRoom.get(data.userId2),
+    ];
 
     this.rooms.set(roomName, [data.userId1, data.userId2]);
 
-
     // this.server.to(data.userId1).emit("whichSide", true);
     // this.server.to(data.userId2).emit("whichSide", false);
-
 
     sockets.forEach((socket) => {
       socket.join(roomName);
@@ -437,13 +430,10 @@ export class SocketGateway
     this.startEmittingBallPosition(roomName, data.userId2);
     this.clients.clear();
   }
-  
 }
-
 
 interface RoomState {
   player1: PaddleDto;
   player2: PaddleDto;
   ball: BallDto;
 }
-

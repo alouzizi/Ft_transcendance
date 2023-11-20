@@ -1,6 +1,6 @@
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Server, Socket } from 'socket.io';
-import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
+import { PrismaService } from "src/prisma/prisma.service";
+import { Server, Socket } from "socket.io";
+import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 export declare class SocketGatewayService {
     private prisma;
     constructor(prisma: PrismaService);

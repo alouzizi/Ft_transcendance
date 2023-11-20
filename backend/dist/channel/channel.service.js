@@ -106,7 +106,7 @@ let ChannelService = class ChannelService {
                 status: 200,
                 channel: {
                     ...channelUpdate,
-                    channelPassword: channelUpdate.protected ? "****" : "",
+                    channelPassword: "",
                 },
             };
         }
@@ -173,7 +173,7 @@ let ChannelService = class ChannelService {
                 return {
                     channelName: channel.channelName,
                     channelType: channel.channelType,
-                    channelPassword: channel.protected ? "****" : "",
+                    channelPassword: "",
                     protected: channel.protected,
                     avatar: channel.avatar,
                     channelOwnerId: channel.channelOwnerId,
