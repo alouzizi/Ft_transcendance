@@ -5,6 +5,7 @@ import { useGlobalContext } from "../context/store";
 import { createNotification } from "./api/createNotification";
 import { FaTrashCan } from "react-icons/fa6";
 import React from "react";
+import Modal from "react-modal";
 
 function formatDateAndTime(dateTimeString: string): string {
   const dateTime = new Date(dateTimeString);
@@ -87,8 +88,43 @@ export default function NotificationPage() {
     throw new Error("Function not implemented.");
   }
 
-  function handleAccept(): void {
-    throw new Error("Function not implemented.");
+  const [isOpen, setIsOpen] = useState(false);
+  function handleAccept() {
+    return (
+      <div>
+        <button onClick={() => setIsOpen(true)}>Show Popup</button>
+
+        <Modal
+          className="text-[60px] bg-blue-300 m-60 border-spacing-1 p-4 my-2 rounded-3xl"
+          isOpen={isOpen}
+          onRequestClose={() => setIsOpen(false)}
+        >
+          <div className="flex flex-col items-center">
+            <img className="" src="path/to/image.png" alt="Image" />
+            <p className="text-black">Text goes here...</p>
+          </div>
+          <div className="flex justify-center items-center mt-4">
+            <button
+              className="bg-blue-500 text-white px-1 rounded-3xl"
+              onClick={handleAccept}
+            >
+              Accept
+            </button>
+            <span style={{ marginRight: "8px" }} />
+            <button
+              className="bg-blue-900 text-white px-1 rounded-3xl"
+              onClick={handleDecline}
+            >
+              Decline
+            </button>
+          </div>
+        </Modal>
+      </div>
+    );
+  }
+
+  function showDialog() {
+    setIsOpen(true);
   }
 
   return (
@@ -121,46 +157,8 @@ export default function NotificationPage() {
           >
             <div className="flex">
               <div className="flex-shrink-0 w-20 h-20 mr-4">
-                {/* Your conditionally rendered component */}
                 {(() => {
                   switch (item.subjet) {
-                    // case subjects[0]:
-                    //   //   return  <div className='text-[10px]   '>
-                    //   //   <img className='text-[10px]' src='https://w7.pngwing.com/pngs/715/287/png-transparent-gold-1-numerical-digit-number-number-1-text-gold-cartoon.png' alt='Your Image' />
-                    //   // </div>;
-                    //   //   <Lottie
-                    //   //   animationData={"animationData"}
-                    //   //   className="flex justify-center items-center"
-                    //   //   loop={true}
-                    //   // />
-                    //   return (
-                    //     <div className="text-[60px]   ">
-                    //       <MdGroupAdd />
-                    //     </div>
-                    //   );
-                    // case subjects[1]:
-                    //   return (
-                    //     <div className="text-[60px]   ">
-                    //       <MdMessage />
-                    //     </div>
-                    //   );
-                    // case subjects[2]:
-                    //   return (
-                    //     <div className="text-[60px]   ">
-                    //       <img
-                    //         className="text-[60px]   "
-                    //         src={item.user.profilePic}
-                    //         alt=""
-                    //       />
-                    //       <IoGameController />
-                    //     </div>
-                    //   );
-                    // case subjects[3]:
-                    //   return (
-                    //     <div className="h-[60px] w-[60px]  ">
-                    //       <FaUserFriends />
-                    //     </div>
-                    //   );
                     default:
                       return (
                         <img
@@ -172,7 +170,6 @@ export default function NotificationPage() {
                   }
                 })()}
 
-                {/* Container for the Lottie animation */}
                 <div id="lottie-container"></div>
               </div>
               <div>
@@ -193,7 +190,7 @@ export default function NotificationPage() {
                     {/* Add a space of 8px */}
                     <button
                       className="bg-blue-900 text-white font-bold py-2 px-4 rounded"
-                      onClick={() => handleAccept()}
+                      onClick={() => showDialog()}
                     >
                       Accept
                     </button>
@@ -211,6 +208,9 @@ export default function NotificationPage() {
             />
           </div>
         ))}
+      </div>
+      <div className="flex justify-center items-center h-screen mt-30vh ">
+        <div className="text-center">{isOpen && handleAccept()}</div>
       </div>
     </div>
   );
