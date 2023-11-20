@@ -11,7 +11,6 @@ const WaitingForPlayer = () => {
   useEffect(() => {
     socket?.on("startGame", () => {
       // setMessage('Game started! You can play now.');
-      console.log("Game started!");
     });
 
     return () => {

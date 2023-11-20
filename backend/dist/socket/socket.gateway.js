@@ -38,7 +38,6 @@ let SocketGateway = class SocketGateway {
         this.inviteRoom = new Map();
     }
     afterInit(server) {
-        console.log("Gateway Initialized");
     }
     async handleConnection(client) {
         this.socketGatewayService.handleConnection(client, this.server);
@@ -46,7 +45,6 @@ let SocketGateway = class SocketGateway {
     async handleDisconnect(client) {
         this.socketGatewayService.handleDisconnect(client, this.server);
         if (this.clients.has(client.id)) {
-            console.log("Client disconnected", { id: client.id });
             this.clients.delete(client.id);
             const room = this.findRoomByClientId(client.id);
             if (room) {
@@ -97,10 +95,10 @@ let SocketGateway = class SocketGateway {
     }
     onModuleInit() { }
     collision(ball, player) {
-        ball.top = ball.y - ball.radius;
-        ball.bottom = ball.y + ball.radius;
-        ball.left = ball.x - ball.radius;
-        ball.right = ball.x + ball.radius;
+        ball.top = ball.y - (ball.radius + 1);
+        ball.bottom = ball.y + (ball.radius + 1);
+        ball.left = ball.x - (ball.radius + 1);
+        ball.right = ball.x + (ball.radius + 1);
         let top = player.y;
         let bottom = player.y + player.height;
         let left = player.x;
@@ -111,7 +109,6 @@ let SocketGateway = class SocketGateway {
             ball.top < bottom);
     }
     startEmittingBallPosition(roomName, id) {
-        console.log({ alooo: roomName });
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
             const ro = this.roomState.get(roomName);
@@ -123,10 +120,10 @@ let SocketGateway = class SocketGateway {
             }
             let user = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
             if (this.collision(ro.ball, user)) {
-                let collidePoint = ro.ball.y - (user.y + user.height / 2);
+                let collidePoint = (ro.ball.y - (user.y + user.height / 2));
                 collidePoint = collidePoint / (user.height / 2);
-                let angleRad = (collidePoint * Math.PI) / 4;
-                let direction = ro.ball.x < 600 / 2 ? 1 : -1;
+                let angleRad = (Math.PI / 4) * collidePoint;
+                let direction = (ro.ball.x < 600 / 2) ? 1 : -1;
                 ro.ball.velocityX = direction * ro.ball.speed * Math.cos(angleRad);
                 ro.ball.velocityY = ro.ball.speed * Math.sin(angleRad);
                 if (ro.ball.speed + 0.5 > 15)
@@ -172,16 +169,13 @@ let SocketGateway = class SocketGateway {
                 },
             });
             if (p1.score == p2.score) {
-                console.log(p1.player, p2.player);
                 this.server.to(roomName).emit("gameOver", "draw");
             }
             if (p1.score > p2.score) {
-                console.log(p1.player, p2.player);
                 this.server.to(p1.player).emit("gameOver", "win");
                 this.server.to(p2.player).emit("gameOver", "lose");
             }
             else {
-                console.log(p1.player, p2.player);
                 this.server.to(p1.player).emit("gameOver", "lose");
                 this.server.to(p2.player).emit("gameOver", "win");
             }
@@ -197,7 +191,6 @@ let SocketGateway = class SocketGateway {
             client.emit("alreadyExist");
         }
         else {
-            console.log("Client identified", { id: id });
             this.clients.set(id, client);
             this.joindClients.set(id, 0);
             client.join(id);
@@ -207,7 +200,6 @@ let SocketGateway = class SocketGateway {
         this.joindRoom++;
         if (this.clients.size === 2 && this.joindRoom > 1) {
             this.joindRoom = 0;
-            console.log("2 clients connected");
             const roomName = `room-${Date.now()}`;
             this.rooms.set(roomName, Array.from(this.clients.keys()));
             const clientArray = Array.from(this.clients.keys());
@@ -241,7 +233,6 @@ let SocketGateway = class SocketGateway {
         return roomName;
     }
     onUpdatePaddle(client, data) {
-        console.log("updatePaddle");
         if (data.room) {
             const clientsRoom = this.rooms.get(data.room);
             if (clientsRoom) {
@@ -257,26 +248,25 @@ let SocketGateway = class SocketGateway {
         }
     }
     onOpponentLeft(client, data) {
-        console.log(data);
-        console.log("opponentLeft");
         if (data.room) {
             const clientsRoom = this.rooms.get(data.room);
             if (clientsRoom) {
                 const otherClient = clientsRoom.find((c) => c !== data.userId);
+                const otherclientValue = this.clients.get(otherClient);
                 if (otherClient) {
-                    console.log("opponentLeft send");
                     this.server.to(otherClient).emit("opponentLeft");
-                    client.leave(data.room);
-                    delete this.joindRoom[otherClient];
                 }
             }
+            client.leave(data.room);
+            client.leave(data.userId);
+            client.leave(data.userId);
+            client.leave(data.room);
         }
-        console.log("opponentLeft end");
+        this.stopEmittingBallPosition(data.room);
         delete this.rooms[data.room];
         delete this.roomState[data.room];
         delete this.ballPositionInterval[data.room];
         delete this.joindClients[data.userId];
-        this.stopEmittingBallPosition(data.room);
     }
     onIvite(client, data) {
         this.inviteRoom.set(data.userId1, client);
@@ -284,7 +274,6 @@ let SocketGateway = class SocketGateway {
         this.server.to(data.userId2).emit("invite", data);
     }
     onAccept(client, data) {
-        console.log("accept");
         this.inviteRoom.set(data.userId2, client);
         client.join(data.userId2);
         this.server.to(data.userId2).emit("accepted", data);
@@ -292,7 +281,6 @@ let SocketGateway = class SocketGateway {
         const sockets = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
         this.rooms.set(roomName, [data.userId1, data.userId2]);
         sockets.forEach((socket) => {
-            console.log("socket", socket.id);
             socket.join(roomName);
         });
         this.server.to(roomName).emit("startGame", data);

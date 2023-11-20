@@ -34,7 +34,6 @@ export class SocketGateway
   @WebSocketServer() server: Server;
 
   afterInit(server: any) {
-    console.log("Gateway Initialized");
   }
 
   async handleConnection(client: Socket) {
@@ -44,7 +43,7 @@ export class SocketGateway
   async handleDisconnect(client: Socket) {
     this.socketGatewayService.handleDisconnect(client, this.server);
     if (this.clients.has(client.id)) {
-      console.log("Client disconnected", { id: client.id });
+
       this.clients.delete(client.id);
       const room = this.findRoomByClientId(client.id);
       if (room) {
@@ -112,10 +111,10 @@ export class SocketGateway
   onModuleInit() {}
 
   collision(ball: any, player: any) {
-    ball.top = ball.y - ball.radius;
-    ball.bottom = ball.y + ball.radius;
-    ball.left = ball.x - ball.radius;
-    ball.right = ball.x + ball.radius;
+    ball.top = ball.y - (ball.radius + 1) ;
+    ball.bottom = ball.y + (ball.radius + 1);
+    ball.left = ball.x - (ball.radius + 1);
+    ball.right = ball.x + (ball.radius + 1);
 
     let top = player.y;
     let bottom = player.y + player.height;
@@ -132,7 +131,6 @@ export class SocketGateway
 
 
   startEmittingBallPosition(roomName: string, id: string) {
-    console.log({alooo:roomName});
     clearInterval(this.ballPositionInterval.get(roomName));
 
     this.ballPositionInterval.set(
@@ -149,10 +147,10 @@ export class SocketGateway
         }
         let user: any = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
         if (this.collision(ro.ball, user)) {
-          let collidePoint = ro.ball.y - (user.y + user.height / 2);
+          let collidePoint = (ro.ball.y - (user.y + user.height / 2));
           collidePoint = collidePoint / (user.height / 2);
-          let angleRad = (collidePoint * Math.PI) / 4;
-          let direction = ro.ball.x < 600 / 2 ? 1 : -1;
+          let angleRad = (Math.PI / 4) * collidePoint;
+          let direction = (ro.ball.x < 600/2) ? 1 : -1;
           ro.ball.velocityX = direction * ro.ball.speed * Math.cos(angleRad);
           ro.ball.velocityY = ro.ball.speed * Math.sin(angleRad);
           // ball.speed += 0.5;
@@ -226,15 +224,12 @@ export class SocketGateway
         },
       });
       if (p1.score == p2.score) {
-        console.log(p1.player, p2.player);
         this.server.to(roomName).emit("gameOver", "draw");
       }
       if (p1.score > p2.score) {
-        console.log(p1.player, p2.player);
         this.server.to(p1.player).emit("gameOver", "win");
         this.server.to(p2.player).emit("gameOver", "lose");
       } else {
-        console.log(p1.player, p2.player);
         this.server.to(p1.player).emit("gameOver", "lose");
         this.server.to(p2.player).emit("gameOver", "win");
       }
@@ -256,14 +251,11 @@ export class SocketGateway
 
   @SubscribeMessage("clientId")
   identifyClient(@ConnectedSocket() client: Socket, @MessageBody() id: string) {
-    // console.log("client ---> ", client, id);
 
-    // console.log({ id: id, client: client.id });
 
     if (this.clients.has(id)) {
       client.emit("alreadyExist");
     } else {
-      console.log("Client identified", { id: id });
 
       this.clients.set(id, client);
       this.joindClients.set(id, 0);
@@ -277,7 +269,6 @@ export class SocketGateway
     this.joindRoom++;
     if (this.clients.size === 2 && this.joindRoom > 1 ) {
       this.joindRoom = 0;
-      console.log("2 clients connected");
       const roomName = `room-${Date.now()}`;
       this.rooms.set(roomName, Array.from(this.clients.keys()));
       const clientArray = Array.from(this.clients.keys());
@@ -324,7 +315,6 @@ export class SocketGateway
 
   @SubscribeMessage("updatePaddle")
   onUpdatePaddle(client: Socket, data: any) {
-    console.log("updatePaddle");
     if (data.room) {
       const clientsRoom = this.rooms.get(data.room);
       if (clientsRoom) {
@@ -340,27 +330,35 @@ export class SocketGateway
 
   @SubscribeMessage("opponentLeft")
   onOpponentLeft(client: Socket, data: any) {
-    console.log(data);
-    console.log("opponentLeft");
+
     if (data.room) {
       const clientsRoom = this.rooms.get(data.room);
       if (clientsRoom) {
         const otherClient = clientsRoom.find((c) => c !== data.userId);
+        const otherclientValue = this.clients.get(otherClient);
         if (otherClient) {
-          console.log("opponentLeft send");
           this.server.to(otherClient).emit("opponentLeft");
-          client.leave(data.room);
-          delete this.joindRoom[otherClient];
+          // otherClient.leave(otherClient);
+          // this.stopEmittingBallPosition(data.room);
+          // delete this.rooms[data.room];
+          // delete this.roomState[data.room];
+          // delete this.ballPositionInterval[data.room];
+          // delete this.joindRoom[otherClient];
         }
       }
+      // otherclientValue.leave(data.room);
+      // otherclientValue.leave(otherClient);
+      client.leave(data.room);
+      client.leave(data.userId);
+      client.leave(data.userId);
+      client.leave(data.room);
     }
-    console.log("opponentLeft end");
 
+    this.stopEmittingBallPosition(data.room);
     delete this.rooms[data.room];
     delete this.roomState[data.room];
     delete this.ballPositionInterval[data.room];
     delete this.joindClients[data.userId];
-    this.stopEmittingBallPosition(data.room);
   }
 
 
@@ -380,7 +378,6 @@ export class SocketGateway
 
   @SubscribeMessage("accept")
   onAccept(client: Socket, data: any) {
-    console.log("accept");
     this.inviteRoom.set(data.userId2, client);
     client.join(data.userId2);
 
@@ -396,7 +393,6 @@ export class SocketGateway
 
 
     sockets.forEach((socket) => {
-      console.log("socket", socket.id);
       socket.join(roomName);
     });
 

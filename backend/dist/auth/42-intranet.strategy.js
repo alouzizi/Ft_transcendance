@@ -17,10 +17,10 @@ const user_service_1 = require("../user/user.service");
 let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, "42-intranet") {
     constructor(userService) {
         super({
-            clientID: "u-s4t2ud-a589bfeab5ffa26f8e418a13eea3927ed0581255abeec0cc4e1ff8d3008e54de",
-            clientSecret: "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",
-            callbackURL: "http://localhost:4000/auth/42-intranet/callback",
-            scope: ["public"],
+            clientID: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            callbackURL: process.env.CALLBACK_URL,
+            scope: ['public'],
         });
         this.userService = userService;
     }

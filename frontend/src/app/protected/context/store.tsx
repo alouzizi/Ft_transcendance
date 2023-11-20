@@ -163,10 +163,8 @@ export const GlobalContextProvider = ({
       });
       setSocket(socket);
       socket.on("connect", () => {
-        console.log("socket --> user connected");
       });
       socket.on("disconnect", () => {
-        console.log("socket --> user disconnected");
       });
     }
 
@@ -213,13 +211,10 @@ export const GlobalContextProvider = ({
   const [data, setData] = useState("");
 
   useEffect(() => {
-    // const update = async () => {
-    // setOpenConfirm(true)
     // socket here <<< ---------------------------------->>>
     if (socket) {
       socket.on("invite", (data) => {
         setData(data);
-        console.log(data);
         setInviteData({
           userId1: data.userId1,
           userId2: data.userId2,
@@ -227,7 +222,6 @@ export const GlobalContextProvider = ({
           selectedMap: 2,
           isLeft: true,
         });
-        // console.log('');
         setOpenConfirm(true);
       });
       socket.on("startGame", (data) => {
@@ -323,7 +317,7 @@ export const GlobalContextProvider = ({
                 onClick={async () => {
                   socket?.emit("accept", data);
                   setOpenConfirm(false);
-                  // router.push('/protected/GamePage/invite');
+                  router.push('/protected/GamePage/invite');
                 }}
                 className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
                 text-xs  px-4 py-2 mx-2

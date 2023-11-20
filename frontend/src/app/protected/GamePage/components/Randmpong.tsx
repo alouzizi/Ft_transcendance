@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
-import updateCanvas, { drawCanvas, resetBall } from "./pongUtils";
+import updateCanvas, { drawCanvas, drawRectAnimation2, drawText, drawTextAnimation2, resetBall } from "./pongUtils";
 import { useGlobalContext } from "../../context/store";
 import Alert from '@mui/joy/Alert';
 import {useRouter } from "next/navigation";
@@ -16,8 +16,6 @@ interface PongProps {
 
 const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
-  console.log(isLeft);
-  console.log(room);
   const ROUND_LIMIT = 6;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasCtx = useCanvas();
@@ -72,16 +70,18 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     const handleMouseMove = (e: any) => {
       const rect = canvas.getBoundingClientRect();
       if (!isLeft) {
-        const mouseY = e.clientY - rect.top - computer.height / 2;
-        computer.color = "red";
-        computer.y = Math.min(
-          Math.max(mouseY, 0),
-          canvas.height - computer.height
-        );
+        // const mouseY = e.clientY - rect.top - computer.height / 2;
+        // computer.color = "red";
+        // computer.y = Math.min(
+        //   Math.max(mouseY, 0),
+        //   canvas.height - computer.height
+        // );
+        computer.y = e.clientY - rect.top - player.height/2;
       } else {
-        const mouseY = e.clientY - rect.top - player.height / 2;
+        // const mouseY = e.clientY - rect.top - player.height / 2;
         player.color = "red";
-        player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
+        player.y = e.clientY - rect.top - player.height/2;
+        // player.y = Math.min(Math.max(mouseY, 0), canvas.height - player.height);
       }
 
       socket.emit("updatePaddle", {
@@ -117,6 +117,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
       });
     };
 
+  
 
     socket.on("resivePaddle", (data: any) => {
       if (!isLeft) {
@@ -145,29 +146,29 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
       
     });
     socket.on("gameOver", (state: string) => {
-      setTimeout(() => {
-        if (state === "win") {
+      setInterval(() => {
+      if (state === "win") {
 
-          <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
-          setAlert(1);
-          // console.log("test");
-          router.push('/protected/GamePage');
-          // alert("You win!");
-        }
-        if (state === "lose") {
-          <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
-          setAlert(2)
-          // console.log("test");
-          router.push('/protected/GamePage');
-          // alert("You lose!");
-        }
-        if (state === "draw") {
-          <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
-          setAlert(4);          // console.log("test");
-          router.push('/protected/GamePage');
-          // alert("Draw!");
-        }
-      }, 1000);
+        <Alert variant="solid"  size="lg" color="success"> You Win</Alert>
+
+        drawText(ctx, "You win!", canvasCtx.width / 2, canvasCtx.height / 2);
+        
+        // router.push('/protected/GamePage');
+      }
+      if (state === "lose") {
+        <Alert variant="solid"  size="lg" color="warning"> You lose</Alert>
+
+        drawText(ctx, "You Lose!", canvasCtx.width / 2, canvasCtx.height / 2);
+        // router.push('/protected/GamePage');
+      }
+      if (state === "draw") {
+        <Alert  variant="solid" size="lg" color="neutral"> You draw</Alert>
+        drawText(ctx, "You draw!", canvasCtx.width / 2, canvasCtx.height / 2);
+      }
+    },20);
+      setTimeout(() => {
+        router.push('/protected/GamePage');
+      }, 2500);
     });
     function handleWindowResize() {
       setWidth(window.innerWidth);
@@ -190,7 +191,6 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     };
 
     // function handlePopstate(){
-    //   console.log("popstate");
     //   socket?.emit("opponentLeft", {room: room, userId:user.id});
     //   // router.push('/protected/GamePage/random');
     // };
@@ -198,7 +198,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     // window.addEventListener('popstate', handlePopstate);
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener("resize", handleWindowResize);
-    // window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("keydown", handleKey);
 
 

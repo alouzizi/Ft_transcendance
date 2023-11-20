@@ -1,3 +1,4 @@
+import { ca } from "date-fns/locale";
 import { Padlle, Ball, canvasContext, Canvas } from "./interface";
 
 export default function updateCanvas(
@@ -13,17 +14,16 @@ export default function updateCanvas(
   }
   let user = ball.x < canvasCtx.width / 2 ? player : computer;
   if (collision(ball, user)) {
-    let collidePoint = ball.y - (user.y + user.height / 2);
+    let collidePoint = (ball.y - (user.y + user.height / 2));
     collidePoint = collidePoint / (user.height / 2);
-    let angleRad = (collidePoint * Math.PI) / 4;
-    let direction = ball.x < canvasCtx.width / 2 ? 1 : -1;
+    let angleRad = (Math.PI / 4) * collidePoint;
+    let direction = (ball.x < canvasCtx.width / 2) ? 1 : -1;
     ball.velocityX = direction * ball.speed * Math.cos(angleRad);
     ball.velocityY = ball.speed * Math.sin(angleRad);
 
     // evrytime the ball hit a paddle , encrese the speed
     if (ball.speed + 0.5 > 15) ball.speed = 15;
     else ball.speed += 0.5;
-    // console.log(ball.speed);
   }
   if (ball.x - ball.radius <= 0) {
     resetBall(canvasCtx, ball);
@@ -357,6 +357,12 @@ export function drawCircleAnimation4(ctx: any, b: Ball) {
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
+    if (trailPosition.x > ctx.width) {
+      trailPosition.x = ctx.width - 10;
+    }
+    else if (trailPosition.x < 0) {
+      trailPosition.x = ctx.height +  10;
+    }
     ctx.arc(trailPosition.x, trailPosition.y, trailRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
@@ -386,3 +392,53 @@ export function animateBall(ball: Ball, canvasCtx: Canvas, speedX: number, speed
   return { speedX, speedY };
 }
 
+
+
+
+
+
+export function drawText(ctx: any, text: string, x: number, y: number) {
+  // Draw animated background
+  drawAnimatedBackground(ctx);
+
+  // Draw text
+  const bounceAmount = Math.sin(Date.now() / 200) * 5;
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 40px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(text, x, y + bounceAmount);
+}
+
+function drawAnimatedBackground(ctx: any) {
+  // Clear the canvas
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  // Particle configuration
+  const particleCount = 100;
+  const particleRadius = 2;
+
+  // Draw particles
+  for (let i = 0; i < particleCount; i++) {
+    const x = Math.random() * ctx.canvas.width;
+    const y = Math.random() * ctx.canvas.height;
+    let speedX = (Math.random() - 0.5) * 2; // Random horizontal speed
+    let speedY = (Math.random() - 0.5) * 2; // Random vertical speed
+
+    // Draw particle
+    ctx.beginPath();
+    ctx.arc(x, y, particleRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fill();
+
+    // Update particle position
+    if (x + speedX > ctx.canvas.width || x + speedX < 0) {
+      speedX *= -1; // Reverse horizontal speed if hitting the canvas edge
+    }
+    if (y + speedY > ctx.canvas.height || y + speedY < 0) {
+      speedY *= -1; // Reverse vertical speed if hitting the canvas edge
+    }
+
+    // Move particle
+    ctx.closePath();
+  }
+}

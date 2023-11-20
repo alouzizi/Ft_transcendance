@@ -32,9 +32,9 @@ export default function Home() {
     width: 600,
     height: 400,
   };
-  if (!socket?.connected) {
-    window.alert("socket not connected, please refresh the page");
-  }
+  // if (!socket?.connected) {
+  //   window.alert("socket not connected, please refresh the page");
+  // }
   if (window.innerWidth < 600) {
     canvas.width = window.innerWidth - 80;
   }
@@ -48,11 +48,11 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       socket?.on("opponentLeft", () => {
-        console.log("opponent left");
-        // router.replace("/protected/GamePage/random");
+        router.replace("/protected/GamePage");
         setShowAlert(true);
         setGameStarted(false);
         setButtonClicked(false);
+
       });
 
       if (showAlert) {
@@ -64,9 +64,7 @@ export default function Home() {
       socket?.on("startGame", (room: string) => {
         setRoom(room);
         setGameStarted(true);
-        console.log({ isLeft: left });
         setMessage("Play again!");
-        console.log("aloo: game started");
       });
 
       socket?.on("alreadyExist", () => {
@@ -82,33 +80,24 @@ export default function Home() {
       });
 
       const handlePopstate = (event: PopStateEvent) => {
-        console.log("aloo: popstate");
-        console.log("aloo: gameStarted", gameStarted);
-        // if(gameStarted)
-        // {
-        // event.preventDefault();
-        // event/
-        socket?.emit("opponentLeft", { room: room, userId: user.id });
-        setButtonClicked(false);
-        // setShowAlert(true);
-        setGameStarted(false);
-        setMessage("Start game!");
-        // router.push('/protected/GamePage/random');
-
-        // }
+          if (gameStarted)
+            socket?.emit("opponentLeft", { userId: user.id, room: room,});
+          setButtonClicked(false);
+          setGameStarted(false);
+          setMessage("Start game!");
       };
 
       window.addEventListener("popstate", handlePopstate);
 
       return () => {
-        window.removeEventListener("popstate", () => {});
+        // window.removeEventListener("popstate", handlePopstate);
         socket?.off("startGame");
         socket?.off("whichSide");
         socket?.off("alreadyExist");
         socket?.off("opponentLeft");
       };
     } else return;
-  }, [user.id, gameStarted, showAlert, message, buttonClicked]);
+  }, [user.id, gameStarted, showAlert, message, buttonClicked, room]);
 
   return (
     <div className="my-8">
