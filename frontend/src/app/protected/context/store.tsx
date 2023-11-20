@@ -1,15 +1,14 @@
 "use client";
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import {
   createContext,
   useContext,
-  Dispatch, 
+  Dispatch,
   SetStateAction,
   useState,
   useEffect,
@@ -22,6 +21,7 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import { Backend_URL } from "../../../../lib/Constants";
+import { ImCross } from "react-icons/im";
 
 enum Status {
   ACTIF = "ACTIF",
@@ -31,7 +31,6 @@ enum Status {
 interface ContextProps {
   updateInfo: number;
   setUpdateInfo: Dispatch<SetStateAction<number>>;
-
 
   inviteData: any;
   setInviteData: Dispatch<SetStateAction<any>>;
@@ -55,21 +54,26 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
-
-  inviteData:  {userId1: "-1", userId2: "-1", room:"-1", selectedMap: "isLeft", isLeft: true},
-  setInviteData:() => { }, 
+  inviteData: {
+    userId1: "-1",
+    userId2: "-1",
+    room: "-1",
+    selectedMap: "isLeft",
+    isLeft: true,
+  },
+  setInviteData: () => {},
 
   displayChat: false,
-  setDisplayChat: () => { },
+  setDisplayChat: () => {},
 
   updateInfo: 1,
-  setUpdateInfo: () => { },
+  setUpdateInfo: () => {},
 
   openAlertErro: false,
-  setOpenAlertError: () => { },
+  setOpenAlertError: () => {},
 
   saveChanges: 0,
-  setSaveChanges: () => { },
+  setSaveChanges: () => {},
 
   user: {
     id: "-1",
@@ -81,7 +85,7 @@ const GlobalContext = createContext<ContextProps>({
     isTwoFactorAuthEnabled: true,
     level: "0.0",
   },
-  setUser: () => { },
+  setUser: () => {},
 
   geust: {
     isUser: true,
@@ -93,7 +97,7 @@ const GlobalContext = createContext<ContextProps>({
     lenUser: 0,
     idUserOwner: "",
   },
-  setGeust: () => { },
+  setGeust: () => {},
 
   socket: null, // Initialize socket as null
 });
@@ -116,11 +120,14 @@ export const GlobalContextProvider = ({
   const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
   const [saveChanges, setSaveChanges] = useState<number>(0);
-   
 
-  const [ inviteData, setInviteData] = useState<any>({userId1: "-1", 
-  userId2: "-1", room:"-1", selectedMap: "isLeft", isLeft: true});
-
+  const [inviteData, setInviteData] = useState<any>({
+    userId1: "-1",
+    userId2: "-1",
+    room: "-1",
+    selectedMap: "isLeft",
+    isLeft: true,
+  });
 
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
@@ -203,42 +210,39 @@ export const GlobalContextProvider = ({
     }
   }, [socket]);
 
-  const [data, setData] = useState('');
+  const [data, setData] = useState("");
 
   useEffect(() => {
     // const update = async () => {
-      // setOpenConfirm(true)
-      // socket here <<< ---------------------------------->>>
-      if(socket){
-        socket.on("invite", (data) => {
-
-          setData(data);
-          console.log(data);
-          setInviteData({
-            userId1: data.userId1,
-            userId2: data.userId2,
-            room: data.userId1 + data.userId2,
-            selectedMap: 2,
-            isLeft: true,
-          });
-          // console.log('');
-          setOpenConfirm(true)  
-          
-
+    // setOpenConfirm(true)
+    // socket here <<< ---------------------------------->>>
+    if (socket) {
+      socket.on("invite", (data) => {
+        setData(data);
+        console.log(data);
+        setInviteData({
+          userId1: data.userId1,
+          userId2: data.userId2,
+          room: data.userId1 + data.userId2,
+          selectedMap: 2,
+          isLeft: true,
         });
-        socket.on("startGame", (data) => {
-          setInviteData({
-            userId1: data.userId1,
-            userId2: data.userId2,
-            room: data.userId1 + data.userId2,
-            selectedMap: 2,
-            isLeft: (data.userId1 == user.id) ? false: true,
-          });
-          router.push('/protected/GamePage/invite');
+        // console.log('');
+        setOpenConfirm(true);
+      });
+      socket.on("startGame", (data) => {
+        setInviteData({
+          userId1: data.userId1,
+          userId2: data.userId2,
+          room: data.userId1 + data.userId2,
+          selectedMap: 2,
+          isLeft: data.userId1 == user.id ? false : true,
         });
+        router.push("/protected/GamePage/invite");
+      });
       // }
     }
-  }, [socket,data]);
+  }, [socket, data]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -260,39 +264,77 @@ export const GlobalContextProvider = ({
         setOpenAlertError,
         displayChat,
         setDisplayChat,
-        inviteData, setInviteData
+        inviteData,
+        setInviteData,
       }}
     >
-
-<div>
-                <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
-                    <DialogTitle>Confirme Action</DialogTitle>
-                    <DialogContent className='flex flex-col'>
-                        <div className='flex bg-[#f1f3f8] text-black border border-[#1f3175]
-                      placeholder-gray-300 text-sm focus:border-white
-                        rounded-lg  w-full p-1.5 outline-none'
-                             
-                        >
-                            
-                            
-                        </div>
-                        
-
-                    </DialogContent>
-                    <DialogActions>
-                        <button onClick={async () => {
-                          socket?.emit("accept", data);
-                          setOpenConfirm(false);
-                          // router.push('/protected/GamePage/invite');
-                        }}
-                            className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
-                            text-xs px-2
-                            md:text-sm lg:text-md lg:px-4">
-                            Confirm
-                        </button>
-                    </DialogActions>
-                </Dialog>
+      <div>
+        <Dialog
+          PaperProps={{
+            style: {
+              backgroundColor: "transparent",
+              boxShadow: "none",
+            },
+          }}
+          open={openConfirm}
+          onClose={() => setOpenConfirm(false)}
+          className=""
+        >
+          <div
+            className="bg-[#010611be] w-fit sm:m-4 p-2 sm:p-4 md:m-8 md-6 rounded-2xl border-2 border-white "
+            color="red"
+          >
+            <div
+              // onClick={handleClose}
+              className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
+            >
+              <ImCross className="text-gray-400 hover:text-gray-300 cursor-pointer" />
             </div>
+            <img
+              src="/PongMaster.svg"
+              alt=""
+              className=" w-40 text-sm mx-auto"
+            />
+            <DialogContent>
+              <div className="flex flex-col rounded-2xl my-4">
+                <p className="text-gray-300  text-center">
+                  <span className="font-700 text-white hover:underline">
+                    @hboumahd
+                  </span>{" "}
+                  invite you to pongMaster match
+                </p>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <div className="flex flex-row items-center justify-center"></div>
+              <button
+                onClick={async () => {
+                  socket?.emit("accept", data);
+                  setOpenConfirm(false);
+                  router.push("/protected/GamePage/invite");
+                }}
+                className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
+                            text-xs  px-4 py-2 mx-2
+                            md:text-sm lg:text-md lg:px-4"
+              >
+                Decline
+              </button>
+              <button
+                onClick={async () => {
+                  socket?.emit("accept", data);
+                  setOpenConfirm(false);
+                  // router.push('/protected/GamePage/invite');
+                }}
+                className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
+                text-xs  px-4 py-2 mx-2
+                md:text-sm lg:text-md lg:px-4"
+              >
+                Accept
+              </button>
+            </DialogActions>
+          </div>
+        </Dialog>
+      </div>
       <Stack spacing={2} sx={{ width: "100%" }}>
         <Snackbar open={openAlertErro} autoHideDuration={6000}>
           <Alert

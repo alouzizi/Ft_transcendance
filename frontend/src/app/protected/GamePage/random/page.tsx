@@ -111,7 +111,7 @@ export default function Home() {
   }, [user.id, gameStarted, showAlert, message, buttonClicked]);
 
   return (
-    <div>
+    <div className="my-8">
       {showAlert && <CustomAlert message="Opponent Left" />}
       <div className="w-screen min-h-screen h-fit flex flex-col justify-center items-center bg-color-main">
         <canvasContext.Provider value={canvas}>
