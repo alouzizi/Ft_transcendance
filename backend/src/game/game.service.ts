@@ -211,7 +211,7 @@ export class GameService {
 
   async updateGameHistory(
     senderId: string,
-    recieverUsr: string,
+    recieverId: string,
     senderPt: string,
     recieverPt: string
   ) {
@@ -219,7 +219,7 @@ export class GameService {
       const user = await this.prisma.gameHistory.create({
         data: {
           senderId: senderId,
-          receiverId: recieverUsr,
+          receiverId: recieverId,
           senderPoints: senderPt,
           receiverPoints: recieverPt,
         },
@@ -228,7 +228,7 @@ export class GameService {
         this.updateLevelAfterGame(senderId, "0.23");
       }
       if (parseInt(senderPt) < parseInt(recieverPt)) {
-        this.updateLevelAfterGame(recieverUsr, "0.23");
+        this.updateLevelAfterGame(recieverId, "0.23");
       }
       return user;
     } catch (error) {

@@ -5,7 +5,6 @@ import {
   getPendingFriends,
 } from "@/app/MyApi/friendshipApi";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import * as React from "react";
 import { ChangeEvent, useState } from "react";
 import { ImCross } from "react-icons/im";
@@ -91,8 +90,8 @@ export function FriendAlert(props: SimpleDialogProps) {
           className="block  rounded-xl  text-gray-900  bg-[#F1F3F9]  
           ring-1 ring-inset ring-gray-300 placeholder:text-[#666C79] focus:outline-none
           
-          text-xs w-[80%] py-2 ml-4 mb-4 pl-4 pr-16
-          lg:text-sm  md:py-3 md:mx-8 md:mb-8 md:pl-7 md:pr-20
+          text-[0.5rem] sm:text-xs w-[80%] py-2 ml-4 mb-4 pl-4 pr-4
+           md:py-3 md:mx-8 md:mb-8 md:pl-7 md:pr-20
           md:text-sm sm:leading-6 
           "
           placeholder="Enter friend username"
@@ -108,7 +107,9 @@ export function FriendAlert(props: SimpleDialogProps) {
               />
             ))
           ) : (
-            <p className="text-center text-gray-400 ">Username not found</p>
+            <p className="text-center text-gray-400 text-xs md:text-sm ">
+              Username not found
+            </p>
           )}
         </div>
       </div>

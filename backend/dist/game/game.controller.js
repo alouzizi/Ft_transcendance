@@ -36,8 +36,8 @@ let GameController = class GameController {
     async updateLevel(sender, newLevel) {
         return this.gameService.updateLevel(sender, newLevel);
     }
-    async updateGameHistory(senderUsr, recieverUsr, senderPt, recieverPt) {
-        return this.gameService.updateGameHistory(senderUsr, recieverUsr, senderPt, recieverPt);
+    async updateGameHistory(senderId, recieverId, senderPt, recieverPt) {
+        return this.gameService.updateGameHistory(senderId, recieverId, senderPt, recieverPt);
     }
 };
 exports.GameController = GameController;
@@ -57,8 +57,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "getGlobalInfos", null);
 __decorate([
-    (0, common_1.Get)("/userRanking/:senderUsr"),
-    __param(0, (0, common_1.Param)("senderUsr")),
+    (0, common_1.Get)("/userRanking/:senderId"),
+    __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -70,17 +70,17 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "getLeaderBoard", null);
 __decorate([
-    (0, common_1.Post)("/updateLevel/:senderUsr/:newLevel"),
-    __param(0, (0, common_1.Param)("senderUsr")),
+    (0, common_1.Post)("/updateLevel/:senderId/:newLevel"),
+    __param(0, (0, common_1.Param)("senderId")),
     __param(1, (0, common_1.Param)("newLevel")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "updateLevel", null);
 __decorate([
-    (0, common_1.Post)("/updateGameHistory/:senderUsr/:recieverUsr/:senderPt/:recieverPt"),
-    __param(0, (0, common_1.Param)("senderUsr")),
-    __param(1, (0, common_1.Param)("recieverUsr")),
+    (0, common_1.Post)("/updateGameHistory/:senderId/:recieverId/:senderPt/:recieverPt"),
+    __param(0, (0, common_1.Param)("senderId")),
+    __param(1, (0, common_1.Param)("recieverId")),
     __param(2, (0, common_1.Param)("senderPt")),
     __param(3, (0, common_1.Param)("recieverPt")),
     __metadata("design:type", Function),
@@ -88,6 +88,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "updateGameHistory", null);
 exports.GameController = GameController = __decorate([
+    (0, common_2.UseGuards)(guard_1.JwtGuard),
     (0, common_1.Controller)("game"),
     __metadata("design:paramtypes", [game_service_1.GameService])
 ], GameController);

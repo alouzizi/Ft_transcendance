@@ -312,7 +312,7 @@ export async function sendFriendRequest(senderId: string, recieverId: string) {
       return;
     }
     const token = Cookies.get("access_token");
-    const response = await fetch(
+    await fetch(
       `${Backend_URL}/friendship/sendFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",

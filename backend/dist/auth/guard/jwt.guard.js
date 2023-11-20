@@ -36,8 +36,12 @@ let JwtGuard = class JwtGuard {
         return true;
     }
     extractTokenFromHeader(request) {
-        const [type, token] = request.headers.authorization.split(" ") ?? [];
-        return (type === "Bearer") ? token : undefined;
+        const tmp = request.headers.authorization;
+        if (tmp) {
+            const [type, token] = request.headers.authorization.split(" ") ?? [];
+            return type === "Bearer" ? token : undefined;
+        }
+        return undefined;
     }
 };
 exports.JwtGuard = JwtGuard;

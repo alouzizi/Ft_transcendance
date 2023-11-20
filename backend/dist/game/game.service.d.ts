@@ -50,7 +50,7 @@ export declare class GameService {
         winRate: string;
         rank: string;
     }[]>;
-    updateGameHistory(senderId: string, recieverUsr: string, senderPt: string, recieverPt: string): Promise<{
+    updateGameHistory(senderId: string, recieverId: string, senderPt: string, recieverPt: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;

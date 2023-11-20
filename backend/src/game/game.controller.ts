@@ -3,7 +3,7 @@ import { GameService } from "./game.service";
 import { UseGuards } from "@nestjs/common";
 import { JwtGuard } from "src/auth/guard";
 
-// @UseGuards(JwtGuard)
+@UseGuards(JwtGuard)
 @Controller("game")
 export class GameController {
   constructor(private gameService: GameService) {}
@@ -22,8 +22,8 @@ export class GameController {
   }
 
   // for getUserRanking
-  @Get("/userRanking/:senderUsr")
-  async getUserRanking(@Param("senderUsr") recieverId: string) {
+  @Get("/userRanking/:senderId")
+  async getUserRanking(@Param("senderId") recieverId: string) {
     return this.gameService.getUserRanking(recieverId);
   }
 
@@ -36,24 +36,24 @@ export class GameController {
   // ==========================  Game Posts =========================
 
   // for updateLevel
-  @Post("/updateLevel/:senderUsr/:newLevel")
+  @Post("/updateLevel/:senderId/:newLevel")
   async updateLevel(
-    @Param("senderUsr") sender: string,
+    @Param("senderId") sender: string,
     @Param("newLevel") newLevel: string
   ) {
     return this.gameService.updateLevel(sender, newLevel);
   }
   // for updateGameHistory
-  @Post("/updateGameHistory/:senderUsr/:recieverUsr/:senderPt/:recieverPt")
+  @Post("/updateGameHistory/:senderId/:recieverId/:senderPt/:recieverPt")
   async updateGameHistory(
-    @Param("senderUsr") senderUsr: string,
-    @Param("recieverUsr") recieverUsr: string,
+    @Param("senderId") senderId: string,
+    @Param("recieverId") recieverId: string,
     @Param("senderPt") senderPt: string,
     @Param("recieverPt") recieverPt: string
   ) {
     return this.gameService.updateGameHistory(
-      senderUsr,
-      recieverUsr,
+      senderId,
+      recieverId,
       senderPt,
       recieverPt
     );

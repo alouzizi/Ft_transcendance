@@ -13,11 +13,10 @@ export class JwtGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private config: ConfigService
-  ) { }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-
 
     const token = this.extractTokenFromHeader(request);
 
@@ -37,7 +36,11 @@ export class JwtGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request) {
-    const [type, token] = request.headers.authorization.split(" ") ?? [];
-    return (type === "Bearer") ? token : undefined;
+    const tmp = request.headers.authorization;
+    if (tmp) {
+      const [type, token] = request.headers.authorization.split(" ") ?? [];
+      return type === "Bearer" ? token : undefined;
+    }
+    return undefined;
   }
 }

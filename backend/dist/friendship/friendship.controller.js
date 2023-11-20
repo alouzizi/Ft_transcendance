@@ -15,42 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendshipController = void 0;
 const common_1 = require("@nestjs/common");
 const friendship_service_1 = require("./friendship.service");
+const guard_1 = require("../auth/guard");
 let FriendshipController = class FriendshipController {
     constructor(friendshipService) {
         this.friendshipService = friendshipService;
-    }
-    async getSendRequistFriends(sender) {
-        return await this.friendshipService.getSendRequistFriends(sender);
-    }
-    async getRecivedRequistFriends(sender) {
-        return await this.friendshipService.getRecivedRequistFriends(sender);
-    }
-    async getFriends(sender) {
-        return await this.friendshipService.getFriends(sender);
-    }
-    async getBlockedUser(sender) {
-        return await this.friendshipService.getBlockedUser(sender);
-    }
-    async addFriendRequest(sender, recived) {
-        return await this.friendshipService.sendFriendRequist(sender, recived);
-    }
-    async removeFriendRequest(sender, recived) {
-        return await this.friendshipService.removeFriendRequist(sender, recived);
-    }
-    async accepteFriendRequest(sender, recived) {
-        await this.friendshipService.removeFriendRequist(recived, sender);
-        return await this.friendshipService.accepteFriendRequest(sender, recived);
-    }
-    async deleteFriend(sender, recived) {
-        return await this.friendshipService.deleteFriend(sender, recived);
-    }
-    async blockedUser(sender, recived) {
-        await this.friendshipService.removeFriendRequist(recived, sender);
-        await this.friendshipService.deleteFriend(recived, sender);
-        return await this.friendshipService.blockedUser(sender, recived);
-    }
-    async unBlockedUser(sender, recived) {
-        return await this.friendshipService.unBlockedUser(sender, recived);
     }
     async getallUsers(sender) {
         return this.friendshipService.getAllUsers(sender);
@@ -102,82 +70,6 @@ let FriendshipController = class FriendshipController {
     }
 };
 exports.FriendshipController = FriendshipController;
-__decorate([
-    (0, common_1.Get)("/getSendFriendRequest/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "getSendRequistFriends", null);
-__decorate([
-    (0, common_1.Get)("/getRecivedRequistFriends/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "getRecivedRequistFriends", null);
-__decorate([
-    (0, common_1.Get)("/getFriends/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "getFriends", null);
-__decorate([
-    (0, common_1.Get)("/getBlockedUser/:sender"),
-    __param(0, (0, common_1.Param)("sender")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "getBlockedUser", null);
-__decorate([
-    (0, common_1.Post)("/sendFriendRequest/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "addFriendRequest", null);
-__decorate([
-    (0, common_1.Delete)("/removeFriendRequest/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "removeFriendRequest", null);
-__decorate([
-    (0, common_1.Post)("/accepteFriendRequest/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "accepteFriendRequest", null);
-__decorate([
-    (0, common_1.Delete)("/deleteFriend/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "deleteFriend", null);
-__decorate([
-    (0, common_1.Post)("/blockedUser/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "blockedUser", null);
-__decorate([
-    (0, common_1.Delete)("/unBlockedUser/:sender/:recived"),
-    __param(0, (0, common_1.Param)("sender")),
-    __param(1, (0, common_1.Param)("recived")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], FriendshipController.prototype, "unBlockedUser", null);
 __decorate([
     (0, common_1.Get)("/allUsers/:sender"),
     __param(0, (0, common_1.Param)("sender")),
@@ -299,6 +191,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FriendshipController.prototype, "removeFriend", null);
 exports.FriendshipController = FriendshipController = __decorate([
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, common_1.Controller)("friendship"),
     __metadata("design:paramtypes", [friendship_service_1.FriendshipService])
 ], FriendshipController);

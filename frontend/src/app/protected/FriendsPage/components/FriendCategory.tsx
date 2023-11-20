@@ -1,6 +1,5 @@
 "use client";
 
-import { Backend_URL } from "../../../../../lib/Constants";
 import {
   useState,
   useEffect,
