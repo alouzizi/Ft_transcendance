@@ -505,7 +505,7 @@ let ChannelService = class ChannelService {
             return { error: true };
         }
     }
-    async muteUserChannel(senderId, channelId, userId, timer) {
+    async muteUserFromChannel(senderId, channelId, userId, timer) {
         try {
             const admin = await this.prisma.channelMember.findFirst({
                 where: { userId: senderId, channelId: channelId },
@@ -577,7 +577,6 @@ let ChannelService = class ChannelService {
                 },
             });
             if (muted) {
-                const dt = new Date();
                 if (muted.unmuted_at < new Date()) {
                     await this.prisma.mutedMember.delete({ where: { id: muted.id } });
                     return -1;

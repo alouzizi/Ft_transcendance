@@ -68,20 +68,29 @@ export class SocketGateway
     this.server.to(ids.receivedId).emit("isTyping", ids);
   }
 
-  @SubscribeMessage("newMessage")
-  async newMessage(@MessageBody() ids: CreateMessageDto) {
-    this.server.to(ids.receivedId).emit("newMessage", ids);
-  }
-
-
   @SubscribeMessage("kickedFromChannel")
   async kickedFromChannel(@MessageBody() receivedId: string) {
     this.server.to(receivedId).emit("kickedFromChannel", { receivedId });
   }
 
   @SubscribeMessage("findMsg2UsersResponse")
-  async addToChannel(@MessageBody() receivedId: string) {
-    this.server.to(receivedId).emit("findMsg2UsersResponse", { receivedId });
+  async joinChannelEmit(@MessageBody() receivedId: string) {
+    this.server.to(receivedId).emit("findMsg2UsersResponse", {});
+  }
+
+  @SubscribeMessage("updateMessageInChannel")
+  async updateMessageInChannel(@MessageBody() ids: CreateMessageDto) {
+    this.socketGatewayService.updateMessageInChannel(ids, this.server);
+  }
+
+  @SubscribeMessage("blockUserToUser")
+  async blockUserToUser(@MessageBody() receivedId: string) {
+    this.server.to(receivedId).emit("blockUserToUser", { receivedId });
+  }
+
+  @SubscribeMessage("mutedUserInChannel")
+  async mutedUserInChannel(@MessageBody() receivedId: string) {
+    this.server.to(receivedId).emit("mutedUserInChannel", { receivedId });
   }
 
 

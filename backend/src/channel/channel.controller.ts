@@ -114,7 +114,7 @@ export class ChannelController {
   @UseGuards(JwtGuard)
   muteUserChannel(@Param('senderId') senderId: string, @Param('channelId') channelId: string,
     @Param('userId') userId: string, @Param('timer') timer: string) {
-    return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+    return this.channelService.muteUserFromChannel(senderId, channelId, userId, timer);
   }
 
 

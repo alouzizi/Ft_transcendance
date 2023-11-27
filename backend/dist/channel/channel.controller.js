@@ -73,7 +73,7 @@ let ChannelController = class ChannelController {
         return this.channelService.joinChannel(senderId, channelId);
     }
     muteUserChannel(senderId, channelId, userId, timer) {
-        return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+        return this.channelService.muteUserFromChannel(senderId, channelId, userId, timer);
     }
     checkIsMuted(senderId, channelId) {
         return this.channelService.checkIsMuted(senderId, channelId);

@@ -23,6 +23,8 @@ import { useRouter } from "next/navigation";
 import { FaGamepad } from "react-icons/fa";
 import PlayInvite from '../../GamePage/components/Invite';
 
+
+
 const BoxChat = () => {
 
     const router = useRouter();
@@ -41,16 +43,15 @@ const BoxChat = () => {
             scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
         }
     };
-    scrollToBottom();
 
     useEffect(() => {
         scrollToBottom();
     }, [Allmsg, isTyping, user.id, geust.id])
 
-    const getDataGeust = async (id: string, isUser: Boolean) => {
-        const temp = await getVueGeust(id, isUser);
-        if (temp !== undefined) setGeust(temp);
-    };
+    // const getDataGeust = async (id: string, isUser: Boolean) => {
+    //     const temp = await getVueGeust(id, isUser);
+    //     if (temp !== undefined) setGeust(temp);
+    // };
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
@@ -66,7 +67,7 @@ const BoxChat = () => {
                 socket.off("findMsg2UsersResponse", handleReceivedMessage);
             };
         }
-    }, [geust.id, user.id]);
+    }, [socket, user.id, geust.id]);
 
 
 
@@ -79,39 +80,47 @@ const BoxChat = () => {
                 msgs = await getMessagesChannel(user.id, geust.id);
             if (msgs !== undefined) setAllMessage(msgs);
         }
-        if (geust.id !== "-1" && user.id !== "-1") {
+        if (socket && geust.id !== "-1" && user.id !== "-1") {
             getData();
+            socket.on("updateMessageInChannel", getData);
+            return () => {
+                socket.off("updateMessageInChannel", getData);
+            };
         }
-    }, [geust.id, user.id, updateInfo]);
+    }, [socket, geust.id, user.id]);
 
 
-    useEffect(() => {
-        if (user.id !== "-1 " && socket) {
-            const upDateGeust = async () => {
-                if (geust.id !== "-1") {
-                    getDataGeust(geust.id, geust.isUser);
-                    setIsTyping(false);
-                }
-            }
-            upDateGeust();
-        }
-    }, [geust.id, user.id, updateInfo]);
+
+
+    // useEffect(() => {
+    //     if (user.id !== "-1 ") {
+    //         const upDateGeust = async () => {
+    //             if (geust.id !== "-1") {
+    //                 getDataGeust(geust.id, geust.isUser);
+    //                 setIsTyping(false);
+    //             }
+    //         }
+    //         upDateGeust();
+    //     }
+    // }, [geust.id, user.id, updateInfo]);
 
 
     const [isBlocked, setIsBlocked] = useState<number>(0)
     const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
-
     useEffect(() => {
-        setIsMuted(false);
-        if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
+        if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 if (check !== undefined) setIsBlocked(check);
 
             }
             upDateGeust();
+            socket.on("blockUserToUser", upDateGeust);
+            return () => {
+                socket.off("blockUserToUser", upDateGeust);
+            };
         }
-    }, [geust.id, user.id, updateInfo]);
+    }, [socket, user.id, geust.id]);
 
     useEffect(() => {
         if (msg != "" && socket) {
@@ -144,30 +153,34 @@ const BoxChat = () => {
 
     const [isMuted, setIsMuted] = useState(false);
     useEffect(() => {
-        if (user.id !== "-1" && geust.id !== "-1"
-            && !geust.isUser) {
+        if (socket && user.id !== "-1" && geust.id !== "-1" && !geust.isUser) {
             const checkUserIsMuted = async () => {
                 const timer = await checkIsMuted(user.id, geust.id);
-                if (timer !== undefined) {
-                    if (timer !== -1) {
-                        setMsg('');
-                        setIsMuted(true);
-                        const timeoutId = setTimeout(() => {
-                            setIsMuted(false);
-                            socket?.emit('updateData', {
-                                content: '',
-                                senderId: user.id,
-                                isDirectMessage: false,
-                                receivedId: geust.id,
-                            });
-                        }, timer);
-                        return () => clearTimeout(timeoutId);
-                    }
+                if (timer !== undefined && timer !== -1) {
+                    setMsg('');
+                    setIsMuted(true);
+                    const timeoutId = setTimeout(() => {
+                        setIsMuted(false);
+                        socket?.emit('updateData', {
+                            content: '',
+                            senderId: user.id,
+                            isDirectMessage: false,
+                            receivedId: geust.id,
+                        });
+                    }, timer);
+                    return () => clearTimeout(timeoutId);
+
+                } else {
+                    setIsMuted(false);
                 }
             }
             checkUserIsMuted();
+            socket.on("mutedUserInChannel", checkUserIsMuted);
+            return () => {
+                socket.off("mutedUserInChannel", checkUserIsMuted);
+            };
         }
-    }, [geust.id, user.id, updateInfo]);
+    }, [socket, geust.id, user.id, updateInfo]);
 
     const handleSendMessage = () => {
         if (msg.trim() != '') {
@@ -178,12 +191,6 @@ const BoxChat = () => {
                     socket.emit('createMessage', {
                         isDirectMessage: geust.isUser,
                         content: msg.trim(),
-                        senderId: user.id,
-                        receivedId: geust.id,
-                    });
-
-                    socket.emit('newMessage', {
-                        content: '',
                         senderId: user.id,
                         receivedId: geust.id,
                     });
@@ -205,7 +212,6 @@ const BoxChat = () => {
         w-[90%]
         max-w-4xl
         `}
-
         >
             <div className="flex border-b items-center justify-between bg-white p-4 rounded-t-[15px]">
                 <div className="flex items-center ">
@@ -311,7 +317,6 @@ const BoxChat = () => {
                         >
                         </input>
 
-
                         <div className={`flex items-center justify-center w-[30px] h-[30px] 
                 rounded-[10px] bg-[#254BD6]  m-[1px] ${isMuted ? "" : "cursor-pointer"} `}>
                             {!isMuted ?
@@ -340,6 +345,7 @@ const BoxChat = () => {
                         <div className='flex flex-col flex-grow items-center mt-3'>
                             <button onClick={async () => {
                                 await unBlockedUser(user.id, geust.id);
+                                socket?.emit('blockUserToUser', geust.id);
                                 setUnblockAlert(false);
                                 setIsBlocked(0);
                             }}

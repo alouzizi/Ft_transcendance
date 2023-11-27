@@ -86,7 +86,7 @@ export class MessagesService {
         receivedStatus: receivedUser.status,
 
         OwnerChannelId: '', // no matter
-        isChannProtected: false ,// no matter
+        isChannProtected: false,// no matter
 
         inGaming: false
 
@@ -214,7 +214,7 @@ export class MessagesService {
             receivedStatus: receivedUser.status,
 
             OwnerChannelId: '', // no matter
-            isChannProtected: false ,// no matter
+            isChannProtected: false,// no matter
 
             inGaming: false
 
@@ -502,8 +502,6 @@ export class MessagesService {
           isChannProtected: false,// no matter
 
           inGaming: false
-          
-        
 
         }
         resultDirect.push(tmp);

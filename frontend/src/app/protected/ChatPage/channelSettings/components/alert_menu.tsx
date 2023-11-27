@@ -57,12 +57,13 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                 await changeStatusAdmin(user.id, geust.id, member.userId);
             } else if ('ban from Group' === e || 'unban from Group' === e) {
                 await ChangeStatusBanned(user.id, geust.id, member.userId);
-                socket?.emit('kickedFromChannel', member.userId);
+                if ('ban from Group' === e) socket?.emit('kickedFromChannel', member.userId);
             } else if ('kick from Group' === e) {
                 await kickMember(user.id, geust.id, member.userId);
                 socket?.emit('kickedFromChannel', member.userId);
             } else if ('Cancel Timeout' === e) {
                 await cancelTimeOut(user.id, geust.id, member.userId);
+                socket?.emit('mutedUserInChannel', member.userId);
             } else if ('Timeout' === e) {
                 setOpenTimeout(true);
             }
@@ -191,22 +192,12 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                     const timer: string = integerValue.toString();
                                     await muteUserChannel(user.id, geust.id, member.userId, timer);
                                     setOpenTimeout(false);
-                                    socket?.emit('updateData', {
-                                        content: '',
-                                        senderId: user.id,
-                                        isDirectMessage: true,
-                                        receivedId: member.userId,
-                                    });
+                                    socket?.emit('mutedUserInChannel', member.userId);
                                 }
                             } else {
                                 await muteUserChannel(user.id, geust.id, member.userId, timeInSecond[timeSelected]);
                                 setOpenTimeout(false);
-                                socket?.emit('updateData', {
-                                    content: '',
-                                    senderId: user.id,
-                                    isDirectMessage: true,
-                                    receivedId: member.userId,
-                                });
+                                socket?.emit('mutedUserInChannel', member.userId);
                             }
                         }}
                             className="w-fit font-meduim  py-1 rounded-md text-white bg-[#4069FF]

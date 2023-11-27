@@ -94,15 +94,18 @@ export default function AlertsAddUserChannel() {
                   await addUserToChannel(user.id, geust.id, elm.id);
                   setSearsh("");
                   socket?.emit('findMsg2UsersResponse', elm.id);
+                  socket?.emit('updateMessageInChannel', { // 
+                    isDirectMessage: false,
+                    receivedId: geust.id,
+                  });
                   handleClose();
-                }}
-              >
+                }}>
                 <Text size="2" weight="medium">
                   Add
                 </Text>
               </div>
             </Flex>
-          </Box>
+          </Box >
         );
       })
     ) : searsh === "" ? (

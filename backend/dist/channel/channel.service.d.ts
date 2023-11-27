@@ -125,7 +125,7 @@ export declare class ChannelService {
     joinChannel(senderId: string, channelId: string): Promise<{
         error: boolean;
     }>;
-    muteUserChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<{
+    muteUserFromChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<{
         error: boolean;
     }>;
     cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<{

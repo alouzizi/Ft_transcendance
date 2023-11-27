@@ -6,7 +6,7 @@ import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 
 @Injectable()
 export class SocketGatewayService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async handleConnection(client: Socket, wss: Server) {
     try {
@@ -51,7 +51,7 @@ export class SocketGatewayService {
           }
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   async handleDisconnect(client: Socket, wss: Server) {
@@ -71,7 +71,7 @@ export class SocketGatewayService {
           wss.to(users[i].id).emit("updateData", {});
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   async updateData(ids: CreateMessageDto, wss: Server) {
@@ -84,5 +84,16 @@ export class SocketGatewayService {
         wss.to(member.userId).emit("updateData", {});
       }
     } else wss.to(ids.receivedId).emit("updateData", {});
+  }
+
+  async updateMessageInChannel(ids: CreateMessageDto, wss: Server) {
+    if (ids.isDirectMessage === false) {
+      const channelMembers = await this.prisma.channelMember.findMany({
+        where: { channelId: ids.receivedId },
+      });
+      for (const member of channelMembers) {
+        wss.to(member.userId).emit("updateMessageInChannel", {});
+      }
+    } else wss.to(ids.receivedId).emit("updateMessageInChannel", {});
   }
 }

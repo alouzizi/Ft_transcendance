@@ -17,6 +17,7 @@ import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '..
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
 
+
 enum Status {
   ACTIF = "ACTIF",
   INACTIF = "INACTIF",
@@ -26,7 +27,7 @@ const ListUser = () => {
 
   const router = useRouter();
 
-  const { setGeust, geust, socket, user, updateInfo, displayChat, setDisplayChat } = useGlobalContext();
+  const { setGeust, geust, socket, user, displayChat, setDisplayChat } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
 
@@ -34,7 +35,7 @@ const ListUser = () => {
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
-    if (socket) {
+    if (socket && user.id !== '-1') {
       const getListUsers = async () => {
         const usersList = await getUserForMsg(user.id);
         if (usersList !== undefined) setItemList(usersList);
@@ -43,7 +44,7 @@ const ListUser = () => {
       socket.on("findMsg2UsersResponse", getListUsers);
       return () => { socket.off("findMsg2UsersResponse", getListUsers); }
     }
-  }, [socket, geust.id])
+  }, [socket, user.id, geust.id, direct])
 
 
   const getDataGeust = async (tmp: messageDto) => {
@@ -77,9 +78,9 @@ const ListUser = () => {
     if (socket) {
       const kickedFromChannel = () => {
         setGeust({
-          isUser: true,
+          isUser: false,
           id: "-1",
-          nickname: "",
+          nickname: "blabla",
           profilePic: "",
           status: Status.INACTIF,
           lastSee: 0,
@@ -87,6 +88,7 @@ const ListUser = () => {
           idUserOwner: "",
           inGaming: false
         });
+        setDirect(true);
       };
       socket.on("kickedFromChannel", kickedFromChannel);
       return () => {
@@ -104,18 +106,22 @@ const ListUser = () => {
 
   const [isBlocked, setIsBlocked] = useState<number>(0)
   useEffect(() => {
-    if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
+    if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
       const upDateGeust = async () => {
         const check = await checkIsBlocked(user.id, geust.id);
         if (check !== undefined) setIsBlocked(check);
       }
       upDateGeust();
+      socket.on("blockUserToUser", upDateGeust);
+      return () => {
+        socket.off("blockUserToUser", upDateGeust);
+      };
     }
-  }, [geust.id, user.id, updateInfo]);
+  }, [geust.id, user.id, socket]);
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
-      <Flex align="center" className='relative border-b py-2 pl-3 border-[#E9ECF1] border-1.5' key={index}
+      <Flex align="center" className='relative border-b py-2 pl-3 border-[#E9ECF1] border-1.5 cursor-pointer' key={index}
         style={{
           background: (el.receivedId === geust.id) ? "#F1F3F9" : 'white'
         }}
@@ -163,13 +169,7 @@ const ListUser = () => {
           />
         }
         <Flex direction="column" className='items-start pl-2'>
-          <Text onClick={() => {
-            if (el.isDirectMessage) {
-              router.push(`/protected/DashboardPage/${el.receivedName}`);
-            }
-          }}
-            size="2" weight="bold"
-            className={`${el.isDirectMessage ? "hover:underline cursor-pointer" : ""}`}>
+          <Text size="2" weight="bold">
             {el.receivedName}
           </Text>
           {el.contentMsg === "" ? <></> :
@@ -200,15 +200,14 @@ const ListUser = () => {
         {(el.contentMsg === "" && !el.isDirectMessage) ?
           <div className='absolute  right-6 cursor-pointer'
             onClick={async () => {
-              console.log(el.isChannProtected);
               if (!el.isChannProtected) {
                 await joinChannel(user.id, el.receivedId);
-                socket?.emit('updateData', {
-                  content: '',
-                  senderId: user.id,
-                  isDirectMessage: false,
-                  receivedId: el.receivedId,
-                });
+                socket?.emit('updateMessageInChannel',
+                  {
+                    isDirectMessage: false,
+                    receivedId: el.receivedId,
+                  }
+                );
                 getDataGeust(el);
                 setDisplayChat(true);
               }

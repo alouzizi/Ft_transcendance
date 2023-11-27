@@ -62,6 +62,7 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit('blockUserToUser', prompt.friendInfo.id);
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,

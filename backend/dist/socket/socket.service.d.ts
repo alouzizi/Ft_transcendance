@@ -7,4 +7,5 @@ export declare class SocketGatewayService {
     handleConnection(client: Socket, wss: Server): Promise<void>;
     handleDisconnect(client: Socket, wss: Server): Promise<void>;
     updateData(ids: CreateMessageDto, wss: Server): Promise<void>;
+    updateMessageInChannel(ids: CreateMessageDto, wss: Server): Promise<void>;
 }

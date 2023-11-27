@@ -18,7 +18,7 @@ export class ChannelService {
   constructor(
     private prisma: PrismaService,
     private readonly notificationService: NotificationService
-  ) {}
+  ) { }
 
   async createMessageInfoChannel(
     senderId: string,
@@ -30,7 +30,7 @@ export class ChannelService {
     const user: User = await this.prisma.user.findUnique({
       where: { id: userId },
     });
-    
+
     await this.prisma.message.create({
       data: {
         senderId: senderId,
@@ -264,8 +264,8 @@ export class ChannelService {
           member.userId === channel.channelOwnerId
             ? "Owner"
             : member.isAdmin
-            ? "Admin"
-            : "User",
+              ? "Admin"
+              : "User",
         unmuted_at,
       };
       result.push(temp);
@@ -547,7 +547,7 @@ export class ChannelService {
     }
   }
 
-  async muteUserChannel(
+  async muteUserFromChannel(
     senderId: string,
     channelId: string,
     userId: string,
@@ -629,7 +629,6 @@ export class ChannelService {
         },
       });
       if (muted) {
-        const dt = new Date();
         if (muted.unmuted_at < new Date()) {
           await this.prisma.mutedMember.delete({ where: { id: muted.id } });
           return -1;
