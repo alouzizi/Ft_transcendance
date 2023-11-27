@@ -19,7 +19,8 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     updateData(ids: CreateMessageDto): Promise<void>;
     isTyping(ids: CreateMessageDto): Promise<void>;
     newMessage(ids: CreateMessageDto): Promise<void>;
-    kickedFromChannel(ids: CreateMessageDto): Promise<void>;
+    kickedFromChannel(receivedId: string): Promise<void>;
+    addToChannel(receivedId: string): Promise<void>;
     ROUND_LIMIT: number;
     joindRoom: number;
     private GameInit;

@@ -1,29 +1,32 @@
 "use client"
+import Badge from "@mui/material/Badge";
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from 'react';
+import { FaGamepad } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../context/store';
-import { checkUserIsInChannel, joinChannel, validePassword } from '../api/fetch-channel';
+import { joinChannel, validePassword } from '../api/fetch-channel';
 import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
-import Badge from "@mui/material/Badge";
-import { useRouter } from "next/navigation";
-import { FaGamepad } from "react-icons/fa";
 
-
+enum Status {
+  ACTIF = "ACTIF",
+  INACTIF = "INACTIF",
+}
 
 const ListUser = () => {
 
   const router = useRouter();
 
-  const { setGeust, geust, socket, user, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
+  const { setGeust, geust, socket, user, updateInfo, displayChat, setDisplayChat } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
 
@@ -31,17 +34,16 @@ const ListUser = () => {
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
-    const getListUsers = async () => {
-      const usersList = await getUserForMsg(user.id);
-      if (usersList !== undefined) setItemList(usersList);
-      else setOpenAlertError(true);
-    };
-    getListUsers();
     if (socket) {
+      const getListUsers = async () => {
+        const usersList = await getUserForMsg(user.id);
+        if (usersList !== undefined) setItemList(usersList);
+      };
+      getListUsers();
       socket.on("findMsg2UsersResponse", getListUsers);
+      return () => { socket.off("findMsg2UsersResponse", getListUsers); }
     }
-    return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
-  }, [socket, updateInfo])
+  }, [socket, geust.id])
 
 
   const getDataGeust = async (tmp: messageDto) => {
@@ -51,10 +53,7 @@ const ListUser = () => {
     else
       geustTemp = await getChannelGeust(tmp.receivedId);
     if (geustTemp !== undefined) setGeust(geustTemp);
-    else setOpenAlertError(true);
   };
-
-
 
   useEffect(() => {
     if (geust.id === '-1') {
@@ -72,52 +71,43 @@ const ListUser = () => {
         }
       }
     }
-  }, [direct, itemList, updateInfo,])
-
-
-
+  }, [direct, itemList, geust.id])
 
   useEffect(() => {
-    if (user.id !== "-1" && socket) {
-      const kickedFromChannel = async () => {
-        const temp = await checkUserIsInChannel(user.id, geust.id);
-        if (temp) {
-          setGeust({
-            isUser: true,
-            id: '-1',
-            nickname: '',
-            profilePic: '',
-            status: Status.INACTIF,
-            lastSee: 0,
-            lenUser: 0,
-            idUserOwner: '',
-            inGaming: false
-          });
-        }
+    if (socket) {
+      const kickedFromChannel = () => {
+        setGeust({
+          isUser: true,
+          id: "-1",
+          nickname: "",
+          profilePic: "",
+          status: Status.INACTIF,
+          lastSee: 0,
+          lenUser: 0,
+          idUserOwner: "",
+          inGaming: false
+        });
       };
-
       socket.on("kickedFromChannel", kickedFromChannel);
       return () => {
         socket.off("kickedFromChannel", kickedFromChannel);
       };
     }
-  }, []);
+  }, [socket]);
 
 
-  useEffect(() => {
-    if (geust.id !== '-1')
-      setDirect(geust.isUser);
-  }, [geust.id]);
+  // useEffect(() => {
+  //   if (geust.id !== '-1')
+  //     setDirect(geust.isUser);
+  // }, [geust.id]);
 
 
   const [isBlocked, setIsBlocked] = useState<number>(0)
-
   useEffect(() => {
-    if (user.id !== "-1" && geust.id !== "-1") {
+    if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
       const upDateGeust = async () => {
         const check = await checkIsBlocked(user.id, geust.id);
         if (check !== undefined) setIsBlocked(check);
-        else setOpenAlertError(true);
       }
       upDateGeust();
     }
@@ -241,13 +231,11 @@ const ListUser = () => {
         (item.contentMsg !== "" && search === "") ||
         ((item.receivedName.includes(search) && search !== '') || search === "*")))
     });
-
   const itemListChannel = itemList.filter((item: messageDto) => {
     return (!item.isDirectMessage && (
       (item.contentMsg !== "" && search === "") ||
       ((item.receivedName.includes(search) && search !== '') || search === "*")))
   });
-
   const userWidgetDirect: JSX.Element | JSX.Element[] = (itemListDirect.length != 0) ? itemListDirect.map((el, index) => {
     return widgetUser(el, index)
   }) : <Text className="flex border-b justify-center">pas user</Text>
@@ -264,14 +252,11 @@ const ListUser = () => {
   const [password, setPassword] = useState('');
   const [notMatch, setNotMatch] = useState('');
 
-
-
-
   let styles: string = 'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
     <Box
-      className={
-        `bg-white h-[900px] w-[90%] rounded-[15px]
+      className={ // h900px
+        `bg-white h-[800px] w-[90%] rounded-[15px]
         ${!displayChat ? '' : 'hidden'}
         md:block
         md:w-[300px]`
@@ -304,7 +289,7 @@ const ListUser = () => {
         </input>
       </div >
 
-      <ScrollArea scrollbars="vertical" style={{ height: 800 }}>
+      <ScrollArea scrollbars="vertical" style={{ height: 600 }}>
         <Box>
           <Flex direction="column" >
             {direct ? userWidgetDirect : userWidgetChannel}

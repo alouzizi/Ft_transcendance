@@ -10,6 +10,15 @@ export async function getVueGeust(id: string, isUser: Boolean) {
   return geustTemp;
 }
 
+  // const getDataGeust = async (tmp: messageDto) => {
+  //   let geustTemp: geustDto;
+  //   if (tmp.isDirectMessage)
+  //     geustTemp = await getUserGeust(tmp.receivedId);
+  //   else
+  //     geustTemp = await getChannelGeust(tmp.receivedId);
+  //   if (geustTemp !== undefined) setGeust(geustTemp);
+  //   else setOpenAlertError(true);
+  // };
 
 export async function getUserGeust(id: string) {
   try {

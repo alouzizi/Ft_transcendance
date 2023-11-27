@@ -23,6 +23,7 @@ enum ChannelType {
     Public = 'Public',
     Private = 'Private'
 }
+
 export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
 
@@ -83,6 +84,7 @@ export default function AlertAddChannel() {
         else
             setOpenAlertError(true);
     };
+
     useEffect(() => {
         async function createCha() {
             if (isReady) {
@@ -189,6 +191,7 @@ export default function AlertAddChannel() {
 
 
                         <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[10rem] md:w-[15rem]" >
+                            
                             <div style={{ cursor: 'pointer' }}
                                 className={(channelData.channelType === ChannelType.Public) ? styles : ""} onClick={() => {
                                     setChannelData((prevState) => {
@@ -197,6 +200,7 @@ export default function AlertAddChannel() {
                                 }}>
                                 <Text size='2' weight="bold">Public</Text>
                             </div>
+                           
                             <div style={{ cursor: 'pointer' }}
                                 className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
                                     setChannelData((prevState) => {
@@ -296,6 +300,7 @@ export default function AlertAddChannel() {
                                 border: 10
                             }}
                             onClick={() => {
+
                                 const parsName = channelNameSchema.safeParse(channelData.channelName);
                                 const parskey = channelkeySchema.safeParse(channelData.channelPassword);
                                 if (parsName.success && (parskey.success || !channelData.protected)) {

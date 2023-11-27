@@ -26,9 +26,11 @@ export class ChannelService {
     userId: string,
     msg: string
   ) {
+
     const user: User = await this.prisma.user.findUnique({
       where: { id: userId },
     });
+    
     await this.prisma.message.create({
       data: {
         senderId: senderId,

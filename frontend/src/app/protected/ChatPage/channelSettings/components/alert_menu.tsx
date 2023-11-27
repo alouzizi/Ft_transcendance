@@ -57,26 +57,23 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                 await changeStatusAdmin(user.id, geust.id, member.userId);
             } else if ('ban from Group' === e || 'unban from Group' === e) {
                 await ChangeStatusBanned(user.id, geust.id, member.userId);
+                socket?.emit('kickedFromChannel', member.userId);
             } else if ('kick from Group' === e) {
                 await kickMember(user.id, geust.id, member.userId);
-                socket?.emit('kickedFromChannel', {
-                    content: '',
-                    senderId: user.id,
-                    receivedId: geust.id,
-                });
+                socket?.emit('kickedFromChannel', member.userId);
             } else if ('Cancel Timeout' === e) {
                 await cancelTimeOut(user.id, geust.id, member.userId);
             } else if ('Timeout' === e) {
                 setOpenTimeout(true);
             }
-            if ('Timeout' !== e) {
-                socket?.emit('updateData', {
-                    content: '',
-                    senderId: user.id,
-                    isDirectMessage: false,
-                    receivedId: geust.id,
-                });
-            }
+            // if ('Timeout' !== e) {
+            //     socket?.emit('updateData', {
+            //         content: '',
+            //         senderId: user.id,
+            //         isDirectMessage: false,
+            //         receivedId: geust.id,
+            //     });
+            // }
         }
         setAnchorEl(null);
     };

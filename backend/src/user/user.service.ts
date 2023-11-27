@@ -302,7 +302,7 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://10.13.8.4:4000/${path}`,
+          profilePic: `http://172.20.10.3:4000/${path}`,
         },
       });
       console.log("File uploaded successfully");

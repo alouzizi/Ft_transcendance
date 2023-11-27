@@ -11,7 +11,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
   const pathname = usePathname();
 
   const handleLogin = () => {
-    window.location.href = "http://10.13.8.4:4000/auth/login42";
+    window.location.href = "http://172.20.10.3:4000/auth/login42";
   };
 
   const [openAlert, setOpenAlert] = useState(false);

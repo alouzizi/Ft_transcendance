@@ -5,9 +5,6 @@ import { MdOutlineEditNote } from "react-icons/md";
 import { useState } from 'react';
 
 
-
-
-
 export function extractHoursAndM(time: number): string {
 
     const dt = new Date(time);
@@ -152,12 +149,11 @@ function showDays(currentDate: number, timeMsg: number) {
 
 // $owner create group $channelName 
 // You created group $channelName
-
 // $owner add $userName
 // You add $userName
-
 // You Block this contact. Tap to unblock
 // You unblocked this contact
+
 export function MessageCenterInfo({ message, user }: { message: messageDto, user: ownerDto }) {
     const cardStyles = {
         width: 200,

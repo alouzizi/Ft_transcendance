@@ -23,11 +23,6 @@ import { useRouter } from "next/navigation";
 import { FaGamepad } from "react-icons/fa";
 import PlayInvite from '../../GamePage/components/Invite';
 
-enum Status {
-    ACTIF = "ACTIF",
-    INACTIF = "INACTIF",
-}
-
 const BoxChat = () => {
 
     const router = useRouter();
@@ -37,7 +32,7 @@ const BoxChat = () => {
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-    const { geust, user, socket, setGeust, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
+    const { geust, user, socket, setGeust, updateInfo, displayChat, setDisplayChat } = useGlobalContext();
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -55,7 +50,6 @@ const BoxChat = () => {
     const getDataGeust = async (id: string, isUser: Boolean) => {
         const temp = await getVueGeust(id, isUser);
         if (temp !== undefined) setGeust(temp);
-        else setOpenAlertError(true);
     };
 
     useEffect(() => {
@@ -84,7 +78,6 @@ const BoxChat = () => {
             else
                 msgs = await getMessagesChannel(user.id, geust.id);
             if (msgs !== undefined) setAllMessage(msgs);
-            else setOpenAlertError(true);
         }
         if (geust.id !== "-1" && user.id !== "-1") {
             getData();
@@ -114,7 +107,6 @@ const BoxChat = () => {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 if (check !== undefined) setIsBlocked(check);
-                else setOpenAlertError(true);
 
             }
             upDateGeust();
@@ -171,7 +163,7 @@ const BoxChat = () => {
                         }, timer);
                         return () => clearTimeout(timeoutId);
                     }
-                } else setOpenAlertError(true);
+                }
             }
             checkUserIsMuted();
         }
@@ -205,7 +197,7 @@ const BoxChat = () => {
     return (geust.id != "-1") ? (
         <Box
             className={`
-        bg-[#F1F3F9] h-[900px] rounded-[15px] 
+        bg-[#F1F3F9] h-[800px] rounded-[15px] 
         ${displayChat ? '' : 'hidden'}
         md:ml-[15px]
         md:block
@@ -295,7 +287,7 @@ const BoxChat = () => {
             </div >
 
             <div   >
-                <ScrollArea scrollbars="vertical" style={{ height: 775 }} ref={scrollAreaRef} >
+                <ScrollArea scrollbars="vertical" style={{ height: 675 }} ref={scrollAreaRef} >
                     <Box p="1" pr="3">
                         <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}

@@ -75,8 +75,13 @@ export class SocketGateway
 
 
   @SubscribeMessage("kickedFromChannel")
-  async kickedFromChannel(@MessageBody() ids: CreateMessageDto) {
-    this.server.to(ids.receivedId).emit("kickedFromChannel", ids);
+  async kickedFromChannel(@MessageBody() receivedId: string) {
+    this.server.to(receivedId).emit("kickedFromChannel", { receivedId });
+  }
+
+  @SubscribeMessage("findMsg2UsersResponse")
+  async addToChannel(@MessageBody() receivedId: string) {
+    this.server.to(receivedId).emit("findMsg2UsersResponse", { receivedId });
   }
 
 

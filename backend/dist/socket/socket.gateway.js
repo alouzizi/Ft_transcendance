@@ -66,8 +66,11 @@ let SocketGateway = class SocketGateway {
     async newMessage(ids) {
         this.server.to(ids.receivedId).emit("newMessage", ids);
     }
-    async kickedFromChannel(ids) {
-        this.server.to(ids.receivedId).emit("kickedFromChannel", ids);
+    async kickedFromChannel(receivedId) {
+        this.server.to(receivedId).emit("kickedFromChannel", { receivedId });
+    }
+    async addToChannel(receivedId) {
+        this.server.to(receivedId).emit("findMsg2UsersResponse", { receivedId });
     }
     GameInit(roomName) {
         this.roomState.set(roomName, {
@@ -360,9 +363,16 @@ __decorate([
     (0, websockets_1.SubscribeMessage)("kickedFromChannel"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "kickedFromChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("findMsg2UsersResponse"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "addToChannel", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("clientId"),
     __param(0, (0, websockets_1.ConnectedSocket)()),
