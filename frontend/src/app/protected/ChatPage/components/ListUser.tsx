@@ -17,7 +17,6 @@ import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '..
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
 
-
 enum Status {
   ACTIF = "ACTIF",
   INACTIF = "INACTIF",
@@ -55,6 +54,23 @@ const ListUser = () => {
       geustTemp = await getChannelGeust(tmp.receivedId);
     if (geustTemp !== undefined) setGeust(geustTemp);
   };
+
+  useEffect(() => {
+    if (socket) {
+      const updateStatusGeust = async () => {
+        if (geust.id !== '-1' && geust.isUser) {
+          const geustTemp = await getUserGeust(geust.id);
+          if (geustTemp !== undefined) setGeust(geustTemp);
+        }
+        const usersList = await getUserForMsg(user.id);
+        if (usersList !== undefined) setItemList(usersList);
+      };
+      socket.on("updateStatusGeust", updateStatusGeust);
+      return () => {
+        socket.off("updateStatusGeust", updateStatusGeust);
+      };
+    }
+  }, [socket, geust.id]);
 
   useEffect(() => {
     if (geust.id === '-1') {
@@ -96,13 +112,6 @@ const ListUser = () => {
       };
     }
   }, [socket]);
-
-
-  // useEffect(() => {
-  //   if (geust.id !== '-1')
-  //     setDirect(geust.isUser);
-  // }, [geust.id]);
-
 
   const [isBlocked, setIsBlocked] = useState<number>(0)
   useEffect(() => {

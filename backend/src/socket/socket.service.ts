@@ -18,7 +18,6 @@ export class SocketGatewayService {
             id: senderId,
           },
         });
-
         if (userExists) {
           try {
             await this.prisma.user.update({
@@ -44,7 +43,11 @@ export class SocketGatewayService {
               },
             });
             for (const user of activeUsers) {
-              wss.to(user.id.toString()).emit("updateData", {});
+              // wss.to(user.id).emit("updateStatusGeust", {});
+              if (user.id !== client.handshake.query.senderId) {
+                console.log("send Active emit updateStatusGeust");
+                wss.to(user.id).emit("updateStatusGeust", {});
+              }
             }
           } catch (error) {
             console.error("Error while handling connection:", error);
@@ -67,8 +70,11 @@ export class SocketGatewayService {
           },
         });
         const users = await this.prisma.user.findMany();
-        for (let i = 0; i < users.length; i++) {
-          wss.to(users[i].id).emit("updateData", {});
+        for (const user of users) {
+          if (user.id !== client.handshake.query.senderId) {
+            console.log("send Inactif emit updateStatusGeust");
+            wss.to(user.id).emit("updateStatusGeust", {});
+          }
         }
       }
     } catch (error) { }
