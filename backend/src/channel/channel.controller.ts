@@ -13,7 +13,6 @@ export class ChannelController {
   @UseGuards(JwtGuard)
   createChannel(@Body() createChannelDto: any,
     @Param('senderId') senderId: string) {
-    console.log(typeof createChannelDto.channelType, createChannelDto.channelType);
     const channelData: CreateChannelDto = {
       ...createChannelDto,
       channelType: (createChannelDto.channelType == 'Private') ? ChannelType.Private : ChannelType.Public,

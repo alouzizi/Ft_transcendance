@@ -1,6 +1,5 @@
 'use client';
 import { useGlobalContext } from '@/app/protected/context/store';
-import AlertSave from './components/alert_save';
 import MembersChannel from './components/membersChannel';
 import UpdateChannel from './components/updateChannel';
 import { Text } from '@radix-ui/themes';
@@ -10,7 +9,8 @@ import { checkOwnerIsAdmin } from '../api/fetch-channel';
 
 
 const PageChat = () => {
-    const { geust, setGeust, user, updateInfo, setSaveChanges } = useGlobalContext();
+    const { geust, setGeust, user, socket } = useGlobalContext();
+
 
     useEffect(() => {
         const getDataGeust = async () => {
@@ -24,28 +24,44 @@ const PageChat = () => {
         if (geust.id !== '-1') localStorage.setItem('geust.id', geust.id);
     }, [user.id]);
 
+
+    useEffect(() => {
+        const getDataGeust = async () => {
+            if (geust.id !== '-1') {
+                const temp = await getVueGeust(geust.id, false);
+                setGeust(temp);
+            }
+        };
+        if (socket) {
+            socket.on("updateChannel", getDataGeust);
+            return () => {
+                socket.off("updateChannel", getDataGeust);
+            };
+        }
+    }, [socket]);
+
     const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
     useEffect(() => {
         const getData = async () => {
             const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
             setIsOwnerAdmin(tmp);
-            if (true) setSaveChanges(1)
         }
         if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData();
-    }, [updateInfo]);
+    }, [geust.id]);
 
     return (
         <div >
             {
                 (geust.id !== '-1') ?
-                    <div className=' h-screen flex flex-col justify-around text-black  '>
+                    <div className=' h-screen flex flex-col justify-start text-black  '>
                         <div>
                             {isOwnerAdmin ?
                                 <div>
-                                    <div className="pl-10 pt-4 flex  justify-start">
+                                    <div className="pl-10 pt-4 flex justify-start">
                                         <Text style={{ color: 'white', fontSize: 20 }}>Channel  Overview</Text>
                                     </div>
                                     <UpdateChannel />
+
                                 </div>
                                 : <></>
                             }
@@ -55,9 +71,6 @@ const PageChat = () => {
                             </div>
                             <MembersChannel />
                         </div>
-                        <AlertSave />
-                        <div></div>
-                        <div></div>
                     </div>
                     : <></>
             }

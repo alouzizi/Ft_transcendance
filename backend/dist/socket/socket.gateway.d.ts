@@ -17,6 +17,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     handleDisconnect(client: Socket): Promise<void>;
     createMessage(createMessageDto: CreateMessageDto): Promise<void>;
     updateData(ids: CreateMessageDto): Promise<void>;
+    updateChannel(ids: CreateMessageDto): Promise<void>;
     isTyping(ids: CreateMessageDto): Promise<void>;
     kickedFromChannel(receivedId: string): Promise<void>;
     joinChannelEmit(receivedId: string): Promise<void>;

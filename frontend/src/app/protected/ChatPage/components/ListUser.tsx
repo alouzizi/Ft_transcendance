@@ -13,7 +13,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../context/store';
 import { joinChannel, validePassword } from '../api/fetch-channel';
-import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
+import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust, getVueGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
 
@@ -127,6 +127,9 @@ const ListUser = () => {
       };
     }
   }, [geust.id, user.id, socket]);
+
+
+
 
   const widgetUser = (el: messageDto, index: number) => {
     return (

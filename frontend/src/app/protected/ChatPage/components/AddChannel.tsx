@@ -45,8 +45,6 @@ export default function AlertAddChannel() {
     })
 
 
-    const [isReady, setIsReady] = useState(false);
-
     const [memberSearch, setMemberSearch] = useState('');
 
     const { user, setGeust, socket, setOpenAlertError } = useGlobalContext();
@@ -85,29 +83,15 @@ export default function AlertAddChannel() {
             setOpenAlertError(true);
     };
 
-    useEffect(() => {
-        async function createCha() {
-            if (isReady) {
-                const res = await createChannel(channelData, user.id);
-                if (res !== undefined) {
-                    if (res.status === 200) {
-                        getDataGeust(res.id, false);
-                        socket?.emit('updateData', {
-                            content: '',
-                            senderId: user.id,
-                            isDirectMessage: false,
-                            receivedId: res.id,
-                        });
-                        setOpen(false);
-                    } else if (res.status === 202) { setErrorName(res.error); }
-                } else
-                    setOpenAlertError(true);
-
-            }
+    async function createChannelServer() {
+        const res = await createChannel(channelData, user.id);
+        if (res !== undefined) {
+            if (res.status === 200) {
+                getDataGeust(res.id, false);
+                setOpen(false);
+            } else if (res.status === 202) { setErrorName(res.error); }
         }
-        createCha();
-        return () => setIsReady(false);
-    }, [isReady])
+    }
 
     useEffect(() => {
         setChannelData({
@@ -119,7 +103,6 @@ export default function AlertAddChannel() {
             protected: false,
             avatar: '',
         });
-        setIsReady(false);
         setMemberSearch('');
         setUsersFilter([]);
         setMembersChannel([]);
@@ -136,11 +119,6 @@ export default function AlertAddChannel() {
         return <Box p="1" pr="3" className='mx-2' key={elm.id}>
             <Flex align="center" justify="between" className='border-b py-2'>
                 <div className='flex items-center relative'>
-                    {/* <Avatar className="h-[30px] md:h-40 rounded-full"
-                        src={elm.profilePic}
-                        fallback="T"
-                    style={{ height: '30px', borderRadius: '30px' }}
-                    /> */}
                     <img
                         className="h-[20px] md:h-[30px]  rounded-full"
                         src={elm.profilePic} />
@@ -191,7 +169,7 @@ export default function AlertAddChannel() {
 
 
                         <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[10rem] md:w-[15rem]" >
-                            
+
                             <div style={{ cursor: 'pointer' }}
                                 className={(channelData.channelType === ChannelType.Public) ? styles : ""} onClick={() => {
                                     setChannelData((prevState) => {
@@ -200,7 +178,7 @@ export default function AlertAddChannel() {
                                 }}>
                                 <Text size='2' weight="bold">Public</Text>
                             </div>
-                           
+
                             <div style={{ cursor: 'pointer' }}
                                 className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
                                     setChannelData((prevState) => {
@@ -312,8 +290,9 @@ export default function AlertAddChannel() {
                                             };
                                         });
                                     }
-                                    setIsReady(true);
+                                    createChannelServer();
                                 } else {
+
                                     if (!parsName.success) setErrorName('Invalid channel name');
                                     if (!parskey.success && channelData.protected) setErrorKey('Invalid channel key');
                                 }

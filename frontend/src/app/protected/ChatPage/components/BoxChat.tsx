@@ -48,10 +48,7 @@ const BoxChat = () => {
         scrollToBottom();
     }, [Allmsg, isTyping, user.id, geust.id])
 
-    // const getDataGeust = async (id: string, isUser: Boolean) => {
-    //     const temp = await getVueGeust(id, isUser);
-    //     if (temp !== undefined) setGeust(temp);
-    // };
+
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
@@ -68,29 +65,6 @@ const BoxChat = () => {
             };
         }
     }, [socket, user.id, geust.id]);
-
-
-
-    useEffect(() => {
-        async function getData() {
-            let msgs;
-            if (geust.isUser)
-                msgs = await getMessageTwoUsers(user.id, geust.id);
-            else
-                msgs = await getMessagesChannel(user.id, geust.id);
-            if (msgs !== undefined) setAllMessage(msgs);
-        }
-        if (socket && geust.id !== "-1" && user.id !== "-1") {
-            getData();
-            socket.on("updateMessageInChannel", getData);
-            return () => {
-                socket.off("updateMessageInChannel", getData);
-            };
-        }
-    }, [socket, geust.id, user.id]);
-
-
-
 
     // useEffect(() => {
     //     if (user.id !== "-1 ") {
@@ -198,8 +172,42 @@ const BoxChat = () => {
                 setMsg('');
             }
         }
-
     }
+
+
+    async function getData() {
+        let msgs;
+        if (geust.isUser)
+            msgs = await getMessageTwoUsers(user.id, geust.id);
+        else
+            msgs = await getMessagesChannel(user.id, geust.id);
+        if (msgs !== undefined) setAllMessage(msgs);
+    }
+    useEffect(() => {
+        if (socket && geust.id !== "-1" && user.id !== "-1") {
+            getData();
+            socket.on("updateMessageInChannel", getData);
+            return () => {
+                socket.off("updateMessageInChannel", getData);
+            };
+        }
+    }, [socket, geust.id, user.id]);
+
+    useEffect(() => {
+        const getDataGeust = async (data: { idChannel: string }) => {
+            if (geust.id == data.idChannel) {
+                const temp = await getVueGeust(geust.id, false);
+                setGeust(temp);
+                getData();
+            }
+        };
+        if (socket) {
+            socket.on("updateChannel", getDataGeust);
+            return () => {
+                socket.off("updateChannel", getDataGeust);
+            };
+        }
+    }, [socket, geust.id]);
 
     return (geust.id != "-1") ? (
         <Box

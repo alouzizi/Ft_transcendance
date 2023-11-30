@@ -60,6 +60,9 @@ let SocketGateway = class SocketGateway {
     async updateData(ids) {
         this.socketGatewayService.updateData(ids, this.server);
     }
+    async updateChannel(ids) {
+        this.socketGatewayService.updateChannel(ids, this.server);
+    }
     async isTyping(ids) {
         this.server.to(ids.receivedId).emit("isTyping", ids);
     }
@@ -134,7 +137,7 @@ let SocketGateway = class SocketGateway {
         });
         const users = await this.prisma.user.findMany();
         for (const user of users) {
-            this.server.to(user.id).emit("updateData", {});
+            this.server.to(user.id).emit("updateStatusGeust", {});
         }
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
@@ -219,7 +222,7 @@ let SocketGateway = class SocketGateway {
             });
             const users = await this.prisma.user.findMany();
             for (const user of users) {
-                this.server.to(user.id).emit("updateData", {});
+                this.server.to(user.id).emit("updateStatusGeust", {});
             }
             delete this.joindClients[id];
             delete this.joindClients[id2];
@@ -351,6 +354,13 @@ __decorate([
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "updateData", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("updateChannel"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "updateChannel", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("isTyping"),
     __param(0, (0, websockets_1.MessageBody)()),

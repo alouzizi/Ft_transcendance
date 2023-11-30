@@ -100,17 +100,21 @@ let SocketGatewayService = class SocketGatewayService {
         else
             wss.to(ids.receivedId).emit("updateData", {});
     }
-    async updateMessageInChannel(ids, wss) {
-        if (ids.isDirectMessage === false) {
-            const channelMembers = await this.prisma.channelMember.findMany({
-                where: { channelId: ids.receivedId },
-            });
-            for (const member of channelMembers) {
-                wss.to(member.userId).emit("updateMessageInChannel", {});
-            }
+    async updateChannel(ids, wss) {
+        const channelMembers = await this.prisma.channelMember.findMany({
+            where: { channelId: ids.receivedId },
+        });
+        for (const member of channelMembers) {
+            wss.to(member.userId).emit("updateChannel", { idChannel: ids.receivedId });
         }
-        else
-            wss.to(ids.receivedId).emit("updateMessageInChannel", {});
+    }
+    async updateMessageInChannel(ids, wss) {
+        const channelMembers = await this.prisma.channelMember.findMany({
+            where: { channelId: ids.receivedId },
+        });
+        for (const member of channelMembers) {
+            wss.to(member.userId).emit("updateMessageInChannel", { idChannel: ids.receivedId });
+        }
     }
 };
 exports.SocketGatewayService = SocketGatewayService;

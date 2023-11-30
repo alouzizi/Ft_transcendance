@@ -63,6 +63,11 @@ export class SocketGateway
     this.socketGatewayService.updateData(ids, this.server);
   }
 
+  @SubscribeMessage("updateChannel")
+  async updateChannel(@MessageBody() ids: CreateMessageDto) {
+    this.socketGatewayService.updateChannel(ids, this.server);
+  }
+
   @SubscribeMessage("isTyping")
   async isTyping(@MessageBody() ids: CreateMessageDto) {
     this.server.to(ids.receivedId).emit("isTyping", ids);
@@ -171,9 +176,8 @@ export class SocketGateway
 
     const users = await this.prisma.user.findMany();
     for (const user of users) {
-      this.server.to(user.id).emit("updateData", {});
+      this.server.to(user.id).emit("updateStatusGeust", {});
     }
-
     clearInterval(this.ballPositionInterval.get(roomName));
 
     this.ballPositionInterval.set(
@@ -296,7 +300,7 @@ export class SocketGateway
       });
       const users = await this.prisma.user.findMany();
       for (const user of users) {
-        this.server.to(user.id).emit("updateData", {});
+        this.server.to(user.id).emit("updateStatusGeust", {});
       }
       delete this.joindClients[id];
       delete this.joindClients[id2];

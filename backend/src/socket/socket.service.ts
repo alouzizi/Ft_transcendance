@@ -92,14 +92,21 @@ export class SocketGatewayService {
     } else wss.to(ids.receivedId).emit("updateData", {});
   }
 
+  async updateChannel(ids: CreateMessageDto, wss: Server) {
+    const channelMembers = await this.prisma.channelMember.findMany({
+      where: { channelId: ids.receivedId },
+    });
+    for (const member of channelMembers) {
+      wss.to(member.userId).emit("updateChannel", { idChannel: ids.receivedId });
+    }
+  }
+
   async updateMessageInChannel(ids: CreateMessageDto, wss: Server) {
-    if (ids.isDirectMessage === false) {
-      const channelMembers = await this.prisma.channelMember.findMany({
-        where: { channelId: ids.receivedId },
-      });
-      for (const member of channelMembers) {
-        wss.to(member.userId).emit("updateMessageInChannel", {});
-      }
-    } else wss.to(ids.receivedId).emit("updateMessageInChannel", {});
+    const channelMembers = await this.prisma.channelMember.findMany({
+      where: { channelId: ids.receivedId },
+    });
+    for (const member of channelMembers) {
+      wss.to(member.userId).emit("updateMessageInChannel", { idChannel: ids.receivedId });
+    }
   }
 }

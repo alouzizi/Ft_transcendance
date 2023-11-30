@@ -189,6 +189,8 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
     }
     else if (message.contentMsg.includes('join')) {
         messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else {
+        messageTmp = `${message.contentMsg}`
     }
     return (
         <div className='mt-1'>
