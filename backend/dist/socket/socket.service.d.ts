@@ -7,6 +7,10 @@ export declare class SocketGatewayService {
     handleConnection(client: Socket, wss: Server): Promise<void>;
     handleDisconnect(client: Socket, wss: Server): Promise<void>;
     updateData(ids: CreateMessageDto, wss: Server): Promise<void>;
+    emitNewMessage(ids: CreateMessageDto, wss: Server): Promise<void>;
     updateChannel(ids: CreateMessageDto, wss: Server): Promise<void>;
     updateMessageInChannel(ids: CreateMessageDto, wss: Server): Promise<void>;
+    mutedUserInChannel(idChannel: string, wss: Server): Promise<void>;
+    changeStatusMember(idChannel: string, wss: Server): Promise<void>;
+    kickedFromChannel(ids: any, wss: Server): Promise<void>;
 }

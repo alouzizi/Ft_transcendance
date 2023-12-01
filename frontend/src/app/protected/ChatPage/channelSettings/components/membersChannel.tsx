@@ -18,48 +18,87 @@ enum Status {
 export default function MembersChannel() {
 
     const [searsh, setSearsh] = useState('');
-
     const { user, geust, socket, updateInfo, setUpdateInfo, setGeust } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
     const [bannedmembersFiltred, setBannedMembersFlitred] = useState<memberChannelDto[]>([]);
-
     const router = useRouter();
 
-    useEffect(() => {
-        if (geust.id !== '-1') {
-            const getMemberChannel = async () => {
-                const tmp: { regularMembres: memberChannelDto[], bannedMembers: memberChannelDto[] }
-                    = await getMembersChannel(geust.id);
-                setMembers(tmp.regularMembres);
-                setBannedMembers(tmp.bannedMembers);
-                setMembersFlitred(tmp.regularMembres);
-                setBannedMembersFlitred(tmp.bannedMembers);
-            }
-            getMemberChannel();
-        }
-    }, [geust.id, geust.lastSee, updateInfo]);
 
-    const [timer, setTimer] = useState(0);
-    let lengthMembers = 0;
+    const getMemberChannel = async (data: { channelId: string }) => {
+        console.log('===>', data);
+        if (geust.id !== '-1' && geust.id === data.channelId) {
+            const tmp: { regularMembres: memberChannelDto[], bannedMembers: memberChannelDto[] }
+                = await getMembersChannel(geust.id);
+
+            setMembers(tmp.regularMembres);
+            setBannedMembers(tmp.bannedMembers);
+            setMembersFlitred(tmp.regularMembres);
+            setBannedMembersFlitred(tmp.bannedMembers);
+        }
+    }
+
     useEffect(() => {
-        if (user.id !== "-1" && geust.id !== "-1") {
-            const checkUserIsMuted = () => {
+        if (geust.id !== '-1' && !geust.isUser)
+            getMemberChannel({ channelId: geust.id });
+        if (socket) {
+            socket.on("mutedUserInChannel", getMemberChannel);
+            return () => {
+                socket.off("mutedUserInChannel", getMemberChannel);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("changeStatusMember", getMemberChannel);
+            return () => {
+                socket.off("changeStatusMember", getMemberChannel);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        const handleKickedMemeber = async (data: { channelId: string, memberId: string }) => {
+            if (user.id === data.memberId) {
+                router.push('/protected/ChatPage');
+                setGeust((pre) => {
+                    return {
+                        ...pre,
+                        id: '-1',
+                    }
+                });
+            } else { getMemberChannel({ channelId: data.channelId }) }
+        }
+        if (socket) {
+            socket.on("kickedFromChannel", handleKickedMemeber);
+            return () => {
+                socket.off("kickedFromChannel", handleKickedMemeber);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        const mutedTimer = async () => {
+            let timer = 0;
+            for (const member of members) {
+                console.log('member.unmuted_at=', member.unmuted_at);
+                if (member.unmuted_at !== 0 && (timer === 0 || member.unmuted_at < timer)) {
+                    timer = member.unmuted_at;
+                }
+            }
+            if (timer !== 0) {
                 const timeoutId = setTimeout(() => {
-                    setUpdateInfo(preValue => {
-                        return preValue + 1
-                    });
+                    getMemberChannel({ channelId: geust.id });
                 }, timer);
                 return () => {
                     clearTimeout(timeoutId);
                 };
-
             }
-            if (timer !== 0 && lengthMembers === members.length)
-                checkUserIsMuted();
         }
-    }, [timer]);
+        mutedTimer();
+    }, [socket, members]);
 
     const widgetUser = (member: memberChannelDto) => {
         return (
@@ -100,6 +139,7 @@ export default function MembersChannel() {
         )
     }
 
+
     const isMemberExist = (member: memberChannelDto, listMember: memberChannelDto[]): boolean => {
         const tmp = listMember.find((mbr) => (mbr.userId === member.userId));
         if (tmp)
@@ -115,10 +155,6 @@ export default function MembersChannel() {
     }
 
     const widgetMembers = membersFiltred.map((member: memberChannelDto, index) => {
-        lengthMembers++;
-        if (member.unmuted_at !== 0 && (timer === 0 || member.unmuted_at < timer)) {
-            setTimer(member.unmuted_at);
-        }
         return <div key={index}>{widgetUser(member)}</div>;
     })
     const widgetBannedMembers = bannedmembersFiltred.map((member: memberChannelDto, index) => {
@@ -191,14 +227,7 @@ export default function MembersChannel() {
                         inGaming: false
                     });
                     const tmp = await leaveChannel(user.id, geust.id);
-                    socket?.emit('updateData', {
-                        content: '',
-                        senderId: user.id,
-                        isDirectMessage: false,
-                        receivedId: geust.id,
-                    });
                     router.push('/protected/ChatPage');
-
                 }}
                     className="flex items-center rounded-md text-red-500 px-2
                     hover:bg-red-500 hover:text-white

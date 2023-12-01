@@ -92,6 +92,18 @@ export class SocketGatewayService {
     } else wss.to(ids.receivedId).emit("updateData", {});
   }
 
+  async emitNewMessage(ids: CreateMessageDto, wss: Server) {
+    // wss.to(ids.senderId).emit("emitNewMessage", {});
+    if (ids.isDirectMessage === false) {
+      const channelMembers = await this.prisma.channelMember.findMany({
+        where: { channelId: ids.receivedId },
+      });
+      for (const member of channelMembers) {
+        wss.to(member.userId).emit("emitNewMessage", {});
+      }
+    } else wss.to(ids.receivedId).emit("emitNewMessage", {});
+  }
+
   async updateChannel(ids: CreateMessageDto, wss: Server) {
     const channelMembers = await this.prisma.channelMember.findMany({
       where: { channelId: ids.receivedId },
@@ -108,5 +120,35 @@ export class SocketGatewayService {
     for (const member of channelMembers) {
       wss.to(member.userId).emit("updateMessageInChannel", { idChannel: ids.receivedId });
     }
+  }
+
+
+  async mutedUserInChannel(idChannel: string, wss: Server) {
+    const channelMembers = await this.prisma.channelMember.findMany({
+      where: { channelId: idChannel },
+    });
+    for (const member of channelMembers) {
+      wss.to(member.userId).emit("mutedUserInChannel", { idChannel: idChannel });
+    }
+  }
+
+  async changeStatusMember(idChannel: string, wss: Server) {
+
+    const channelMembers = await this.prisma.channelMember.findMany({
+      where: { channelId: idChannel },
+    });
+    for (const member of channelMembers) {
+      wss.to(member.userId).emit("changeStatusMember", { channelId: idChannel });
+    }
+  }
+
+  async kickedFromChannel(ids: any, wss: Server) {
+    const channelMembers = await this.prisma.channelMember.findMany({
+      where: { channelId: ids.channelId },
+    });
+    for (const member of channelMembers) {
+      wss.to(member.userId).emit("kickedFromChannel", ids);
+    }
+    wss.to(ids.memberId).emit("kickedFromChannel", ids);
   }
 }

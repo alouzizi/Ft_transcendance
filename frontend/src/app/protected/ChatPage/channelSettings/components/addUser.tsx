@@ -93,11 +93,16 @@ export default function AlertsAddUserChannel() {
                 onClick={async () => {
                   await addUserToChannel(user.id, geust.id, elm.id);
                   setSearsh("");
-                  socket?.emit('findMsg2UsersResponse', elm.id);
-                  socket?.emit('updateMessageInChannel', { // 
-                    isDirectMessage: false,
+                  socket?.emit('emitNewMessage', {
+                    senderId: user.id,
                     receivedId: geust.id,
+                    isDirectMessage: false
                   });
+                  socket?.emit('changeStatusMember', geust.id);
+                  // socket?.emit('updateMessageInChannel', { // 
+                  //   isDirectMessage: false,
+                  //   receivedId: geust.id,
+                  // });
                   handleClose();
                 }}>
                 <Text size="2" weight="medium">

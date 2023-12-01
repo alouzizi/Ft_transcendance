@@ -42,18 +42,27 @@ const PageChat = () => {
 
     const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
     useEffect(() => {
-        const getData = async () => {
-            const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
-            setIsOwnerAdmin(tmp);
+        const getData = async (data: { idChannel: string }) => {
+            if (geust.id === data.idChannel) {
+                const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
+                setIsOwnerAdmin(tmp);
+            }
         }
-        if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData();
+        if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData({ idChannel: geust.id });
+
+        if (socket) {
+            socket.on("changeStatusMember", getData);
+            return () => {
+                socket.off("changeStatusMember", getData);
+            };
+        }
     }, [geust.id]);
 
     return (
         <div >
             {
                 (geust.id !== '-1') ?
-                    <div className=' h-screen flex flex-col justify-start text-black  '>
+                    <div className='h-screen flex flex-col justify-start text-black  '>
                         <div>
                             {isOwnerAdmin ?
                                 <div>
@@ -72,7 +81,7 @@ const PageChat = () => {
                             <MembersChannel />
                         </div>
                     </div>
-                    : <></>
+                    : <div></div>
             }
         </div>
     );

@@ -66,11 +66,11 @@ let SocketGateway = class SocketGateway {
     async isTyping(ids) {
         this.server.to(ids.receivedId).emit("isTyping", ids);
     }
-    async kickedFromChannel(receivedId) {
-        this.server.to(receivedId).emit("kickedFromChannel", { receivedId });
+    async kickedFromChannel(ids) {
+        this.socketGatewayService.kickedFromChannel(ids, this.server);
     }
-    async joinChannelEmit(receivedId) {
-        this.server.to(receivedId).emit("findMsg2UsersResponse", {});
+    async joinChannelEmit(ids) {
+        this.socketGatewayService.emitNewMessage(ids, this.server);
     }
     async updateMessageInChannel(ids) {
         this.socketGatewayService.updateMessageInChannel(ids, this.server);
@@ -78,8 +78,11 @@ let SocketGateway = class SocketGateway {
     async blockUserToUser(receivedId) {
         this.server.to(receivedId).emit("blockUserToUser", { receivedId });
     }
-    async mutedUserInChannel(receivedId) {
-        this.server.to(receivedId).emit("mutedUserInChannel", { receivedId });
+    async mutedUserInChannel(idChannel) {
+        this.socketGatewayService.mutedUserInChannel(idChannel, this.server);
+    }
+    async changeStatusMember(idChannel) {
+        this.socketGatewayService.changeStatusMember(idChannel, this.server);
     }
     GameInit(roomName) {
         this.roomState.set(roomName, {
@@ -372,14 +375,14 @@ __decorate([
     (0, websockets_1.SubscribeMessage)("kickedFromChannel"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "kickedFromChannel", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)("findMsg2UsersResponse"),
+    (0, websockets_1.SubscribeMessage)("emitNewMessage"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "joinChannelEmit", null);
 __decorate([
@@ -403,6 +406,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "mutedUserInChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("changeStatusMember"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "changeStatusMember", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("clientId"),
     __param(0, (0, websockets_1.ConnectedSocket)()),

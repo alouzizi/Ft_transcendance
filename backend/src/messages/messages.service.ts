@@ -92,14 +92,14 @@ export class MessagesService {
 
       }
       if (notSendTo === "") {
-        server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
+        server.to(msg.receivedId).emit('emitNewMessage', temp);
         this.notificationService.createNotification({
           senderId: msg.senderId,
           recieverId: msg.receivedId,
           subject: "send message",
         })
       }
-      server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
+      server.to(msg.senderId).emit('emitNewMessage', temp);
     } catch (error) {
       return { error: true }
     }
@@ -171,7 +171,7 @@ export class MessagesService {
 
 
         }
-        server.to(member.userId).emit('findMsg2UsersResponse', temp);
+        server.to(member.userId).emit('emitNewMessage', temp);
       }
     } catch (error) {
       return { error: true }

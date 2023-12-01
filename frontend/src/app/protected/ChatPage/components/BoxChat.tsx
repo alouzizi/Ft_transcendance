@@ -53,30 +53,18 @@ const BoxChat = () => {
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
-                if ((geust.isUser && (data.senderId === geust.id || data.senderId === user.id)) ||
-                    ((!geust.isUser && (data.receivedId === geust.id || data.senderId === user.id)))) { // || !geust.isUser
+                if ((geust.isUser && data.isDirectMessage && (data.senderId === geust.id || data.senderId === user.id)) ||
+                    ((!geust.isUser && !data.isDirectMessage && (data.receivedId === geust.id || data.senderId === user.id)))) {
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
                 }
             };
-            socket.on("findMsg2UsersResponse", handleReceivedMessage);
+            socket.on("emitNewMessage", handleReceivedMessage);
             return () => {
-                socket.off("findMsg2UsersResponse", handleReceivedMessage);
+                socket.off("emitNewMessage", handleReceivedMessage);
             };
         }
     }, [socket, user.id, geust.id]);
-
-    // useEffect(() => {
-    //     if (user.id !== "-1 ") {
-    //         const upDateGeust = async () => {
-    //             if (geust.id !== "-1") {
-    //                 getDataGeust(geust.id, geust.isUser);
-    //                 setIsTyping(false);
-    //             }
-    //         }
-    //         upDateGeust();
-    //     }
-    // }, [geust.id, user.id, updateInfo]);
 
 
     const [isBlocked, setIsBlocked] = useState<number>(0)
@@ -128,27 +116,23 @@ const BoxChat = () => {
     const [isMuted, setIsMuted] = useState(false);
     useEffect(() => {
         if (socket && user.id !== "-1" && geust.id !== "-1" && !geust.isUser) {
-            const checkUserIsMuted = async () => {
-                const timer = await checkIsMuted(user.id, geust.id);
-                if (timer !== undefined && timer !== -1) {
-                    setMsg('');
-                    setIsMuted(true);
-                    const timeoutId = setTimeout(() => {
-                        setIsMuted(false);
-                        socket?.emit('updateData', {
-                            content: '',
-                            senderId: user.id,
-                            isDirectMessage: false,
-                            receivedId: geust.id,
-                        });
-                    }, timer);
-                    return () => clearTimeout(timeoutId);
+            const checkUserIsMuted = async (data: { idChannel: string }) => {
+                if (data.idChannel === geust.id) {
+                    const timer = await checkIsMuted(user.id, geust.id);
+                    if (timer !== undefined && timer !== -1) {
+                        setMsg('');
+                        setIsMuted(true);
+                        const timeoutId = setTimeout(() => {
+                            setIsMuted(false);
+                        }, timer);
+                        return () => clearTimeout(timeoutId);
 
-                } else {
-                    setIsMuted(false);
+                    } else {
+                        setIsMuted(false);
+                    }
                 }
             }
-            checkUserIsMuted();
+            checkUserIsMuted({ idChannel: geust.id });
             socket.on("mutedUserInChannel", checkUserIsMuted);
             return () => {
                 socket.off("mutedUserInChannel", checkUserIsMuted);
@@ -186,10 +170,10 @@ const BoxChat = () => {
     useEffect(() => {
         if (socket && geust.id !== "-1" && user.id !== "-1") {
             getData();
-            socket.on("updateMessageInChannel", getData);
-            return () => {
-                socket.off("updateMessageInChannel", getData);
-            };
+            // socket.on("updateMessageInChannel", getData);
+            // return () => {
+            //     socket.off("updateMessageInChannel", getData);
+            // };
         }
     }, [socket, geust.id, user.id]);
 

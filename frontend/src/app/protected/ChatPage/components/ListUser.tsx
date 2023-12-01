@@ -40,8 +40,8 @@ const ListUser = () => {
         if (usersList !== undefined) setItemList(usersList);
       };
       getListUsers();
-      socket.on("findMsg2UsersResponse", getListUsers);
-      return () => { socket.off("findMsg2UsersResponse", getListUsers); }
+      socket.on("emitNewMessage", getListUsers);
+      return () => { socket.off("emitNewMessage", getListUsers); }
     }
   }, [socket, user.id, geust.id, direct])
 

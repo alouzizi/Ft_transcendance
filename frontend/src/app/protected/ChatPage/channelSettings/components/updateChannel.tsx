@@ -43,14 +43,23 @@ export default function UpdateChannel() {
     const [channel, setChannel] = useState<channelDto>(channelData);
 
     useEffect(() => {
-        const getData = async () => {
-            const tmp: channelDto = await getChannel(user.id, geust.id);
-            setChannel(tmp);
-            setChannelData(tmp);
+        const getData = async (data: { idChannel: string }) => {
+            console.log('gerdata called ', data);
+            if (geust.id === data.idChannel) {
+                const tmp: channelDto = await getChannel(user.id, geust.id);
+                setChannel(tmp);
+                setChannelData(tmp);
+            }
         }
-        if (geust.id !== '-1' && !geust.isUser) getData();
+        if (geust.id !== '-1' && !geust.isUser) getData({ idChannel: geust.id });
+        if (socket) {
+            socket.on("updateChannel", getData);
+            return () => {
+                socket.off("updateChannel", getData);
+            };
+        }
+    }, [socket, geust.id]);
 
-    }, []);
 
 
     const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
@@ -72,9 +81,9 @@ export default function UpdateChannel() {
 
     const updateChannelServer = async () => {
         const res = await updateChannel(channelData, user.id, geust.id);
-        if (res.status === 202) {
+        if (res && res.status === 202) {
             setErrorName(res.error)
-        } else if (res.status === 200) {
+        } else if (res && res.status === 200) {
             setChannel(res.channel);
             setChannelData(res.channel);
             socket?.emit('updateChannel', {
@@ -166,7 +175,6 @@ export default function UpdateChannel() {
                                 />} label="Private" />
 
                     </RadioGroup>
-
                 </FormControl>
 
                 <div className="flex flex-col items-start justify-start pl-6">
@@ -217,9 +225,6 @@ export default function UpdateChannel() {
                 </div>
             </div>
 
-
-
-
             <div className='flex flex-grow items-center justify-end md:flex-non w-3/4 py-2' >
                 <Text size='3' className='hover:underline cursor-pointer text-white'
                     onClick={() => {
@@ -246,8 +251,8 @@ export default function UpdateChannel() {
                 }}
                     className="rounded-sm text-[#254BD6] hover:text-white hover:bg-[#254BD6] ml-3 p-1 px-3">
                     <Text size='3' weight="bold" > Save Changes</Text>
-
                 </button>
+                
             </div>
 
             <hr className="border-b-[0.5px] border-gray-600 w-3/4" />

@@ -74,13 +74,13 @@ export class SocketGateway
   }
 
   @SubscribeMessage("kickedFromChannel")
-  async kickedFromChannel(@MessageBody() receivedId: string) {
-    this.server.to(receivedId).emit("kickedFromChannel", { receivedId });
+  async kickedFromChannel(@MessageBody() ids: any) {
+    this.socketGatewayService.kickedFromChannel(ids, this.server);
   }
 
-  @SubscribeMessage("findMsg2UsersResponse")
-  async joinChannelEmit(@MessageBody() receivedId: string) {
-    this.server.to(receivedId).emit("findMsg2UsersResponse", {});
+  @SubscribeMessage("emitNewMessage")
+  async joinChannelEmit(@MessageBody() ids: CreateMessageDto) {
+    this.socketGatewayService.emitNewMessage(ids, this.server);
   }
 
   @SubscribeMessage("updateMessageInChannel")
@@ -94,8 +94,14 @@ export class SocketGateway
   }
 
   @SubscribeMessage("mutedUserInChannel")
-  async mutedUserInChannel(@MessageBody() receivedId: string) {
-    this.server.to(receivedId).emit("mutedUserInChannel", { receivedId });
+  async mutedUserInChannel(@MessageBody() idChannel: string) {
+    this.socketGatewayService.mutedUserInChannel(idChannel, this.server);
+  }
+
+
+  @SubscribeMessage("changeStatusMember")
+  async changeStatusMember(@MessageBody() idChannel: string) {
+    this.socketGatewayService.changeStatusMember(idChannel, this.server);
   }
 
 

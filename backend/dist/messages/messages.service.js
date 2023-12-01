@@ -85,14 +85,14 @@ let MessagesService = class MessagesService {
                 inGaming: false
             };
             if (notSendTo === "") {
-                server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
+                server.to(msg.receivedId).emit('emitNewMessage', temp);
                 this.notificationService.createNotification({
                     senderId: msg.senderId,
                     recieverId: msg.receivedId,
                     subject: "send message",
                 });
             }
-            server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
+            server.to(msg.senderId).emit('emitNewMessage', temp);
         }
         catch (error) {
             return { error: true };
@@ -147,7 +147,7 @@ let MessagesService = class MessagesService {
                     isChannProtected: channel.protected,
                     inGaming: false
                 };
-                server.to(member.userId).emit('findMsg2UsersResponse', temp);
+                server.to(member.userId).emit('emitNewMessage', temp);
             }
         }
         catch (error) {
