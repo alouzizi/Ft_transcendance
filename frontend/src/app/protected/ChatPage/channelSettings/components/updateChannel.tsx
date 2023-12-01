@@ -235,7 +235,7 @@ export default function UpdateChannel() {
                     }}>
                     Rest
                 </Text>
-
+//da
                 <button onClick={() => {
                     if (!isSameChannel(channel, channelData)) {
                         const parsName = channelNameSchema.safeParse(channelData.channelName);
@@ -252,7 +252,7 @@ export default function UpdateChannel() {
                     className="rounded-sm text-[#254BD6] hover:text-white hover:bg-[#254BD6] ml-3 p-1 px-3">
                     <Text size='3' weight="bold" > Save Changes</Text>
                 </button>
-                
+
             </div>
 
             <hr className="border-b-[0.5px] border-gray-600 w-3/4" />
