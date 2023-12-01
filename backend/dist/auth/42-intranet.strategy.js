@@ -14,12 +14,12 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_42_1 = require("passport-42");
 const user_service_1 = require("../user/user.service");
-let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, '42-intranet') {
+let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, "42-intranet") {
     constructor(userService) {
         super({
-            clientID: 'u-s4t2ud-7527be8cdb9352288351be959fdbe96d939875e2c2b8cb6f649886e3b5799f4c',
-            clientSecret: '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',
-            callbackURL: 'http://localhost:4000/auth/42-intranet/callback',
+            clientID: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            callbackURL: process.env.CALLBACK_URL,
             scope: ['public'],
         });
         this.userService = userService;
@@ -27,8 +27,8 @@ let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passpo
     validateUser(profile) {
         const { id, first_name, last_name, image, login } = profile._json;
         const user = {
-            intra_id: typeof id === 'string' ? id : id.toString(),
-            email: profile['emails'][0]['value'],
+            intra_id: typeof id === "string" ? id : id.toString(),
+            email: profile["emails"][0]["value"],
             first_name: first_name,
             last_name: last_name,
             profilePicture: image.link,
@@ -40,15 +40,12 @@ let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passpo
         try {
             const user = await this.validateUser(profile);
             let checkuser = await this.userService.findByIntraId(user.intra_id);
-            console.log("checkuser--------> ", checkuser);
             if (checkuser) {
-                done(null, user);
+                done(null, checkuser);
             }
             else {
-                console.log("here");
                 let createnewuser = await this.userService.createUser(user);
                 done(null, createnewuser);
-                console.log("createnewuser--------> ", createnewuser);
             }
             return user;
         }

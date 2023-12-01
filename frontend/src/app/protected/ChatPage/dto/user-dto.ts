@@ -5,12 +5,19 @@ enum Status {
 
 type userDto = {
   id: string;
-  email: string;
   nickname: string;
   profilePic: string;
   status: Status;
   lastSee: number;
-  friendship: number
+  friendship: number;
+};
+
+type validChannelDto = {
+  id: string;
+  channelName: string;
+  avatar: string;
+  protected: boolean;
+  Status: string;
 };
 
 type ownerDto = {
@@ -20,30 +27,42 @@ type ownerDto = {
   last_name: string;
   nickname: string;
   profilePic: string;
+  isTwoFactorAuthEnabled: boolean;
+  level: string;
 };
 
 type geustDto = {
   isUser: boolean;
+
   id: string;
   nickname: string;
   profilePic: string;
+
   status: Status;
+
   lastSee: number;
   lenUser: number;
+
+  idUserOwner: string;
+
+  inGaming: Boolean;
 };
 
 enum MessageStatus {
   NotReceived = "NotReceived",
   Received = "Received",
-  Seen = "Seen"
+  Seen = "Seen",
 }
 
 type messageDto = {
-  isDirectMsg: Boolean;
+  elm: any;
+  isDirectMessage: Boolean;
+
+  InfoMessage: Boolean;
 
   senderId: string; // in channle or direct Msg
   senderName: string; // in channle or direct Msg
-  senderPic: string;  // in channle or direct Msg
+  senderPic: string; // in channle or direct Msg
 
   contentMsg: string; // lastMsg or simpleMsg
   createdAt: number;
@@ -54,25 +73,39 @@ type messageDto = {
   receivedPic: string; // in channle or direct Msg
   receivedStatus: Status; // in DirectMsg
 
-}
+  OwnerChannelId: String;
+  isChannProtected: Boolean;
+
+  inGaming: Boolean;
+};
 
 type reqFriendsDto = {
   id: string;
   createdAt: number;
   senderId: string;
   receivedId: string;
-}
+};
 
 enum ChannelType {
-  Public,
-  Private
+  Public = "Public",
+  Private = "Private",
 }
 
 type channelDto = {
-  // id: number;
-  channleName: string;
+  channelName: string;
   channelType: ChannelType;
-  channlePassword: string;
+  channelPassword: string;
+  avatar: string;
+  channelOwnerId: string;
+  protected: boolean;
   channelMember: string[];
-}
+};
 
+type memberChannelDto = {
+  userId: string;
+  nickname: string;
+  profilePic: string;
+  role: string;
+  status: Status;
+  unmuted_at: number;
+};

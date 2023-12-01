@@ -1,7 +1,8 @@
 "use client";
 
-import FriendItem from "@/app/protected/FriendsPage/components/FriendItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import FriendCategory from "./components/FriendCategory";
+import { FriendAlert } from "./components/FriendAlert/FriendAlert";
 
 export default function FriendsPage() {
   // Create an array to store the isSelected state for each item
@@ -37,10 +38,11 @@ export default function FriendsPage() {
   function getIconStyle(index: number) {
     const iconStyle = ` font-bold  py-1 rounded-md  
     transition ease-in-out delay-100
-    ${isSelectedList[index]
+    ${
+      isSelectedList[index]
         ? "text-white bg-[#515562] hover:bg-[#515562] hover:text-white"
         : "text-gray-300 bg-transparent hover:bg-[#2A2F40] hover:text-slate-50"
-      }
+    }
 
     // small screen
     text-xs px-2 mr-1.5
@@ -61,6 +63,21 @@ export default function FriendsPage() {
     setItemsStatus(item.btnName);
     setIsSelectedList(updatedIsSelectedList);
   };
+
+  // ================== friend alert ==================
+
+  const [open, setOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("emails[1]");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+  // ================== /friend alert ==================
 
   return (
     <div className="flex flex-col bg-color-main h-screen w-screen ">
@@ -100,9 +117,15 @@ export default function FriendsPage() {
           // big screen 
           md:text-sm lg:text-md lg:px-4 
           "
+            onClick={handleClickOpen}
           >
             Add Friend
           </button>
+          <FriendAlert
+            selectedValue={selectedValue}
+            open={open}
+            onClose={handleClose}
+          />
         </div>
         {/* this is the friend items */}
         <div
@@ -114,26 +137,7 @@ export default function FriendsPage() {
           lg:w-[60%]
         "
         >
-          <p
-            className="mr-4 mb-4 w-fit font-bold  py-1 px-3 text-gray-400 
-          
-          // small screen
-          text-sm
-          // big screen 
-          md:text-md 
-          "
-          >
-            {`${itemsStatus} - 3`}
-          </p>
-          <FriendItem
-            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
-          />
-          <FriendItem
-            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
-          />
-          <FriendItem
-            friendImg={"https://images.alphacoders.com/129/1294445.jpg"}
-          />
+          <FriendCategory itemsStatus={itemsStatus} />
         </div>
       </div>
     </div>

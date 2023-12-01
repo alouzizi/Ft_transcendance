@@ -8,7 +8,7 @@ export declare class CreateUserDto {
     lastSee: Date;
 }
 export declare class MessageItemList {
-    isDirectMsg: Boolean;
+    isDirectMessage: Boolean;
     name: string;
     avatar: string;
     lastMsg: string;

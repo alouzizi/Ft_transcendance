@@ -14,14 +14,23 @@ const prisma_service_1 = require("../prisma/prisma.service");
 const jwt_1 = require("@nestjs/jwt");
 const auth_service_1 = require("../auth/auth.service");
 const channel_service_1 = require("../channel/channel.service");
+const platform_express_1 = require("@nestjs/platform-express");
+const notification_service_1 = require("../notification/notification.service");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
-        providers: [user_service_1.UserService, prisma_service_1.PrismaService, jwt_1.JwtService, auth_service_1.AuthService, channel_service_1.ChannelService],
+        providers: [user_service_1.UserService, prisma_service_1.PrismaService, jwt_1.JwtService, auth_service_1.AuthService, channel_service_1.ChannelService, notification_service_1.NotificationService],
         controllers: [user_controller_1.UserController],
-        imports: []
+        imports: [
+            platform_express_1.MulterModule.register({
+                dest: './uploads',
+                limits: {
+                    fileSize: 1024 * 1024,
+                },
+            }),
+        ]
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

@@ -1,30 +1,16 @@
-import { Backend_URL } from '@/lib/Constants';
-import axios from 'axios';
+import axios from "axios";
+import { Backend_URL } from "../../../../../lib/Constants";
+import Cookies from "js-cookie";
 
-export async function sendRequistFriend(senderId: string, recivedId: string) {
-    await axios.post(
-        Backend_URL + `/friendship/sendFriendRequest/${senderId}/${recivedId}`,
-    );
-}
-
-export async function removeRequistFriend(senderId: string, recivedId: string) {
+export async function unBlockedUser(senderId: string, recivedId: string) {
+  try {
+    const token = Cookies.get("access_token");
     await axios.delete(
-        Backend_URL + `/friendship/removeFriendRequest/${senderId}/${recivedId}`,
+      Backend_URL + `/friendship/unBlockedUser/${senderId}/${recivedId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     );
+  } catch (error) { }
 }
-
-
-export async function accepteRequistFriend(senderId: string, recivedId: string) {
-    await axios.post(
-        Backend_URL + `/friendship/accepteFriendRequest/${senderId}/${recivedId}`,
-    );
-}
-
-export async function deleteFriend(senderId: string, recivedId: string) {
-    await axios.delete(
-        Backend_URL + `/friendship/deleteFriend/${senderId}/${recivedId}`,
-    );
-}
-
-
-

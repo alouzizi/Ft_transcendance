@@ -1,46 +1,186 @@
-import { FriendshipService } from './friendship.service';
+import { FriendshipService } from "./friendship.service";
 export declare class FriendshipController {
     private readonly friendshipService;
     constructor(friendshipService: FriendshipService);
-    getSendRequistFriends(sender: string): Promise<{
+    unBlockedUser(sender: string, recived: string): Promise<import(".prisma/client").Prisma.BatchPayload | {
+        error: boolean;
+    }>;
+    getallUsers(sender: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
+    getUserByNick(reciever: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    } | {
+        error: any;
+    }>;
+    getIsBlocked(sender: string, reciever: string): Promise<{
+        isBlocked: boolean;
+        error?: undefined;
+    } | {
+        error: any;
+        isBlocked?: undefined;
+    }>;
+    getOnlineFriends(sender: string): Promise<any[] | {
+        error: any;
+    }>;
+    getAllFriends(sender: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getPendingFriends(sender: string): Promise<{
+        isYouSender: boolean;
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[]>;
+    getBlockedFriends(sender: string): Promise<any[]>;
+    getAllPossibleFriends(sender: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
+    getNavSearchUsers(sender: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+    }[] | {
+        error: any;
+    }>;
+    sendFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;
         receivedId: string;
-    }[]>;
-    getRecivedRequistFriends(sender: string): Promise<{
+    } | {
+        error: any;
+    }>;
+    acceptFriendRequest(sender: string, reciever: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
+    } | {
+        error: any;
+    }>;
+    unsendFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;
         receivedId: string;
-    }[]>;
-    getFriends(sender: string): Promise<{
-        id: string;
-        senderId: string;
-        receivedId: string;
-    }[]>;
-    getBlockedUser(sender: string): Promise<{
-        id: string;
-        senderId: string;
-        receivedId: string;
-    }[]>;
-    addFriendRequest(sender: string, recived: string): Promise<{
+    } | {
+        error: any;
+    }>;
+    rejectFriendRequest(sender: string, reciever: string): Promise<{
         id: string;
         createdAt: Date;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
-    removeFriendRequest(sender: string, recived: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
-    accepteFriendRequest(sender: string, recived: string): Promise<{
+    blockFriend(sender: string, reciever: string): Promise<{
         id: string;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
-    deleteFriend(sender: string, recived: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
-    blockedUser(sender: string, recived: string): Promise<{
+    unblockFriend(sender: string, reciever: string): Promise<{
         id: string;
         senderId: string;
         receivedId: string;
+    } | {
+        error: any;
     }>;
-    unBlockedUser(sender: string, recived: string): Promise<import(".prisma/client").Prisma.BatchPayload>;
+    removeFriend(sender: string, reciever: string): Promise<{
+        id: string;
+        senderId: string;
+        receivedId: string;
+    } | {
+        id: string;
+        senderId: string;
+        receivedId: string;
+    }[] | {
+        error: any;
+    }>;
 }

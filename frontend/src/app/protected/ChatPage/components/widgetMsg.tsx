@@ -1,6 +1,9 @@
 import { Text, Avatar, Flex } from '@radix-ui/themes';
 import { ThreeDots } from 'react-loader-spinner'
 import { BsCheck2, BsCheck2All } from "react-icons/bs";
+import { MdOutlineEditNote } from "react-icons/md";
+import { useState } from 'react';
+
 
 export function extractHoursAndM(time: number): string {
 
@@ -31,26 +34,40 @@ export function IsTypingMsg() {
 }
 
 export function MessageRight({ message }: { message: messageDto }) {
+    const [isHovered, setIsHovered] = useState(false);
+
+
     const cardStyles = {
-        width: 200,
         borderTopRightRadius: 0,
         padding: 5,
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         marginLeft: 'auto',
-        background: "#ddfdfd",
+        background: "#E5E9F7", // ddfdfd
     };
     return (
-        <div style={cardStyles} className='relative mb-2 mt-2'>
-            <div className='mb-4 text-sm'> {message.contentMsg}</div>
+        <div style={cardStyles} className='relative mb-2 mt-2 w-[100px] sm:w-[200px] '>
+
+
+            <div className='mb-4 text-sm'>
+                {message.contentMsg}
+            </div>
+
             <Flex className='absolute bottom-1 right-2 mt-2 items-end'>
-                <Text size="1" className='pr-1'>
+                <Text size="1" className='pr-1 text-[#254BD6]'>
                     {extractHoursAndM(message.createdAt)}
                 </Text>
-                {message.messageStatus === 'NotReceived' ?
-                    <BsCheck2 /> :
-                    <BsCheck2All />}
+                <div onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}>
+
+                    {!isHovered ?
+                        (message.messageStatus === 'NotReceived') ?
+                            <BsCheck2 style={{ color: '#254BD6' }} /> :
+                            <BsCheck2All style={{ color: '#254BD6' }} />
+                        : <MdOutlineEditNote style={{ color: '#254BD6' }} />}
+
+                </div>
             </Flex>
         </div>
     );
@@ -58,7 +75,6 @@ export function MessageRight({ message }: { message: messageDto }) {
 
 export function MessageLeft({ message }: { message: messageDto }) {
     const cardStyles = {
-        width: 200,
         borderTopRightRadius: 10,
         padding: 5,
         borderTopLeftRadius: 0,
@@ -76,13 +92,13 @@ export function MessageLeft({ message }: { message: messageDto }) {
                 radius="full"
                 fallback="T"
             />
-            <div className='pl-2'>
+            <div className='pl-2 w-[100px] sm:w-[200px]'>
                 <Text as="span" size="2" weight="bold">
                     {message.senderName}
                 </Text>
                 <div style={cardStyles} className='relative'>
                     <div className='mb-4  text-sm'> {message.contentMsg}</div>
-                    <Text size="1" className='absolute bottom-1 right-2 mt-2'>
+                    <Text size="1" className='absolute bottom-1 right-2 mt-2 text-[#254BD6]'>
                         {extractHoursAndM(message.createdAt)}
                     </Text>
                 </div>
@@ -131,53 +147,94 @@ function showDays(currentDate: number, timeMsg: number) {
 }
 
 
-export function FirstMessage({ message }: { message: messageDto }) {
+// $owner create group $channelName 
+// You created group $channelName
+// $owner add $userName
+// You add $userName
+// You Block this contact. Tap to unblock
+// You unblocked this contact
+
+export function MessageCenterInfo({ message, user }: { message: messageDto, user: ownerDto }) {
     const cardStyles = {
         width: 200,
         padding: 5,
         borderRadius: 10,
         margin: 'auto',
         background: "#fefae0",
-        display: 'flex', // Use flex display
-        alignItems: 'center',
     };
+
+    let messageTmp: string = "";
+    if (message.contentMsg.includes('create')) {
+        if (message.senderId === user.id)
+            messageTmp = `You created group ${message.receivedName}`;
+        else
+            messageTmp = `${message.senderName} create group ${message.receivedName}`
+    } else if (message.contentMsg.includes('added')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('bann')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('kicked')) {
+        if (message.senderId === user.id)
+            messageTmp = `You ${message.contentMsg}`;
+        else
+            messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else if (message.contentMsg.includes('left')) {
+        messageTmp = `${message.senderName} ${message.contentMsg}`
+    }
+    else if (message.contentMsg.includes('join')) {
+        messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else {
+        messageTmp = `${message.contentMsg}`
+    }
     return (
-        <div style={cardStyles} className='mb-2 mt-2'>
-            <Text className='mb-4 text-sm text-center'> {message.senderName} {message.contentMsg} {message.receivedName}</Text>
+        <div className='mt-1'>
+            <div style={cardStyles} >
+                <Text className='flex items-center justify-center text-sm text-center'>
+                    {messageTmp}
+                </Text>
+            </div>
         </div>
+
     );
 }
 
 export function ShowMessages({ messages, user }: { messages: messageDto[], user: ownerDto }) {
     const currentDate = Date.now();
     lastPrint = 0;
-    return messages.map((elm, index) => {
-        const temp = showDays(currentDate, elm.createdAt);
-        const tag =
-            <div key={index}>
-                {
-                    temp.show ?
-                        (
-                            <div className="flex items-center pt-2 pb-2">
-                                <div className="flex-grow h-px bg-gray-400 mx-4"></div>
-                                <h2 className="text-sm">{temp.data}</h2>
-                                <div className="flex-grow h-px bg-gray-400 mx-4"></div>
-                            </div>
-                        )
-                        : (<></>)
-                }
+    if (messages.length)
+        return messages.map((elm, index) => {
+            const temp = showDays(currentDate, elm.createdAt);
+            const tag =
+                <div key={index}>
+                    {
+                        temp.show ?
+                            (
+                                <div className="flex items-center pt-2 pb-2">
+                                    <div className="flex-grow h-px bg-gray-400 mx-4"></div>
+                                    <h2 className="text-sm">{temp.data}</h2>
+                                    <div className="flex-grow h-px bg-gray-400 mx-4"></div>
+                                </div>
+                            )
+                            : (<></>)
+                    }
 
-                {
-                    (index === 0 && !elm.isDirectMsg) ?
-                        <FirstMessage key={index} message={elm} />
-                        : ((elm.senderId == user.id) ? (
-                            <MessageRight message={elm} />
-                        ) : (
-                            <MessageLeft message={elm} />
-                        ))
-                }
-            </div>
-        return tag;
-    })
+                    {
+                        (elm.InfoMessage === true) ?
+                            <MessageCenterInfo message={elm} user={user} />
+                            : ((elm.senderId == user.id) ? (
+                                <MessageRight message={elm} />
+                            ) : (
+                                <MessageLeft message={elm} />
+                            ))
+                    }
+                </div>
+            return tag;
+        })
 
 }

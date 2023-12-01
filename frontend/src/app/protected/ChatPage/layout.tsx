@@ -7,5 +7,4 @@ const LayoutChat = async ({ children }: { children: React.ReactNode }) => {
     </div>
   );
 };
-
 export default LayoutChat;

@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtGuard = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const jwt_1 = require("@nestjs/jwt");
 let JwtGuard = class JwtGuard {
     constructor(jwtService, config) {
         this.jwtService = jwtService;
@@ -25,11 +25,9 @@ let JwtGuard = class JwtGuard {
             throw new common_1.UnauthorizedException();
         }
         try {
-            console.log("-------------------------------------");
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: this.config.get("JWT_SECRET"),
             });
-            console.log("payload --> ", payload);
             request["user"] = payload;
         }
         catch {
@@ -38,8 +36,11 @@ let JwtGuard = class JwtGuard {
         return true;
     }
     extractTokenFromHeader(request) {
-        const [type, token] = request.headers.authorization.split(" ") ?? [];
-        return type === "Bearer" ? token : undefined;
+        if (request.headers.authorization) {
+            const [type, token] = request.headers.authorization.split(" ") ?? [];
+            return (type === "Bearer") ? token : undefined;
+        }
+        return undefined;
     }
 };
 exports.JwtGuard = JwtGuard;

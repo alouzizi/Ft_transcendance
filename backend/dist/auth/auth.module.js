@@ -10,13 +10,14 @@ exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
-const jwt_1 = require("@nestjs/jwt");
-const _42_intranet_strategy_1 = require("./42-intranet.strategy");
-const passport_1 = require("@nestjs/passport");
 const prisma_service_1 = require("../prisma/prisma.service");
-const user_service_1 = require("../user/user.service");
+const jwt_1 = require("@nestjs/jwt");
+const passport_1 = require("@nestjs/passport");
+const _42_intranet_strategy_1 = require("./42-intranet.strategy");
 const messages_service_1 = require("../messages/messages.service");
 const channel_service_1 = require("../channel/channel.service");
+const user_service_1 = require("../user/user.service");
+const notification_service_1 = require("../notification/notification.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -24,11 +25,22 @@ exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             passport_1.PassportModule,
-            jwt_1.JwtModule,
+            jwt_1.JwtModule.register({
+                global: true,
+                secret: process.env.JWT_SECRET,
+                signOptions: { expiresIn: "1d" },
+            }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, _42_intranet_strategy_1.FortyTwoIntranetStrategy,
-            messages_service_1.MessagesService, prisma_service_1.PrismaService, user_service_1.UserService, channel_service_1.ChannelService],
+        providers: [
+            auth_service_1.AuthService,
+            _42_intranet_strategy_1.FortyTwoIntranetStrategy,
+            user_service_1.UserService,
+            prisma_service_1.PrismaService,
+            channel_service_1.ChannelService,
+            messages_service_1.MessagesService,
+            notification_service_1.NotificationService
+        ],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

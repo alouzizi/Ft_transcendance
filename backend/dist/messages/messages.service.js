@@ -13,95 +13,11 @@ exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
-const user_service_1 = require("../user/user.service");
+const notification_service_1 = require("../notification/notification.service");
 let MessagesService = class MessagesService {
-    constructor(prisma, userService) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
-        this.userService = userService;
-    }
-    async createDirectMessage(server, createMessageDto) {
-        let showed = true;
-        let messageStatus = "NotReceived";
-        const blockerUser = await this.prisma.blockedUser.findMany({
-            where: {
-                OR: [
-                    {
-                        senderId: createMessageDto.senderId,
-                        receivedId: createMessageDto.receivedId
-                    },
-                    {
-                        senderId: createMessageDto.receivedId,
-                        receivedId: createMessageDto.senderId
-                    }
-                ]
-            }
-        });
-        if (blockerUser.length) {
-            showed = false;
-        }
-        const user = await this.prisma.user.findUnique({
-            where: {
-                id: createMessageDto.receivedId,
-            }
-        });
-        if (user.status === "ACTIF")
-            messageStatus = "Received";
-        const msg = await this.prisma.message.create({
-            data: {
-                ...createMessageDto,
-                receivedId: createMessageDto.receivedId,
-                isDirectMessage: true,
-                showed,
-                messageStatus,
-            },
-        });
-        const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-        const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-        const temp = {
-            isDirectMsg: true,
-            senderId: msg.senderId,
-            senderName: senderUser.nickname,
-            senderPic: senderUser.profilePic,
-            contentMsg: msg.content,
-            createdAt: msg.createdAt,
-            messageStatus: msg.messageStatus,
-            receivedId: msg.receivedId,
-            receivedName: receivedUser.nickname,
-            receivedPic: receivedUser.profilePic,
-            receivedStatus: receivedUser.status,
-        };
-        if (showed)
-            server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
-        server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
-    }
-    async createChannelMessage(server, createMessageDto) {
-        const msg = await this.prisma.message.create({
-            data: {
-                ...createMessageDto,
-                channelId: createMessageDto.receivedId,
-                senderId: createMessageDto.senderId,
-                isDirectMessage: false,
-            },
-        });
-        const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } });
-        const channelMember = await this.prisma.channelMember.findMany({ where: { channelId: createMessageDto.receivedId } });
-        const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-        for (const member of channelMember) {
-            const temp = {
-                isDirectMsg: false,
-                senderId: msg.senderId,
-                senderName: senderUser.nickname,
-                senderPic: senderUser.profilePic,
-                contentMsg: msg.content,
-                createdAt: msg.createdAt,
-                messageStatus: client_1.MessageStatus.NotReceived,
-                receivedId: msg.receivedId,
-                receivedName: channel.channelName,
-                receivedPic: channel.avatar,
-                receivedStatus: client_1.Status.INACTIF,
-            };
-            server.to(member.userId).emit('findMsg2UsersResponse', temp);
-        }
+        this.notificationService = notificationService;
     }
     async createMessage(server, createMessageDto) {
         if (createMessageDto.isDirectMessage == true)
@@ -109,30 +25,51 @@ let MessagesService = class MessagesService {
         else
             await this.createChannelMessage(server, createMessageDto);
     }
-    async getDirectMessage(senderId, receivedId) {
-        const msgUserTemp = await this.prisma.message.findMany({
-            where: {
-                OR: [
-                    {
-                        senderId,
-                        receivedId,
-                    },
-                    {
-                        senderId: receivedId,
-                        receivedId: senderId,
-                    },
-                ],
-            },
-            orderBy: {
-                createdAt: 'asc',
-            },
-        });
-        const msgUser = msgUserTemp.filter((msg) => (msg.showed === true || senderId === msg.senderId));
-        const result = await Promise.all(msgUser.map(async (msg) => {
+    async createDirectMessage(server, createMessageDto) {
+        try {
+            let notSendTo = "";
+            let messageStatus = "NotReceived";
+            const blockerUser = await this.prisma.blockedUser.findFirst({
+                where: {
+                    OR: [
+                        {
+                            senderId: createMessageDto.senderId,
+                            receivedId: createMessageDto.receivedId
+                        },
+                        {
+                            senderId: createMessageDto.receivedId,
+                            receivedId: createMessageDto.senderId
+                        }
+                    ]
+                }
+            });
+            if (blockerUser) {
+                if (blockerUser.senderId === createMessageDto.senderId)
+                    notSendTo += blockerUser.receivedId;
+                else
+                    notSendTo += blockerUser.senderId;
+            }
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    id: createMessageDto.receivedId,
+                }
+            });
+            if (user.status === "ACTIF" && notSendTo === "")
+                messageStatus = "Received";
+            const msg = await this.prisma.message.create({
+                data: {
+                    ...createMessageDto,
+                    receivedId: createMessageDto.receivedId,
+                    notSendTo,
+                    messageStatus,
+                    InfoMessage: false
+                },
+            });
             const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-            const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.receivedId } });
+            const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
             const temp = {
-                isDirectMsg: true,
+                isDirectMessage: true,
+                InfoMessage: false,
                 senderId: msg.senderId,
                 senderName: senderUser.nickname,
                 senderPic: senderUser.profilePic,
@@ -142,41 +79,171 @@ let MessagesService = class MessagesService {
                 receivedId: msg.receivedId,
                 receivedName: receivedUser.nickname,
                 receivedPic: receivedUser.profilePic,
-                receivedStatus: receivedUser.status
+                receivedStatus: receivedUser.status,
+                OwnerChannelId: '',
+                isChannProtected: false,
+                inGaming: false
             };
-            return temp;
-        }));
-        return result;
+            if (notSendTo === "") {
+                server.to(msg.receivedId).emit('emitNewMessage', temp);
+                this.notificationService.createNotification({
+                    senderId: msg.senderId,
+                    recieverId: msg.receivedId,
+                    subject: "send message",
+                });
+            }
+            server.to(msg.senderId).emit('emitNewMessage', temp);
+        }
+        catch (error) {
+            return { error: true };
+        }
+    }
+    async createChannelMessage(server, createMessageDto) {
+        try {
+            let notSendTo = "";
+            const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } });
+            const channelMember = await this.prisma.channelMember.findMany({ where: { channelId: createMessageDto.receivedId } });
+            const senderUser = await this.prisma.user.findUnique({ where: { id: createMessageDto.senderId } });
+            const usersBlocked = await this.prisma.blockedUser.findMany({
+                where: {
+                    OR: [
+                        { senderId: senderUser.id },
+                        { receivedId: senderUser.id },
+                    ],
+                }
+            });
+            for (const block of usersBlocked) {
+                if (block.senderId === createMessageDto.senderId)
+                    notSendTo = notSendTo + block.receivedId + ";";
+                else
+                    notSendTo = notSendTo + block.senderId + ";";
+            }
+            const msg = await this.prisma.message.create({
+                data: {
+                    ...createMessageDto,
+                    channelId: createMessageDto.receivedId,
+                    senderId: createMessageDto.senderId,
+                    isDirectMessage: false,
+                    notSendTo,
+                },
+            });
+            for (const member of channelMember) {
+                if (msg.notSendTo.includes(member.userId))
+                    continue;
+                const temp = {
+                    isDirectMessage: false,
+                    InfoMessage: false,
+                    senderId: msg.senderId,
+                    senderName: senderUser.nickname,
+                    senderPic: senderUser.profilePic,
+                    contentMsg: msg.content,
+                    createdAt: msg.createdAt,
+                    messageStatus: client_1.MessageStatus.NotReceived,
+                    receivedId: msg.receivedId,
+                    receivedName: channel.channelName,
+                    receivedPic: channel.avatar,
+                    receivedStatus: client_1.Status.INACTIF,
+                    OwnerChannelId: channel.channelOwnerId,
+                    isChannProtected: channel.protected,
+                    inGaming: false
+                };
+                server.to(member.userId).emit('emitNewMessage', temp);
+            }
+        }
+        catch (error) {
+            return { error: true };
+        }
+    }
+    async getDirectMessage(senderId, receivedId) {
+        try {
+            const msgUserTemp = await this.prisma.message.findMany({
+                where: {
+                    OR: [{ senderId, receivedId },
+                        { senderId: receivedId, receivedId: senderId },
+                    ],
+                },
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            });
+            const msgUser = msgUserTemp.filter((msg) => (msg.notSendTo === "" || msg.senderId === senderId));
+            const result = await Promise.all(msgUser.map(async (msg) => {
+                const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+                const receivedUser = await this.prisma.user.findUnique({ where: { id: msg.receivedId } });
+                const temp = {
+                    isDirectMessage: true,
+                    InfoMessage: msg.InfoMessage,
+                    senderId: msg.senderId,
+                    senderName: senderUser.nickname,
+                    senderPic: senderUser.profilePic,
+                    contentMsg: msg.content,
+                    createdAt: msg.createdAt,
+                    messageStatus: msg.messageStatus,
+                    receivedId: msg.receivedId,
+                    receivedName: receivedUser.nickname,
+                    receivedPic: receivedUser.profilePic,
+                    receivedStatus: receivedUser.status,
+                    OwnerChannelId: '',
+                    isChannProtected: false,
+                    inGaming: false
+                };
+                return temp;
+            }));
+            return result;
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async getChannelMessage(senderId, channelId) {
-        const msgUserTemp = await this.prisma.message.findMany({
-            where: {
-                isDirectMessage: false,
-                channelId,
-            },
-            orderBy: {
-                createdAt: 'asc',
-            },
-        });
-        const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-        const result = await Promise.all(msgUserTemp.map(async (msg) => {
-            const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
-            const temp = {
-                isDirectMsg: false,
-                senderId: msg.senderId,
-                senderName: senderUser.nickname,
-                senderPic: senderUser.profilePic,
-                contentMsg: msg.content,
-                createdAt: msg.createdAt,
-                messageStatus: client_1.MessageStatus.NotReceived,
-                receivedId: msg.receivedId,
-                receivedName: channel.channelName,
-                receivedPic: channel.avatar,
-                receivedStatus: client_1.Status.INACTIF,
-            };
-            return temp;
-        }));
-        return result;
+        try {
+            const msgUserTemp = await this.prisma.message.findMany({
+                where: {
+                    isDirectMessage: false,
+                    channelId,
+                },
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            });
+            const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+            const user = await this.prisma.channelMember.findFirst({ where: { userId: senderId, channelId } });
+            if (user) {
+                const result = await Promise.all(msgUserTemp
+                    .filter((msg) => {
+                    return (!msg.notSendTo.includes(senderId) && user.createdAt < msg.createdAt)
+                        || (msg.content.includes('create') ||
+                            msg.content.includes('add') ||
+                            (msg.content.includes('create'))
+                                && msg.InfoMessage == true);
+                })
+                    .map(async (msg) => {
+                    const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
+                    const temp = {
+                        isDirectMessage: false,
+                        InfoMessage: msg.InfoMessage,
+                        senderId: msg.senderId,
+                        senderName: senderUser.nickname,
+                        senderPic: senderUser.profilePic,
+                        contentMsg: msg.content,
+                        createdAt: msg.createdAt,
+                        messageStatus: client_1.MessageStatus.NotReceived,
+                        receivedId: msg.receivedId,
+                        receivedName: channel.channelName,
+                        receivedPic: channel.avatar,
+                        receivedStatus: client_1.Status.INACTIF,
+                        OwnerChannelId: channel.channelOwnerId,
+                        isChannProtected: channel.protected,
+                        inGaming: false
+                    };
+                    return temp;
+                }));
+                return result;
+            }
+        }
+        catch (error) {
+            return { error: true };
+        }
     }
     async getLastMessages(senderId, receivedId) {
         const lastMessage = await this.prisma.message.findFirst({
@@ -200,7 +267,7 @@ let MessagesService = class MessagesService {
     }
     async getChannleForMsg(senderId) {
         let result = [];
-        let myChannel = [];
+        let myChannels = [];
         const channelMembers = await this.prisma.channelMember.findMany({
             where: {
                 userId: senderId
@@ -208,9 +275,9 @@ let MessagesService = class MessagesService {
         });
         for (const ch of channelMembers) {
             const channel = await this.prisma.channel.findUnique({ where: { id: ch.channelId } });
-            myChannel.push(channel);
+            myChannels.push(channel);
         }
-        for (const channel of myChannel) {
+        for (const channel of myChannels) {
             const lastMessageChannel = await this.prisma.message.findFirst({
                 where: {
                     isDirectMessage: false,
@@ -222,7 +289,8 @@ let MessagesService = class MessagesService {
             });
             const userSender = await this.prisma.user.findUnique({ where: { id: lastMessageChannel.senderId } });
             const temp = {
-                isDirectMsg: false,
+                isDirectMessage: false,
+                InfoMessage: false,
                 senderId: lastMessageChannel.senderId,
                 senderName: userSender.nickname,
                 senderPic: userSender.profilePic,
@@ -233,68 +301,148 @@ let MessagesService = class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: client_1.Status.INACTIF,
+                OwnerChannelId: channel.channelOwnerId,
+                isChannProtected: channel.protected,
+                inGaming: false
+            };
+            result.push(temp);
+        }
+        const channlesPublic = await this.prisma.channel.findMany({
+            where: { channelType: "Public" }
+        });
+        for (const chl of channlesPublic) {
+            let find = false;
+            for (const mych of myChannels) {
+                if (mych.id === chl.id) {
+                    find = true;
+                    break;
+                }
+            }
+            if (find)
+                continue;
+            const temp = {
+                isDirectMessage: false,
+                InfoMessage: false,
+                senderId: '',
+                senderName: "",
+                senderPic: "",
+                contentMsg: "",
+                createdAt: new Date(),
+                messageStatus: "Received",
+                receivedId: chl.id,
+                receivedName: chl.channelName,
+                receivedPic: chl.avatar,
+                receivedStatus: client_1.Status.INACTIF,
+                OwnerChannelId: chl.channelOwnerId,
+                isChannProtected: chl.protected,
+                inGaming: false
             };
             result.push(temp);
         }
         return result;
     }
     async getMessageForList(senderId) {
-        let resultDirect = [];
-        const resultChannel = await this.getChannleForMsg(senderId);
-        const userToUersMsg = await this.prisma.message.findMany({
-            where: {
-                OR: [{ senderId: senderId, isDirectMessage: true },
-                    { receivedId: senderId, isDirectMessage: true }],
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
-        const distinctUserIds = new Set();
-        for (const msg of userToUersMsg) {
-            if (msg.senderId === senderId) {
-                distinctUserIds.add(msg.receivedId);
+        try {
+            let resultDirect = [];
+            const resultChannel = await this.getChannleForMsg(senderId);
+            const userToUersMsg = await this.prisma.message.findMany({
+                where: {
+                    OR: [{ senderId: senderId, isDirectMessage: true },
+                        { receivedId: senderId, isDirectMessage: true }],
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
+            const distinctUserIds = new Set();
+            for (const msg of userToUersMsg) {
+                if (msg.senderId === senderId) {
+                    distinctUserIds.add(msg.receivedId);
+                }
+                else {
+                    distinctUserIds.add(msg.senderId);
+                }
             }
-            else {
-                distinctUserIds.add(msg.senderId);
+            const idUsersArray = Array.from(distinctUserIds);
+            let usersList = [];
+            for (const id of idUsersArray) {
+                const user = await this.prisma.user.findUnique({ where: { id } });
+                usersList.push(user);
             }
+            for (const user of usersList) {
+                const lastMessage = await this.getLastMessages(senderId, user.id);
+                const tmp = {
+                    isDirectMessage: true,
+                    InfoMessage: false,
+                    senderId: '',
+                    senderName: '',
+                    senderPic: '',
+                    contentMsg: lastMessage.content,
+                    createdAt: lastMessage.createdAt,
+                    messageStatus: lastMessage.messageStatus,
+                    receivedId: user.id,
+                    receivedName: user.nickname,
+                    receivedPic: user.profilePic,
+                    receivedStatus: user.status,
+                    OwnerChannelId: '',
+                    isChannProtected: false,
+                    inGaming: user.inGaming
+                };
+                resultDirect.push(tmp);
+            }
+            const friends = await this.prisma.friend.findMany({
+                where: {
+                    OR: [
+                        { senderId: senderId },
+                        { receivedId: senderId },
+                    ]
+                }
+            });
+            for (const friend of friends) {
+                let idU = "";
+                if (senderId === friend.senderId)
+                    idU = friend.receivedId;
+                if (senderId === friend.receivedId)
+                    idU = friend.senderId;
+                if (idUsersArray.includes(idU))
+                    continue;
+                const user = await this.prisma.user.findUnique({ where: { id: idU } });
+                const tmp = {
+                    isDirectMessage: true,
+                    InfoMessage: false,
+                    senderId: '',
+                    senderName: '',
+                    senderPic: '',
+                    contentMsg: "",
+                    createdAt: new Date(),
+                    messageStatus: "Received",
+                    receivedId: user.id,
+                    receivedName: user.nickname,
+                    receivedPic: user.profilePic,
+                    receivedStatus: user.status,
+                    OwnerChannelId: '',
+                    isChannProtected: false,
+                    inGaming: false
+                };
+                resultDirect.push(tmp);
+            }
+            const result = [...resultDirect, ...resultChannel];
+            result.sort((a, b) => {
+                const myDate1 = new Date(a.createdAt);
+                const myDate2 = new Date(b.createdAt);
+                return myDate2.getTime() - myDate1.getTime();
+            });
+            return result;
         }
-        const idUsersArray = Array.from(distinctUserIds);
-        let usersList = [];
-        for (const id of idUsersArray) {
-            const user = await this.prisma.user.findUnique({ where: { id } });
-            usersList.push(user);
+        catch (error) {
+            return { error: true };
         }
-        for (const user of usersList) {
-            const lastMessage = await this.getLastMessages(senderId, user.id);
-            const tmp = {
-                isDirectMsg: true,
-                senderId: '',
-                senderName: '',
-                senderPic: '',
-                contentMsg: lastMessage.content,
-                createdAt: lastMessage.createdAt,
-                messageStatus: lastMessage.messageStatus,
-                receivedId: user.id,
-                receivedName: user.nickname,
-                receivedPic: user.profilePic,
-                receivedStatus: user.status,
-            };
-            resultDirect.push(tmp);
-        }
-        const result = [...resultDirect, ...resultChannel];
-        result.sort((a, b) => {
-            const myDate1 = new Date(a.createdAt);
-            const myDate2 = new Date(b.createdAt);
-            return myDate2.getTime() - myDate1.getTime();
-        });
-        return result;
     }
 };
 exports.MessagesService = MessagesService;
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        user_service_1.UserService])
+        notification_service_1.NotificationService])
 ], MessagesService);
 //# sourceMappingURL=messages.service.js.map
