@@ -177,6 +177,11 @@ const BoxChat = () => {
     useEffect(() => {
         if (socket && geust.id !== "-1" && user.id !== "-1") {
             getData();
+            socket.emit('messagsSeenEmit', {
+                senderId: user.id,
+                receivedId: geust.id,
+            });
+
         }
     }, [socket, geust.id, user.id]);
 

@@ -66,7 +66,7 @@ export function MessageRight({ message }: { message: messageDto }) {
                             <BsCheck2 style={{ color: '#254BD6' }} /> :
                             <BsCheck2All style={{
                                 color: `${(message.messageStatus === 'Received')
-                                    ? '#254BD6' : 'red'}`
+                                    ? '#254BD6' : 'green'}`
                             }} />
 
                         : <MdOutlineEditNote style={{ color: '#254BD6' }} />}
