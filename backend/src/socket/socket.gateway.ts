@@ -105,6 +105,12 @@ export class SocketGateway
   }
 
 
+  @SubscribeMessage("messagsSeenEmit")
+  async messagsSeenEmit(@MessageBody() ids: CreateMessageDto) {
+    this.socketGatewayService.messagsSeenEmit(ids, this.server);
+  }
+
+
 
   // ---------------------------------------------
 

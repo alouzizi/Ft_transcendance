@@ -456,7 +456,6 @@ let ChannelService = class ChannelService {
                 where: { id: channelId },
             });
             const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
-            console.log(passwordMatch);
             if (passwordMatch) {
                 return true;
             }

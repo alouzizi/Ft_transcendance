@@ -45,7 +45,6 @@ export class SocketGatewayService {
             for (const user of activeUsers) {
               // wss.to(user.id).emit("updateStatusGeust", {});
               if (user.id !== client.handshake.query.senderId) {
-                console.log("send Active emit updateStatusGeust");
                 wss.to(user.id).emit("updateStatusGeust", {});
               }
             }
@@ -72,7 +71,6 @@ export class SocketGatewayService {
         const users = await this.prisma.user.findMany();
         for (const user of users) {
           if (user.id !== client.handshake.query.senderId) {
-            console.log("send Inactif emit updateStatusGeust");
             wss.to(user.id).emit("updateStatusGeust", {});
           }
         }
@@ -150,5 +148,19 @@ export class SocketGatewayService {
       wss.to(member.userId).emit("kickedFromChannel", ids);
     }
     wss.to(ids.memberId).emit("kickedFromChannel", ids);
+  }
+
+  async messagsSeenEmit(ids: CreateMessageDto, wss: Server) {
+    await this.prisma.message.updateMany({
+      where: {
+        senderId: ids.receivedId,
+        receivedId: ids.senderId,
+      },
+      data: {
+        messageStatus: MessageStatus.Seen,
+      },
+    });
+    console.log("-->", ids.receivedId);
+    wss.to(ids.receivedId).emit("messagsSeenEmit");
   }
 }

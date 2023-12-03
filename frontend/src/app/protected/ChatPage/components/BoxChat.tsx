@@ -57,6 +57,13 @@ const BoxChat = () => {
                     ((!geust.isUser && !data.isDirectMessage && (data.receivedId === geust.id || data.senderId === user.id)))) {
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
+
+                    if (data.senderId !== user.id) {
+                        socket.emit('messagsSeenEmit', {
+                            senderId: user.id,
+                            receivedId: geust.id,
+                        });
+                    }
                 }
             };
             socket.on("emitNewMessage", handleReceivedMessage);
@@ -74,7 +81,6 @@ const BoxChat = () => {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 if (check !== undefined) setIsBlocked(check);
-
             }
             upDateGeust();
             socket.on("blockUserToUser", upDateGeust);
@@ -166,14 +172,11 @@ const BoxChat = () => {
         else
             msgs = await getMessagesChannel(user.id, geust.id);
         if (msgs !== undefined) setAllMessage(msgs);
+
     }
     useEffect(() => {
         if (socket && geust.id !== "-1" && user.id !== "-1") {
             getData();
-            // socket.on("updateMessageInChannel", getData);
-            // return () => {
-            //     socket.off("updateMessageInChannel", getData);
-            // };
         }
     }, [socket, geust.id, user.id]);
 
@@ -192,6 +195,18 @@ const BoxChat = () => {
             };
         }
     }, [socket, geust.id]);
+
+    useEffect(() => {
+        if (socket) {
+            const getMessageEmit = () => {
+                getData();
+            }
+            socket.on("messagsSeenEmit", getMessageEmit);
+            return () => {
+                socket.off("messagsSeenEmit", getMessageEmit);
+            }
+        }
+    }, [socket, Allmsg.length])
 
     return (geust.id != "-1") ? (
         <Box

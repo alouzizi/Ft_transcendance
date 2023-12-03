@@ -256,7 +256,6 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
-    console.log(user);
     await this.prisma.user.update({
       where: { intra_id: intra_id },
       data: {
@@ -295,7 +294,6 @@ export class UserService {
     }
   }
   async uploadImage(intra_id: string, path: string) {
-    console.log(intra_id);
     try {
       const user = await this.prisma.user.update({
         where: {

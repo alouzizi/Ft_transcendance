@@ -25,7 +25,6 @@ let NotificationService = class NotificationService {
                 subjet: createNotificationDto.subject,
             },
         });
-        console.log(notification);
         return 'Notification created succesfully';
     }
     async deleteNotification(notificationId) {

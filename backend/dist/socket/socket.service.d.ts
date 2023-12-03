@@ -13,4 +13,5 @@ export declare class SocketGatewayService {
     mutedUserInChannel(idChannel: string, wss: Server): Promise<void>;
     changeStatusMember(idChannel: string, wss: Server): Promise<void>;
     kickedFromChannel(ids: any, wss: Server): Promise<void>;
+    messagsSeenEmit(ids: CreateMessageDto, wss: Server): Promise<void>;
 }

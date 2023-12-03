@@ -84,6 +84,9 @@ let SocketGateway = class SocketGateway {
     async changeStatusMember(idChannel) {
         this.socketGatewayService.changeStatusMember(idChannel, this.server);
     }
+    async messagsSeenEmit(ids) {
+        this.socketGatewayService.messagsSeenEmit(ids, this.server);
+    }
     GameInit(roomName) {
         this.roomState.set(roomName, {
             player1: {
@@ -413,6 +416,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "changeStatusMember", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("messagsSeenEmit"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "messagsSeenEmit", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("clientId"),
     __param(0, (0, websockets_1.ConnectedSocket)()),

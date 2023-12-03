@@ -84,9 +84,12 @@ export class MessagesService {
         receivedName: receivedUser.nickname,
         receivedPic: receivedUser.profilePic,
         receivedStatus: receivedUser.status,
+        nbrMessageNoRead: 0,
 
         OwnerChannelId: '', // no matter
         isChannProtected: false,// no matter
+
+
 
         inGaming: false
 
@@ -163,6 +166,7 @@ export class MessagesService {
           receivedName: channel.channelName,
           receivedPic: channel.avatar,
           receivedStatus: Status.INACTIF, // not matter
+          nbrMessageNoRead: 0,
 
           OwnerChannelId: channel.channelOwnerId,
           isChannProtected: channel.protected,
@@ -190,6 +194,17 @@ export class MessagesService {
           createdAt: 'asc',
         },
       });
+
+      await this.prisma.message.updateMany({
+        where: {
+          senderId: receivedId,
+          receivedId: senderId,
+        },
+        data: {
+          messageStatus: MessageStatus.Seen,
+        },
+      });
+
       const msgUser = msgUserTemp.filter((msg) => (msg.notSendTo === "" || msg.senderId === senderId));
       const result = await Promise.all(
         msgUser.map(async (msg) => {
@@ -208,18 +223,17 @@ export class MessagesService {
             createdAt: msg.createdAt,
             messageStatus: msg.messageStatus,
 
+
             receivedId: msg.receivedId,
             receivedName: receivedUser.nickname,
             receivedPic: receivedUser.profilePic,
             receivedStatus: receivedUser.status,
+            nbrMessageNoRead: 0,
 
             OwnerChannelId: '', // no matter
             isChannProtected: false,// no matter
 
             inGaming: false
-
-
-
           }
           return temp;
         })
@@ -273,6 +287,7 @@ export class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: Status.INACTIF, // not matter
+                nbrMessageNoRead: 0,
 
                 OwnerChannelId: channel.channelOwnerId,
                 isChannProtected: channel.protected,
@@ -356,6 +371,7 @@ export class MessagesService {
         receivedName: channel.channelName,
         receivedPic: channel.avatar,
         receivedStatus: Status.INACTIF, // no matter
+        nbrMessageNoRead: 0,
 
         OwnerChannelId: channel.channelOwnerId,
         isChannProtected: channel.protected,
@@ -397,6 +413,7 @@ export class MessagesService {
         receivedName: chl.channelName,
         receivedPic: chl.avatar,
         receivedStatus: Status.INACTIF, // no matter
+        nbrMessageNoRead: 0,
 
         OwnerChannelId: chl.channelOwnerId,
         isChannProtected: chl.protected,
@@ -413,10 +430,13 @@ export class MessagesService {
     try {
       let resultDirect: messageDto[] = [];
       const resultChannel = await this.getChannleForMsg(senderId);
+
       const userToUersMsg = await this.prisma.message.findMany({
         where: {
-          OR: [{ senderId: senderId, isDirectMessage: true },
-          { receivedId: senderId, isDirectMessage: true }],
+          OR: [
+            { senderId: senderId, isDirectMessage: true },
+            { receivedId: senderId, isDirectMessage: true }
+          ],
         },
         orderBy: {
           createdAt: "desc",
@@ -438,8 +458,20 @@ export class MessagesService {
         const user: User = await this.prisma.user.findUnique({ where: { id } })
         usersList.push(user);
       }
+
       for (const user of usersList) {
         const lastMessage = await this.getLastMessages(senderId, user.id);
+        const forNbrMessageNoRead: Message[] = await this.prisma.message.findMany(
+          {
+            where: {
+              senderId: user.id,
+              receivedId: senderId,
+              messageStatus: {
+                in: [MessageStatus.NotReceived, MessageStatus.Received],
+              },
+            }
+          }
+        );
         const tmp: messageDto = {
           isDirectMessage: true,
 
@@ -457,9 +489,11 @@ export class MessagesService {
           receivedName: user.nickname,
           receivedPic: user.profilePic,
           receivedStatus: user.status,
+          nbrMessageNoRead: forNbrMessageNoRead.length,
 
           OwnerChannelId: '', // no matter
           isChannProtected: false, // no matter
+
 
           inGaming: user.inGaming
         }
@@ -497,6 +531,7 @@ export class MessagesService {
           receivedName: user.nickname,
           receivedPic: user.profilePic,
           receivedStatus: user.status,
+          nbrMessageNoRead: 0,
 
           OwnerChannelId: '', // no matter
           isChannProtected: false,// no matter

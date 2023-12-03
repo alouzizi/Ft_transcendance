@@ -64,7 +64,11 @@ export function MessageRight({ message }: { message: messageDto }) {
                     {!isHovered ?
                         (message.messageStatus === 'NotReceived') ?
                             <BsCheck2 style={{ color: '#254BD6' }} /> :
-                            <BsCheck2All style={{ color: '#254BD6' }} />
+                            <BsCheck2All style={{
+                                color: `${(message.messageStatus === 'Received')
+                                    ? '#254BD6' : 'red'}`
+                            }} />
+
                         : <MdOutlineEditNote style={{ color: '#254BD6' }} />}
 
                 </div>

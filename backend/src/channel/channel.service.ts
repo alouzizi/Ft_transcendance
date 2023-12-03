@@ -510,7 +510,6 @@ export class ChannelService {
         password,
         channel.channelPassword
       );
-      console.log(passwordMatch);
       if (passwordMatch) {
         return true;
       } else {

@@ -41,9 +41,13 @@ const ListUser = () => {
       };
       getListUsers();
       socket.on("emitNewMessage", getListUsers);
-      return () => { socket.off("emitNewMessage", getListUsers); }
+      return () => {
+        socket.off("emitNewMessage", getListUsers);
+      }
     }
   }, [socket, user.id, geust.id, direct])
+
+
 
 
   const getDataGeust = async (tmp: messageDto) => {
@@ -209,6 +213,20 @@ const ListUser = () => {
           </Box> : <div></div>
         }
 
+        {
+          (el.nbrMessageNoRead !== 0) ?
+            <div className='absolute right-1/3 text-white'>
+              <Badge
+                badgeContent={el.nbrMessageNoRead}
+                sx={{
+                  "& .MuiBadge-badge": {
+                    backgroundColor: "#254BD6",
+                  },
+                }}>
+              </Badge>
+            </div> : <div></div>
+        }
+
         {(el.contentMsg === "" && !el.isDirectMessage) ?
           <div className='absolute  right-6 cursor-pointer'
             onClick={async () => {
@@ -242,19 +260,19 @@ const ListUser = () => {
         (item.contentMsg !== "" && search === "") ||
         ((item.receivedName.includes(search) && search !== '') || search === "*")))
     });
-  const itemListChannel = itemList.filter((item: messageDto) => {
-    return (!item.isDirectMessage && (
-      (item.contentMsg !== "" && search === "") ||
-      ((item.receivedName.includes(search) && search !== '') || search === "*")))
-  });
   const userWidgetDirect: JSX.Element | JSX.Element[] = (itemListDirect.length != 0) ? itemListDirect.map((el, index) => {
     return widgetUser(el, index)
   }) : <Text className="flex border-b justify-center">pas user</Text>
 
 
+  const itemListChannel = itemList.filter((item: messageDto) => {
+    return (!item.isDirectMessage && (
+      (item.contentMsg !== "" && search === "") ||
+      ((item.receivedName.includes(search) && search !== '') || search === "*")))
+  });
   const userWidgetChannel: JSX.Element | JSX.Element[] = (itemListChannel.length != 0) ? itemListChannel.map((el, index) => {
     return widgetUser(el, index)
-  }) : <Text className="flex border-b justify-center">pas user</Text>
+  }) : <Text className="flex border-b justify-center">pas channel</Text>
 
   // ALERT CONFIM PASS
   const [idChannel, setIdChannel] = useState("");

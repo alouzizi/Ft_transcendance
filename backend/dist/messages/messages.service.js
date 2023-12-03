@@ -80,6 +80,7 @@ let MessagesService = class MessagesService {
                 receivedName: receivedUser.nickname,
                 receivedPic: receivedUser.profilePic,
                 receivedStatus: receivedUser.status,
+                nbrMessageNoRead: 0,
                 OwnerChannelId: '',
                 isChannProtected: false,
                 inGaming: false
@@ -143,6 +144,7 @@ let MessagesService = class MessagesService {
                     receivedName: channel.channelName,
                     receivedPic: channel.avatar,
                     receivedStatus: client_1.Status.INACTIF,
+                    nbrMessageNoRead: 0,
                     OwnerChannelId: channel.channelOwnerId,
                     isChannProtected: channel.protected,
                     inGaming: false
@@ -166,6 +168,15 @@ let MessagesService = class MessagesService {
                     createdAt: 'asc',
                 },
             });
+            await this.prisma.message.updateMany({
+                where: {
+                    senderId: receivedId,
+                    receivedId: senderId,
+                },
+                data: {
+                    messageStatus: client_1.MessageStatus.Seen,
+                },
+            });
             const msgUser = msgUserTemp.filter((msg) => (msg.notSendTo === "" || msg.senderId === senderId));
             const result = await Promise.all(msgUser.map(async (msg) => {
                 const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
@@ -183,6 +194,7 @@ let MessagesService = class MessagesService {
                     receivedName: receivedUser.nickname,
                     receivedPic: receivedUser.profilePic,
                     receivedStatus: receivedUser.status,
+                    nbrMessageNoRead: 0,
                     OwnerChannelId: '',
                     isChannProtected: false,
                     inGaming: false
@@ -232,6 +244,7 @@ let MessagesService = class MessagesService {
                         receivedName: channel.channelName,
                         receivedPic: channel.avatar,
                         receivedStatus: client_1.Status.INACTIF,
+                        nbrMessageNoRead: 0,
                         OwnerChannelId: channel.channelOwnerId,
                         isChannProtected: channel.protected,
                         inGaming: false
@@ -301,6 +314,7 @@ let MessagesService = class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: client_1.Status.INACTIF,
+                nbrMessageNoRead: 0,
                 OwnerChannelId: channel.channelOwnerId,
                 isChannProtected: channel.protected,
                 inGaming: false
@@ -333,6 +347,7 @@ let MessagesService = class MessagesService {
                 receivedName: chl.channelName,
                 receivedPic: chl.avatar,
                 receivedStatus: client_1.Status.INACTIF,
+                nbrMessageNoRead: 0,
                 OwnerChannelId: chl.channelOwnerId,
                 isChannProtected: chl.protected,
                 inGaming: false
@@ -347,8 +362,10 @@ let MessagesService = class MessagesService {
             const resultChannel = await this.getChannleForMsg(senderId);
             const userToUersMsg = await this.prisma.message.findMany({
                 where: {
-                    OR: [{ senderId: senderId, isDirectMessage: true },
-                        { receivedId: senderId, isDirectMessage: true }],
+                    OR: [
+                        { senderId: senderId, isDirectMessage: true },
+                        { receivedId: senderId, isDirectMessage: true }
+                    ],
                 },
                 orderBy: {
                     createdAt: "desc",
@@ -371,6 +388,15 @@ let MessagesService = class MessagesService {
             }
             for (const user of usersList) {
                 const lastMessage = await this.getLastMessages(senderId, user.id);
+                const forNbrMessageNoRead = await this.prisma.message.findMany({
+                    where: {
+                        senderId: user.id,
+                        receivedId: senderId,
+                        messageStatus: {
+                            in: [client_1.MessageStatus.NotReceived, client_1.MessageStatus.Received],
+                        },
+                    }
+                });
                 const tmp = {
                     isDirectMessage: true,
                     InfoMessage: false,
@@ -384,6 +410,7 @@ let MessagesService = class MessagesService {
                     receivedName: user.nickname,
                     receivedPic: user.profilePic,
                     receivedStatus: user.status,
+                    nbrMessageNoRead: forNbrMessageNoRead.length,
                     OwnerChannelId: '',
                     isChannProtected: false,
                     inGaming: user.inGaming
@@ -420,6 +447,7 @@ let MessagesService = class MessagesService {
                     receivedName: user.nickname,
                     receivedPic: user.profilePic,
                     receivedStatus: user.status,
+                    nbrMessageNoRead: 0,
                     OwnerChannelId: '',
                     isChannProtected: false,
                     inGaming: false
