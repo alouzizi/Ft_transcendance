@@ -144,6 +144,25 @@ let ChannelService = class ChannelService {
             }
         }
     }
+    async uploadImageChannel(senderId, channelId, path) {
+        try {
+            const member = await this.prisma.channelMember.findFirst({
+                where: { channelId: channelId, userId: senderId }
+            });
+            if (member.isAdmin) {
+                await this.prisma.channel.update({
+                    where: {
+                        id: channelId,
+                    },
+                    data: {
+                        avatar: `http://172.20.10.3:4000/${path}`
+                    }
+                });
+            }
+        }
+        catch (error) {
+        }
+    }
     async checkOwnerIsAdmin(senderId, channelId) {
         try {
             const user = await this.prisma.channelMember.findUnique({

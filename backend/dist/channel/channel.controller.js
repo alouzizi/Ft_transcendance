@@ -14,9 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelController = void 0;
 const common_1 = require("@nestjs/common");
-const channel_service_1 = require("./channel.service");
+const platform_express_1 = require("@nestjs/platform-express");
 const client_1 = require("@prisma/client");
+const multer_1 = require("multer");
 const guard_1 = require("../auth/guard");
+const channel_service_1 = require("./channel.service");
 let ChannelController = class ChannelController {
     constructor(channelService) {
         this.channelService = channelService;
@@ -34,6 +36,10 @@ let ChannelController = class ChannelController {
             channelType: (createChannelDto.channelType == 'Private') ? client_1.ChannelType.Private : client_1.ChannelType.Public,
         };
         return this.channelService.updateChannel(senderId, channelId, channelData);
+    }
+    uploadImage(file, senderId, channelId) {
+        console.log('first', file.path);
+        return this.channelService.uploadImageChannel(senderId, channelId, file.path);
     }
     checkOwnerIsAdmin(senderId, channelId) {
         return this.channelService.checkOwnerIsAdmin(senderId, channelId);
@@ -101,6 +107,33 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "updateChannel", null);
+__decorate([
+    (0, common_1.Post)("/uploadImage/:senderId/:channelId"),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, cb) => {
+                console.log("00", file);
+                const name = file.originalname.split(".")[0];
+                const fileExtension = file.originalname.split(".")[1];
+                const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
+                cb(null, newFileName);
+            },
+        }),
+        fileFilter: (req, file, cb) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+                return cb(null, false);
+            cb(null, true);
+        }
+    })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Param)("senderId")),
+    __param(2, (0, common_1.Param)("channelId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", void 0)
+], ChannelController.prototype, "uploadImage", null);
 __decorate([
     (0, common_1.Get)('/checkOwnerIsAdmin/:senderId/:channelId'),
     (0, common_1.UseGuards)(guard_1.JwtGuard),

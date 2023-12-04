@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { ChannelService } from './channel.service';
 export declare class ChannelController {
     private readonly channelService;
@@ -42,6 +43,7 @@ export declare class ChannelController {
         status?: undefined;
         channel?: undefined;
     }>;
+    uploadImage(file: Express.Multer.File, senderId: string, channelId: string): Promise<void>;
     checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
         error: boolean;
     }>;

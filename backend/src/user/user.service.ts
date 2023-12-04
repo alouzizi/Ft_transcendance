@@ -306,6 +306,7 @@ export class UserService {
     } catch (error) {
     }
   }
+  
   async findByIntraId(intra_id: string) {
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },
