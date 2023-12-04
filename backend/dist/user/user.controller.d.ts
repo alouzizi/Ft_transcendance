@@ -74,14 +74,9 @@ export declare class UserController {
     }>;
     updatUserdata(intra_id: string, nickname: string): Promise<{
         status: number;
-        error?: undefined;
-    } | {
-        status: number;
         error: boolean;
     }>;
-    uploadImage(file: Express.Multer.File, senderId: string): Promise<{
-        message: string;
-    }>;
+    uploadImage(file: Express.Multer.File, senderId: string): Promise<void>;
     getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;
         intra_id: string;

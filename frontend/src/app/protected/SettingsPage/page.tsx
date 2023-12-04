@@ -2,23 +2,22 @@
 import { useGlobalContext } from "@/app/protected/context/store";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
+import { Text } from "@radix-ui/themes";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ImageUpload from "./imageupload";
-import { Text } from "@radix-ui/themes";
-import { FaCheckCircle } from "react-icons/fa";
 import { Backend_URL } from "../../../../lib/Constants";
+import ImageUpload from "./imageupload";
+import { getDataOwner } from "./IpaSettings/fetch-user";
 
 export default function SettingsPage() {
   const token = Cookies.get("access_token");
-  const router = useRouter();
 
-  const { user } = useGlobalContext();
+
+  const { user, setUser } = useGlobalContext();
 
   const [checked, setChecked] = useState(false);
   const [urlImage, setUrlImage] = useState("");
@@ -146,7 +145,6 @@ export default function SettingsPage() {
                             method: "get",
                             headers: {
                               authorization: `Bearer ${token}`,
-                              // "Content-Type": "application/json",
                             },
                           }
                         );
@@ -183,7 +181,7 @@ export default function SettingsPage() {
                   try {
                     const response = await fetch(
                       Backend_URL +
-                      `/user/updatUserdata/${user.intra_id}/${newNickName.toLowerCase()}`,
+                      `/user/updateNickname/${user.intra_id}/${newNickName.toLowerCase()}`,
                       {
                         method: "POST",
                         headers: {
@@ -196,6 +194,8 @@ export default function SettingsPage() {
                       toast.error("nickname aleady exist");
                     else if (response.status === 201) {
                       toast.success("nickname has been change");
+                      const tmp = await getDataOwner(user.intra_id);
+                      setUser(tmp);
                     }
                   } catch (error) { }
                 }

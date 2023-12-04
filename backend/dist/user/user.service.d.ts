@@ -174,16 +174,11 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    updatUserdata(intra_id: string, nickname: string): Promise<{
-        status: number;
-        error?: undefined;
-    } | {
+    updateNickname(intra_id: string, nickname: string): Promise<{
         status: number;
         error: boolean;
     }>;
-    uploadImage(intra_id: string, path: string): Promise<{
-        message: string;
-    }>;
+    uploadImage(intra_id: string, path: string): Promise<void>;
     findByIntraId(intra_id: string): Promise<{
         id: string;
         intra_id: string;

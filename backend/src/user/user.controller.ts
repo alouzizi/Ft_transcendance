@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   Param,
@@ -57,21 +58,22 @@ export class UserController {
     return await this.userService.getValideUsers(senderId);
   }
 
-  @Post("updatUserdata/:intra_id/:nickname")
+  @Post("updateNickname/:intra_id/:nickname")
   @UseGuards(JwtGuard)
   async updatUserdata(
     @Param("intra_id") intra_id: string,
     @Param("nickname") nickname: string,
   ) {
-    return await this.userService.updatUserdata(intra_id, nickname);
+    return await this.userService.updateNickname(intra_id, nickname);
   }
 
-  @Post("/:intra_id/uploadImage")
+  @Post("/uploadImage/:intra_id")
   @UseGuards(JwtGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: './uploads',
       filename: (req, file, cb) => {
+        console.log("00", file);
         const name = file.originalname.split(".")[0];
         const fileExtension = file.originalname.split(".")[1];
         const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
@@ -85,8 +87,9 @@ export class UserController {
     }
   }))
   uploadImage(@UploadedFile() file: Express.Multer.File,
-    @Param("intra_id") senderId: string
+    @Param("intra_id") senderId: string,
   ) {
+    console.log('first', file.path);
     return this.userService.uploadImage(senderId, file.path);
   }
 

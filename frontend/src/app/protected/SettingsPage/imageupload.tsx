@@ -1,33 +1,33 @@
 "use client";
 import { BiImageAdd } from "react-icons/bi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useGlobalContext } from "@/app/protected/context/store";
-
 import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
-import { Backend_URL, token } from "../../../../lib/Constants";
+import { Backend_URL } from "../../../../lib/Constants";
+import { ToastContainer, toast } from "react-toastify";
+import { getDataOwner } from "./IpaSettings/fetch-user";
 
 const ImageUpload = () => {
-  const intra_id = Cookies.get("intra_id");
-  const { user } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
   const [selectedImage, setSelectedImage] = useState<string>("");
 
   const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const token = Cookies.get("access_token");
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && file.size) {
       const reader = new FileReader();
+      reader.readAsDataURL(file);
       reader.onload = () => {
         setSelectedImage(reader.result as string);
       };
-      console.log(reader.result);
-      reader.readAsDataURL(file);
 
       const formData = new FormData();
       formData.append("file", file);
       try {
         const response = await fetch(
-          Backend_URL + `/user/${intra_id}/uploadImage`,
+          Backend_URL + `/user/uploadImage/${user.intra_id}`,
           {
             method: "POST",
             body: formData,
@@ -36,12 +36,13 @@ const ImageUpload = () => {
             },
           }
         );
-        const result = await response.json();
-        console.log(result.message);
+        toast.success("Image uploaded successfully");
+        const tmp = await getDataOwner(user.intra_id);
+        setUser(tmp);
       } catch (error) {
-        console.error("Error uploading image:", error);
+        toast.error("Error uploading image");
       }
-    }
+    } else toast.error("Error uploading image");
   };
 
   return (
@@ -82,6 +83,9 @@ const ImageUpload = () => {
           className="w-20 h-20 rounded-full bg-cover object-contain "
         />
       </Badge>
+
+      <ToastContainer />
+
     </div>
   );
 };

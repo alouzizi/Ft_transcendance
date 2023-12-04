@@ -1,9 +1,11 @@
 import axios from "axios";
-import { Backend_URL, token } from "../../../../../lib/Constants";
+import { Backend_URL } from "../../../../../lib/Constants";
+import Cookies from "js-cookie";
 
 
 
 export async function activate2af(intra_id: string, keyQrCode: string) {
+    const token = Cookies.get("access_token");
     try {
         const response = await axios.post(
             Backend_URL +

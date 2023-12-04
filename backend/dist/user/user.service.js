@@ -259,7 +259,7 @@ let UserService = class UserService {
     async getUsers() {
         return this.prisma.user.findMany();
     }
-    async updatUserdata(intra_id, nickname) {
+    async updateNickname(intra_id, nickname) {
         const usr = await this.prisma.user.findUnique({ where: { intra_id } });
         if (usr.nickname === nickname) {
             return;
@@ -273,7 +273,6 @@ let UserService = class UserService {
                     nickname: nickname,
                 },
             });
-            return { status: 200 };
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
@@ -288,7 +287,7 @@ let UserService = class UserService {
     }
     async uploadImage(intra_id, path) {
         try {
-            const user = await this.prisma.user.update({
+            await this.prisma.user.update({
                 where: {
                     intra_id: intra_id,
                 },
@@ -296,11 +295,8 @@ let UserService = class UserService {
                     profilePic: `http://172.20.10.3:4000/${path}`,
                 },
             });
-            console.log("File uploaded successfully");
-            return { message: "File uploaded successfully" };
         }
         catch (error) {
-            console.log(error);
         }
     }
     async findByIntraId(intra_id) {

@@ -107,7 +107,7 @@ export const GlobalContextProvider = ({
   const [displayChat, setDisplayChat] = useState<boolean>(false);
   const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
-  const [saveChanges, setSaveChanges] = useState<number>(0);
+
 
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
