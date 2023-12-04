@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { NotificationDTO } from './dto/create-notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotFoundException } from '@nestjs/common';
-import { DefaultDeserializer } from 'v8';
 
 
 @Injectable()
@@ -18,7 +17,6 @@ export class NotificationService {
         subjet: createNotificationDto.subject,
       },
     });
-    console.log(notification)
     return 'Notification created succesfully';
   }
 

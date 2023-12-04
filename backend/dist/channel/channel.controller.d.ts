@@ -22,6 +22,10 @@ export declare class ChannelController {
     }>;
     updateChannel(createChannelDto: any, senderId: string, channelId: string): Promise<{
         status: number;
+        error: string;
+        channel?: undefined;
+    } | {
+        status: number;
         channel: {
             channelPassword: string;
             id: string;
@@ -33,10 +37,6 @@ export declare class ChannelController {
             channelOwnerId: string;
         };
         error?: undefined;
-    } | {
-        status: number;
-        error: string;
-        channel?: undefined;
     } | {
         error: boolean;
         status?: undefined;

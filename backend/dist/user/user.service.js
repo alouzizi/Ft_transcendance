@@ -249,7 +249,6 @@ let UserService = class UserService {
         const user = await this.prisma.user.findUnique({
             where: { intra_id: intra_id },
         });
-        console.log(user);
         await this.prisma.user.update({
             where: { intra_id: intra_id },
             data: {
@@ -288,14 +287,13 @@ let UserService = class UserService {
         }
     }
     async uploadImage(intra_id, path) {
-        console.log(intra_id);
         try {
             const user = await this.prisma.user.update({
                 where: {
                     intra_id: intra_id,
                 },
                 data: {
-                    profilePic: `http://10.13.10.7:4000/${path}`,
+                    profilePic: `http://192.168.56.1:4000/${path}`,
                 },
             });
             console.log("File uploaded successfully");

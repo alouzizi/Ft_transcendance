@@ -22,7 +22,6 @@ let ChannelController = class ChannelController {
         this.channelService = channelService;
     }
     createChannel(createChannelDto, senderId) {
-        console.log(typeof createChannelDto.channelType, createChannelDto.channelType);
         const channelData = {
             ...createChannelDto,
             channelType: (createChannelDto.channelType == 'Private') ? client_1.ChannelType.Private : client_1.ChannelType.Public,
@@ -73,7 +72,7 @@ let ChannelController = class ChannelController {
         return this.channelService.joinChannel(senderId, channelId);
     }
     muteUserChannel(senderId, channelId, userId, timer) {
-        return this.channelService.muteUserChannel(senderId, channelId, userId, timer);
+        return this.channelService.muteUserFromChannel(senderId, channelId, userId, timer);
     }
     checkIsMuted(senderId, channelId) {
         return this.channelService.checkIsMuted(senderId, channelId);

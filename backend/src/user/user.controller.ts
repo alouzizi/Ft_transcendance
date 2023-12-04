@@ -13,7 +13,6 @@ import { User } from "@prisma/client";
 import { diskStorage } from "multer";
 import { JwtGuard } from "src/auth/guard";
 import { UserService } from "./user.service";
-import sharp from "sharp";
 
 @Controller("user")
 export class UserController {
@@ -82,7 +81,6 @@ export class UserController {
     fileFilter: (req, file, cb) => {
       if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
         return cb(null, false);
-
       cb(null, true);
     }
   }))

@@ -47,9 +47,6 @@ interface ContextProps {
   setGeust: Dispatch<SetStateAction<geustDto>>;
 
   socket: Socket | null; // Add the socket property
-
-  saveChanges: number;
-  setSaveChanges: Dispatch<SetStateAction<number>>;
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -60,7 +57,7 @@ const GlobalContext = createContext<ContextProps>({
     selectedMap: "isLeft",
     isLeft: true,
   },
-  setInviteData: () => {},
+  setInviteData: () => { },
 
   displayChat: false,
   setDisplayChat: () => { },
@@ -70,11 +67,6 @@ const GlobalContext = createContext<ContextProps>({
 
   openAlertErro: false,
   setOpenAlertError: () => { },
-
-  saveChanges: 0,
-  setSaveChanges: () => { },
-  
-
 
 
   user: {
@@ -175,7 +167,7 @@ export const GlobalContextProvider = ({
     };
   }, [user.id]);
 
- 
+
   useEffect(() => {
     const getDataUser = async () => {
       const token = Cookies.get("access_token");
@@ -254,8 +246,6 @@ export const GlobalContextProvider = ({
         socket,
         updateInfo,
         setUpdateInfo,
-        saveChanges,
-        setSaveChanges,
         openAlertErro,
         setOpenAlertError,
         displayChat,
@@ -264,7 +254,7 @@ export const GlobalContextProvider = ({
         setInviteData,
       }}
     >
-         <div>
+      <div>
         <Dialog
           PaperProps={{
             style: {
@@ -309,7 +299,7 @@ export const GlobalContextProvider = ({
                   setOpenConfirm(false);
                   // router.push("/protected/GamePage/invite");
 
-                  
+
                 }}
                 className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
                             text-xs  px-4 py-2 mx-2

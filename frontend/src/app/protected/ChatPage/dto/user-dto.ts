@@ -73,6 +73,8 @@ type messageDto = {
   receivedPic: string; // in channle or direct Msg
   receivedStatus: Status; // in DirectMsg
 
+  nbrMessageNoRead: number;
+
   OwnerChannelId: String;
   isChannProtected: Boolean;
 

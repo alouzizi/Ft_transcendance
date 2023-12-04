@@ -55,28 +55,20 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
         if (typeof e === "string") {
             if ('Make Group Admin' === e || 'Remove Group Admin' === e) {
                 await changeStatusAdmin(user.id, geust.id, member.userId);
+                socket?.emit('changeStatusMember', geust.id);
             } else if ('ban from Group' === e || 'unban from Group' === e) {
                 await ChangeStatusBanned(user.id, geust.id, member.userId);
+                if ('ban from Group' === e) socket?.emit('kickedFromChannel',
+                    { memberId: member.userId, channelId: geust.id });
             } else if ('kick from Group' === e) {
                 await kickMember(user.id, geust.id, member.userId);
-                socket?.emit('updateData', {
-                    content: 'kick',
-                    senderId: user.id,
-                    isDirectMessage: true,
-                    receivedId: member.userId,
-                });
+                socket?.emit('kickedFromChannel',
+                    { memberId: member.userId, channelId: geust.id });
             } else if ('Cancel Timeout' === e) {
                 await cancelTimeOut(user.id, geust.id, member.userId);
+                socket?.emit('mutedUserInChannel', geust.id);
             } else if ('Timeout' === e) {
                 setOpenTimeout(true);
-            }
-            if ('Timeout' !== e) {
-                socket?.emit('updateData', {
-                    content: '',
-                    senderId: user.id,
-                    isDirectMessage: false,
-                    receivedId: geust.id,
-                });
             }
         }
         setAnchorEl(null);
@@ -163,10 +155,10 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                 </div>
                                 :
                                 timeout.map((tm: string, index: number) =>
-                                    <Text key={index} 
-                                    className={`border border-black text-[14px] p-1 cursor-pointer m-2 
-                                    ${ (index === timeSelected) ? 'bg-[#4069FF] text-white' : "" }`
-                                }
+                                    <Text key={index}
+                                        className={`border border-black text-[14px] p-1 cursor-pointer m-2 
+                                    ${(index === timeSelected) ? 'bg-[#4069FF] text-white' : ""}`
+                                        }
 
                                         onClick={() => {
                                             setTimeSelected(index)
@@ -195,22 +187,12 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                                     const timer: string = integerValue.toString();
                                     await muteUserChannel(user.id, geust.id, member.userId, timer);
                                     setOpenTimeout(false);
-                                    socket?.emit('updateData', {
-                                        content: '',
-                                        senderId: user.id,
-                                        isDirectMessage: true,
-                                        receivedId: member.userId,
-                                    });
+                                    socket?.emit('mutedUserInChannel', geust.id);
                                 }
                             } else {
                                 await muteUserChannel(user.id, geust.id, member.userId, timeInSecond[timeSelected]);
                                 setOpenTimeout(false);
-                                socket?.emit('updateData', {
-                                    content: '',
-                                    senderId: user.id,
-                                    isDirectMessage: true,
-                                    receivedId: member.userId,
-                                });
+                                socket?.emit('mutedUserInChannel', geust.id);
                             }
                         }}
                             className="w-fit font-meduim  py-1 rounded-md text-white bg-[#4069FF]

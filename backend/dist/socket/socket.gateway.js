@@ -60,8 +60,32 @@ let SocketGateway = class SocketGateway {
     async updateData(ids) {
         this.socketGatewayService.updateData(ids, this.server);
     }
+    async updateChannel(ids) {
+        this.socketGatewayService.updateChannel(ids, this.server);
+    }
     async isTyping(ids) {
         this.server.to(ids.receivedId).emit("isTyping", ids);
+    }
+    async kickedFromChannel(ids) {
+        this.socketGatewayService.kickedFromChannel(ids, this.server);
+    }
+    async joinChannelEmit(ids) {
+        this.socketGatewayService.emitNewMessage(ids, this.server);
+    }
+    async updateMessageInChannel(ids) {
+        this.socketGatewayService.updateMessageInChannel(ids, this.server);
+    }
+    async blockUserToUser(receivedId) {
+        this.server.to(receivedId).emit("blockUserToUser", { receivedId });
+    }
+    async mutedUserInChannel(idChannel) {
+        this.socketGatewayService.mutedUserInChannel(idChannel, this.server);
+    }
+    async changeStatusMember(idChannel) {
+        this.socketGatewayService.changeStatusMember(idChannel, this.server);
+    }
+    async messagsSeenEmit(ids) {
+        this.socketGatewayService.messagsSeenEmit(ids, this.server);
     }
     GameInit(roomName) {
         this.roomState.set(roomName, {
@@ -111,15 +135,15 @@ let SocketGateway = class SocketGateway {
         const notherId = this.rooms.get(roomName).find((c) => c !== id);
         await this.prisma.user.update({
             where: { id: notherId },
-            data: { inGaming: true }
+            data: { inGaming: true },
         });
         await this.prisma.user.update({
             where: { id: id },
-            data: { inGaming: true }
+            data: { inGaming: true },
         });
         const users = await this.prisma.user.findMany();
         for (const user of users) {
-            this.server.to(user.id).emit('updateData', {});
+            this.server.to(user.id).emit("updateStatusGeust", {});
         }
         clearInterval(this.ballPositionInterval.get(roomName));
         this.ballPositionInterval.set(roomName, setInterval(() => {
@@ -132,10 +156,10 @@ let SocketGateway = class SocketGateway {
             }
             let user = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
             if (this.collision(ro.ball, user)) {
-                let collidePoint = (ro.ball.y - (user.y + user.height / 2));
+                let collidePoint = ro.ball.y - (user.y + user.height / 2);
                 collidePoint = collidePoint / (user.height / 2);
                 let angleRad = (Math.PI / 4) * collidePoint;
-                let direction = (ro.ball.x < 600 / 2) ? 1 : -1;
+                let direction = ro.ball.x < 600 / 2 ? 1 : -1;
                 ro.ball.velocityX = direction * ro.ball.speed * Math.cos(angleRad);
                 ro.ball.velocityY = ro.ball.speed * Math.sin(angleRad);
                 if (ro.ball.speed + 0.5 > 15)
@@ -191,25 +215,27 @@ let SocketGateway = class SocketGateway {
         }
     }
     async stopEmittingBallPosition(roomName) {
-        const id = this.rooms.get(roomName)[0];
-        const id2 = this.rooms.get(roomName)[1];
-        await this.prisma.user.update({
-            where: { id: id },
-            data: { inGaming: false }
-        });
-        await this.prisma.user.update({
-            where: { id: id2 },
-            data: { inGaming: false }
-        });
-        const users = await this.prisma.user.findMany();
-        for (const user of users) {
-            this.server.to(user.id).emit('updateData', {});
+        if (this.rooms.get(roomName) && this.rooms.get(roomName).length > 1) {
+            const id = this.rooms.get(roomName)[0];
+            const id2 = this.rooms.get(roomName)[1];
+            await this.prisma.user.update({
+                where: { id: id },
+                data: { inGaming: false },
+            });
+            await this.prisma.user.update({
+                where: { id: id2 },
+                data: { inGaming: false },
+            });
+            const users = await this.prisma.user.findMany();
+            for (const user of users) {
+                this.server.to(user.id).emit("updateStatusGeust", {});
+            }
+            delete this.joindClients[id];
+            delete this.joindClients[id2];
         }
         delete this.rooms[roomName];
         delete this.roomState[roomName];
         delete this.ballPositionInterval[roomName];
-        delete this.joindClients[id];
-        delete this.joindClients[id2];
         clearInterval(this.ballPositionInterval.get(roomName));
     }
     identifyClient(client, id) {
@@ -300,7 +326,10 @@ let SocketGateway = class SocketGateway {
         client.join(data.userId2);
         this.server.to(data.userId2).emit("accepted", data);
         const roomName = data.userId1 + data.userId2;
-        const sockets = [this.inviteRoom.get(data.userId1), this.inviteRoom.get(data.userId2)];
+        const sockets = [
+            this.inviteRoom.get(data.userId1),
+            this.inviteRoom.get(data.userId2),
+        ];
         this.rooms.set(roomName, [data.userId1, data.userId2]);
         sockets.forEach((socket) => {
             socket.join(roomName);
@@ -332,12 +361,68 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "updateData", null);
 __decorate([
+    (0, websockets_1.SubscribeMessage)("updateChannel"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "updateChannel", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)("isTyping"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "isTyping", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("kickedFromChannel"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "kickedFromChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("emitNewMessage"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "joinChannelEmit", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("updateMessageInChannel"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "updateMessageInChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("blockUserToUser"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "blockUserToUser", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("mutedUserInChannel"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "mutedUserInChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("changeStatusMember"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "changeStatusMember", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("messagsSeenEmit"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "messagsSeenEmit", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("clientId"),
     __param(0, (0, websockets_1.ConnectedSocket)()),

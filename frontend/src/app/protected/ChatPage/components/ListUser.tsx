@@ -1,29 +1,32 @@
 "use client"
+import Badge from "@mui/material/Badge";
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from 'react';
+import { FaGamepad } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../context/store';
-import { checkUserIsInChannel, joinChannel, validePassword } from '../api/fetch-channel';
-import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
+import { joinChannel, validePassword } from '../api/fetch-channel';
+import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust, getVueGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
-import Badge from "@mui/material/Badge";
-import { useRouter } from "next/navigation";
-import { FaGamepad } from "react-icons/fa";
 
-
+enum Status {
+  ACTIF = "ACTIF",
+  INACTIF = "INACTIF",
+}
 
 const ListUser = () => {
 
   const router = useRouter();
 
-  const { setGeust, geust, socket, user, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
+  const { setGeust, geust, socket, user, displayChat, setDisplayChat } = useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
 
@@ -31,27 +34,21 @@ const ListUser = () => {
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
-    const getListUsers = async () => {
-      const usersList = await getUserForMsg(user.id);
-      if (usersList !== undefined) setItemList(usersList);
-      else setOpenAlertError(true);
-    };
-    getListUsers();
-    if (socket) {
-      socket.on("findMsg2UsersResponse", getListUsers);
+    if (socket && user.id !== '-1') {
+      const getListUsers = async () => {
+        const usersList = await getUserForMsg(user.id);
+        if (usersList !== undefined) setItemList(usersList);
+      };
+      getListUsers();
+      socket.on("emitNewMessage", getListUsers);
+      return () => {
+        socket.off("emitNewMessage", getListUsers);
+      }
     }
-    return () => { socket?.off("findMsg2UsersResponse", getListUsers); }
-  }, [socket])
+  }, [socket, user.id, geust.id, direct])
 
-  useEffect(() => {
-    const getListUsers = async () => {
-      console.log("helloeleoeleoe");
-      const usersList = await getUserForMsg(user.id);
-      if (usersList !== undefined) setItemList(usersList);
-      else setOpenAlertError(true);
-    };
-    getListUsers();
-  }, [updateInfo])
+
+
 
   const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
@@ -60,19 +57,27 @@ const ListUser = () => {
     else
       geustTemp = await getChannelGeust(tmp.receivedId);
     if (geustTemp !== undefined) setGeust(geustTemp);
-    else setOpenAlertError(true);
   };
 
-
-  const [check, setCheck] = useState(false);
   useEffect(() => {
-    const checked = async () => {
-      const temp = await checkUserIsInChannel(user.id, geust.id);
-      if (temp !== undefined && !temp) setCheck(true);
-      if (temp === undefined) setOpenAlertError(true);
+    if (socket) {
+      const updateStatusGeust = async () => {
+        if (geust.id !== '-1' && geust.isUser) {
+          const geustTemp = await getUserGeust(geust.id);
+          if (geustTemp !== undefined) setGeust(geustTemp);
+        }
+        const usersList = await getUserForMsg(user.id);
+        if (usersList !== undefined) setItemList(usersList);
+      };
+      socket.on("updateStatusGeust", updateStatusGeust);
+      return () => {
+        socket.off("updateStatusGeust", updateStatusGeust);
+      };
     }
-    if (geust.id != '-1' && !geust.isUser) checked();
-    if (geust.id === '-1' || check) {
+  }, [socket, geust.id]);
+
+  useEffect(() => {
+    if (geust.id === '-1') {
       if (direct) {
         if (itemListDirect.length !== 0) {
           getDataGeust(itemListDirect[0]);
@@ -86,30 +91,53 @@ const ListUser = () => {
           getDataGeust(itemListDirect[0]);
         }
       }
-      setCheck(false);
     }
-  }, [direct, itemList, updateInfo, check])
+  }, [direct, itemList, geust.id])
 
   useEffect(() => {
-    if (geust.id !== '-1')
-      setDirect(geust.isUser);
-  }, [geust.id]);
+    if (socket) {
+      const kickedFromChannel = () => {
+        setGeust({
+          isUser: false,
+          id: "-1",
+          nickname: "blabla",
+          profilePic: "",
+          status: Status.INACTIF,
+          lastSee: 0,
+          lenUser: 0,
+          idUserOwner: "",
+          inGaming: false
+        });
+        setDirect(true);
+      };
+      socket.on("kickedFromChannel", kickedFromChannel);
+      return () => {
+        socket.off("kickedFromChannel", kickedFromChannel);
+      };
+    }
+  }, [socket]);
+
   const [isBlocked, setIsBlocked] = useState<number>(0)
-
   useEffect(() => {
-    if (user.id !== "-1" && geust.id !== "-1") {
+    if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
       const upDateGeust = async () => {
         const check = await checkIsBlocked(user.id, geust.id);
         if (check !== undefined) setIsBlocked(check);
-        else setOpenAlertError(true);
       }
       upDateGeust();
+      socket.on("blockUserToUser", upDateGeust);
+      return () => {
+        socket.off("blockUserToUser", upDateGeust);
+      };
     }
-  }, [geust.id, user.id, updateInfo]);
+  }, [geust.id, user.id, socket]);
+
+
+
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
-      <Flex align="center" className='relative border-b py-2 pl-3 border-[#E9ECF1] border-1.5' key={index}
+      <Flex align="center" className='relative border-b py-2 pl-3 border-[#E9ECF1] border-1.5 cursor-pointer' key={index}
         style={{
           background: (el.receivedId === geust.id) ? "#F1F3F9" : 'white'
         }}
@@ -157,13 +185,7 @@ const ListUser = () => {
           />
         }
         <Flex direction="column" className='items-start pl-2'>
-          <Text onClick={() => {
-            if (el.isDirectMessage) {
-              router.push(`/protected/DashboardPage/${el.receivedName}`);
-            }
-          }}
-            size="2" weight="bold"
-            className={`${el.isDirectMessage ? "hover:underline cursor-pointer" : ""}`}>
+          <Text size="2" weight="bold">
             {el.receivedName}
           </Text>
           {el.contentMsg === "" ? <></> :
@@ -191,18 +213,31 @@ const ListUser = () => {
           </Box> : <div></div>
         }
 
+        {
+          (el.nbrMessageNoRead !== 0) ?
+            <div className='absolute right-1/3 text-white'>
+              <Badge
+                badgeContent={el.nbrMessageNoRead}
+                sx={{
+                  "& .MuiBadge-badge": {
+                    backgroundColor: "#254BD6",
+                  },
+                }}>
+              </Badge>
+            </div> : <div></div>
+        }
+
         {(el.contentMsg === "" && !el.isDirectMessage) ?
           <div className='absolute  right-6 cursor-pointer'
             onClick={async () => {
-              console.log(el.isChannProtected);
               if (!el.isChannProtected) {
                 await joinChannel(user.id, el.receivedId);
-                socket?.emit('updateData', {
-                  content: '',
-                  senderId: user.id,
-                  isDirectMessage: false,
-                  receivedId: el.receivedId,
-                });
+                socket?.emit('updateMessageInChannel',
+                  {
+                    isDirectMessage: false,
+                    receivedId: el.receivedId,
+                  }
+                );
                 getDataGeust(el);
                 setDisplayChat(true);
               }
@@ -225,21 +260,19 @@ const ListUser = () => {
         (item.contentMsg !== "" && search === "") ||
         ((item.receivedName.includes(search) && search !== '') || search === "*")))
     });
+  const userWidgetDirect: JSX.Element | JSX.Element[] = (itemListDirect.length != 0) ? itemListDirect.map((el, index) => {
+    return widgetUser(el, index)
+  }) : <Text className="flex border-b justify-center">pas user</Text>
+
 
   const itemListChannel = itemList.filter((item: messageDto) => {
     return (!item.isDirectMessage && (
       (item.contentMsg !== "" && search === "") ||
       ((item.receivedName.includes(search) && search !== '') || search === "*")))
   });
-
-  const userWidgetDirect: JSX.Element | JSX.Element[] = (itemListDirect.length != 0) ? itemListDirect.map((el, index) => {
-    return widgetUser(el, index)
-  }) : <Text className="flex border-b justify-center">pas user</Text>
-
-
   const userWidgetChannel: JSX.Element | JSX.Element[] = (itemListChannel.length != 0) ? itemListChannel.map((el, index) => {
     return widgetUser(el, index)
-  }) : <Text className="flex border-b justify-center">pas user</Text>
+  }) : <Text className="flex border-b justify-center">pas channel</Text>
 
   // ALERT CONFIM PASS
   const [idChannel, setIdChannel] = useState("");
@@ -248,14 +281,11 @@ const ListUser = () => {
   const [password, setPassword] = useState('');
   const [notMatch, setNotMatch] = useState('');
 
-
-
-
   let styles: string = 'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
     <Box
-      className={
-        `bg-white h-[900px] w-[90%] rounded-[15px]
+      className={ // h900px
+        `bg-white h-[800px] w-[90%] rounded-[15px]
         ${!displayChat ? '' : 'hidden'}
         md:block
         md:w-[300px]`
@@ -288,15 +318,13 @@ const ListUser = () => {
         </input>
       </div >
 
-      <ScrollArea scrollbars="vertical" style={{ height: 430 }}>
+      <ScrollArea scrollbars="vertical" style={{ height: 600 }}>
         <Box>
           <Flex direction="column" >
             {direct ? userWidgetDirect : userWidgetChannel}
           </Flex>
         </Box>
       </ScrollArea>
-
-
 
       <div>
         <Dialog open={openConfirm} onClose={() => { setOpenConfirm(false) }}>

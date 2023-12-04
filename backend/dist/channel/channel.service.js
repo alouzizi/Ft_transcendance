@@ -15,10 +15,20 @@ const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcrypt");
 const notification_service_1 = require("../notification/notification.service");
+const crypto_js_1 = require("crypto-js");
 let ChannelService = class ChannelService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
         this.notificationService = notificationService;
+        this.decryptMessage = (cipherText) => {
+            try {
+                const bytes = crypto_js_1.AES.decrypt(cipherText, "key--->this.state.secret");
+                const decrypted = bytes.toString(crypto_js_1.enc.Utf8);
+                return decrypted;
+            }
+            catch (err) {
+            }
+        };
     }
     async createMessageInfoChannel(senderId, channelId, userId, msg) {
         const user = await this.prisma.user.findUnique({
@@ -36,15 +46,15 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
-        let bcryptPassword = "";
-        if (createChannelDto.channelPassword != "")
-            bcryptPassword = await bcrypt.hash(createChannelDto.channelPassword, 10);
+        let cipherText = '';
+        if (createChannelDto.channelPassword !== "")
+            cipherText = crypto_js_1.AES.encrypt(createChannelDto.channelPassword, "key--->this.state.secret");
         try {
             const newChannel = await this.prisma.channel.create({
                 data: {
                     channelOwnerId: senderId,
                     channelName: createChannelDto.channelName,
-                    channelPassword: bcryptPassword,
+                    channelPassword: cipherText.toString(),
                     channelType: createChannelDto.channelType,
                     protected: createChannelDto.protected,
                     avatar: "https://cdn.pixabay.com/photo/2020/05/29/13/26/icons-5235125_1280.png",
@@ -87,26 +97,39 @@ let ChannelService = class ChannelService {
         }
     }
     async updateChannel(senderId, channelId, updateChannelDto) {
-        const saltRounds = 10;
-        let pass = "";
-        if (updateChannelDto.channelPassword != "" && updateChannelDto.protected)
-            pass = await bcrypt.hash(updateChannelDto.channelPassword, saltRounds);
         try {
+            const memberAdmin = await this.prisma.channelMember.findFirst({
+                where: {
+                    channelId: channelId,
+                    userId: senderId,
+                    isAdmin: true
+                }
+            });
+            if (!memberAdmin)
+                return { status: 204, error: "you are not admin" };
+            let pass = "";
+            if (updateChannelDto.channelPassword != "" && updateChannelDto.protected)
+                pass = crypto_js_1.AES.encrypt(updateChannelDto.channelPassword, "key--->this.state.secret");
             const channelUpdate = await this.prisma.channel.update({
                 where: { id: channelId },
                 data: {
                     channelName: updateChannelDto.channelName,
-                    channelPassword: pass,
+                    channelPassword: pass.toString(),
                     channelType: updateChannelDto.channelType,
                     protected: updateChannelDto.protected,
                     avatar: updateChannelDto.avatar,
                 },
             });
+            const userUpdate = await this.prisma.user.findUnique({ where: { id: senderId } });
+            this.createMessageInfoChannel(senderId, channelId, "", `${userUpdate.nickname}'s update in the channel.`);
+            let pass2 = "";
+            if (channelUpdate.channelPassword !== "")
+                pass2 = this.decryptMessage(channelUpdate.channelPassword);
             return {
                 status: 200,
                 channel: {
                     ...channelUpdate,
-                    channelPassword: channelUpdate.protected ? "****" : "",
+                    channelPassword: pass2,
                 },
             };
         }
@@ -169,15 +192,19 @@ let ChannelService = class ChannelService {
                     id: channelId,
                 },
             });
-            if (channel)
+            if (channel) {
+                let pass = "";
+                if (channel.channelPassword !== "")
+                    pass = this.decryptMessage(channel.channelPassword);
                 return {
                     channelName: channel.channelName,
                     channelType: channel.channelType,
-                    channelPassword: channel.protected ? "****" : "",
+                    channelPassword: pass,
                     protected: channel.protected,
                     avatar: channel.avatar,
                     channelOwnerId: channel.channelOwnerId,
                 };
+            }
         }
         catch (error) {
             return { error: true };
@@ -429,7 +456,6 @@ let ChannelService = class ChannelService {
                 where: { id: channelId },
             });
             const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
-            console.log(passwordMatch);
             if (passwordMatch) {
                 return true;
             }
@@ -505,7 +531,7 @@ let ChannelService = class ChannelService {
             return { error: true };
         }
     }
-    async muteUserChannel(senderId, channelId, userId, timer) {
+    async muteUserFromChannel(senderId, channelId, userId, timer) {
         try {
             const admin = await this.prisma.channelMember.findFirst({
                 where: { userId: senderId, channelId: channelId },
@@ -577,7 +603,6 @@ let ChannelService = class ChannelService {
                 },
             });
             if (muted) {
-                const dt = new Date();
                 if (muted.unmuted_at < new Date()) {
                     await this.prisma.mutedMember.delete({ where: { id: muted.id } });
                     return -1;

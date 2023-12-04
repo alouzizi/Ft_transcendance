@@ -23,10 +23,7 @@ import { useRouter } from "next/navigation";
 import { FaGamepad } from "react-icons/fa";
 import PlayInvite from '../../GamePage/components/Invite';
 
-enum Status {
-    ACTIF = "ACTIF",
-    INACTIF = "INACTIF",
-}
+
 
 const BoxChat = () => {
 
@@ -37,7 +34,7 @@ const BoxChat = () => {
     const [msg, setMsg] = useState('');
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
-    const { geust, user, socket, setGeust, updateInfo, setOpenAlertError, displayChat, setDisplayChat } = useGlobalContext();
+    const { geust, user, socket, setGeust, updateInfo, displayChat, setDisplayChat } = useGlobalContext();
 
     const [isTyping, setIsTyping] = useState<boolean>(false)
 
@@ -46,80 +43,52 @@ const BoxChat = () => {
             scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
         }
     };
-    scrollToBottom();
 
     useEffect(() => {
         scrollToBottom();
     }, [Allmsg, isTyping, user.id, geust.id])
 
-    const getDataGeust = async (id: string, isUser: Boolean) => {
-        const temp = await getVueGeust(id, isUser);
-        if (temp !== undefined) setGeust(temp);
-        else setOpenAlertError(true);
-    };
+
 
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
-                if ((geust.isUser && (data.senderId === geust.id || data.senderId === user.id)) ||
-                    ((!geust.isUser && (data.receivedId === geust.id || data.senderId === user.id)))) { // || !geust.isUser
+                if ((geust.isUser && data.isDirectMessage && (data.senderId === geust.id || data.senderId === user.id)) ||
+                    ((!geust.isUser && !data.isDirectMessage && (data.receivedId === geust.id || data.senderId === user.id)))) {
                     setIsTyping(false);
                     setAllMessage((prevMessages) => [...prevMessages, data]);
+
+                    if (data.senderId !== user.id) {
+                        socket.emit('messagsSeenEmit', {
+                            senderId: user.id,
+                            receivedId: geust.id,
+                        });
+                    }
                 }
             };
-            socket.on("findMsg2UsersResponse", handleReceivedMessage);
+            socket.on("emitNewMessage", handleReceivedMessage);
             return () => {
-                socket.off("findMsg2UsersResponse", handleReceivedMessage);
+                socket.off("emitNewMessage", handleReceivedMessage);
             };
         }
-    }, [geust.id, user.id]);
-
-
-
-    useEffect(() => {
-        async function getData() {
-            let msgs;
-            if (geust.isUser)
-                msgs = await getMessageTwoUsers(user.id, geust.id);
-            else
-                msgs = await getMessagesChannel(user.id, geust.id);
-            if (msgs !== undefined) setAllMessage(msgs);
-            else setOpenAlertError(true);
-        }
-        if (geust.id !== "-1" && user.id !== "-1") {
-            getData();
-        }
-    }, [geust.id, user.id, updateInfo]);
-
-
-    useEffect(() => {
-        if (user.id !== "-1 " && socket) {
-            const upDateGeust = async () => {
-                if (geust.id !== "-1") {
-                    getDataGeust(geust.id, geust.isUser);
-                    setIsTyping(false);
-                }
-            }
-            upDateGeust();
-        }
-    }, [geust.id, user.id, updateInfo]);
+    }, [socket, user.id, geust.id]);
 
 
     const [isBlocked, setIsBlocked] = useState<number>(0)
     const [showUnblockAlert, setUnblockAlert] = useState<boolean>(false)
-
     useEffect(() => {
-        setIsMuted(false);
-        if (user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
+        if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 if (check !== undefined) setIsBlocked(check);
-                else setOpenAlertError(true);
-
             }
             upDateGeust();
+            socket.on("blockUserToUser", upDateGeust);
+            return () => {
+                socket.off("blockUserToUser", upDateGeust);
+            };
         }
-    }, [geust.id, user.id, updateInfo]);
+    }, [socket, user.id, geust.id]);
 
     useEffect(() => {
         if (msg != "" && socket) {
@@ -152,30 +121,30 @@ const BoxChat = () => {
 
     const [isMuted, setIsMuted] = useState(false);
     useEffect(() => {
-        if (user.id !== "-1" && geust.id !== "-1"
-            && !geust.isUser) {
-            const checkUserIsMuted = async () => {
-                const timer = await checkIsMuted(user.id, geust.id);
-                if (timer !== undefined) {
-                    if (timer !== -1) {
+        if (socket && user.id !== "-1" && geust.id !== "-1" && !geust.isUser) {
+            const checkUserIsMuted = async (data: { idChannel: string }) => {
+                if (data.idChannel === geust.id) {
+                    const timer = await checkIsMuted(user.id, geust.id);
+                    if (timer !== undefined && timer !== -1) {
                         setMsg('');
                         setIsMuted(true);
                         const timeoutId = setTimeout(() => {
                             setIsMuted(false);
-                            socket?.emit('updateData', {
-                                content: '',
-                                senderId: user.id,
-                                isDirectMessage: false,
-                                receivedId: geust.id,
-                            });
                         }, timer);
                         return () => clearTimeout(timeoutId);
+
+                    } else {
+                        setIsMuted(false);
                     }
-                } else setOpenAlertError(true);
+                }
             }
-            checkUserIsMuted();
+            checkUserIsMuted({ idChannel: geust.id });
+            socket.on("mutedUserInChannel", checkUserIsMuted);
+            return () => {
+                socket.off("mutedUserInChannel", checkUserIsMuted);
+            };
         }
-    }, [geust.id, user.id, updateInfo]);
+    }, [socket, geust.id, user.id, updateInfo]);
 
     const handleSendMessage = () => {
         if (msg.trim() != '') {
@@ -193,13 +162,61 @@ const BoxChat = () => {
                 setMsg('');
             }
         }
+    }
+
+
+    async function getData() {
+        let msgs;
+        if (geust.isUser)
+            msgs = await getMessageTwoUsers(user.id, geust.id);
+        else
+            msgs = await getMessagesChannel(user.id, geust.id);
+        if (msgs !== undefined) setAllMessage(msgs);
 
     }
+    useEffect(() => {
+        if (socket && geust.id !== "-1" && user.id !== "-1") {
+            getData();
+            socket.emit('messagsSeenEmit', {
+                senderId: user.id,
+                receivedId: geust.id,
+            });
+
+        }
+    }, [socket, geust.id, user.id]);
+
+    useEffect(() => {
+        const getDataGeust = async (data: { idChannel: string }) => {
+            if (geust.id == data.idChannel) {
+                const temp = await getVueGeust(geust.id, false);
+                setGeust(temp);
+                getData();
+            }
+        };
+        if (socket) {
+            socket.on("updateChannel", getDataGeust);
+            return () => {
+                socket.off("updateChannel", getDataGeust);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        if (socket) {
+            const getMessageEmit = () => {
+                getData();
+            }
+            socket.on("messagsSeenEmit", getMessageEmit);
+            return () => {
+                socket.off("messagsSeenEmit", getMessageEmit);
+            }
+        }
+    }, [socket, Allmsg.length])
 
     return (geust.id != "-1") ? (
         <Box
             className={`
-        bg-[#F1F3F9] h-[900px] rounded-[15px] 
+        bg-[#F1F3F9] h-[800px] rounded-[15px] 
         ${displayChat ? '' : 'hidden'}
         md:ml-[15px]
         md:block
@@ -207,7 +224,6 @@ const BoxChat = () => {
         w-[90%]
         max-w-4xl
         `}
-
         >
             <div className="flex border-b items-center justify-between bg-white p-4 rounded-t-[15px]">
                 <div className="flex items-center ">
@@ -283,13 +299,13 @@ const BoxChat = () => {
                         <IoSettingsSharp size={16} />
                     </Link> :
                         <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { PlayInvite({userId1: user.id, userId2: geust.id, socket: socket})}}
+                            onClick={() => { PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket }) }}
                         />}
                 </div>
             </div >
 
             <div   >
-                <ScrollArea scrollbars="vertical" style={{ height: 775 }} ref={scrollAreaRef} >
+                <ScrollArea scrollbars="vertical" style={{ height: 675 }} ref={scrollAreaRef} >
                     <Box p="1" pr="3">
                         <ShowMessages messages={Allmsg} user={user} />
                         {isTyping ? <IsTypingMsg /> : <></>}
@@ -312,7 +328,6 @@ const BoxChat = () => {
                             }}
                         >
                         </input>
-
 
                         <div className={`flex items-center justify-center w-[30px] h-[30px] 
                 rounded-[10px] bg-[#254BD6]  m-[1px] ${isMuted ? "" : "cursor-pointer"} `}>
@@ -342,6 +357,7 @@ const BoxChat = () => {
                         <div className='flex flex-col flex-grow items-center mt-3'>
                             <button onClick={async () => {
                                 await unBlockedUser(user.id, geust.id);
+                                socket?.emit('blockUserToUser', geust.id);
                                 setUnblockAlert(false);
                                 setIsBlocked(0);
                             }}

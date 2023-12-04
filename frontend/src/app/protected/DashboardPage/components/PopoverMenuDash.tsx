@@ -39,7 +39,7 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
-    PlayInvite({userId1: user.id, userId2: prompt.friendInfo.id, socket: socket})
+    PlayInvite({ userId1: user.id, userId2: prompt.friendInfo.id, socket: socket })
     console.log("play match with friend: " + prompt.friendInfo.nickname);
     handleClose();
   }
@@ -70,6 +70,7 @@ export default function PopoverMenuDash(prompt: {
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit('blockUserToUser', prompt.friendInfo.id);
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,
