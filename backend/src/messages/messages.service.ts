@@ -461,6 +461,7 @@ export class MessagesService {
 
       for (const user of usersList) {
         const lastMessage = await this.getLastMessages(senderId, user.id);
+
         const forNbrMessageNoRead: Message[] = await this.prisma.message.findMany(
           {
             where: {
@@ -472,6 +473,7 @@ export class MessagesService {
             }
           }
         );
+
         const tmp: messageDto = {
           isDirectMessage: true,
 

@@ -1,6 +1,6 @@
-import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { Strategy, Profile, VerifyCallback } from "passport-42";
+import { Profile, Strategy, VerifyCallback } from "passport-42";
 import { UserService } from "src/user/user.service";
 // import { UserService } from 'src/users/UserService';
 
