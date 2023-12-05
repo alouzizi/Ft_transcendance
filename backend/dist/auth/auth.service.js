@@ -22,19 +22,21 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    async generateAccessToken(user) {
-        const payload = {
-            sub: user.intra_id,
-            nickname: user.nickname,
-            email: user.email,
-        };
-        return {
-            access_token: await this.jwtService.signAsync(payload),
-        };
-    }
-    async generate2fa_Token(user) {
-        const payload = { sub: user.intra_id, nickname: user.login42 };
-        return await this.jwtService.signAsync(payload);
+    async callbackStratiegs(req, res) {
+        const ret = await this.valiadteUserAndCreateJWT(req.user.intra_id);
+        if (ret) {
+            res.cookie("intra_id", req.user.intra_id);
+            const diff = (new Date().getTime() - new Date(`${req.user.createdAt}`).getTime()) /
+                1000;
+            if (diff < 120) {
+                res.cookie("access_token", ret.access_token);
+                return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
+            }
+            if (req.user.isTwoFactorAuthEnabled)
+                return res.redirect(process.env.FRONT_HOST + "public/Checker2faAuth");
+            res.cookie("access_token", ret.access_token);
+            res.redirect(process.env.FRONT_HOST + "protected/DashboardPage");
+        }
     }
     async valiadteUserAndCreateJWT(intra_id) {
         try {
@@ -49,6 +51,20 @@ let AuthService = class AuthService {
         catch (error) {
             return null;
         }
+    }
+    async generateAccessToken(user) {
+        const payload = {
+            sub: user.intra_id,
+            nickname: user.nickname,
+            email: user.email,
+        };
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
+    }
+    async generate2fa_Token(user) {
+        const payload = { sub: user.intra_id, nickname: user.login42 };
+        return await this.jwtService.signAsync(payload);
     }
     async loginWith2fa(userWithoutPsw) {
         const payload = {

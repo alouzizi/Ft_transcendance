@@ -19,7 +19,6 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(
   }
 
   validateUser(profile: Profile) {
-    // refreshToken: string
     const { id, first_name, last_name, image, login } = profile._json;
     const user = {
       intra_id: typeof id === "string" ? id : id.toString(),
@@ -38,12 +37,10 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(
     profile: Profile,
     done: VerifyCallback
   ) {
-    //accessToken: string,refreshToken: string
     try {
       const user = await this.validateUser(profile);
       let checkuser = await this.userService.findByIntraId(user.intra_id);
       if (checkuser) {
-        // checkuser = await this.userService.findByIntraId(user.intra_id);
         done(null, checkuser);
       } else {
         let createnewuser = await this.userService.createUser(user);
