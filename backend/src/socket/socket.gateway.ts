@@ -299,6 +299,7 @@ export class SocketGateway
     }
   }
   async stopEmittingBallPosition(roomName: string) {
+    const test = this.rooms.get(roomName)
     if (this.rooms.get(roomName) && this.rooms.get(roomName).length > 1) {
       const id = this.rooms.get(roomName)[0];
       const id2 = this.rooms.get(roomName)[1];
@@ -320,6 +321,8 @@ export class SocketGateway
 
     // id2.leave(roomName);
     // id2.leave(id2);
+    // test.
+    this.rooms.delete(roomName);
     delete this.rooms[roomName];
     delete this.roomState[roomName];
     delete this.ballPositionInterval[roomName];

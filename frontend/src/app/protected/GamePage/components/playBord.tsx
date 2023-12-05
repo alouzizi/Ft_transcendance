@@ -58,8 +58,9 @@ const MyComponent = ({
           "
           onClick={() => {
             if (link == "/protected/GamePage/random") {
-              if (socket?.connected) router.push(link);
-              else window.alert("Refresh the page and try again!");
+              // if (socket?.connected) router.push(link);
+              // else window.alert("Refresh the page and try again!");
+              router.push(link);
             } else {
               router.push(link);
             }
