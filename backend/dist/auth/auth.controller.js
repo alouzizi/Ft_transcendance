@@ -14,9 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
 const user_service_1 = require("../user/user.service");
 const auth_service_1 = require("./auth.service");
-const passport_1 = require("@nestjs/passport");
 const jwt_guard_1 = require("./guard/jwt.guard");
 let AuthController = class AuthController {
     constructor(authService, userService) {
@@ -25,7 +25,12 @@ let AuthController = class AuthController {
     }
     async loginWith42() {
     }
-    async callbackStratiegs(req, res) {
+    async googleAuth(req) {
+    }
+    async callbackGoogle(req, res) {
+        this.authService.callbackStratiegs(req, res);
+    }
+    async callbackIntra42(req, res) {
         this.authService.callbackStratiegs(req, res);
     }
     async register(req) {
@@ -63,6 +68,24 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginWith42", null);
 __decorate([
+    (0, common_1.Get)('google'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googleAuth", null);
+__decorate([
+    (0, common_1.Get)("stategies/callback"),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("google")),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "callbackGoogle", null);
+__decorate([
     (0, common_1.Get)("stategies/callback"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("42-intranet")),
     __param(0, (0, common_1.Req)()),
@@ -70,7 +93,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "callbackStratiegs", null);
+], AuthController.prototype, "callbackIntra42", null);
 __decorate([
     (0, common_1.Get)("2fa/generate"),
     (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),

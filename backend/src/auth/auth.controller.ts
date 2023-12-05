@@ -1,20 +1,17 @@
 import {
   Controller,
   Get,
-  Header,
   HttpCode,
   Param,
   Post,
   Req,
   Res,
-  UnauthorizedException,
-  UseGuards,
+  UseGuards
 } from "@nestjs/common";
-import { Response } from "express";
-import { Request } from "express";
+import { AuthGuard } from "@nestjs/passport";
+import { Request, Response } from "express";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
-import { AuthGuard } from "@nestjs/passport";
 import { JwtGuard } from "./guard/jwt.guard";
 
 @Controller("auth")
@@ -31,11 +28,28 @@ export class AuthController {
   }
 
 
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  @HttpCode(200)
+  async googleAuth(@Req() req) {
+    //return this.authService.googleLogin();
+    //console.log("googleAuth");
+  }
+
   @Get("stategies/callback")
-  @UseGuards(AuthGuard("42-intranet"))
-  async callbackStratiegs(@Req() req: any, @Res() res: Response) {
+  @UseGuards(AuthGuard("google"))
+  async callbackGoogle(@Req() req: any, @Res() res: Response) {
     this.authService.callbackStratiegs(req, res);
   }
+
+  @Get("stategies/callback")
+  @UseGuards(AuthGuard("42-intranet"))
+  async callbackIntra42(@Req() req: any, @Res() res: Response) {
+    this.authService.callbackStratiegs(req, res);
+  }
+
+
 
   @Get("2fa/generate")
   @UseGuards(JwtGuard)

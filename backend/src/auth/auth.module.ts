@@ -10,6 +10,7 @@ import { ChannelService } from "src/channel/channel.service";
 import { UserService } from "src/user/user.service";
 import { NotificationService } from "src/notification/notification.service";
 import { FortyTwoIntranetStrategy } from "./strategies/42-intranet.strategy";
+import { GoogleStrategy } from "./strategies/google.strategy";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FortyTwoIntranetStrategy } from "./strategies/42-intranet.strategy";
   providers: [
     AuthService,
     FortyTwoIntranetStrategy,
+    GoogleStrategy,
     UserService,
     PrismaService,
     ChannelService,

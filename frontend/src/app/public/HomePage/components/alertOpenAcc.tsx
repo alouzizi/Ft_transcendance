@@ -9,7 +9,7 @@ export default function AlertOpenAccount({ openAlert, setOpenAlert }:
     { openAlert: boolean, setOpenAlert: any }) {
 
     const handleLogin = async () => {
-        window.location.href = "http://172.20.10.3:4000/auth/login42";
+        window.location.href = "http://localhost:4000/auth/google";
     };
 
     return <div>

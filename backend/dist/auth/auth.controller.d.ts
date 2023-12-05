@@ -1,5 +1,4 @@
-import { Response } from "express";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 export declare class AuthController {
@@ -7,7 +6,9 @@ export declare class AuthController {
     private userService;
     constructor(authService: AuthService, userService: UserService);
     loginWith42(): Promise<void>;
-    callbackStratiegs(req: any, res: Response): Promise<void>;
+    googleAuth(req: any): Promise<void>;
+    callbackGoogle(req: any, res: Response): Promise<void>;
+    callbackIntra42(req: any, res: Response): Promise<void>;
     register(req: Request): Promise<any>;
     turnOnTwoFactorAuthentication(intra_id: string, authCode: string): Promise<boolean>;
     turnOffTwoFactorAuthentication(intra_id: string): Promise<void>;

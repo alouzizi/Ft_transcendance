@@ -18,6 +18,7 @@ const channel_service_1 = require("../channel/channel.service");
 const user_service_1 = require("../user/user.service");
 const notification_service_1 = require("../notification/notification.service");
 const _42_intranet_strategy_1 = require("./strategies/42-intranet.strategy");
+const google_strategy_1 = require("./strategies/google.strategy");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -35,6 +36,7 @@ exports.AuthModule = AuthModule = __decorate([
         providers: [
             auth_service_1.AuthService,
             _42_intranet_strategy_1.FortyTwoIntranetStrategy,
+            google_strategy_1.GoogleStrategy,
             user_service_1.UserService,
             prisma_service_1.PrismaService,
             channel_service_1.ChannelService,
