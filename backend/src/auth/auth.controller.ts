@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Header,
   HttpCode,
   Param,
   Post,
@@ -10,6 +11,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { Response } from "express";
+import { Request } from "express";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "@nestjs/passport";
@@ -28,6 +30,7 @@ export class AuthController {
   async loginWith42() {
   }
 
+
   @Get("stategies/callback")
   @UseGuards(AuthGuard("42-intranet"))
   async callbackStratiegs(@Req() req: any, @Res() res: Response) {
@@ -36,7 +39,7 @@ export class AuthController {
 
   @Get("2fa/generate")
   @UseGuards(JwtGuard)
-  async register(@Req() req: any) {
+  async register(@Req() req: Request) {
     const { otpAuthUrl } = await this.authService.generateTwoFactorAuthSecret(
       req.user
     );
@@ -44,11 +47,6 @@ export class AuthController {
     return qrcode;
   }
 
-  @Post("2fa/turn-off/:intra_id")
-  @UseGuards(JwtGuard)
-  async turnOffTwoFactorAuthentication(@Param("intra_id") intra_id: string) {
-    await this.userService.turnOffTwoFactorAuth(intra_id);
-  }
 
   @Get("2fa/turnOn/:intra_id/:authCode")
   @UseGuards(JwtGuard)
@@ -67,21 +65,27 @@ export class AuthController {
     return isCodeValid
   }
 
+
+  @Post("2fa/turn-off/:intra_id")
+  @UseGuards(JwtGuard)
+  async turnOffTwoFactorAuthentication(@Param("intra_id") intra_id: string) {
+    await this.userService.turnOffTwoFactorAuth(intra_id);
+  }
+
   @Get("2fa/authenticate/:intra_id/:authCode")
   @HttpCode(200)
   async authenticate(
     @Param("intra_id") intra_id: string,
-    @Param("authCode") authCode: string
+    @Param("authCode") authCode: string,
   ) {
     const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(
       authCode,
       intra_id
     );
     if (!isCodeValid) {
-      throw new UnauthorizedException("Wrong authentication code");
+      return { isCodeValid, access_token: "" }
     }
     const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
-    return ret.access_token;
+    return { isCodeValid, access_token: ret.access_token }
   }
-
 }

@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { Request } from "express";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 export declare class AuthController {
@@ -7,8 +8,11 @@ export declare class AuthController {
     constructor(authService: AuthService, userService: UserService);
     loginWith42(): Promise<void>;
     callbackStratiegs(req: any, res: Response): Promise<void>;
-    register(req: any): Promise<any>;
-    turnOffTwoFactorAuthentication(intra_id: string): Promise<void>;
+    register(req: Request): Promise<any>;
     turnOnTwoFactorAuthentication(intra_id: string, authCode: string): Promise<boolean>;
-    authenticate(intra_id: string, authCode: string): Promise<string>;
+    turnOffTwoFactorAuthentication(intra_id: string): Promise<void>;
+    authenticate(intra_id: string, authCode: string): Promise<{
+        isCodeValid: boolean;
+        access_token: string;
+    }>;
 }

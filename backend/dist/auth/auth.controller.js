@@ -33,9 +33,6 @@ let AuthController = class AuthController {
         const qrcode = await this.authService.generateQrCodeDataURL(otpAuthUrl);
         return qrcode;
     }
-    async turnOffTwoFactorAuthentication(intra_id) {
-        await this.userService.turnOffTwoFactorAuth(intra_id);
-    }
     async turnOnTwoFactorAuthentication(intra_id, authCode) {
         const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(authCode, intra_id);
         if (!isCodeValid) {
@@ -44,13 +41,16 @@ let AuthController = class AuthController {
         await this.userService.turnOnTwoFactorAuth(intra_id);
         return isCodeValid;
     }
+    async turnOffTwoFactorAuthentication(intra_id) {
+        await this.userService.turnOffTwoFactorAuth(intra_id);
+    }
     async authenticate(intra_id, authCode) {
         const isCodeValid = await this.authService.isTwoFactorAuthCodeValid(authCode, intra_id);
         if (!isCodeValid) {
-            throw new common_1.UnauthorizedException("Wrong authentication code");
+            return { isCodeValid, access_token: "" };
         }
         const ret = await this.authService.valiadteUserAndCreateJWT(intra_id);
-        return ret.access_token;
+        return { isCodeValid, access_token: ret.access_token };
     }
 };
 exports.AuthController = AuthController;
@@ -80,14 +80,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
-    (0, common_1.Post)("2fa/turn-off/:intra_id"),
-    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
-    __param(0, (0, common_1.Param)("intra_id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "turnOffTwoFactorAuthentication", null);
-__decorate([
     (0, common_1.Get)("2fa/turnOn/:intra_id/:authCode"),
     (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("intra_id")),
@@ -96,6 +88,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "turnOnTwoFactorAuthentication", null);
+__decorate([
+    (0, common_1.Post)("2fa/turn-off/:intra_id"),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
+    __param(0, (0, common_1.Param)("intra_id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "turnOffTwoFactorAuthentication", null);
 __decorate([
     (0, common_1.Get)("2fa/authenticate/:intra_id/:authCode"),
     (0, common_1.HttpCode)(200),

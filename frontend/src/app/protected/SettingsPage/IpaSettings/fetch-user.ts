@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Backend_URL } from "../../../../../lib/Constants";
 import Cookies from "js-cookie";
 

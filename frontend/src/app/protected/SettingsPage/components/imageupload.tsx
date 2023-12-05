@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useGlobalContext } from "@/app/protected/context/store";
 import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
-import { Backend_URL } from "../../../../lib/Constants";
+import { Backend_URL } from "../../../../../lib/Constants";
 import { ToastContainer, toast } from "react-toastify";
-import { getDataOwner } from "./IpaSettings/fetch-user";
+import { getDataOwner } from "../IpaSettings/fetch-user";
 
 const ImageUpload = () => {
   const { user, setUser } = useGlobalContext();

@@ -7,5 +7,4 @@ const SettingPage = async ({ children }: { children: React.ReactNode }) => {
         </div>
     );
 };
-
 export default SettingPage;

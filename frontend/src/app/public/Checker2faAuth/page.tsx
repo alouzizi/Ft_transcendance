@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Backend_URL } from "../../../../lib/Constants";
+import { auth_2fa } from "./api_check/fetch-2fa";
 
 export default function login() {
 
@@ -34,21 +35,13 @@ export default function login() {
           className="ml-2 bg-blue-600"
           onClick={async () => {
             if (keyQrCode !== "") {
-              const intra_id = Cookies.get("intra_id");
-              try {
-                const res = await axios.get(
-                  Backend_URL +
-                  `/auth/2fa/authenticate/${intra_id}/${keyQrCode}`
-                );
-                const token = await res.data;
-                Cookies.set("access_token", token);
+              const intra_id: string = Cookies.get("intra_id") || "";
+              const data = await auth_2fa(intra_id, keyQrCode);
+              if (data.isCodeValid) {
+                Cookies.set("access_token", data.access_token);
                 router.push("/protected/DashboardPage");
-              } catch {
-                toast.error("Wrong authentication codee");
-              }
-            } else {
-              toast.error("Wrong authentication codee");
-            }
+              } else toast.error("Wrong authentication codee");
+            } else toast.error("Wrong authentication codee");
           }}
         >
           Active 2FA

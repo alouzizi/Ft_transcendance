@@ -51,24 +51,20 @@ export class AuthService {
   }
 
   async generateAccessToken(user: User) {
-    // Create a JWT access token based on the user's data
     const payload = {
       sub: user.intra_id,
       nickname: user.nickname,
       email: user.email,
-    }; // Customize the payload as needed
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async generate2fa_Token(user: any) {
-    const payload = { sub: user.intra_id, nickname: user.login42 }; // Customize the payload as needed
+    const payload = { sub: user.intra_id, nickname: user.login42 };
     return await this.jwtService.signAsync(payload);
   }
-
-
-
 
   async loginWith2fa(userWithoutPsw: any) {
     const payload = {
@@ -100,9 +96,11 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
+    // console.log("-----> , ", user)
     return authenticator.verify({
       token: authCode,
-      secret: user.twoFactorAuthSecret, // Replace with the actual property name for the secret
+      secret: user.twoFactorAuthSecret,
     });
+
   }
 }
