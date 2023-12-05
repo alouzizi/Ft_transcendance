@@ -5,11 +5,11 @@ import { AuthService } from "./auth.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
-import { FortyTwoIntranetStrategy } from "./strategies/42-intranet.strategy";
 import { MessagesService } from "src/messages/messages.service";
 import { ChannelService } from "src/channel/channel.service";
 import { UserService } from "src/user/user.service";
 import { NotificationService } from "src/notification/notification.service";
+import { FortyTwoIntranetStrategy } from "./strategies/42-intranet.strategy";
 
 @Module({
   imports: [

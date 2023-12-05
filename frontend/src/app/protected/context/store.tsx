@@ -153,37 +153,32 @@ export const GlobalContextProvider = ({
       });
       setSocket(socket);
       socket.on("connect", () => {
-        console.log("socket --> user connected");
       });
       socket.on("disconnect", () => {
-        console.log("socket --> user disconnected");
       });
     }
-
-    return () => {
-      // if (user.id !== - 1 && socket) {
-      //     socket.disconnect();
-      // } 
-    };
   }, [user.id]);
 
 
   useEffect(() => {
     const getDataUser = async () => {
-      const token = Cookies.get("access_token");
-      const id_intra = Cookies.get("intra_id");
-
-      const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
-        method: "GET",
-        headers: {
-          authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.ok) {
-        const owner = await res.json();
-        setUser(owner);
-      } else {
+      try {
+        const token = Cookies.get("access_token");
+        const id_intra = Cookies.get("intra_id");
+        const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (res.ok) {
+          const owner = await res.json();
+          setUser(owner);
+        } else {
+          router.push("/public/HomePage");
+        }
+      } catch (error) {
         router.push("/public/HomePage");
       }
     };

@@ -21,7 +21,6 @@ export class UserController {
 
   }
 
-
   @Get(":id")
   @UseGuards(JwtGuard)
   async getUserProfile(@Param("id") id: string) {

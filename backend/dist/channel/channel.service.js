@@ -155,7 +155,7 @@ let ChannelService = class ChannelService {
                         id: channelId,
                     },
                     data: {
-                        avatar: `http://172.20.10.3:4000/${path}`
+                        avatar: process.env.BACK_HOST + `${path}`
                     }
                 });
             }

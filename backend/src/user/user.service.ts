@@ -225,7 +225,7 @@ export class UserService {
         profilePic: user1.profilePicture.toString(),
         last_name: user1.last_name,
         first_name: user1.first_name,
-        isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false, // Assuming it's a boolean property
+        isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
       },
     });
     return user;
@@ -300,13 +300,13 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://172.20.10.3:4000/${path}`,
+          profilePic: process.env.BACK_HOST + `${path}`,
         },
       });
     } catch (error) {
     }
   }
-  
+
   async findByIntraId(intra_id: string) {
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },

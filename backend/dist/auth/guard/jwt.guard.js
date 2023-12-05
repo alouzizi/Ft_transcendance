@@ -11,12 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtGuard = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 let JwtGuard = class JwtGuard {
-    constructor(jwtService, config) {
+    constructor(jwtService) {
         this.jwtService = jwtService;
-        this.config = config;
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
@@ -26,7 +24,7 @@ let JwtGuard = class JwtGuard {
         }
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.config.get("JWT_SECRET"),
+                secret: process.env.JWT_SECRET,
             });
             request["user"] = payload;
         }
@@ -46,7 +44,6 @@ let JwtGuard = class JwtGuard {
 exports.JwtGuard = JwtGuard;
 exports.JwtGuard = JwtGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService,
-        config_1.ConfigService])
+    __metadata("design:paramtypes", [jwt_1.JwtService])
 ], JwtGuard);
 //# sourceMappingURL=jwt.guard.js.map

@@ -292,7 +292,7 @@ let UserService = class UserService {
                     intra_id: intra_id,
                 },
                 data: {
-                    profilePic: `http://172.20.10.3:4000/${path}`,
+                    profilePic: process.env.BACK_HOST + `${path}`,
                 },
             });
         }

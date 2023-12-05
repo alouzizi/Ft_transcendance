@@ -1,14 +1,10 @@
 "use client";
 import { Button } from "@mui/material";
-import { cache, useState } from "react";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Backend_URL } from "../../../../lib/Constants";
 import { auth_2fa } from "./api_check/fetch-2fa";
 
 export default function login() {
@@ -40,8 +36,8 @@ export default function login() {
               if (data.isCodeValid) {
                 Cookies.set("access_token", data.access_token);
                 router.push("/protected/DashboardPage");
-              } else toast.error("Wrong authentication codee");
-            } else toast.error("Wrong authentication codee");
+              } else toast.error("Wrong authentication code");
+            } else toast.error("Wrong authentication code");
           }}
         >
           Active 2FA
