@@ -23,7 +23,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
   let animationFrameId: number;
   let animationFrameId1: number;
   const router = useRouter();
-  const [alert, setAlert] = useState(0);
+  // const [alert, setAlert] = useState(0);
 
   const player: Padlle = {
     x: 10,
