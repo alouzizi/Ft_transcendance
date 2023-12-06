@@ -11,9 +11,9 @@ export class FortyTwoIntranetStrategy extends PassportStrategy(
 ) {
   constructor(private userService: UserService) {
     super({
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: process.env.CALLBACK_URL,
+      clientID: process.env.CLIENT_ID_42,
+      clientSecret: process.env.CLIENT_SECRET_42,
+      callbackURL: process.env.CALLBACK_URL_42,
       scope: ['public'],
     });
   }

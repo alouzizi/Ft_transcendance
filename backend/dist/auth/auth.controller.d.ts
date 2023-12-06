@@ -6,7 +6,7 @@ export declare class AuthController {
     private userService;
     constructor(authService: AuthService, userService: UserService);
     loginWith42(): Promise<void>;
-    googleAuth(req: any): Promise<void>;
+    googleAuth(): Promise<void>;
     callbackGoogle(req: any, res: Response): Promise<void>;
     callbackIntra42(req: any, res: Response): Promise<void>;
     register(req: Request): Promise<any>;

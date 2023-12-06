@@ -25,7 +25,7 @@ let AuthController = class AuthController {
     }
     async loginWith42() {
     }
-    async googleAuth(req) {
+    async googleAuth() {
     }
     async callbackGoogle(req, res) {
         this.authService.callbackStratiegs(req, res);
@@ -71,13 +71,12 @@ __decorate([
     (0, common_1.Get)('google'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
     (0, common_1.HttpCode)(200),
-    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuth", null);
 __decorate([
-    (0, common_1.Get)("stategies/callback"),
+    (0, common_1.Get)("stategies/google/callback"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("google")),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
@@ -86,7 +85,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "callbackGoogle", null);
 __decorate([
-    (0, common_1.Get)("stategies/callback"),
+    (0, common_1.Get)("stategies/42/callback"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("42-intranet")),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),

@@ -17,9 +17,9 @@ const user_service_1 = require("../../user/user.service");
 let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, "42-intranet") {
     constructor(userService) {
         super({
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL,
+            clientID: process.env.CLIENT_ID_42,
+            clientSecret: process.env.CLIENT_SECRET_42,
+            callbackURL: process.env.CALLBACK_URL_42,
             scope: ['public'],
         });
         this.userService = userService;

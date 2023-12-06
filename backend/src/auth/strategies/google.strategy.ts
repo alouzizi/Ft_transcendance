@@ -7,9 +7,9 @@ import { UserService } from "src/user/user.service";
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(private readonly userService: UserService) {
         super({
-            clientID: "571358523842-a0ngiv1cug62c8uo69s7ri9re1vp1tc9.apps.googleusercontent.com",//process.env.GOOGLE_CLIENT_ID,
-            clientSecret: "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",//process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: 'http://localhost:4000/auth/stategies/callback', // Replace with your actual redirect URL
+            clientID: process.env.CLIENT_ID_GOOGLE,
+            clientSecret: process.env.CLIENT_SECRET_GOOGLE,
+            callbackURL: process.env.CALLBACK_URL_GOOGLE, // Replace with your actual redirect URL
             scope: ['email', 'profile'],
         });
     }
@@ -35,7 +35,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             if (checkuser) {
                 done(null, checkuser);
             } else {
-                let createnewuser = await this.userService.createUserForGoogle(user);
+                let createnewuser = await this.userService.createUser(user);
                 done(null, createnewuser);
             }
             return user;
@@ -44,9 +44,4 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         }
     }
 }
-
-// //check in database if user exists if yes add index in front of login42 and recheckit again with recursion
-// function checkifUserExists(user: { intra_id: any; email: any; first_name: any; last_name: any; profilePicture: any; login42: any; }) {
-
-// }
 

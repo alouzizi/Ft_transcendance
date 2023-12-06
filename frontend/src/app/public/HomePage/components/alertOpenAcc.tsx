@@ -9,7 +9,7 @@ export default function AlertOpenAccount({ openAlert, setOpenAlert }:
     { openAlert: boolean, setOpenAlert: any }) {
 
     const handleLogin = async () => {
-        window.location.href = "http://localhost:4000/auth/google";
+
     };
 
     return <div>
@@ -25,14 +25,14 @@ export default function AlertOpenAccount({ openAlert, setOpenAlert }:
                 <img className="h-20" src="/PongMaster.svg" alt="PongMaster" />
                 <p className='text-white text-xl'>open account using</p>
                 <div className='flex'>
-                    <Button onClick={handleLogin}>
+                    <Button onClick={() => window.location.href = "http://localhost:4000/auth/google"}>
                         <div className="border-2 shadow-xl bg-white border-[#4069FF] mt-3 rounded-xl
                             flex justify-center mx-auto items-center w-36 h-12">
                             <img className="w-[29px]" src="/google.svg" />
                             <p className="ml-1"> google </p>
                         </div>
                     </Button>
-                    <Button onClick={handleLogin}>
+                    <Button onClick={() => window.location.href = "http://localhost:4000/auth/login42"}>
                         <div className="ml-2 border-2 shadow-xl bg-white border-[#4069FF] mt-3 rounded-xl
                             flex justify-center mx-auto items-center w-36 h-12">
                             <img className="w-[29px]" src="/42.svg" />

@@ -154,23 +154,6 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
-    createUserForGoogle(user1: any): Promise<{
-        id: string;
-        intra_id: string;
-        first_name: string;
-        last_name: string;
-        nickname: string;
-        email: string;
-        profilePic: string;
-        inGaming: boolean;
-        isTwoFactorAuthEnabled: boolean;
-        twoFactorAuthSecret: string;
-        level: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    }>;
     setTwoFactorAuthSecret(secret: string, intra_id: string): Promise<void>;
     turnOnTwoFactorAuth(intra_id: string): Promise<void>;
     turnOffTwoFactorAuth(intra_id: string): Promise<void>;

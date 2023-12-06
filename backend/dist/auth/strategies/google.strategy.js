@@ -17,9 +17,9 @@ const user_service_1 = require("../../user/user.service");
 let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrategy)(passport_google_oauth20_1.Strategy, 'google') {
     constructor(userService) {
         super({
-            clientID: "571358523842-a0ngiv1cug62c8uo69s7ri9re1vp1tc9.apps.googleusercontent.com",
-            clientSecret: "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",
-            callbackURL: 'http://localhost:4000/auth/stategies/callback',
+            clientID: process.env.CLIENT_ID_GOOGLE,
+            clientSecret: process.env.CLIENT_SECRET_GOOGLE,
+            callbackURL: process.env.CALLBACK_URL_GOOGLE,
             scope: ['email', 'profile'],
         });
         this.userService = userService;
@@ -44,7 +44,7 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
                 done(null, checkuser);
             }
             else {
-                let createnewuser = await this.userService.createUserForGoogle(user);
+                let createnewuser = await this.userService.createUser(user);
                 done(null, createnewuser);
             }
             return user;

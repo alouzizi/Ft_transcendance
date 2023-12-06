@@ -27,23 +27,19 @@ export class AuthController {
   async loginWith42() {
   }
 
-
-
   @Get('google')
   @UseGuards(AuthGuard('google'))
   @HttpCode(200)
-  async googleAuth(@Req() req) {
-    //return this.authService.googleLogin();
-    //console.log("googleAuth");
+  async googleAuth() {
   }
 
-  @Get("stategies/callback")
+  @Get("stategies/google/callback")
   @UseGuards(AuthGuard("google"))
   async callbackGoogle(@Req() req: any, @Res() res: Response) {
     this.authService.callbackStratiegs(req, res);
   }
 
-  @Get("stategies/callback")
+  @Get("stategies/42/callback")
   @UseGuards(AuthGuard("42-intranet"))
   async callbackIntra42(@Req() req: any, @Res() res: Response) {
     this.authService.callbackStratiegs(req, res);

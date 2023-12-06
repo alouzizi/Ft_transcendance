@@ -213,40 +213,29 @@ let UserService = class UserService {
         }
     }
     async createUser(user1) {
-        const user = await this.prisma.user.create({
-            data: {
-                intra_id: user1.intra_id.toString(),
-                nickname: user1.login42.toString(),
-                email: user1.email.toString(),
-                profilePic: user1.profilePicture.toString(),
-                last_name: user1.last_name,
-                first_name: user1.first_name,
-                isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
-            },
-        });
-        return user;
-    }
-    async createUserForGoogle(user1) {
-        let nickname = user1.login42.toString();
-        let i = 0;
-        let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
-        while (check) {
-            check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
-            nickname = `${nickname}_${i}`;
-            i++;
+        try {
+            let nickname = user1.login42.toString();
+            let i = 0;
+            let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
+            while (check) {
+                check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
+                nickname = `${nickname}_${i}`;
+                i++;
+            }
+            const user = await this.prisma.user.create({
+                data: {
+                    intra_id: user1.intra_id.toString(),
+                    nickname: nickname,
+                    email: user1.email.toString(),
+                    profilePic: user1.profilePicture.toString(),
+                    last_name: user1.last_name,
+                    first_name: user1.first_name,
+                    isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
+                },
+            });
+            return user;
         }
-        const user = await this.prisma.user.create({
-            data: {
-                intra_id: user1.intra_id.toString(),
-                nickname: nickname,
-                email: user1.email.toString(),
-                profilePic: user1.profilePicture.toString(),
-                last_name: user1.last_name,
-                first_name: user1.first_name,
-                isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
-            },
-        });
-        return user;
+        catch (error) { }
     }
     async setTwoFactorAuthSecret(secret, intra_id) {
         await this.prisma.user.update({
