@@ -9,8 +9,8 @@ import ErrorPage from "../components/ErrorPage";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();
-  const { user, updateInfo } = useGlobalContext();
-  const [isBlocked, setIsBlocked] = useState(true);
+  const { updateInfo } = useGlobalContext();
+  const [isBlocked, setIsBlocked] = useState(false);
 
   useEffect(() => {
     const userName = pathname;
@@ -21,20 +21,14 @@ export default function DashboardPage() {
       try {
         const usr = await getUserByNick(lastSegment);
         setFriend(usr);
-
-        const isBlocked = await getIsBlocked(user.id, usr.id);
-        if (isBlocked.isBlocked) {
-          setIsBlocked(false);
-          return;
-        }
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
     }
     getData();
-  }, [pathname, updateInfo]);
+  }, [pathname, updateInfo, isBlocked]);
 
-  if (isBlocked && friend) {
+  if (friend && friend.id != "-1") {
     return <DashBoard friend={friend} />;
   } else {
     return <ErrorPage />;

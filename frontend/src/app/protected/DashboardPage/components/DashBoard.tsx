@@ -1,5 +1,9 @@
 "use client";
-import { getAllFriends, getUserByNick } from "@/app/MyApi/friendshipApi";
+import {
+  getAllFriends,
+  getIsBlocked,
+  getUserByNick,
+} from "@/app/MyApi/friendshipApi";
 import {
   getAchievmentsData,
   getGameHistory,
@@ -15,7 +19,10 @@ import { useEffect, useState } from "react";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import { useGlobalContext } from "../../context/store";
 import PopoverMenuDash from "./PopoverMenuDash";
-export default function DashBoard(prompt: { friend: ownerDto }) {
+export default function DashBoard(prompt: {
+  friend: ownerDto;
+  // isBlocked: boolean;
+}) {
   const router = useRouter();
   const { user, updateInfo } = useGlobalContext();
   const [isFriend, setIsFriend] = useState(false);
@@ -34,6 +41,8 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     (acheiv) => acheiv.isUnlocked
   );
   const [level, setLevel] = useState([0, 0]);
+  const [isBlocked, setIsBlocked] = useState(true);
+
   useEffect(() => {
     async function getData() {
       try {
@@ -55,7 +64,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         // for fetch the friends
         const dataTmp = await getAllFriends(prompt.friend.id);
         setIsFriend(
-          dataTmp.some((element: friendDto) => element.id === prompt.friend.id)
+          dataTmp.some((element: friendDto) => element.id === user.id)
         );
 
         // for fetch the globalInfoTmp
@@ -69,6 +78,11 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             globalInfoTmp.NbrOfAllMatches;
           setWinRate(winRate);
         }
+
+        // for check if friend is blocked
+        const isBlockedTmp = await getIsBlocked(user.id, prompt.friend.id);
+        console.log("isBlocked.isBlocked===>", isBlockedTmp.isBlocked);
+        setIsBlocked(isBlockedTmp.isBlocked);
       } catch (error: any) {
         console.log("getData error: " + error);
       }
@@ -94,14 +108,17 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         "
         style={{ backgroundImage: "url('/bg-info.png')" }}
       >
-        {user.id !== prompt.friend.id ? (
-          <PopoverMenuDash friendInfo={prompt.friend} isFriend={isFriend} />
-        ) : (
+        {user.id == prompt.friend.id || isBlocked ? (
           <div />
+        ) : (
+          <PopoverMenuDash
+            friendInfo={prompt.friend}
+            user={user}
+            isFriend={isFriend}
+          />
         )}
 
         <LevelBar level={level[0]} completed={level[1]} />
-
 
         <img
           className="
@@ -131,7 +148,8 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
           // big screen 
           2xl:flex 2xl:flex-row 2xl:justify-between 2xl:w-full 2xl:h-1/3 2xl:bottom-0
-          ">
+          "
+        >
           <div
             className=" 
           // small screen

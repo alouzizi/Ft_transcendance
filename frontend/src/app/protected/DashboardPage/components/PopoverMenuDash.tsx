@@ -1,7 +1,5 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   blockFriend,
@@ -9,12 +7,12 @@ import {
   sendFriendRequest,
 } from "@/app/MyApi/friendshipApi";
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
-import { useState } from "react";
 import { useGlobalContext } from "../../context/store";
 import PlayInvite from "../../GamePage/components/Invite";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;
+  user: ownerDto;
   isFriend: boolean;
 }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -22,7 +20,7 @@ export default function PopoverMenuDash(prompt: {
   );
 
   // ==================== popover configs =====================
-  const { user, socket } = useGlobalContext();
+  const { socket } = useGlobalContext();
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,20 +37,25 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
-    PlayInvite({ userId1: user.id, userId2: prompt.friendInfo.id, socket: socket, nameInveted: prompt.friendInfo.nickname })
+    PlayInvite({
+      userId1: prompt.user.id,
+      userId2: prompt.friendInfo.id,
+      socket: socket,
+      nameInveted: prompt.friendInfo.nickname,
+    });
     handleClose();
   }
 
   async function handleRemoveFriend() {
     try {
-      await removeFriend(user.id, prompt.friendInfo.id);
+      await removeFriend(prompt.user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
       socket?.emit("updateData", {
         content: "",
-        senderId: user.id,
+        senderId: prompt.user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
@@ -64,15 +67,18 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleBlockFriend() {
     try {
-      await blockFriend(user.id, prompt.friendInfo.id);
+      await blockFriend(prompt.user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-      socket?.emit('blockUserToUser', { senderId: user.id, receivedId: prompt.friendInfo.id });
+      socket?.emit("blockUserToUser", {
+        senderId: prompt.user.id,
+        receivedId: prompt.friendInfo.id,
+      });
       socket?.emit("updateData", {
         content: "",
-        senderId: user.id,
+        senderId: prompt.user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
@@ -84,10 +90,10 @@ export default function PopoverMenuDash(prompt: {
 
   async function handleInvite() {
     try {
-      await sendFriendRequest(user.id, prompt.friendInfo.id);
+      await sendFriendRequest(prompt.user.id, prompt.friendInfo.id);
       socket?.emit("updateData", {
         content: "",
-        senderId: user.id,
+        senderId: prompt.user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
