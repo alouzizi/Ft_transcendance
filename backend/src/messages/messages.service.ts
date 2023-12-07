@@ -348,6 +348,7 @@ export class MessagesService {
         userId: senderId
       }
     });
+
     for (const ch of channelMembers) {
       const channel: Channel = await this.prisma.channel.findUnique({ where: { id: ch.channelId } });
       myChannels.push(channel);
@@ -407,7 +408,8 @@ export class MessagesService {
           break;
         }
       }
-      if (find) continue;
+      const bannedMember = await this.prisma.bannedMember.findMany({ where: { userId: senderId, channelId: chl.id } })
+      if (find || bannedMember.length) continue;
       const temp: messageDto = {
         isDirectMessage: false,
 

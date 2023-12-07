@@ -58,7 +58,7 @@ export default function LongMenu({ member, banned }: { member: memberChannelDto,
                 socket?.emit('changeStatusMember', geust.id);
             } else if ('ban from Group' === e || 'unban from Group' === e) {
                 await ChangeStatusBanned(user.id, geust.id, member.userId);
-                if ('ban from Group' === e) socket?.emit('kickedFromChannel',
+                socket?.emit('kickedFromChannel',
                     { memberId: member.userId, channelId: geust.id });
             } else if ('kick from Group' === e) {
                 await kickMember(user.id, geust.id, member.userId);

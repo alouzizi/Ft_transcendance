@@ -124,7 +124,6 @@ export class SocketGatewayService {
   }
 
   async changeStatusMember(idChannel: string, wss: Server) {
-
     const channelMembers = await this.prisma.channelMember.findMany({
       where: { channelId: idChannel },
     });
@@ -142,6 +141,8 @@ export class SocketGatewayService {
     }
     wss.to(ids.memberId).emit("kickedFromChannel", ids);
   }
+
+
 
   async messagsSeenEmit(ids: CreateMessageDto, wss: Server) {
     await this.prisma.message.updateMany({

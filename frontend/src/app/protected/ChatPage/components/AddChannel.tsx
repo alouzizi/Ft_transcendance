@@ -47,7 +47,6 @@ export default function AlertAddChannel() {
     const { user, setGeust, socket, setOpenAlertError } = useGlobalContext();
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
-    const [membersChannel, setMembersChannel] = useState<userDto[]>([]);
 
     useEffect(() => {
         async function getData() {
@@ -102,12 +101,11 @@ export default function AlertAddChannel() {
         });
         setMemberSearch('');
         setUsersFilter([]);
-        setMembersChannel([]);
     }, [open]);
 
 
-    const checkIsExist = (elm: userDto, list: userDto[]): boolean => {
-        const fonud = list.find((tmp) => elm.id === tmp.id);
+    const checkIsExist = (elm: userDto): boolean => {
+        const fonud = channelData.channelMember.find((id) => elm.id === id);
         if (fonud) return true;
         return false;
     }
@@ -123,13 +121,22 @@ export default function AlertAddChannel() {
                         {elm.nickname}
                     </Text>
                 </div >
-                {checkIsExist(elm, membersChannel) ?
+                {checkIsExist(elm) ?
                     <IoPersonRemove color="red" className='text-sm md:text-base' onClick={() => {
-                        setMembersChannel((prevMembers) =>
-                            prevMembers.filter((member) => member.id !== elm.id));
+
+                        setChannelData((prevState) => {
+                            const updatedChannelMember = prevState.channelMember.filter(memberId => memberId !== elm.id);
+                            return {
+                                ...prevState,
+                                channelMember: updatedChannelMember
+                            };
+                        });
                     }} /> :
                     <IoPersonAdd color="green" className='text-sm md:text-base' onClick={() => {
-                        setMembersChannel((pre) => [...pre, elm]);
+                        setChannelData({
+                            ...channelData,
+                            channelMember: [...channelData.channelMember, elm.id]
+                        });
                     }} />
                 }
 
@@ -138,7 +145,6 @@ export default function AlertAddChannel() {
         </Box>
     });
 
-    const [isMouseOver, setIsMouseOver] = useState('-1');
 
     const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
 
@@ -162,9 +168,6 @@ export default function AlertAddChannel() {
                 <DialogContent style={{ padding: 0, paddingLeft: 15, paddingRight: 40 }}
                     className=' h-[30rem]  w-[15rem] md:w-[25rem]   flex flex-col justify-center items-center '>
                     <div className='pt-5'>
-
-
-
                         <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[10rem] md:w-[15rem]" >
 
                             <div style={{ cursor: 'pointer' }}
@@ -178,9 +181,12 @@ export default function AlertAddChannel() {
 
                             <div style={{ cursor: 'pointer' }}
                                 className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
-                                    setChannelData((prevState) => {
-                                        return { ...prevState, channelType: ChannelType.Private };
-                                    });
+                                    if (!channelData.protected) {
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelType: ChannelType.Private };
+                                        });
+                                    }
+
                                 }}>
                                 <Text size='2' weight="bold">Private</Text>
                             </div>
@@ -201,9 +207,6 @@ export default function AlertAddChannel() {
                         </div >
                         {errorName && <Text as="div" color='red'>{errorName}</Text>}
 
-
-
-
                         <div className="mt-2 ">
                             <FormControlLabel
                                 control={
@@ -214,6 +217,9 @@ export default function AlertAddChannel() {
                                         });
                                         setChannelData((prevState) => {
                                             return { ...prevState, protected: event.target.checked };
+                                        });
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelType: ChannelType.Public };
                                         });
                                     }}
                                     />}
@@ -279,14 +285,6 @@ export default function AlertAddChannel() {
                                 const parsName = channelNameSchema.safeParse(channelData.channelName);
                                 const parskey = channelkeySchema.safeParse(channelData.channelPassword);
                                 if (parsName.success && (parskey.success || !channelData.protected)) {
-                                    for (const user of membersChannel) {
-                                        setChannelData((prevState) => {
-                                            return {
-                                                ...prevState,
-                                                channelMember: [...prevState.channelMember, user.id]
-                                            };
-                                        });
-                                    }
                                     createChannelServer();
                                 } else {
 

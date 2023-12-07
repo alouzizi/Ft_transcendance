@@ -42,13 +42,13 @@ const PageChat = () => {
 
     const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
     useEffect(() => {
-        const getData = async (data: { idChannel: string }) => {
-            if (geust.id === data.idChannel) {
+        const getData = async (data: { channelId: string }) => {
+            if (geust.id === data.channelId) {
                 const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
                 setIsOwnerAdmin(tmp);
             }
         }
-        if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData({ idChannel: geust.id });
+        if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData({ channelId: geust.id });
 
         if (socket) {
             socket.on("changeStatusMember", getData);

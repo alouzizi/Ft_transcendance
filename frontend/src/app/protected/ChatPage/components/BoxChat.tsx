@@ -53,7 +53,6 @@ const BoxChat = () => {
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
-                console.log("called ---- handleReceivedMessage");
                 if ((geust.isUser && data.isDirectMessage && (data.senderId === geust.id || data.senderId === user.id)) ||
                     ((!geust.isUser && !data.isDirectMessage && (data.receivedId === geust.id || data.senderId === user.id)))) {
                     setIsTyping(false);
@@ -345,7 +344,7 @@ const BoxChat = () => {
                         text-black placeholder-gray-600 text-sm outline-none "
                             value={msg}
                             disabled={isMuted}
-                            placeholder={!isMuted ? "  Type your message" : " Your muted from this channel"}
+                            placeholder={!isMuted ? "  Type your message" : " You are muted from this channel"}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setMsg(event.target.value);
                             }}

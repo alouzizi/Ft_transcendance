@@ -525,11 +525,11 @@ export class ChannelService {
       const channel: Channel = await this.prisma.channel.findUnique({
         where: { id: channelId },
       });
-      const passwordMatch = await bcrypt.compare(
-        password,
-        channel.channelPassword
-      );
-      if (passwordMatch) {
+
+      let pass = "";
+      if (channel.channelPassword !== "")
+        pass = this.decryptMessage(channel.channelPassword);
+      if (pass === password) {
         return true;
       } else {
         return false;
