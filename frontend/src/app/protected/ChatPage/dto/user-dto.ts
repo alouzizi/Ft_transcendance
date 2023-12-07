@@ -79,6 +79,8 @@ type messageDto = {
   isChannProtected: Boolean;
 
   inGaming: Boolean;
+
+  isBlocked: Boolean;
 };
 
 type reqFriendsDto = {

@@ -14,7 +14,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useGlobalContext } from '../../context/store';
 import { checkIsMuted } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
-import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
+import { checkIsBlocked, getUserGeust, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import Badge from "@mui/material/Badge";
@@ -81,6 +81,7 @@ const BoxChat = () => {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 if (check !== undefined) setIsBlocked(check);
+                console.log("-------> isBlocked", check);
             }
             upDateGeust();
             socket.on("blockUserToUser", upDateGeust);
@@ -213,6 +214,25 @@ const BoxChat = () => {
         }
     }, [socket, Allmsg.length])
 
+
+
+    useEffect(() => {
+
+        if (socket) {
+            const updateStatusGeust = async () => {
+                if (geust.id !== '-1' && geust.isUser) {
+                    const geustTemp = await getUserGeust(geust.id);
+                    if (geustTemp !== undefined) setGeust(geustTemp);
+                }
+            };
+            updateStatusGeust();
+            socket.on("updateStatusGeust", updateStatusGeust);
+            return () => {
+                socket.off("updateStatusGeust", updateStatusGeust);
+            };
+        }
+    }, [socket, geust.id]);
+
     return (geust.id != "-1") ? (
         <Box
             className={`
@@ -236,7 +256,7 @@ const BoxChat = () => {
                         <Badge
                             badgeContent=
                             {<div>
-                                {geust.inGaming ? <FaGamepad /> : <></>}
+                                {(geust.inGaming && isBlocked === 0) ? <FaGamepad /> : <></>}
                             </div>}
                             sx={{
                                 "& .MuiBadge-badge": {
@@ -247,7 +267,7 @@ const BoxChat = () => {
                                     border: "2px solid #ffffff",
                                 },
                             }}
-                            variant={geust.inGaming ? "standard" : "dot"}
+                            variant={(geust.inGaming && isBlocked === 0) ? "standard" : "dot"}
                             overlap="circular"
                             anchorOrigin={{
                                 vertical: "bottom",
@@ -295,12 +315,18 @@ const BoxChat = () => {
                 </div>
 
                 <div className="pr-3">
-                    {!geust.isUser ? <Link href='ChatPage/channelSettings'>
-                        <IoSettingsSharp size={16} />
-                    </Link> :
-                        <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket, nameInveted: user.nickname }) }}
-                        />}
+                    {!geust.isUser ?
+                        <Link href='ChatPage/channelSettings'>
+                            <IoSettingsSharp size={16} />
+                        </Link> :
+                        ((geust.inGaming || isBlocked) ?
+                            <></> :
+                            <RiPingPongFill size={20} className='cursor-pointer'
+                                onClick={() => {
+                                    PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket, nameInveted: user.nickname })
+                                }} />)
+
+                    }
                 </div>
             </div >
 

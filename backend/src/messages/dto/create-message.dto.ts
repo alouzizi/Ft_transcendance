@@ -40,6 +40,8 @@ export class messageDto {
 
   inGaming: boolean;
 
+  isBlocked: boolean;
+
   // status: Status;
 
 }

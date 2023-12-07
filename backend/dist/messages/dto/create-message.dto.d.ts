@@ -23,4 +23,5 @@ export declare class messageDto {
     OwnerChannelId: String;
     isChannProtected: boolean;
     inGaming: boolean;
+    isBlocked: boolean;
 }

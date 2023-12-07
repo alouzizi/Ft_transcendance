@@ -117,20 +117,20 @@ const ListUser = () => {
     }
   }, [socket]);
 
-  const [isBlocked, setIsBlocked] = useState<number>(0)
-  useEffect(() => {
-    if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
-      const upDateGeust = async () => {
-        const check = await checkIsBlocked(user.id, geust.id);
-        if (check !== undefined) setIsBlocked(check);
-      }
-      upDateGeust();
-      socket.on("blockUserToUser", upDateGeust);
-      return () => {
-        socket.off("blockUserToUser", upDateGeust);
-      };
-    }
-  }, [geust.id, user.id, socket]);
+  // // const [isBlocked, setIsBlocked] = useState<number>(0)
+  // useEffect(() => {
+  //   if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
+  //     const upDateGeust = async () => {
+  //       const check = await checkIsBlocked(user.id, geust.id);
+  //       if (check !== undefined) setIsBlocked(check);
+  //     }
+  //     upDateGeust();
+  //     socket.on("blockUserToUser", upDateGeust);
+  //     return () => {
+  //       socket.off("blockUserToUser", upDateGeust);
+  //     };
+  //   }
+  // }, [geust.id, user.id, socket]);
 
 
 
@@ -155,14 +155,14 @@ const ListUser = () => {
             </div>}
             sx={{
               "& .MuiBadge-badge": {
-                backgroundColor: `${(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
+                backgroundColor: `${(el.receivedStatus === 'ACTIF' && !el.isBlocked) ? "#07F102" : "#B4B4B4"}`,
                 width: 15,
                 height: 15,
                 borderRadius: 50,
                 border: "2px solid #ffffff",
               },
             }}
-            variant={el.inGaming ? "standard" : "dot"}
+            variant={(el.inGaming && !el.isBlocked) ? "standard" : "dot"}
             overlap="circular"
             anchorOrigin={{
               vertical: "bottom",

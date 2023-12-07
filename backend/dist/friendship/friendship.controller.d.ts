@@ -162,6 +162,7 @@ export declare class FriendshipController {
         id: string;
         senderId: string;
         receivedId: string;
+        createdAt: Date;
     } | {
         error: any;
     }>;
@@ -169,6 +170,7 @@ export declare class FriendshipController {
         id: string;
         senderId: string;
         receivedId: string;
+        createdAt: Date;
     } | {
         error: any;
     }>;
