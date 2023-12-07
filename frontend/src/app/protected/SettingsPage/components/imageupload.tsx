@@ -8,6 +8,7 @@ import Badge from "@mui/material/Badge";
 import { Backend_URL } from "../../../../../lib/Constants";
 import { ToastContainer, toast } from "react-toastify";
 import { getDataOwner } from "../IpaSettings/fetch-user";
+import axios from "axios";
 
 const ImageUpload = () => {
   const { user, setUser } = useGlobalContext();
@@ -25,12 +26,11 @@ const ImageUpload = () => {
 
       const formData = new FormData();
       formData.append("file", file);
+
       try {
-        const response = await fetch(
-          Backend_URL + `/user/uploadImage/${user.intra_id}`,
+        const response = await axios.post(
+          Backend_URL + `/user/uploadImage/${user.intra_id}`, formData,
           {
-            method: "POST",
-            body: formData,
             headers: {
               authorization: `Bearer ${token}`,
             },
@@ -40,6 +40,7 @@ const ImageUpload = () => {
         const tmp = await getDataOwner(user.intra_id);
         setUser(tmp);
       } catch (error) {
+        console.log(error)
         toast.error("Error uploading image");
       }
     } else toast.error("Error uploading image");
@@ -52,7 +53,7 @@ const ImageUpload = () => {
           <label className="rounded-full p-[1.5px]  ">
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg, image/jpg, image/png"
               onChange={uploadPhoto}
               id="image-upload"
               style={{ display: "none" }}

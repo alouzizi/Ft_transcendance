@@ -53,6 +53,7 @@ const BoxChat = () => {
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
+                console.log("called ---- handleReceivedMessage");
                 if ((geust.isUser && data.isDirectMessage && (data.senderId === geust.id || data.senderId === user.id)) ||
                     ((!geust.isUser && !data.isDirectMessage && (data.receivedId === geust.id || data.senderId === user.id)))) {
                     setIsTyping(false);
@@ -81,7 +82,6 @@ const BoxChat = () => {
             const upDateGeust = async () => {
                 const check = await checkIsBlocked(user.id, geust.id);
                 if (check !== undefined) setIsBlocked(check);
-                console.log("-------> isBlocked", check);
             }
             upDateGeust();
             socket.on("blockUserToUser", upDateGeust);
@@ -92,7 +92,7 @@ const BoxChat = () => {
     }, [socket, user.id, geust.id]);
 
     useEffect(() => {
-        if (msg != "" && socket) {
+        if (msg != "" && socket && !isBlocked) {
             socket.emit('isTyping', {
                 content: '',
                 senderId: user.id,
@@ -147,6 +147,7 @@ const BoxChat = () => {
         }
     }, [socket, geust.id, user.id, updateInfo]);
 
+
     const handleSendMessage = () => {
         if (msg.trim() != '') {
             if (isBlocked === 1) {
@@ -166,7 +167,7 @@ const BoxChat = () => {
     }
 
 
-    async function getData() {
+    async function getDataAllMessage() {
         let msgs;
         if (geust.isUser)
             msgs = await getMessageTwoUsers(user.id, geust.id);
@@ -177,7 +178,7 @@ const BoxChat = () => {
     }
     useEffect(() => {
         if (socket && geust.id !== "-1" && user.id !== "-1") {
-            getData();
+            getDataAllMessage();
             socket.emit('messagsSeenEmit', {
                 senderId: user.id,
                 receivedId: geust.id,
@@ -191,7 +192,7 @@ const BoxChat = () => {
             if (geust.id == data.idChannel) {
                 const temp = await getVueGeust(geust.id, false);
                 setGeust(temp);
-                getData();
+                getDataAllMessage();
             }
         };
         if (socket) {
@@ -205,7 +206,7 @@ const BoxChat = () => {
     useEffect(() => {
         if (socket) {
             const getMessageEmit = () => {
-                getData();
+                getDataAllMessage();
             }
             socket.on("messagsSeenEmit", getMessageEmit);
             return () => {
@@ -214,10 +215,7 @@ const BoxChat = () => {
         }
     }, [socket, Allmsg.length])
 
-
-
     useEffect(() => {
-
         if (socket) {
             const updateStatusGeust = async () => {
                 if (geust.id !== '-1' && geust.isUser) {
@@ -292,12 +290,11 @@ const BoxChat = () => {
 
                     <Flex direction="column" className='flex' >
                         <Text onClick={() => {
-                            if (geust.isUser) {
+                            if (geust.isUser) { // && !isBlocked
                                 router.push(`/protected/DashboardPage/${geust.nickname}`);
                             }
                         }} size="2" weight="bold"
-
-                            className={`${geust.isUser ? "hover:underline cursor-pointer pl-2" : "pl-2"}`}>
+                            className={`${(geust.isUser) ? "hover:underline cursor-pointer pl-2" : "pl-2"}`}>
                             {geust.nickname}
                         </Text>
                         {
@@ -383,7 +380,7 @@ const BoxChat = () => {
                         <div className='flex flex-col flex-grow items-center mt-3'>
                             <button onClick={async () => {
                                 await unBlockedUser(user.id, geust.id);
-                                socket?.emit('blockUserToUser', geust.id);
+                                socket?.emit('blockUserToUser', { senderId: user.id, receivedId: geust.id });
                                 setUnblockAlert(false);
                                 setIsBlocked(0);
                             }}

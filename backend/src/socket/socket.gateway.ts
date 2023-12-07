@@ -83,14 +83,10 @@ export class SocketGateway
     this.socketGatewayService.emitNewMessage(ids, this.server);
   }
 
-  @SubscribeMessage("updateMessageInChannel")
-  async updateMessageInChannel(@MessageBody() ids: CreateMessageDto) {
-    this.socketGatewayService.updateMessageInChannel(ids, this.server);
-  }
-
   @SubscribeMessage("blockUserToUser")
-  async blockUserToUser(@MessageBody() receivedId: string) {
-    this.server.to(receivedId).emit("blockUserToUser", { receivedId });
+  async blockUserToUser(@MessageBody() ids: CreateMessageDto) {
+    this.server.to(ids.receivedId).emit("blockUserToUser", {});
+    this.server.to(ids.senderId).emit("blockUserToUser", {});
   }
 
   @SubscribeMessage("mutedUserInChannel")

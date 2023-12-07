@@ -308,6 +308,7 @@ let UserService = class UserService {
             });
         }
         catch (error) {
+            console.log(error);
         }
     }
     async findByIntraId(intra_id) {

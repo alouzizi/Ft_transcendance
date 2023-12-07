@@ -50,7 +50,7 @@ let UserController = class UserController {
         return await this.userService.updateNickname(intra_id, nickname);
     }
     uploadImage(file, senderId) {
-        console.log('first', file.path);
+        console.log('----> ', file.path);
         return this.userService.uploadImage(senderId, file.path);
     }
     async getUsersCanJoinChannel(senderId, channelId) {
@@ -127,7 +127,7 @@ __decorate([
             },
         }),
         fileFilter: (req, file, cb) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+            if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
                 return cb(null, false);
             cb(null, true);
         }

@@ -481,6 +481,7 @@ export class MessagesService {
             where: {
               senderId: user.id,
               receivedId: senderId,
+              notSendTo: "",
               messageStatus: {
                 in: [MessageStatus.NotReceived, MessageStatus.Received],
               },

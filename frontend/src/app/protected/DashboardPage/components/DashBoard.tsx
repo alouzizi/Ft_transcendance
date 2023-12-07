@@ -1,22 +1,20 @@
 "use client";
+import { getAllFriends, getUserByNick } from "@/app/MyApi/friendshipApi";
+import {
+  getAchievmentsData,
+  getGameHistory,
+  getGlobalInfos,
+  getUserRanking,
+} from "@/app/MyApi/gameApi";
 import CardInfo from "@/app/protected/DashboardPage/components/CardInfo";
 import HomeSection from "@/app/protected/DashboardPage/components/HomeSection";
 import LevelBar from "@/app/protected/DashboardPage/components/LevelBar";
 import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import { getAllFriends, getUserByNick } from "@/app/MyApi/friendshipApi";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import { useGlobalContext } from "../../context/store";
 import PopoverMenuDash from "./PopoverMenuDash";
-import {
-  getAchievmentsData,
-  getUserRanking,
-  getGameHistory,
-  getGlobalInfos,
-} from "@/app/MyApi/gameApi";
-
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
   const { user, updateInfo } = useGlobalContext();
@@ -103,6 +101,8 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         )}
 
         <LevelBar level={level[0]} completed={level[1]} />
+
+
         <img
           className="
          border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] 
@@ -131,8 +131,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
           // big screen 
           2xl:flex 2xl:flex-row 2xl:justify-between 2xl:w-full 2xl:h-1/3 2xl:bottom-0
-          "
-        >
+          ">
           <div
             className=" 
           // small screen

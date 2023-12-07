@@ -80,7 +80,7 @@ export class UserController {
       },
     }),
     fileFilter: (req, file, cb) => {
-      if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
         return cb(null, false);
       cb(null, true);
     }
@@ -144,3 +144,4 @@ export class UserController {
 
 
 
+GSFGSGS

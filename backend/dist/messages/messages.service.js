@@ -400,6 +400,7 @@ let MessagesService = class MessagesService {
                     where: {
                         senderId: user.id,
                         receivedId: senderId,
+                        notSendTo: "",
                         messageStatus: {
                             in: [client_1.MessageStatus.NotReceived, client_1.MessageStatus.Received],
                         },

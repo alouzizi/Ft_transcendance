@@ -21,8 +21,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     isTyping(ids: CreateMessageDto): Promise<void>;
     kickedFromChannel(ids: any): Promise<void>;
     joinChannelEmit(ids: CreateMessageDto): Promise<void>;
-    updateMessageInChannel(ids: CreateMessageDto): Promise<void>;
-    blockUserToUser(receivedId: string): Promise<void>;
+    blockUserToUser(ids: CreateMessageDto): Promise<void>;
     mutedUserInChannel(idChannel: string): Promise<void>;
     changeStatusMember(idChannel: string): Promise<void>;
     messagsSeenEmit(ids: CreateMessageDto): Promise<void>;
