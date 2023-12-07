@@ -44,6 +44,7 @@ export async function getUserByNick(recieverUsr: string) {
     profilePic: "",
     isTwoFactorAuthEnabled: true,
     level: "0.0",
+    status: Status.INACTIF,
   };
   try {
     if (!recieverUsr) {

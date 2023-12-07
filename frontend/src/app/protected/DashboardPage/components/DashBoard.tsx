@@ -19,10 +19,8 @@ import { useEffect, useState } from "react";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import { useGlobalContext } from "../../context/store";
 import PopoverMenuDash from "./PopoverMenuDash";
-export default function DashBoard(prompt: {
-  friend: ownerDto;
-  // isBlocked: boolean;
-}) {
+import Badge from "@mui/material/Badge";
+export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
   const { user, updateInfo } = useGlobalContext();
   const [isFriend, setIsFriend] = useState(false);
@@ -119,6 +117,7 @@ export default function DashBoard(prompt: {
         )}
 
         <LevelBar level={level[0]} completed={level[1]} />
+        <div className="left-[50%] bottom-[45%]"></div>
 
         <img
           className="
@@ -153,15 +152,21 @@ export default function DashBoard(prompt: {
           <div
             className=" 
           // small screen
-          mt-12
+          mt-12 w-fit
           // Big screen
           2xl:ml-6 2xl:mt-2 2xl:w-1/3
+          
           "
           >
             <h1 className="text-white text-sm">
               {prompt.friend.first_name} {prompt.friend.last_name}
             </h1>
-            <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
+            <div className="flex flex-row w-fit">
+              <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
+              <p className="text-gray-400 text-sm ml-2">
+                {prompt.friend.status}
+              </p>
+            </div>
           </div>
 
           <div
