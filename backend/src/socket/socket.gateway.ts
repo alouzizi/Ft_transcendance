@@ -323,7 +323,8 @@ export class SocketGateway
     // id2.leave(id2);
     // test.
     this.rooms.delete(roomName);
-    delete this.rooms[roomName];
+    // delete this.rooms[roomName];
+    this.roomState.delete(roomName);
     delete this.roomState[roomName];
     delete this.ballPositionInterval[roomName];
     clearInterval(this.ballPositionInterval.get(roomName));
@@ -336,7 +337,6 @@ export class SocketGateway
     } else {
       this.clients.set(id, client);
       this.joindClients.set(id, 0);
-
       client.join(id);
     }
   }

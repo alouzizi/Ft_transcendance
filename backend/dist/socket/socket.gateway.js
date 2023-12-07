@@ -235,7 +235,7 @@ let SocketGateway = class SocketGateway {
             delete this.joindClients[id2];
         }
         this.rooms.delete(roomName);
-        delete this.rooms[roomName];
+        this.roomState.delete(roomName);
         delete this.roomState[roomName];
         delete this.ballPositionInterval[roomName];
         clearInterval(this.ballPositionInterval.get(roomName));
