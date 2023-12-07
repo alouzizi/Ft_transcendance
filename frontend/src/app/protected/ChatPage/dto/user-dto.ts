@@ -29,6 +29,10 @@ type ownerDto = {
   profilePic: string;
   isTwoFactorAuthEnabled: boolean;
   level: string;
+
+
+  // inGaming: boolean,
+  // status: Status;
 };
 
 type geustDto = {
@@ -79,6 +83,8 @@ type messageDto = {
   isChannProtected: Boolean;
 
   inGaming: Boolean;
+
+  isBlocked: Boolean;
 };
 
 type reqFriendsDto = {

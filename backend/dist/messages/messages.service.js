@@ -83,7 +83,8 @@ let MessagesService = class MessagesService {
                 nbrMessageNoRead: 0,
                 OwnerChannelId: '',
                 isChannProtected: false,
-                inGaming: false
+                inGaming: false,
+                isBlocked: false
             };
             if (notSendTo === "") {
                 server.to(msg.receivedId).emit('emitNewMessage', temp);
@@ -147,7 +148,8 @@ let MessagesService = class MessagesService {
                     nbrMessageNoRead: 0,
                     OwnerChannelId: channel.channelOwnerId,
                     isChannProtected: channel.protected,
-                    inGaming: false
+                    inGaming: false,
+                    isBlocked: false
                 };
                 server.to(member.userId).emit('emitNewMessage', temp);
             }
@@ -197,7 +199,8 @@ let MessagesService = class MessagesService {
                     nbrMessageNoRead: 0,
                     OwnerChannelId: '',
                     isChannProtected: false,
-                    inGaming: false
+                    inGaming: false,
+                    isBlocked: (msg.notSendTo.length) ? true : false
                 };
                 return temp;
             }));
@@ -247,7 +250,8 @@ let MessagesService = class MessagesService {
                         nbrMessageNoRead: 0,
                         OwnerChannelId: channel.channelOwnerId,
                         isChannProtected: channel.protected,
-                        inGaming: false
+                        inGaming: false,
+                        isBlocked: false
                     };
                     return temp;
                 }));
@@ -265,10 +269,12 @@ let MessagesService = class MessagesService {
                     {
                         senderId,
                         receivedId,
+                        notSendTo: ""
                     },
                     {
                         senderId: receivedId,
                         receivedId: senderId,
+                        notSendTo: ""
                     },
                 ],
             },
@@ -317,7 +323,8 @@ let MessagesService = class MessagesService {
                 nbrMessageNoRead: 0,
                 OwnerChannelId: channel.channelOwnerId,
                 isChannProtected: channel.protected,
-                inGaming: false
+                inGaming: false,
+                isBlocked: false
             };
             result.push(temp);
         }
@@ -350,7 +357,8 @@ let MessagesService = class MessagesService {
                 nbrMessageNoRead: 0,
                 OwnerChannelId: chl.channelOwnerId,
                 isChannProtected: chl.protected,
-                inGaming: false
+                inGaming: false,
+                isBlocked: false
             };
             result.push(temp);
         }
@@ -392,9 +400,16 @@ let MessagesService = class MessagesService {
                     where: {
                         senderId: user.id,
                         receivedId: senderId,
+                        notSendTo: "",
                         messageStatus: {
                             in: [client_1.MessageStatus.NotReceived, client_1.MessageStatus.Received],
                         },
+                    }
+                });
+                const isblcked = await this.prisma.blockedUser.findMany({
+                    where: {
+                        OR: [{ senderId: senderId, receivedId: user.id },
+                            { senderId: user.id, receivedId: senderId }]
                     }
                 });
                 const tmp = {
@@ -410,10 +425,11 @@ let MessagesService = class MessagesService {
                     receivedName: user.nickname,
                     receivedPic: user.profilePic,
                     receivedStatus: user.status,
-                    nbrMessageNoRead: forNbrMessageNoRead.length,
+                    nbrMessageNoRead: isblcked.length ? 0 : forNbrMessageNoRead.length,
                     OwnerChannelId: '',
                     isChannProtected: false,
-                    inGaming: user.inGaming
+                    inGaming: user.inGaming,
+                    isBlocked: isblcked.length ? true : false,
                 };
                 resultDirect.push(tmp);
             }
@@ -450,7 +466,8 @@ let MessagesService = class MessagesService {
                     nbrMessageNoRead: 0,
                     OwnerChannelId: '',
                     isChannProtected: false,
-                    inGaming: false
+                    inGaming: false,
+                    isBlocked: false
                 };
                 resultDirect.push(tmp);
             }

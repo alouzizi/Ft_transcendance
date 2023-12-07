@@ -48,7 +48,7 @@ export class ChannelService {
 
   decryptMessage = (cipherText: string) => {
     try {
-      const bytes = AES.decrypt(cipherText, "key--->this.state.secret");
+      const bytes = AES.decrypt(cipherText, process.env.CRYPTO_JS_KEY);
       const decrypted = bytes.toString(enc.Utf8);
       return decrypted;
     } catch (err) {
@@ -58,7 +58,7 @@ export class ChannelService {
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
     let cipherText = '';
     if (createChannelDto.channelPassword !== "")
-      cipherText = AES.encrypt(createChannelDto.channelPassword, "key--->this.state.secret");
+      cipherText = AES.encrypt(createChannelDto.channelPassword, process.env.CRYPTO_JS_KEY);
 
     try {
       const newChannel = await this.prisma.channel.create({
@@ -134,7 +134,7 @@ export class ChannelService {
       if (!memberAdmin) return { status: 204, error: "you are not admin" };
       let pass: string = "";
       if (updateChannelDto.channelPassword != "" && updateChannelDto.protected)
-        pass = AES.encrypt(updateChannelDto.channelPassword, "key--->this.state.secret");
+        pass = AES.encrypt(updateChannelDto.channelPassword, process.env.CRYPTO_JS_KEY);
       const channelUpdate: Channel = await this.prisma.channel.update({
         where: { id: channelId },
         data: {
@@ -171,6 +171,25 @@ export class ChannelService {
           return { error: true };
         }
       }
+    }
+  }
+
+  async uploadImageChannel(senderId: string, channelId: string, path: string) {
+    try {
+      const member = await this.prisma.channelMember.findFirst({
+        where: { channelId: channelId, userId: senderId }
+      })
+      if (member.isAdmin) {
+        await this.prisma.channel.update({
+          where: {
+            id: channelId,
+          },
+          data: {
+            avatar: process.env.BACK_HOST + `${path}`
+          }
+        })
+      }
+    } catch (error) {
     }
   }
 

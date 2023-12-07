@@ -8,9 +8,6 @@ export default function Home() {
     width: 600,
     height: 400,
   };
-  if (window.innerWidth < 600) {
-    canvas.width = window.innerWidth - 80;
-  }
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center bg-color-main">
       <canvasContext.Provider value={canvas}>

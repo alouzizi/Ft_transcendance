@@ -77,6 +77,24 @@ const ListUser = () => {
   }, [socket, geust.id]);
 
   useEffect(() => {
+    if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
+      const updateStatusGeust = async () => {
+        if (geust.id !== '-1' && geust.isUser) {
+          const geustTemp = await getUserGeust(geust.id);
+          if (geustTemp !== undefined) setGeust(geustTemp);
+        }
+        const usersList = await getUserForMsg(user.id);
+        if (usersList !== undefined) setItemList(usersList);
+      };
+      socket.on("blockUserToUser", updateStatusGeust);
+      return () => {
+        socket.off("blockUserToUser", updateStatusGeust);
+      };
+    }
+  }, [socket, user.id, geust.id]);
+
+
+  useEffect(() => {
     if (geust.id === '-1') {
       if (direct) {
         if (itemListDirect.length !== 0) {
@@ -117,23 +135,6 @@ const ListUser = () => {
     }
   }, [socket]);
 
-  const [isBlocked, setIsBlocked] = useState<number>(0)
-  useEffect(() => {
-    if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
-      const upDateGeust = async () => {
-        const check = await checkIsBlocked(user.id, geust.id);
-        if (check !== undefined) setIsBlocked(check);
-      }
-      upDateGeust();
-      socket.on("blockUserToUser", upDateGeust);
-      return () => {
-        socket.off("blockUserToUser", upDateGeust);
-      };
-    }
-  }, [geust.id, user.id, socket]);
-
-
-
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
@@ -155,14 +156,14 @@ const ListUser = () => {
             </div>}
             sx={{
               "& .MuiBadge-badge": {
-                backgroundColor: `${(el.receivedStatus === 'ACTIF' && isBlocked === 0) ? "#07F102" : "#B4B4B4"}`,
+                backgroundColor: `${(el.receivedStatus === 'ACTIF' && !el.isBlocked) ? "#07F102" : "#B4B4B4"}`,
                 width: 15,
                 height: 15,
                 borderRadius: 50,
                 border: "2px solid #ffffff",
               },
             }}
-            variant={el.inGaming ? "standard" : "dot"}
+            variant={(el.inGaming && !el.isBlocked) ? "standard" : "dot"}
             overlap="circular"
             anchorOrigin={{
               vertical: "bottom",
@@ -232,12 +233,12 @@ const ListUser = () => {
             onClick={async () => {
               if (!el.isChannProtected) {
                 await joinChannel(user.id, el.receivedId);
-                socket?.emit('updateMessageInChannel',
-                  {
-                    isDirectMessage: false,
-                    receivedId: el.receivedId,
-                  }
-                );
+                console.log("geust name = ", geust.nickname)
+                socket?.emit('updateChannel', {
+                  senderId: user.id,
+                  receivedId: el.receivedId,
+                  isDirectMessage: false
+                });
                 getDataGeust(el);
                 setDisplayChat(true);
               }

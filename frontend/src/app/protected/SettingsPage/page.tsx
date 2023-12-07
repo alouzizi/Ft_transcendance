@@ -2,58 +2,39 @@
 import { useGlobalContext } from "@/app/protected/context/store";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
+import { Text } from "@radix-ui/themes";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ImageUpload from "./imageupload";
-import { Text } from "@radix-ui/themes";
-import { FaCheckCircle } from "react-icons/fa";
 import { Backend_URL } from "../../../../lib/Constants";
+import ImageUpload from "./components/imageupload";
+import { getDataOwner } from "./IpaSettings/fetch-user";
+import { generateUrlQr, turnOff_2FA, turnOn_2FA } from "./IpaSettings/fetch-qrcode";
 
 export default function SettingsPage() {
   const token = Cookies.get("access_token");
-  const router = useRouter();
 
-  const { user } = useGlobalContext();
+
+  const { user, setUser } = useGlobalContext();
 
   const [checked, setChecked] = useState(false);
   const [urlImage, setUrlImage] = useState("");
   const [newNickName, setNickName] = useState("");
   const [keyQrCode, setKeyQrCode] = useState("");
 
-  const getUrlQr = async () => {
-    const res = await axios.get(Backend_URL + `/auth/2fa/generate`, {
-      method: "GET",
-      headers: {
-        authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const qrcode = await res.data;
-    if (qrcode) setUrlImage(qrcode);
-  };
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (user && user.id !== "-1" && !event.target.checked && user.isTwoFactorAuthEnabled) {
-      const res = await fetch(
-        `${Backend_URL}/auth/2fa/turn-off/${user.intra_id}`,
-        {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await turnOff_2FA(user.intra_id);
       setChecked(false);
       toast.success("2fa authentication turned off successfully");
     } else if (event.target.checked) {
       setChecked(event.target.checked);
-      getUrlQr();
+      const urlImg = await generateUrlQr()
+      if (urlImg) setUrlImage(urlImg);
     } else if (!event.target.checked) {
       setUrlImage("");
       setChecked(event.target.checked);
@@ -139,18 +120,7 @@ export default function SettingsPage() {
                   onClick={async () => {
                     try {
                       if (keyQrCode !== "") {
-                        const response = await axios(
-                          Backend_URL +
-                          `/auth/2fa/turnOn/${user.intra_id}/${keyQrCode}`,
-                          {
-                            method: "get",
-                            headers: {
-                              authorization: `Bearer ${token}`,
-                              // "Content-Type": "application/json",
-                            },
-                          }
-                        );
-                        const data = await response.data;
+                        const data = await turnOn_2FA(user.intra_id, keyQrCode);
                         if (data) {
                           setChecked(true);
                           setUrlImage("");
@@ -164,7 +134,6 @@ export default function SettingsPage() {
                         toast.error("Wrong authentication code");
                       }
                     } catch (e) {
-                      console.log(e)
                     }
                   }}
                 >
@@ -183,7 +152,7 @@ export default function SettingsPage() {
                   try {
                     const response = await fetch(
                       Backend_URL +
-                      `/user/updatUserdata/${user.intra_id}/${newNickName.toLowerCase()}`,
+                      `/user/updateNickname/${user.intra_id}/${newNickName.toLowerCase()}`,
                       {
                         method: "POST",
                         headers: {
@@ -196,6 +165,8 @@ export default function SettingsPage() {
                       toast.error("nickname aleady exist");
                     else if (response.status === 201) {
                       toast.success("nickname has been change");
+                      const tmp = await getDataOwner(user.intra_id);
+                      setUser(tmp);
                     }
                   } catch (error) { }
                 }
@@ -203,7 +174,6 @@ export default function SettingsPage() {
             }}
               className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center mb-5 mt-3">
               <div className="text-white  pr-2">Save</div>
-
             </button>
           </div>
         </div>
@@ -212,3 +182,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+

@@ -79,15 +79,15 @@ export default function Home() {
         setLeft(isLeft);
       });
 
-      // const handlePopstate = (event: PopStateEvent) => {
-      //     if (gameStarted)
-      //       socket?.emit("opponentLeft", { userId: user.id, room: room,});
-      //     setButtonClicked(false);
-      //     setGameStarted(false);
-      //     setMessage("Start game!");
-      // };
+      const handlePopstate = (event: PopStateEvent) => {
+          if (gameStarted)
+            socket?.emit("opponentLeft", { userId: user.id, room: room,});
+          setButtonClicked(false);
+          setGameStarted(false);
+          setMessage("Start game!");
+      };
 
-      // window.addEventListener("popstate", handlePopstate);
+      window.addEventListener("popstate", handlePopstate);
 
       return () => {
         // window.removeEventListener("popstate", handlePopstate);
@@ -101,7 +101,7 @@ export default function Home() {
 
   return (
     <div className="my-8">
-      {showAlert && <CustomAlert  message="You are already in a game!" />}
+      {showAlert && <CustomAlert message="Opponent Left" />}
       <div className="w-screen min-h-screen h-fit flex flex-col justify-center items-center bg-color-main">
         <canvasContext.Provider value={canvas}>
           {!gameStarted && (

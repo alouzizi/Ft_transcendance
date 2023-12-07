@@ -16,7 +16,7 @@ import { NotificationService } from 'src/notification/notification.service';
     MulterModule.register({
       dest: './uploads',
       limits: {
-        fileSize: 1024 * 1024, // 1 MB limit (adjust as needed)
+        fileSize: 1024 * 1024,
       },
     }),
   ]

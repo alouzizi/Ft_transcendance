@@ -99,10 +99,6 @@ export default function AlertsAddUserChannel() {
                     isDirectMessage: false
                   });
                   socket?.emit('changeStatusMember', geust.id);
-                  // socket?.emit('updateMessageInChannel', { // 
-                  //   isDirectMessage: false,
-                  //   receivedId: geust.id,
-                  // });
                   handleClose();
                 }}>
                 <Text size="2" weight="medium">

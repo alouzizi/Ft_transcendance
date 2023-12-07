@@ -125,6 +125,8 @@ model BlockedUser {
   senderId   String
   receivedId String
 
+  createdAt DateTime @default(now())
+
   @@unique([senderId, receivedId], name: "Unique_Sender_Receiver")
 }
 

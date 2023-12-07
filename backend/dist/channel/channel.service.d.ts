@@ -47,6 +47,7 @@ export declare class ChannelService {
         status?: undefined;
         channel?: undefined;
     }>;
+    uploadImageChannel(senderId: string, channelId: string, path: string): Promise<void>;
     checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
         error: boolean;
     }>;

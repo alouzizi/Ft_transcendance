@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
-import { ChannelService } from './channel.service';
-import { UpdateChannelDto } from './dto/update-channel.dto';
-import { CreateChannelDto } from './dto/create-channel.dto';
+import { Body, Controller, Get, Param, Post, UseGuards, UseInterceptors, UploadedFile, } from '@nestjs/common';
+import { FileInterceptor } from "@nestjs/platform-express";
 import { ChannelType } from '@prisma/client';
+import { diskStorage } from "multer";
 import { JwtGuard } from 'src/auth/guard';
-
+import { ChannelService } from './channel.service';
+import { CreateChannelDto } from './dto/create-channel.dto';
 @Controller('channel')
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) { }
@@ -30,6 +30,35 @@ export class ChannelController {
     }
     return this.channelService.updateChannel(senderId, channelId, channelData);
   }
+
+
+  @Post("/uploadImage/:senderId/:channelId")
+  @UseGuards(JwtGuard)
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        console.log("00", file);
+        const name = file.originalname.split(".")[0];
+        const fileExtension = file.originalname.split(".")[1];
+        const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
+        cb(null, newFileName);
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+        return cb(null, false);
+      cb(null, true);
+    }
+  }))
+  uploadImage(@UploadedFile() file: Express.Multer.File,
+    @Param("senderId") senderId: string,
+    @Param("channelId") channelId: string,
+  ) {
+    console.log('first', file.path);
+    return this.channelService.uploadImageChannel(senderId, channelId, file.path);
+  }
+
 
 
   @Get('/checkOwnerIsAdmin/:senderId/:channelId')

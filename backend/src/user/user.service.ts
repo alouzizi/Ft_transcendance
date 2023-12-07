@@ -217,18 +217,28 @@ export class UserService {
   // saliha -------------------
 
   async createUser(user1: any) {
-    const user = await this.prisma.user.create({
-      data: {
-        intra_id: user1.intra_id.toString(),
-        nickname: user1.login42.toString(),
-        email: user1.email.toString(),
-        profilePic: user1.profilePicture.toString(),
-        last_name: user1.last_name,
-        first_name: user1.first_name,
-        isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false, // Assuming it's a boolean property
-      },
-    });
-    return user;
+    try {
+      let nickname = user1.login42.toString();
+      let i = 0;
+      let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
+      while (check) {
+        check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
+        nickname = `${nickname}_${i}`;
+        i++;
+      }
+      const user = await this.prisma.user.create({
+        data: {
+          intra_id: user1.intra_id.toString(),
+          nickname: nickname,
+          email: user1.email.toString(),
+          profilePic: user1.profilePicture.toString(),
+          last_name: user1.last_name,
+          first_name: user1.first_name,
+          isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
+        },
+      });
+      return user;
+    } catch (error) { }
   }
 
   async setTwoFactorAuthSecret(secret: string, intra_id: string) {
@@ -268,7 +278,7 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  async updatUserdata(intra_id: string, nickname: string) {
+  async updateNickname(intra_id: string, nickname: string) {
     const usr = await this.prisma.user.findUnique({ where: { intra_id } });
     if (usr.nickname === nickname) {
       return;
@@ -282,7 +292,6 @@ export class UserService {
           nickname: nickname,
         },
       });
-      return { status: 200 };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
@@ -293,22 +302,22 @@ export class UserService {
       }
     }
   }
+
   async uploadImage(intra_id: string, path: string) {
     try {
-      const user = await this.prisma.user.update({
+      await this.prisma.user.update({
         where: {
           intra_id: intra_id,
         },
         data: {
-          profilePic: `http://192.168.1.7:4000/${path}`,
+          profilePic: process.env.BACK_HOST + `${path}`,
         },
       });
-      console.log("File uploaded successfully");
-      return { message: "File uploaded successfully" };
     } catch (error) {
       console.log(error);
     }
   }
+
   async findByIntraId(intra_id: string) {
     return this.prisma.user.findUnique({
       where: { intra_id: intra_id },

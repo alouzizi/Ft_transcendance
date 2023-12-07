@@ -43,7 +43,6 @@ export class SocketGatewayService {
               },
             });
             for (const user of activeUsers) {
-              // wss.to(user.id).emit("updateStatusGeust", {});
               if (user.id !== client.handshake.query.senderId) {
                 wss.to(user.id).emit("updateStatusGeust", {});
               }
@@ -91,15 +90,17 @@ export class SocketGatewayService {
   }
 
   async emitNewMessage(ids: CreateMessageDto, wss: Server) {
-    // wss.to(ids.senderId).emit("emitNewMessage", {});
+    console.log("===== emitNewMessage called ==========")
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({
         where: { channelId: ids.receivedId },
       });
       for (const member of channelMembers) {
+        console.log("------> ", member.userId)
         wss.to(member.userId).emit("emitNewMessage", {});
       }
     } else wss.to(ids.receivedId).emit("emitNewMessage", {});
+    console.log("===== end ==========")
   }
 
   async updateChannel(ids: CreateMessageDto, wss: Server) {
@@ -111,14 +112,6 @@ export class SocketGatewayService {
     }
   }
 
-  async updateMessageInChannel(ids: CreateMessageDto, wss: Server) {
-    const channelMembers = await this.prisma.channelMember.findMany({
-      where: { channelId: ids.receivedId },
-    });
-    for (const member of channelMembers) {
-      wss.to(member.userId).emit("updateMessageInChannel", { idChannel: ids.receivedId });
-    }
-  }
 
 
   async mutedUserInChannel(idChannel: string, wss: Server) {
@@ -160,7 +153,6 @@ export class SocketGatewayService {
         messageStatus: MessageStatus.Seen,
       },
     });
-    console.log("-->", ids.receivedId);
     wss.to(ids.receivedId).emit("messagsSeenEmit");
   }
 }

@@ -14,7 +14,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useGlobalContext } from '../../context/store';
 import { checkIsMuted } from '../api/fetch-channel';
 import { getMessageTwoUsers, getMessagesChannel } from '../api/fetch-msg';
-import { checkIsBlocked, getVueGeust } from '../api/fetch-users';
+import { checkIsBlocked, getUserGeust, getVueGeust } from '../api/fetch-users';
 import { unBlockedUser } from '../api/send-Friend-req';
 import { IsTypingMsg, ShowMessages } from './widgetMsg';
 import Badge from "@mui/material/Badge";
@@ -53,6 +53,7 @@ const BoxChat = () => {
     useEffect(() => {
         if (user.id !== "-1" && socket) {
             const handleReceivedMessage = (data: messageDto) => {
+                console.log("called ---- handleReceivedMessage");
                 if ((geust.isUser && data.isDirectMessage && (data.senderId === geust.id || data.senderId === user.id)) ||
                     ((!geust.isUser && !data.isDirectMessage && (data.receivedId === geust.id || data.senderId === user.id)))) {
                     setIsTyping(false);
@@ -91,7 +92,7 @@ const BoxChat = () => {
     }, [socket, user.id, geust.id]);
 
     useEffect(() => {
-        if (msg != "" && socket) {
+        if (msg != "" && socket && !isBlocked) {
             socket.emit('isTyping', {
                 content: '',
                 senderId: user.id,
@@ -146,6 +147,7 @@ const BoxChat = () => {
         }
     }, [socket, geust.id, user.id, updateInfo]);
 
+
     const handleSendMessage = () => {
         if (msg.trim() != '') {
             if (isBlocked === 1) {
@@ -165,7 +167,7 @@ const BoxChat = () => {
     }
 
 
-    async function getData() {
+    async function getDataAllMessage() {
         let msgs;
         if (geust.isUser)
             msgs = await getMessageTwoUsers(user.id, geust.id);
@@ -176,7 +178,7 @@ const BoxChat = () => {
     }
     useEffect(() => {
         if (socket && geust.id !== "-1" && user.id !== "-1") {
-            getData();
+            getDataAllMessage();
             socket.emit('messagsSeenEmit', {
                 senderId: user.id,
                 receivedId: geust.id,
@@ -190,7 +192,7 @@ const BoxChat = () => {
             if (geust.id == data.idChannel) {
                 const temp = await getVueGeust(geust.id, false);
                 setGeust(temp);
-                getData();
+                getDataAllMessage();
             }
         };
         if (socket) {
@@ -204,7 +206,7 @@ const BoxChat = () => {
     useEffect(() => {
         if (socket) {
             const getMessageEmit = () => {
-                getData();
+                getDataAllMessage();
             }
             socket.on("messagsSeenEmit", getMessageEmit);
             return () => {
@@ -212,6 +214,22 @@ const BoxChat = () => {
             }
         }
     }, [socket, Allmsg.length])
+
+    useEffect(() => {
+        if (socket) {
+            const updateStatusGeust = async () => {
+                if (geust.id !== '-1' && geust.isUser) {
+                    const geustTemp = await getUserGeust(geust.id);
+                    if (geustTemp !== undefined) setGeust(geustTemp);
+                }
+            };
+            updateStatusGeust();
+            socket.on("updateStatusGeust", updateStatusGeust);
+            return () => {
+                socket.off("updateStatusGeust", updateStatusGeust);
+            };
+        }
+    }, [socket, geust.id]);
 
     return (geust.id != "-1") ? (
         <Box
@@ -236,7 +254,7 @@ const BoxChat = () => {
                         <Badge
                             badgeContent=
                             {<div>
-                                {geust.inGaming ? <FaGamepad /> : <></>}
+                                {(geust.inGaming && isBlocked === 0) ? <FaGamepad /> : <></>}
                             </div>}
                             sx={{
                                 "& .MuiBadge-badge": {
@@ -247,7 +265,7 @@ const BoxChat = () => {
                                     border: "2px solid #ffffff",
                                 },
                             }}
-                            variant={geust.inGaming ? "standard" : "dot"}
+                            variant={(geust.inGaming && isBlocked === 0) ? "standard" : "dot"}
                             overlap="circular"
                             anchorOrigin={{
                                 vertical: "bottom",
@@ -272,12 +290,11 @@ const BoxChat = () => {
 
                     <Flex direction="column" className='flex' >
                         <Text onClick={() => {
-                            if (geust.isUser) {
+                            if (geust.isUser) { // && !isBlocked
                                 router.push(`/protected/DashboardPage/${geust.nickname}`);
                             }
                         }} size="2" weight="bold"
-
-                            className={`${geust.isUser ? "hover:underline cursor-pointer pl-2" : "pl-2"}`}>
+                            className={`${(geust.isUser) ? "hover:underline cursor-pointer pl-2" : "pl-2"}`}>
                             {geust.nickname}
                         </Text>
                         {
@@ -295,12 +312,18 @@ const BoxChat = () => {
                 </div>
 
                 <div className="pr-3">
-                    {!geust.isUser ? <Link href='ChatPage/channelSettings'>
-                        <IoSettingsSharp size={16} />
-                    </Link> :
-                        <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket }) }}
-                        />}
+                    {!geust.isUser ?
+                        <Link href='ChatPage/channelSettings'>
+                            <IoSettingsSharp size={16} />
+                        </Link> :
+                        ((geust.inGaming || isBlocked) ?
+                            <></> :
+                            <RiPingPongFill size={20} className='cursor-pointer'
+                                onClick={() => {
+                                    PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket, nameInveted: user.nickname })
+                                }} />)
+
+                    }
                 </div>
             </div >
 
@@ -357,7 +380,7 @@ const BoxChat = () => {
                         <div className='flex flex-col flex-grow items-center mt-3'>
                             <button onClick={async () => {
                                 await unBlockedUser(user.id, geust.id);
-                                socket?.emit('blockUserToUser', geust.id);
+                                socket?.emit('blockUserToUser', { senderId: user.id, receivedId: geust.id });
                                 setUnblockAlert(false);
                                 setIsBlocked(0);
                             }}

@@ -5,18 +5,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import TextField from '@mui/material/TextField';
-import { Avatar, Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import { Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { GoDotFill } from 'react-icons/go';
 import { IoAddOutline, IoCloseOutline, IoPersonAdd, IoPersonRemove } from "react-icons/io5";
-import { TiDelete } from "react-icons/ti";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
 import { useGlobalContext } from '../../context/store';
 import { createChannel } from '../api/fetch-channel';
 import { getValideUsers, getVueGeust } from '../api/fetch-users';
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 
 enum ChannelType {

@@ -99,16 +99,19 @@ let SocketGatewayService = class SocketGatewayService {
             wss.to(ids.receivedId).emit("updateData", {});
     }
     async emitNewMessage(ids, wss) {
+        console.log("===== emitNewMessage called ==========");
         if (ids.isDirectMessage === false) {
             const channelMembers = await this.prisma.channelMember.findMany({
                 where: { channelId: ids.receivedId },
             });
             for (const member of channelMembers) {
+                console.log("------> ", member.userId);
                 wss.to(member.userId).emit("emitNewMessage", {});
             }
         }
         else
             wss.to(ids.receivedId).emit("emitNewMessage", {});
+        console.log("===== end ==========");
     }
     async updateChannel(ids, wss) {
         const channelMembers = await this.prisma.channelMember.findMany({
@@ -116,14 +119,6 @@ let SocketGatewayService = class SocketGatewayService {
         });
         for (const member of channelMembers) {
             wss.to(member.userId).emit("updateChannel", { idChannel: ids.receivedId });
-        }
-    }
-    async updateMessageInChannel(ids, wss) {
-        const channelMembers = await this.prisma.channelMember.findMany({
-            where: { channelId: ids.receivedId },
-        });
-        for (const member of channelMembers) {
-            wss.to(member.userId).emit("updateMessageInChannel", { idChannel: ids.receivedId });
         }
     }
     async mutedUserInChannel(idChannel, wss) {
@@ -161,7 +156,6 @@ let SocketGatewayService = class SocketGatewayService {
                 messageStatus: client_1.MessageStatus.Seen,
             },
         });
-        console.log("-->", ids.receivedId);
         wss.to(ids.receivedId).emit("messagsSeenEmit");
     }
 };

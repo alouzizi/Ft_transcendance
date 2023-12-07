@@ -83,14 +83,10 @@ export class SocketGateway
     this.socketGatewayService.emitNewMessage(ids, this.server);
   }
 
-  @SubscribeMessage("updateMessageInChannel")
-  async updateMessageInChannel(@MessageBody() ids: CreateMessageDto) {
-    this.socketGatewayService.updateMessageInChannel(ids, this.server);
-  }
-
   @SubscribeMessage("blockUserToUser")
-  async blockUserToUser(@MessageBody() receivedId: string) {
-    this.server.to(receivedId).emit("blockUserToUser", { receivedId });
+  async blockUserToUser(@MessageBody() ids: CreateMessageDto) {
+    this.server.to(ids.receivedId).emit("blockUserToUser", {});
+    this.server.to(ids.senderId).emit("blockUserToUser", {});
   }
 
   @SubscribeMessage("mutedUserInChannel")
@@ -112,7 +108,6 @@ export class SocketGateway
 
 
 
-  // ---------------------------------------------
 
   ROUND_LIMIT = 6;
   joindRoom = 0;
@@ -299,7 +294,6 @@ export class SocketGateway
     }
   }
   async stopEmittingBallPosition(roomName: string) {
-    const test = this.rooms.get(roomName)
     if (this.rooms.get(roomName) && this.rooms.get(roomName).length > 1) {
       const id = this.rooms.get(roomName)[0];
       const id2 = this.rooms.get(roomName)[1];
@@ -321,10 +315,7 @@ export class SocketGateway
 
     // id2.leave(roomName);
     // id2.leave(id2);
-    // test.
-    this.rooms.delete(roomName);
-    // delete this.rooms[roomName];
-    this.roomState.delete(roomName);
+    delete this.rooms[roomName];
     delete this.roomState[roomName];
     delete this.ballPositionInterval[roomName];
     clearInterval(this.ballPositionInterval.get(roomName));
@@ -337,6 +328,7 @@ export class SocketGateway
     } else {
       this.clients.set(id, client);
       this.joindClients.set(id, 0);
+
       client.join(id);
     }
   }

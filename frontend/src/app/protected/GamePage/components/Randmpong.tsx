@@ -23,7 +23,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
   let animationFrameId: number;
   let animationFrameId1: number;
   const router = useRouter();
-  // const [alert, setAlert] = useState(0);
+  const [alert, setAlert] = useState(0);
 
   const player: Padlle = {
     x: 10,
@@ -181,16 +181,6 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
     };
 
-          const handlePopstate = (event: PopStateEvent) => {
-          // if (gameStarted)
-            socket?.emit("opponentLeft", { userId: user.id, room: room,});
-          // setButtonClicked(false);
-          // setGameStarted(false);
-          // setMessage("Start game!");
-      };
-
-      window.addEventListener("popstate", handlePopstate);
-
     // function handlePopstate(){
     //   socket?.emit("opponentLeft", {room: room, userId:user.id});
     //   // router.push('/protected/GamePage/random');
@@ -204,7 +194,6 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
 
     return () => {
-      // window.removeEventListener("popstate", handlePopstate);
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);

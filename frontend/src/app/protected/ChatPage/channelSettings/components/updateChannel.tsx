@@ -11,6 +11,10 @@ import { useEffect, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
 import { checkOwnerIsAdmin, getChannel, updateChannel } from "../../api/fetch-channel";
+import { ToastContainer, toast } from 'react-toastify';
+import { Backend_URL } from '../../../../../../lib/Constants';
+import Cookies from "js-cookie";
+import { getVueGeust } from '../../api/fetch-users';
 
 enum ChannelType {
     Public = 'Public',
@@ -20,7 +24,7 @@ enum ChannelType {
 export default function UpdateChannel() {
 
 
-    const { user, geust, socket } = useGlobalContext();
+    const { user, geust, setGeust, socket } = useGlobalContext();
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -30,6 +34,7 @@ export default function UpdateChannel() {
     const [errorKey, setErrorKey] = useState("");
 
 
+    const [selectedImage, setSelectedImage] = useState<string>("");
     const [channelData, setChannelData] = useState<channelDto>({
         channelName: '',
         channelType: ChannelType.Public,
@@ -104,23 +109,44 @@ export default function UpdateChannel() {
                 <label className='border-[2px] border-[#1f3175] hover:border-white rounded-full p-[1.5px]'>
                     <Avatar
                         size="6"
-                        src={channelData.avatar}
+                        src={selectedImage || channelData.avatar}
                         radius="full"
                         fallback="T"
                     />
-                    {/* <input type="file" accept="image/*"
+                    <input type="file" accept="image/*"
                         disabled={!(isOwnerAdmin || !channel.protected)}
                         style={{ display: 'none' }}
-                        onChange={(event: any) => {
+                        onChange={async (event: any) => {
                             const file = event.target.files[0];
-                            if (file) {
-                                setSaveChanges((pre) => { return pre + 1 });
-                                const imageURL = URL.createObjectURL(file);
-                                setChannelData((prevState) => {
-                                    return { ...prevState, avatar: imageURL };
-                                })
-                            }
-                        }} /> */}
+                            if (file && file.size) {
+                                const reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setSelectedImage(reader.result as string);
+                                };
+
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                try {
+                                    const token = Cookies.get("access_token");
+                                    const response = await fetch(
+                                        Backend_URL + `/channel/uploadImage/${user.id}/${geust.id}`,
+                                        {
+                                            method: "POST",
+                                            body: formData,
+                                            headers: {
+                                                authorization: `Bearer ${token}`,
+                                            },
+                                        }
+                                    );
+                                    toast.success("Image uploaded successfully");
+                                    const temp = await getVueGeust(geust.id, false);
+                                    setGeust(temp);
+                                } catch (error) {
+                                    toast.error("Error uploading image");
+                                }
+                            } else toast.error("Error uploading image");
+                        }} />
                 </label>
 
 
@@ -256,6 +282,9 @@ export default function UpdateChannel() {
             </div>
 
             <hr className="border-b-[0.5px] border-gray-600 w-3/4" />
+
+            <ToastContainer />
+
         </div>
     )
 }

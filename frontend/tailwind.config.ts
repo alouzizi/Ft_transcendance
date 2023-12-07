@@ -6,7 +6,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   theme: {
     container: {
       center: true,
@@ -14,10 +14,6 @@ module.exports = {
       screens: {
         "2xl": "1400px",
       },
-    },
-    fontFamily: {
-      'fredoka' : ['Fredoka'],
-      'outfit': ['Outfit'],
     },
     fontWeight: {
       '400': 400,
@@ -30,7 +26,7 @@ module.exports = {
         'color-main-dark': '#111623',
         'color-main-whith': '#4069FF',
         'color-main-whith2': '#8CA5FF',
-       
+
       },
       keyframes: {
         "accordion-down": {

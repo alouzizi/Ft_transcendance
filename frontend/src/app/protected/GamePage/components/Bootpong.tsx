@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Ball, Padlle, useCanvas } from "./interface";
 import updateCanvas, { drawCanvas, drawText, resetBall } from "./pongUtils";
 import {useRouter } from "next/navigation";
-import { set } from "date-fns";
 
 const Pong = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,9 +16,6 @@ const Pong = () => {
     color: "white",
     score: 0,
   };
-  const [width, setWidth] = useState<number>(window.innerWidth);
-  
-  
   const router = useRouter();
   const computer: Padlle = {
     x: canvasCtx.width - 15,
@@ -84,26 +80,10 @@ const Pong = () => {
 
     }
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("resize", () => {
-      setWidth(window.innerWidth);
-      // canvasCtx.width = window.innerWidth - 80;
-      // canvasCtx.height = window.innerHeight - 80;
-      if (window.innerWidth < 600) {
-        canvasCtx.width = window.innerWidth - 80;
-        computer.x = canvasCtx.width - 15;
-      }
-      else if (window.innerWidth > 600) {
-        canvasCtx.width = 600;
-        computer.x = canvasCtx.width - 15;
-      }
-      // canvas.width = canvasCtx.width;
-      // canvas.height = canvasCtx.height;
-      // resetBall(canvasCtx, ball);
-    });
+
+    
   }
   animationFrameId = window.requestAnimationFrame(update);
-
-
   return () => {
     window.cancelAnimationFrame(animationFrameId);
     window.cancelAnimationFrame(animationFrameId1);

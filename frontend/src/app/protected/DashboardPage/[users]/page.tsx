@@ -23,12 +23,10 @@ export default function DashboardPage() {
         setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
-        console.log(isBlocked);
         if (isBlocked.isBlocked) {
           setIsBlocked(false);
           return;
         }
-        // console.log(usr);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
       }
@@ -41,5 +39,4 @@ export default function DashboardPage() {
   } else {
     return <ErrorPage />;
   }
-  // return <CircularProgress />;
 }

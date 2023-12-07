@@ -47,9 +47,10 @@ let UserController = class UserController {
         return await this.userService.getValideUsers(senderId);
     }
     async updatUserdata(intra_id, nickname) {
-        return await this.userService.updatUserdata(intra_id, nickname);
+        return await this.userService.updateNickname(intra_id, nickname);
     }
     uploadImage(file, senderId) {
+        console.log('----> ', file.path);
         return this.userService.uploadImage(senderId, file.path);
     }
     async getUsersCanJoinChannel(senderId, channelId) {
@@ -103,7 +104,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getValideUsers", null);
 __decorate([
-    (0, common_1.Post)("updatUserdata/:intra_id/:nickname"),
+    (0, common_1.Post)("updateNickname/:intra_id/:nickname"),
     (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("intra_id")),
     __param(1, (0, common_1.Param)("nickname")),
@@ -112,12 +113,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updatUserdata", null);
 __decorate([
-    (0, common_1.Post)("/:intra_id/uploadImage"),
+    (0, common_1.Post)("/uploadImage/:intra_id"),
     (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
             filename: (req, file, cb) => {
+                console.log("00", file);
                 const name = file.originalname.split(".")[0];
                 const fileExtension = file.originalname.split(".")[1];
                 const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
@@ -125,7 +127,7 @@ __decorate([
             },
         }),
         fileFilter: (req, file, cb) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+            if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
                 return cb(null, false);
             cb(null, true);
         }

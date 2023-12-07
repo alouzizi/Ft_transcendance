@@ -91,7 +91,9 @@ export class MessagesService {
 
 
 
-        inGaming: false
+        inGaming: false,
+
+        isBlocked: false // no matter
 
       }
       if (notSendTo === "") {
@@ -171,7 +173,8 @@ export class MessagesService {
           OwnerChannelId: channel.channelOwnerId,
           isChannProtected: channel.protected,
 
-          inGaming: false
+          inGaming: false,
+          isBlocked: false // no matter
 
 
         }
@@ -205,6 +208,7 @@ export class MessagesService {
         },
       });
 
+
       const msgUser = msgUserTemp.filter((msg) => (msg.notSendTo === "" || msg.senderId === senderId));
       const result = await Promise.all(
         msgUser.map(async (msg) => {
@@ -233,7 +237,9 @@ export class MessagesService {
             OwnerChannelId: '', // no matter
             isChannProtected: false,// no matter
 
-            inGaming: false
+
+            inGaming: false,
+            isBlocked: (msg.notSendTo.length) ? true : false
           }
           return temp;
         })
@@ -291,7 +297,9 @@ export class MessagesService {
 
                 OwnerChannelId: channel.channelOwnerId,
                 isChannProtected: channel.protected,
-                inGaming: false
+                inGaming: false,
+
+                isBlocked: false // no matter
 
 
               }
@@ -313,10 +321,12 @@ export class MessagesService {
           {
             senderId,
             receivedId,
+            notSendTo: ""
           },
           {
             senderId: receivedId,
             receivedId: senderId,
+            notSendTo: ""
           },
         ],
       },
@@ -376,7 +386,9 @@ export class MessagesService {
         OwnerChannelId: channel.channelOwnerId,
         isChannProtected: channel.protected,
 
-        inGaming: false
+        inGaming: false,
+
+        isBlocked: false // no matter
 
       }
       result.push(temp);
@@ -418,7 +430,9 @@ export class MessagesService {
         OwnerChannelId: chl.channelOwnerId,
         isChannProtected: chl.protected,
 
-        inGaming: false
+        inGaming: false,
+
+        isBlocked: false // no matter
       }
       result.push(temp);
     }
@@ -461,17 +475,26 @@ export class MessagesService {
 
       for (const user of usersList) {
         const lastMessage = await this.getLastMessages(senderId, user.id);
+
         const forNbrMessageNoRead: Message[] = await this.prisma.message.findMany(
           {
             where: {
               senderId: user.id,
               receivedId: senderId,
+              notSendTo: "",
               messageStatus: {
                 in: [MessageStatus.NotReceived, MessageStatus.Received],
               },
             }
           }
         );
+
+        const isblcked = await this.prisma.blockedUser.findMany({
+          where: {
+            OR: [{ senderId: senderId, receivedId: user.id },
+            { senderId: user.id, receivedId: senderId }]
+          }
+        })
         const tmp: messageDto = {
           isDirectMessage: true,
 
@@ -489,13 +512,15 @@ export class MessagesService {
           receivedName: user.nickname,
           receivedPic: user.profilePic,
           receivedStatus: user.status,
-          nbrMessageNoRead: forNbrMessageNoRead.length,
+          nbrMessageNoRead: isblcked.length ? 0 : forNbrMessageNoRead.length,
 
           OwnerChannelId: '', // no matter
           isChannProtected: false, // no matter
 
 
-          inGaming: user.inGaming
+          inGaming: user.inGaming,
+
+          isBlocked: isblcked.length ? true : false,
         }
         resultDirect.push(tmp);
       }
@@ -536,7 +561,9 @@ export class MessagesService {
           OwnerChannelId: '', // no matter
           isChannProtected: false,// no matter
 
-          inGaming: false
+          inGaming: false,
+
+          isBlocked: false // no matter
 
         }
         resultDirect.push(tmp);

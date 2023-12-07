@@ -62,7 +62,7 @@ export function MessageRight({ message }: { message: messageDto }) {
                     onMouseLeave={() => setIsHovered(false)}>
 
                     {!isHovered ?
-                        (message.messageStatus === 'NotReceived') ?
+                        (message.messageStatus === 'NotReceived' || message.isBlocked) ?
                             <BsCheck2 style={{ color: '#254BD6' }} /> :
                             <BsCheck2All style={{
                                 color: `${(message.messageStatus === 'Received')

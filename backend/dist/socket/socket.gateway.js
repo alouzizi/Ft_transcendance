@@ -72,11 +72,9 @@ let SocketGateway = class SocketGateway {
     async joinChannelEmit(ids) {
         this.socketGatewayService.emitNewMessage(ids, this.server);
     }
-    async updateMessageInChannel(ids) {
-        this.socketGatewayService.updateMessageInChannel(ids, this.server);
-    }
-    async blockUserToUser(receivedId) {
-        this.server.to(receivedId).emit("blockUserToUser", { receivedId });
+    async blockUserToUser(ids) {
+        this.server.to(ids.receivedId).emit("blockUserToUser", {});
+        this.server.to(ids.senderId).emit("blockUserToUser", {});
     }
     async mutedUserInChannel(idChannel) {
         this.socketGatewayService.mutedUserInChannel(idChannel, this.server);
@@ -215,7 +213,6 @@ let SocketGateway = class SocketGateway {
         }
     }
     async stopEmittingBallPosition(roomName) {
-        const test = this.rooms.get(roomName);
         if (this.rooms.get(roomName) && this.rooms.get(roomName).length > 1) {
             const id = this.rooms.get(roomName)[0];
             const id2 = this.rooms.get(roomName)[1];
@@ -234,8 +231,7 @@ let SocketGateway = class SocketGateway {
             delete this.joindClients[id];
             delete this.joindClients[id2];
         }
-        this.rooms.delete(roomName);
-        this.roomState.delete(roomName);
+        delete this.rooms[roomName];
         delete this.roomState[roomName];
         delete this.ballPositionInterval[roomName];
         clearInterval(this.ballPositionInterval.get(roomName));
@@ -391,17 +387,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "joinChannelEmit", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)("updateMessageInChannel"),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
-    __metadata("design:returntype", Promise)
-], SocketGateway.prototype, "updateMessageInChannel", null);
-__decorate([
     (0, websockets_1.SubscribeMessage)("blockUserToUser"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "blockUserToUser", null);
 __decorate([

@@ -1,4 +1,5 @@
 "use client";
+import AlertOpenAccount from '@/app/public/HomePage/components/alertOpenAcc';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { Button } from "@radix-ui/themes";
@@ -10,9 +11,7 @@ import { FaArrowCircleRight } from "react-icons/fa";
 export default function NavBarPublic(prompt: { children: ReactNode }) {
   const pathname = usePathname();
 
-  const handleLogin = () => {
-    window.location.href = "http://192.168.1.7:4000/auth/login42";
-  };
+
 
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -56,9 +55,9 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
 
           <div onClick={(e) => {
             e.preventDefault()
-            setOpenAlert(true)
+            setOpenAlert(true);
           }} className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center">
-            <p className="text-white font-outfit pr-2">Open Account</p>
+            <p className="text-white  pr-2">Open Account</p>
             <FaArrowCircleRight size="20" />
           </div>
         </div>
@@ -67,28 +66,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
       {prompt.children}
 
 
-      <div>
-        <Dialog open={openAlert}
-          onClose={() => setOpenAlert(false)}>
-          <DialogContent className='flex flex-col items-center p-10 justify-around  bg-[#7D7676] bg-opacity-70 '>
-
-
-            <img className="h-20" src="/PongMaster.svg" alt="PongMaster" />
-
-
-            <p className='text-white text-xl'>open account using</p>
-
-            <Button onClick={handleLogin}>
-              <div className="border-2 shadow-xl bg-white border-[#4069FF] mt-3 rounded-xl flex justify-center mx-auto items-center w-36 h-12">
-                <img className="w-[29px]" src="/42.svg" />
-                <p className="ml-1"> school </p>
-              </div>
-            </Button>
-
-          </DialogContent>
-        </Dialog>
-      </div>
-
+      <AlertOpenAccount openAlert={openAlert} setOpenAlert={setOpenAlert} />
 
     </div>
   );

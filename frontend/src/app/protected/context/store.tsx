@@ -107,7 +107,7 @@ export const GlobalContextProvider = ({
   const [displayChat, setDisplayChat] = useState<boolean>(false);
   const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
-  const [saveChanges, setSaveChanges] = useState<number>(0);
+
 
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
@@ -153,37 +153,32 @@ export const GlobalContextProvider = ({
       });
       setSocket(socket);
       socket.on("connect", () => {
-        console.log("socket --> user connected");
       });
       socket.on("disconnect", () => {
-        console.log("socket --> user disconnected");
       });
     }
-
-    return () => {
-      // if (user.id !== - 1 && socket) {
-      //     socket.disconnect();
-      // } 
-    };
   }, [user.id]);
 
 
   useEffect(() => {
     const getDataUser = async () => {
-      const token = Cookies.get("access_token");
-      const id_intra = Cookies.get("intra_id");
-
-      const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
-        method: "GET",
-        headers: {
-          authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.ok) {
-        const owner = await res.json();
-        setUser(owner);
-      } else {
+      try {
+        const token = Cookies.get("access_token");
+        const id_intra = Cookies.get("intra_id");
+        const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (res.ok) {
+          const owner = await res.json();
+          setUser(owner);
+        } else {
+          router.push("/public/HomePage");
+        }
+      } catch (error) {
         router.push("/public/HomePage");
       }
     };
@@ -217,6 +212,7 @@ export const GlobalContextProvider = ({
           isLeft: true,
         });
         setOpenConfirm(true);
+        setInvitedName(data.nameInveted);
       });
       socket.on("startGame", (data) => {
         setInviteData({
@@ -233,6 +229,7 @@ export const GlobalContextProvider = ({
   }, [socket, data]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [inviterdName, setInvitedName] = useState("");
 
 
   if (user.id === "-1") return <div></div>;
@@ -271,7 +268,7 @@ export const GlobalContextProvider = ({
             color="red"
           >
             <div
-              // onClick={handleClose}
+              onClick={() => setOpenConfirm(false)}
               className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
             >
               <ImCross className="text-gray-400 hover:text-gray-300 cursor-pointer" />
@@ -285,7 +282,7 @@ export const GlobalContextProvider = ({
               <div className="flex flex-col rounded-2xl my-4">
                 <p className="text-gray-300  text-center">
                   <span className="font-700 text-white hover:underline">
-                    @hboumahd
+                    {inviterdName}
                   </span>{" "}
                   invite you to pongMaster match
                 </p>
@@ -298,8 +295,6 @@ export const GlobalContextProvider = ({
                   // socket?.emit("accept", data);
                   setOpenConfirm(false);
                   // router.push("/protected/GamePage/invite");
-
-
                 }}
                 className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
                             text-xs  px-4 py-2 mx-2

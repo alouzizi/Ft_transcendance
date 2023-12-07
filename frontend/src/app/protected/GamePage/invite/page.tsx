@@ -18,9 +18,6 @@ export default function Home() {
       width: 600,
       height: 400,
     };
-  if (window.innerWidth < 600) {
-      canvas.width = window.innerWidth - 80;
-    }
   useEffect(() => {
     
     socket?.on("opponentLeft", () => {
