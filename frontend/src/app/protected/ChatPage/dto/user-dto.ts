@@ -29,6 +29,10 @@ type ownerDto = {
   profilePic: string;
   isTwoFactorAuthEnabled: boolean;
   level: string;
+
+
+  // inGaming: boolean,
+  // status: Status;
 };
 
 type geustDto = {
@@ -44,6 +48,8 @@ type geustDto = {
   lenUser: number;
 
   idUserOwner: string;
+
+  inGaming: Boolean;
 };
 
 enum MessageStatus {
@@ -71,8 +77,14 @@ type messageDto = {
   receivedPic: string; // in channle or direct Msg
   receivedStatus: Status; // in DirectMsg
 
+  nbrMessageNoRead: number;
+
   OwnerChannelId: String;
   isChannProtected: Boolean;
+
+  inGaming: Boolean;
+
+  isBlocked: Boolean;
 };
 
 type reqFriendsDto = {

@@ -8,6 +8,7 @@ import { GameService } from "src/game/game.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { FriendshipController } from "src/friendship/friendship.controller";
 import { FriendshipService } from "src/friendship/friendship.service";
+import { NotificationService } from "src/notification/notification.service";
 
 @Module({
   providers: [
@@ -19,6 +20,7 @@ import { FriendshipService } from "src/friendship/friendship.service";
     GameService,
     FriendshipService,
     PrismaService,
+    NotificationService
   ],
 })
-export class SocketGatewayModule {}
+export class SocketGatewayModule { }

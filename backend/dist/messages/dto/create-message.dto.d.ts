@@ -19,6 +19,9 @@ export declare class messageDto {
     receivedName: string;
     receivedPic: string;
     receivedStatus: Status;
+    nbrMessageNoRead: number;
     OwnerChannelId: String;
     isChannProtected: boolean;
+    inGaming: boolean;
+    isBlocked: boolean;
 }

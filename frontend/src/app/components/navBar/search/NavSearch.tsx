@@ -6,7 +6,7 @@ import React, { ChangeEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import NavSearchItem from "./NavSearchItem";
 import { useGlobalContext } from "@/app/protected/context/store";
-import { getNavSearchUsers } from "@/app/MyApi/friendshipApi";
+import { getNavSearchUsers, getPendingFriends } from "@/app/MyApi/friendshipApi";
 
 export default function SerachNav() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -20,14 +20,17 @@ export default function SerachNav() {
 
   // ================== fetch users ==================
   const [data, setData] = React.useState<friendDto[]>([]);
+  const [PendingFriendsList, setPendingFriendsList] = React.useState<
+    friendDto[]
+  >([]);
   let filteredData: friendDto[] = [];
   const { user } = useGlobalContext();
   React.useEffect(() => {
     async function getData() {
       try {
-        const AllPossibleFriendsDataTmp: friendDto[] = await getNavSearchUsers(
-          user.id
-        );
+        const AllPossibleFriendsDataTmp = await getNavSearchUsers(user.id);
+        const pendingFriendsList = await getPendingFriends(user.id);
+        setPendingFriendsList(pendingFriendsList);
         setData(AllPossibleFriendsDataTmp);
       } catch (error: any) {
         console.log("Friend alert getData error: " + error);
@@ -79,9 +82,8 @@ export default function SerachNav() {
         value={inputSearch}
         className={`block   text-gray-900 my-auto rounded-full bg-[#F1F3F9]   
         
-        placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${
-          open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
-        }
+        placeholder:text-[#666C79] sm:text-sm sm:leading-6 focus:outline-none  ${open ? "rounded-b-none rounded-t-3xl" : "rounded-full"
+          }
         md:py-3 md:mx-8 md:pr-20 md:text-md  md:w-96
         sm:w-52 sm:px-6 sm:placeholder:text-base
         py-2 px-4 mx-4 pr-16 text-sm w-32 placeholder:text-xs
@@ -111,6 +113,7 @@ export default function SerachNav() {
               <NavSearchItem
                 key={element.id}
                 userInfo={element}
+                pendingFriendsList={PendingFriendsList}
                 onClick={() => {
                   router.push(`/protected/DashboardPage/${element?.nickname}`);
                   setInputSearch("");

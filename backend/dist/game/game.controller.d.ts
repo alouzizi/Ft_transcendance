@@ -14,10 +14,14 @@ export declare class GameController {
         senderPoints: string;
         receiverPoints: string;
     }[]>;
-    getGlobalInfos(recieverId: string): Promise<import("./dto").globalInfoDto>;
+    getGlobalInfos(recieverId: string): Promise<import("./dto").globalInfoDto | {
+        error: any;
+    }>;
     getUserRanking(recieverId: string): Promise<{
         userId: string;
         rank: number;
+    } | {
+        error: any;
     }>;
     getLeaderBoard(): Promise<{
         userName: string;
@@ -26,7 +30,9 @@ export declare class GameController {
         nbrOfMatches: string;
         winRate: string;
         rank: string;
-    }[]>;
+    }[] | {
+        error: any;
+    }>;
     updateLevel(sender: string, newLevel: string): Promise<{
         id: string;
         intra_id: string;
@@ -35,6 +41,7 @@ export declare class GameController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -52,5 +59,7 @@ export declare class GameController {
         receiverId: string;
         senderPoints: string;
         receiverPoints: string;
+    } | {
+        error: any;
     }>;
 }

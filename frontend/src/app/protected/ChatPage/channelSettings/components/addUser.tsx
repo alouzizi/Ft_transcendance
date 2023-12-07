@@ -93,21 +93,20 @@ export default function AlertsAddUserChannel() {
                 onClick={async () => {
                   await addUserToChannel(user.id, geust.id, elm.id);
                   setSearsh("");
-                  socket?.emit("updateData", {
-                    content: "",
+                  socket?.emit('emitNewMessage', {
                     senderId: user.id,
-                    isDirectMessage: false,
                     receivedId: geust.id,
+                    isDirectMessage: false
                   });
+                  socket?.emit('changeStatusMember', geust.id);
                   handleClose();
-                }}
-              >
+                }}>
                 <Text size="2" weight="medium">
                   Add
                 </Text>
               </div>
             </Flex>
-          </Box>
+          </Box >
         );
       })
     ) : searsh === "" ? (
@@ -172,4 +171,3 @@ export default function AlertsAddUserChannel() {
     </div>
   );
 }
-//http://localhost:4000/3a444534-0846-40f5-a4f2-2d4cfcf34c2a/643810b5-1467-4502-a22f-0321ac75d411

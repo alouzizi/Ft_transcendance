@@ -6,6 +6,7 @@ import { MouseEventHandler } from "react";
 export default function NavSearchItem(prompt: {
   onClick: MouseEventHandler<HTMLDivElement> | undefined;
   userInfo: friendDto;
+  pendingFriendsList: friendDto[];
 }) {
   return (
     <div

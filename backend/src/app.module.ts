@@ -1,4 +1,4 @@
-import { Module, UseGuards } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { ConfigModule } from "@nestjs/config";
@@ -7,9 +7,11 @@ import { MessagesModule } from "./messages/messages.module";
 import { FriendshipModule } from "./friendship/friendship.module";
 import { ChannelModule } from "./channel/channel.module";
 import { SocketGatewayModule } from "./socket/socket.module";
-import { GameModule } from "./game/game.module";
+
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { GameModule } from "./game/game.module";
+import { NotificationModule } from "./notification/notification.module";
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { join } from "path";
       rootPath: join(__dirname, "..", "uploads"),
       serveRoot: "/uploads",
     }),
+    NotificationModule
   ],
 })
-export class AppModule {}
+export class AppModule { }

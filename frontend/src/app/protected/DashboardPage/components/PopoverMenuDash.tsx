@@ -11,6 +11,7 @@ import {
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
 import { useState } from "react";
 import { useGlobalContext } from "../../context/store";
+import PlayInvite from "../../GamePage/components/Invite";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;
@@ -38,7 +39,7 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
-    console.log("play match with friend: " + prompt.friendInfo.nickname);
+    PlayInvite({ userId1: user.id, userId2: prompt.friendInfo.id, socket: socket, nameInveted: prompt.friendInfo.nickname })
     handleClose();
   }
 
@@ -68,6 +69,7 @@ export default function PopoverMenuDash(prompt: {
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
+      socket?.emit('blockUserToUser', { senderId: user.id, receivedId: prompt.friendInfo.id });
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,

@@ -47,7 +47,7 @@ let GameService = class GameService {
             return usersWithAvatar;
         }
         catch (error) {
-            throw error;
+            return null;
         }
     }
     isWined(record, isWined, user) {
@@ -78,7 +78,7 @@ let GameService = class GameService {
             return oneUser;
         }
         catch (error) {
-            throw error;
+            return null;
         }
     }
     async getNbrOfMatches(recieverId, isWined) {
@@ -97,7 +97,7 @@ let GameService = class GameService {
         return NbrOfMatches;
     }
     catch(error) {
-        throw error;
+        return { error: error };
     }
     async getGlobalInfos(recieverId) {
         try {
@@ -131,7 +131,7 @@ let GameService = class GameService {
             return globInfo;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getUserRanking(senderId) {
@@ -154,7 +154,7 @@ let GameService = class GameService {
             return userRank;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async getLeaderBoard() {
@@ -188,7 +188,7 @@ let GameService = class GameService {
             return rankedData;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async updateGameHistory(senderId, recieverId, senderPt, recieverPt) {
@@ -210,7 +210,7 @@ let GameService = class GameService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     async updateLevel(senderId, newLevel) {
@@ -251,7 +251,7 @@ let GameService = class GameService {
             return user;
         }
         catch (error) {
-            throw error;
+            return { error: error };
         }
     }
     collision(ball, player) {

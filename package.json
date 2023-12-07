@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "@types/react-swipeable-views": "^0.13.5",
-    "embla-carousel-autoplay": "^8.0.0-rc14",
-    "embla-carousel-react": "^8.0.0-rc14",
-    "react-swipeable-views": "^0.14.0"
-  },
-  "devDependencies": {
-    "@types/react-swipeable-views-utils": "^0.13.7"
+    "passport-google-oauth20": "^2.0.0"
   }
 }

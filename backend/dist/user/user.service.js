@@ -174,6 +174,7 @@ let UserService = class UserService {
                     lastSee: user.lastSee,
                     lenUser: 0,
                     idUserOwner: 0,
+                    inGaming: user.inGaming
                 };
             return {
                 isUser: true,
@@ -212,18 +213,29 @@ let UserService = class UserService {
         }
     }
     async createUser(user1) {
-        const user = await this.prisma.user.create({
-            data: {
-                intra_id: user1.intra_id.toString(),
-                nickname: user1.login42.toString(),
-                email: user1.email.toString(),
-                profilePic: user1.profilePicture.toString(),
-                last_name: user1.last_name,
-                first_name: user1.first_name,
-                isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
-            },
-        });
-        return user;
+        try {
+            let nickname = user1.login42.toString();
+            let i = 0;
+            let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
+            while (check) {
+                check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
+                nickname = `${nickname}_${i}`;
+                i++;
+            }
+            const user = await this.prisma.user.create({
+                data: {
+                    intra_id: user1.intra_id.toString(),
+                    nickname: nickname,
+                    email: user1.email.toString(),
+                    profilePic: user1.profilePicture.toString(),
+                    last_name: user1.last_name,
+                    first_name: user1.first_name,
+                    isTwoFactorAuthEnabled: user1.isTwoFactorAuthEnabled || false,
+                },
+            });
+            return user;
+        }
+        catch (error) { }
     }
     async setTwoFactorAuthSecret(secret, intra_id) {
         await this.prisma.user.update({
@@ -248,7 +260,6 @@ let UserService = class UserService {
         const user = await this.prisma.user.findUnique({
             where: { intra_id: intra_id },
         });
-        console.log(user);
         await this.prisma.user.update({
             where: { intra_id: intra_id },
             data: {
@@ -259,7 +270,7 @@ let UserService = class UserService {
     async getUsers() {
         return this.prisma.user.findMany();
     }
-    async updatUserdata(intra_id, nickname, image) {
+    async updateNickname(intra_id, nickname) {
         const usr = await this.prisma.user.findUnique({ where: { intra_id } });
         if (usr.nickname === nickname) {
             return;
@@ -273,7 +284,6 @@ let UserService = class UserService {
                     nickname: nickname,
                 },
             });
-            return { status: 200 };
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
@@ -287,18 +297,15 @@ let UserService = class UserService {
         }
     }
     async uploadImage(intra_id, path) {
-        console.log(intra_id);
         try {
-            const user = await this.prisma.user.update({
+            await this.prisma.user.update({
                 where: {
                     intra_id: intra_id,
                 },
                 data: {
-                    profilePic: `http://localhost:4000/${path}`,
+                    profilePic: process.env.BACK_HOST + `${path}`,
                 },
             });
-            console.log("File uploaded successfully");
-            return { message: "File uploaded successfully" };
         }
         catch (error) {
             console.log(error);
@@ -317,6 +324,18 @@ let UserService = class UserService {
     async deleteUser(id) {
         return this.prisma.user.delete({
             where: { id: id },
+        });
+    }
+    async startGameing(senderId) {
+        await this.prisma.user.update({
+            where: { id: senderId },
+            data: { inGaming: true }
+        });
+    }
+    async finishGaming(senderId) {
+        await this.prisma.user.update({
+            where: { id: senderId },
+            data: { inGaming: false }
         });
     }
 };

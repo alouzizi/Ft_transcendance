@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateMessageDto, messageDto } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Server } from 'socket.io';
 import { BlockedUser, Channel, ChannelMember, Friend, Message, MessageStatus, Status, User } from '@prisma/client';
+import { NotificationService } from 'src/notification/notification.service';
 // import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     private prisma: PrismaService,
-    // private userService: UserService,
+    private readonly notificationService: NotificationService
   ) { }
 
 
@@ -24,7 +25,6 @@ export class MessagesService {
     try {
       let notSendTo: string = "";
       let messageStatus: MessageStatus = "NotReceived"
-
       const blockerUser: BlockedUser = await this.prisma.blockedUser.findFirst({
         where: {
           OR: [
@@ -84,14 +84,27 @@ export class MessagesService {
         receivedName: receivedUser.nickname,
         receivedPic: receivedUser.profilePic,
         receivedStatus: receivedUser.status,
+        nbrMessageNoRead: 0,
 
         OwnerChannelId: '', // no matter
-        isChannProtected: false // no matter
+        isChannProtected: false,// no matter
+
+
+
+        inGaming: false,
+
+        isBlocked: false // no matter
 
       }
-      if (notSendTo === "")
-        server.to(msg.receivedId).emit('findMsg2UsersResponse', temp);
-      server.to(msg.senderId).emit('findMsg2UsersResponse', temp);
+      if (notSendTo === "") {
+        server.to(msg.receivedId).emit('emitNewMessage', temp);
+        this.notificationService.createNotification({
+          senderId: msg.senderId,
+          recieverId: msg.receivedId,
+          subject: "send message",
+        })
+      }
+      server.to(msg.senderId).emit('emitNewMessage', temp);
     } catch (error) {
       return { error: true }
     }
@@ -155,13 +168,17 @@ export class MessagesService {
           receivedName: channel.channelName,
           receivedPic: channel.avatar,
           receivedStatus: Status.INACTIF, // not matter
+          nbrMessageNoRead: 0,
 
           OwnerChannelId: channel.channelOwnerId,
-          isChannProtected: channel.protected
+          isChannProtected: channel.protected,
+
+          inGaming: false,
+          isBlocked: false // no matter
 
 
         }
-        server.to(member.userId).emit('findMsg2UsersResponse', temp);
+        server.to(member.userId).emit('emitNewMessage', temp);
       }
     } catch (error) {
       return { error: true }
@@ -180,6 +197,18 @@ export class MessagesService {
           createdAt: 'asc',
         },
       });
+
+      await this.prisma.message.updateMany({
+        where: {
+          senderId: receivedId,
+          receivedId: senderId,
+        },
+        data: {
+          messageStatus: MessageStatus.Seen,
+        },
+      });
+
+
       const msgUser = msgUserTemp.filter((msg) => (msg.notSendTo === "" || msg.senderId === senderId));
       const result = await Promise.all(
         msgUser.map(async (msg) => {
@@ -198,16 +227,19 @@ export class MessagesService {
             createdAt: msg.createdAt,
             messageStatus: msg.messageStatus,
 
+
             receivedId: msg.receivedId,
             receivedName: receivedUser.nickname,
             receivedPic: receivedUser.profilePic,
             receivedStatus: receivedUser.status,
+            nbrMessageNoRead: 0,
 
             OwnerChannelId: '', // no matter
-            isChannProtected: false // no matter
+            isChannProtected: false,// no matter
 
 
-
+            inGaming: false,
+            isBlocked: (msg.notSendTo.length) ? true : false
           }
           return temp;
         })
@@ -261,9 +293,13 @@ export class MessagesService {
                 receivedName: channel.channelName,
                 receivedPic: channel.avatar,
                 receivedStatus: Status.INACTIF, // not matter
+                nbrMessageNoRead: 0,
 
                 OwnerChannelId: channel.channelOwnerId,
-                isChannProtected: channel.protected
+                isChannProtected: channel.protected,
+                inGaming: false,
+
+                isBlocked: false // no matter
 
 
               }
@@ -285,10 +321,12 @@ export class MessagesService {
           {
             senderId,
             receivedId,
+            notSendTo: ""
           },
           {
             senderId: receivedId,
             receivedId: senderId,
+            notSendTo: ""
           },
         ],
       },
@@ -343,9 +381,14 @@ export class MessagesService {
         receivedName: channel.channelName,
         receivedPic: channel.avatar,
         receivedStatus: Status.INACTIF, // no matter
+        nbrMessageNoRead: 0,
 
         OwnerChannelId: channel.channelOwnerId,
-        isChannProtected: channel.protected
+        isChannProtected: channel.protected,
+
+        inGaming: false,
+
+        isBlocked: false // no matter
 
       }
       result.push(temp);
@@ -382,9 +425,14 @@ export class MessagesService {
         receivedName: chl.channelName,
         receivedPic: chl.avatar,
         receivedStatus: Status.INACTIF, // no matter
+        nbrMessageNoRead: 0,
 
         OwnerChannelId: chl.channelOwnerId,
-        isChannProtected: chl.protected
+        isChannProtected: chl.protected,
+
+        inGaming: false,
+
+        isBlocked: false // no matter
       }
       result.push(temp);
     }
@@ -396,10 +444,13 @@ export class MessagesService {
     try {
       let resultDirect: messageDto[] = [];
       const resultChannel = await this.getChannleForMsg(senderId);
+
       const userToUersMsg = await this.prisma.message.findMany({
         where: {
-          OR: [{ senderId: senderId, isDirectMessage: true },
-          { receivedId: senderId, isDirectMessage: true }],
+          OR: [
+            { senderId: senderId, isDirectMessage: true },
+            { receivedId: senderId, isDirectMessage: true }
+          ],
         },
         orderBy: {
           createdAt: "desc",
@@ -421,8 +472,29 @@ export class MessagesService {
         const user: User = await this.prisma.user.findUnique({ where: { id } })
         usersList.push(user);
       }
+
       for (const user of usersList) {
         const lastMessage = await this.getLastMessages(senderId, user.id);
+
+        const forNbrMessageNoRead: Message[] = await this.prisma.message.findMany(
+          {
+            where: {
+              senderId: user.id,
+              receivedId: senderId,
+              notSendTo: "",
+              messageStatus: {
+                in: [MessageStatus.NotReceived, MessageStatus.Received],
+              },
+            }
+          }
+        );
+
+        const isblcked = await this.prisma.blockedUser.findMany({
+          where: {
+            OR: [{ senderId: senderId, receivedId: user.id },
+            { senderId: user.id, receivedId: senderId }]
+          }
+        })
         const tmp: messageDto = {
           isDirectMessage: true,
 
@@ -440,9 +512,15 @@ export class MessagesService {
           receivedName: user.nickname,
           receivedPic: user.profilePic,
           receivedStatus: user.status,
+          nbrMessageNoRead: isblcked.length ? 0 : forNbrMessageNoRead.length,
 
           OwnerChannelId: '', // no matter
-          isChannProtected: false // no matter
+          isChannProtected: false, // no matter
+
+
+          inGaming: user.inGaming,
+
+          isBlocked: isblcked.length ? true : false,
         }
         resultDirect.push(tmp);
       }
@@ -478,9 +556,15 @@ export class MessagesService {
           receivedName: user.nickname,
           receivedPic: user.profilePic,
           receivedStatus: user.status,
+          nbrMessageNoRead: 0,
 
           OwnerChannelId: '', // no matter
-          isChannProtected: false // no matter
+          isChannProtected: false,// no matter
+
+          inGaming: false,
+
+          isBlocked: false // no matter
+
         }
         resultDirect.push(tmp);
 
@@ -494,8 +578,8 @@ export class MessagesService {
         return myDate2.getTime() - myDate1.getTime();
       });
       return result;
+
     } catch (error) {
-      console.log("error = ", error);
       return { error: true }
     }
   }

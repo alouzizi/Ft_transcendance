@@ -11,6 +11,7 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -30,6 +31,7 @@ export declare class UserController {
         profilePic: string;
         isTwoFactorAuthEnabled: boolean;
         level: string;
+        inGaming: boolean;
     }>;
     getAllUser(): Promise<{
         id: string;
@@ -39,6 +41,7 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -58,6 +61,7 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -68,16 +72,11 @@ export declare class UserController {
     }[] | {
         error: boolean;
     }>;
-    updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
-        status: number;
-        error?: undefined;
-    } | {
+    updatUserdata(intra_id: string, nickname: string): Promise<{
         status: number;
         error: boolean;
     }>;
-    uploadImage(file: Express.Multer.File, senderId: string): Promise<{
-        message: string;
-    }>;
+    uploadImage(file: Express.Multer.File, senderId: string): Promise<void>;
     getUsersCanJoinChannel(senderId: string, channelId: string): Promise<{
         id: string;
         intra_id: string;
@@ -86,6 +85,7 @@ export declare class UserController {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -105,6 +105,7 @@ export declare class UserController {
         lastSee: Date;
         lenUser: number;
         idUserOwner: number;
+        inGaming: boolean;
         error?: undefined;
     } | {
         isUser: boolean;
@@ -115,6 +116,7 @@ export declare class UserController {
         lastSee: number;
         lenUser: number;
         idUserOwner: number;
+        inGaming?: undefined;
         error?: undefined;
     } | {
         error: boolean;
@@ -126,6 +128,7 @@ export declare class UserController {
         lastSee?: undefined;
         lenUser?: undefined;
         idUserOwner?: undefined;
+        inGaming?: undefined;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
@@ -151,4 +154,6 @@ export declare class UserController {
     checkIsBlocked(senderId: string, receivedId: string): Promise<0 | 1 | 2 | {
         error: boolean;
     }>;
+    startGameing(senderId: string): Promise<void>;
+    finishGaming(senderId: string): Promise<void>;
 }

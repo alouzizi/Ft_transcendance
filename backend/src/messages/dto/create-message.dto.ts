@@ -32,10 +32,16 @@ export class messageDto {
   receivedName: string; // in channle or direct Msg
   receivedPic: string; // in channle or direct Msg
   receivedStatus: Status; // in DirectMsg
+  nbrMessageNoRead: number;
 
 
   OwnerChannelId: String;
-  isChannProtected: boolean
+  isChannProtected: boolean;
+
+  inGaming: boolean;
+
+  isBlocked: boolean;
+
   // status: Status;
 
 }

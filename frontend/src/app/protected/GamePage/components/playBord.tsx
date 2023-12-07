@@ -4,7 +4,6 @@ import React from "react";
 import { useGlobalContext } from "../../context/store";
 
 type MyComponentProps = {
-  emit: boolean;
   imageSrc: string;
   text: string;
   title: string;
@@ -16,7 +15,6 @@ const MyComponent = ({
   text,
   title,
   link,
-  emit,
 }: MyComponentProps) => {
   const { user, socket } = useGlobalContext();
   const router = useRouter();
@@ -44,7 +42,7 @@ const MyComponent = ({
             <h4 className="uppercase font-bold text-sm font-outfit text-black">
               {title}
             </h4>
-            <p className="font-fredoka font-400 text-[#999999] font-bold text-xs">
+            <p className=" font-400 text-[#999999] font-bold text-xs">
               {text}
             </p>
           </div>
@@ -59,13 +57,11 @@ const MyComponent = ({
           sm:self-end
           "
         onClick={() => {
-          if (emit) {
-            if (socket?.connected) {
-              socket.emit("clientId", user.id);
-              router.push(link);
-            } else {
-              alert("Refresh the page and try again!");
-            }
+          if (link == "/protected/GamePage/random") {
+            if (socket?.connected) router.push(link);
+            else window.alert("Refresh the page and try again!");
+          } else {
+            router.push(link);
           }
         }}
       >

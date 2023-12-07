@@ -10,6 +10,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -28,6 +29,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -47,6 +49,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -65,6 +68,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -87,6 +91,7 @@ export declare class UserService {
         lastSee: Date;
         lenUser: number;
         idUserOwner: number;
+        inGaming: boolean;
         error?: undefined;
     } | {
         isUser: boolean;
@@ -97,6 +102,7 @@ export declare class UserService {
         lastSee: number;
         lenUser: number;
         idUserOwner: number;
+        inGaming?: undefined;
         error?: undefined;
     } | {
         error: boolean;
@@ -108,6 +114,7 @@ export declare class UserService {
         lastSee?: undefined;
         lenUser?: undefined;
         idUserOwner?: undefined;
+        inGaming?: undefined;
     }>;
     getChannelGeust(id: string): Promise<{
         isUser: boolean;
@@ -138,6 +145,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -157,6 +165,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -165,16 +174,11 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }[]>;
-    updatUserdata(intra_id: string, nickname: string, image: string): Promise<{
-        status: number;
-        error?: undefined;
-    } | {
+    updateNickname(intra_id: string, nickname: string): Promise<{
         status: number;
         error: boolean;
     }>;
-    uploadImage(intra_id: string, path: string): Promise<{
-        message: string;
-    }>;
+    uploadImage(intra_id: string, path: string): Promise<void>;
     findByIntraId(intra_id: string): Promise<{
         id: string;
         intra_id: string;
@@ -183,6 +187,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -199,6 +204,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -215,6 +221,7 @@ export declare class UserService {
         nickname: string;
         email: string;
         profilePic: string;
+        inGaming: boolean;
         isTwoFactorAuthEnabled: boolean;
         twoFactorAuthSecret: string;
         level: string;
@@ -223,4 +230,6 @@ export declare class UserService {
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
     }>;
+    startGameing(senderId: string): Promise<void>;
+    finishGaming(senderId: string): Promise<void>;
 }

@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { ChannelService } from './channel.service';
 export declare class ChannelController {
     private readonly channelService;
@@ -22,6 +23,10 @@ export declare class ChannelController {
     }>;
     updateChannel(createChannelDto: any, senderId: string, channelId: string): Promise<{
         status: number;
+        error: string;
+        channel?: undefined;
+    } | {
+        status: number;
         channel: {
             channelPassword: string;
             id: string;
@@ -34,14 +39,11 @@ export declare class ChannelController {
         };
         error?: undefined;
     } | {
-        status: number;
-        error: string;
-        channel?: undefined;
-    } | {
         error: boolean;
         status?: undefined;
         channel?: undefined;
     }>;
+    uploadImage(file: Express.Multer.File, senderId: string, channelId: string): Promise<void>;
     checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
         error: boolean;
     }>;
@@ -112,9 +114,5 @@ export declare class ChannelController {
     }>;
     cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<{
         error: boolean;
-    }>;
-    joinChannelWithLink(senderId: string, channelId: string, uuid: string): Promise<{
-        success: boolean;
-        message: string;
     }>;
 }

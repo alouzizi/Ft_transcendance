@@ -10,7 +10,7 @@ export class GameService {
   constructor(
     private friendshipService: FriendshipService,
     private prisma: PrismaService
-  ) {}
+  ) { }
 
   // ==========================  Game Gets ==========================
 
@@ -43,7 +43,7 @@ export class GameService {
       });
       return usersWithAvatar;
     } catch (error) {
-      throw error;
+      return null
     }
   }
 
@@ -74,7 +74,7 @@ export class GameService {
       });
       return oneUser;
     } catch (error) {
-      throw error;
+      return null
     }
   }
 
@@ -98,7 +98,7 @@ export class GameService {
     return NbrOfMatches;
   }
   catch(error) {
-    throw error;
+    return {error: error}
   }
 
   async getGlobalInfos(recieverId: string) {
@@ -140,7 +140,7 @@ export class GameService {
       }
       return globInfo;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -167,7 +167,7 @@ export class GameService {
 
       return userRank;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -203,7 +203,7 @@ export class GameService {
       }));
       return rankedData;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -232,7 +232,7 @@ export class GameService {
       }
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 
@@ -274,7 +274,7 @@ export class GameService {
       });
       return user;
     } catch (error) {
-      throw error;
+      return {error: error}
     }
   }
 

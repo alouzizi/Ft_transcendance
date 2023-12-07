@@ -1,9 +1,12 @@
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChannelDto, memberChannelDto } from "./dto/create-channel.dto";
+import { NotificationService } from "src/notification/notification.service";
 export declare class ChannelService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private readonly notificationService;
+    constructor(prisma: PrismaService, notificationService: NotificationService);
     createMessageInfoChannel(senderId: string, channelId: string, userId: string, msg: string): Promise<void>;
+    decryptMessage: (cipherText: string) => any;
     createChannel(createChannelDto: CreateChannelDto, senderId: string): Promise<{
         status: number;
         id: string;
@@ -24,6 +27,10 @@ export declare class ChannelService {
     }>;
     updateChannel(senderId: string, channelId: string, updateChannelDto: CreateChannelDto): Promise<{
         status: number;
+        error: string;
+        channel?: undefined;
+    } | {
+        status: number;
         channel: {
             channelPassword: string;
             id: string;
@@ -36,14 +43,11 @@ export declare class ChannelService {
         };
         error?: undefined;
     } | {
-        status: number;
-        error: string;
-        channel?: undefined;
-    } | {
         error: boolean;
         status?: undefined;
         channel?: undefined;
     }>;
+    uploadImageChannel(senderId: string, channelId: string, path: string): Promise<void>;
     checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
         error: boolean;
     }>;
@@ -123,7 +127,7 @@ export declare class ChannelService {
     joinChannel(senderId: string, channelId: string): Promise<{
         error: boolean;
     }>;
-    muteUserChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<{
+    muteUserFromChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<{
         error: boolean;
     }>;
     cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<{

@@ -5,9 +5,6 @@ import { MdOutlineEditNote } from "react-icons/md";
 import { useState } from 'react';
 
 
-
-
-
 export function extractHoursAndM(time: number): string {
 
     const dt = new Date(time);
@@ -65,9 +62,13 @@ export function MessageRight({ message }: { message: messageDto }) {
                     onMouseLeave={() => setIsHovered(false)}>
 
                     {!isHovered ?
-                        (message.messageStatus === 'NotReceived') ?
+                        (message.messageStatus === 'NotReceived' || message.isBlocked) ?
                             <BsCheck2 style={{ color: '#254BD6' }} /> :
-                            <BsCheck2All style={{ color: '#254BD6' }} />
+                            <BsCheck2All style={{
+                                color: `${(message.messageStatus === 'Received')
+                                    ? '#254BD6' : 'green'}`
+                            }} />
+
                         : <MdOutlineEditNote style={{ color: '#254BD6' }} />}
 
                 </div>
@@ -152,12 +153,11 @@ function showDays(currentDate: number, timeMsg: number) {
 
 // $owner create group $channelName 
 // You created group $channelName
-
 // $owner add $userName
 // You add $userName
-
 // You Block this contact. Tap to unblock
 // You unblocked this contact
+
 export function MessageCenterInfo({ message, user }: { message: messageDto, user: ownerDto }) {
     const cardStyles = {
         width: 200,
@@ -193,6 +193,8 @@ export function MessageCenterInfo({ message, user }: { message: messageDto, user
     }
     else if (message.contentMsg.includes('join')) {
         messageTmp = `${message.senderName} ${message.contentMsg}`
+    } else {
+        messageTmp = `${message.contentMsg}`
     }
     return (
         <div className='mt-1'>

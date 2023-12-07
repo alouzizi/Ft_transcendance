@@ -5,6 +5,8 @@ import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/user/user.service";
 import { toDataURL } from "qrcode";
 import { authenticator } from "otplib";
+import { Response } from "express";
+
 
 @Injectable({})
 export class AuthService {
@@ -12,47 +14,57 @@ export class AuthService {
     private prisma: PrismaService,
     private userService: UserService,
     private jwtService: JwtService
-  ) {}
+  ) { }
 
-  async generateAccessToken(user: User) {
-    // Create a JWT access token based on the user's data
-    const payload = {
-      sub: user.intra_id,
-      nickname: user.nickname,
-      email: user.email,
-    }; // Customize the payload as needed
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
-  }
 
-  async generate2fa_Token(user: any) {
-    const payload = { sub: user.intra_id, nickname: user.login42 }; // Customize the payload as needed
-    return await this.jwtService.signAsync(payload);
+  async callbackStratiegs(req: any, res: Response) {
+    const ret = await this.valiadteUserAndCreateJWT(
+      req.user.intra_id
+    );
+    if (ret) {
+      res.cookie("intra_id", req.user.intra_id);
+      const diff =
+        (new Date().getTime() - new Date(`${req.user.createdAt}`).getTime()) /
+        1000;
+      if (diff < 120) {
+        res.cookie("access_token", ret.access_token);
+        return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
+      }
+      if (req.user.isTwoFactorAuthEnabled)
+        return res.redirect(process.env.FRONT_HOST + "public/Checker2faAuth");
+      res.cookie("access_token", ret.access_token);
+      res.redirect(process.env.FRONT_HOST + "protected/DashboardPage");
+    }
   }
 
   async valiadteUserAndCreateJWT(intra_id: string) {
     try {
       const user = await this.userService.findByIntraId(intra_id);
       if (user) {
-        return this.generateAccessToken(user); //res.redirect('/profile');
+        return this.generateAccessToken(user);
       } else {
-        return null; //res.redirect('https://github.com/');
+        return null;
       }
     } catch (error) {
-      return null; //res.redirect('https://github.com/');
+      return null;
     }
   }
 
-  // async login(userWithoutPsw: any) {
-  //   const payload = {
-  //     email: userWithoutPsw.email,
-  //   };
-  //   return {
-  //     email: payload.email,
-  //     access_token: this.jwtService.sign(payload),
-  //   };
-  // }
+  async generateAccessToken(user: User) {
+    const payload = {
+      sub: user.intra_id,
+      nickname: user.nickname,
+      email: user.email,
+    };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async generate2fa_Token(user: any) {
+    const payload = { sub: user.intra_id, nickname: user.login42 };
+    return await this.jwtService.signAsync(payload);
+  }
 
   async loginWith2fa(userWithoutPsw: any) {
     const payload = {
@@ -84,9 +96,11 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
+    // console.log("-----> , ", user)
     return authenticator.verify({
       token: authCode,
-      secret: user.twoFactorAuthSecret, // Replace with the actual property name for the secret
+      secret: user.twoFactorAuthSecret,
     });
+
   }
 }
