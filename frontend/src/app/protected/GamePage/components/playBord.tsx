@@ -42,7 +42,7 @@ const MyComponent = ({
             <h4 className="uppercase font-bold text-sm font-outfit text-black">
               {title}
             </h4>
-            <p className="font-fredoka font-400 text-[#999999] font-bold text-xs">
+            <p className=" font-400 text-[#999999] font-bold text-xs">
               {text}
             </p>
           </div>
@@ -56,14 +56,14 @@ const MyComponent = ({
           sm:py-2 sm:px-6 sm:m-4  
           sm:self-end
           "
-          onClick={() => {
-            if (link == "/protected/GamePage/random") {
-              if (socket?.connected) router.push(link);
-              else window.alert("Refresh the page and try again!");
-            } else {
-              router.push(link);
-            }
-          }}
+        onClick={() => {
+          if (link == "/protected/GamePage/random") {
+            if (socket?.connected) router.push(link);
+            else window.alert("Refresh the page and try again!");
+          } else {
+            router.push(link);
+          }
+        }}
       >
         Play
       </button>

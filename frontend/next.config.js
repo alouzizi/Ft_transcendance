@@ -11,8 +11,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ["cdn.intra.42.fr", "localhost", "https://lh3.googleusercontent.com",
-      "lh3.googleusercontent.com"],
+    domains: ["cdn.intra.42.fr", "localhost", "lh3.googleusercontent.com"],
   },
 };
 

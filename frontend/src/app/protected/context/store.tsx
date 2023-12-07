@@ -212,6 +212,7 @@ export const GlobalContextProvider = ({
           isLeft: true,
         });
         setOpenConfirm(true);
+        setInvitedName(data.nameInveted);
       });
       socket.on("startGame", (data) => {
         setInviteData({
@@ -228,6 +229,7 @@ export const GlobalContextProvider = ({
   }, [socket, data]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [inviterdName, setInvitedName] = useState("");
 
 
   if (user.id === "-1") return <div></div>;
@@ -266,7 +268,7 @@ export const GlobalContextProvider = ({
             color="red"
           >
             <div
-              // onClick={handleClose}
+              onClick={() => setOpenConfirm(false)}
               className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
             >
               <ImCross className="text-gray-400 hover:text-gray-300 cursor-pointer" />
@@ -280,7 +282,7 @@ export const GlobalContextProvider = ({
               <div className="flex flex-col rounded-2xl my-4">
                 <p className="text-gray-300  text-center">
                   <span className="font-700 text-white hover:underline">
-                    @hboumahd
+                    {inviterdName}
                   </span>{" "}
                   invite you to pongMaster match
                 </p>
@@ -293,8 +295,6 @@ export const GlobalContextProvider = ({
                   // socket?.emit("accept", data);
                   setOpenConfirm(false);
                   // router.push("/protected/GamePage/invite");
-
-
                 }}
                 className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
                             text-xs  px-4 py-2 mx-2

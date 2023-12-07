@@ -11,14 +11,14 @@ export default function Home() {
     mt-12 mb-8 mx-12  md:ml-24
     "
     >
-      <h1 className="text-white text-2xl/[29px] font-fredoka font-700 mb-40">
+      <h1 className="text-white text-2xl/[29px]  font-700 mb-40">
         Games
       </h1>
       <div
         className=" flex flex-col 
       "
       >
-        <h2 className="text-[#C4C4C4]  text-xl/[18px] text-left w-full font-fredoka font-700 font-normal mb-5">
+        <h2 className="text-[#C4C4C4]  text-xl/[18px] text-left w-full  font-700 font-normal mb-5">
           Training
         </h2>
         <MyComponent
@@ -28,7 +28,7 @@ export default function Home() {
           link="/protected/GamePage/boot"
         />
         <h2
-          className="text-[#C4C4C4] text-xl/[18px] text-left w-full font-700 font-fredoka font-normal mb-5"
+          className="text-[#C4C4C4] text-xl/[18px] text-left w-full font-700  font-normal mb-5"
           style={{ textAlign: "left" }}
         >
           Random

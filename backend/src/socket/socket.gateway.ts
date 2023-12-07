@@ -112,7 +112,6 @@ export class SocketGateway
 
 
 
-  // ---------------------------------------------
 
   ROUND_LIMIT = 6;
   joindRoom = 0;

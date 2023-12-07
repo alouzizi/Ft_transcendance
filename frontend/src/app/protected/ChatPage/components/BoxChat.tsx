@@ -299,7 +299,7 @@ const BoxChat = () => {
                         <IoSettingsSharp size={16} />
                     </Link> :
                         <RiPingPongFill size={20} className='cursor-pointer'
-                            onClick={() => { PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket }) }}
+                            onClick={() => { PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket, nameInveted: user.nickname }) }}
                         />}
                 </div>
             </div >
