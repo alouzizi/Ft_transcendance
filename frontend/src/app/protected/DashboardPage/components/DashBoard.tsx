@@ -79,7 +79,6 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
         // for check if friend is blocked
         const isBlockedTmp = await getIsBlocked(user.id, prompt.friend.id);
-        console.log("isBlocked.isBlocked===>", isBlockedTmp.isBlocked);
         setIsBlocked(isBlockedTmp.isBlocked);
       } catch (error: any) {
         console.log("getData error: " + error);

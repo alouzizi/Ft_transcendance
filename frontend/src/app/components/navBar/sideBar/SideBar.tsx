@@ -25,8 +25,9 @@ export default function SideBar() {
   ]);
 
   function getIconStyle(index: number) {
-    const iconStyle = ` mx-auto transition ease-in-out delay-100 ${isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
-      }
+    const iconStyle = ` mx-auto transition ease-in-out delay-100 ${
+      isSelectedList[index] ? "text-white scale-110" : "text-gray-400"
+    }
     
     // small screen
     w-4 h-4 
@@ -89,8 +90,8 @@ export default function SideBar() {
     }
     updatedIsSelectedList[index] = true;
     if (index === 7) {
-      Cookies.remove("access_token");
-      Cookies.remove("intra_id");
+      Cookies.remove("access_token", { sameSite: "none", secure: true });
+      Cookies.remove("intra_id", { sameSite: "none", secure: true });
     }
     setIsSelectedList(updatedIsSelectedList);
   };

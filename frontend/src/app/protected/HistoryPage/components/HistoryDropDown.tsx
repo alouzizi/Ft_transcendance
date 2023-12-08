@@ -62,7 +62,7 @@ export default function HistoryDropDown(prompt: {
         );
       }
       setGameHistoryFormated(gameHistoryTmp);
-      console.log("gameHistoryFormated", gameHistoryFormated);
+      // console.log("gameHistoryFormated", gameHistoryFormated);
     }
 
     selectItems();
