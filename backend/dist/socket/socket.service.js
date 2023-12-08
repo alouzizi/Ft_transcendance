@@ -64,7 +64,6 @@ let SocketGatewayService = class SocketGatewayService {
         catch (error) { }
     }
     async handleDisconnect(client, wss) {
-        console.log("handleDisconnect");
         try {
             if (typeof client.handshake.query.senderId === "string") {
                 await this.prisma.user.update({
@@ -85,6 +84,23 @@ let SocketGatewayService = class SocketGatewayService {
             }
         }
         catch (error) { }
+    }
+    async updateStatusGeust(senderId, wss) {
+        await this.prisma.user.update({
+            where: {
+                id: senderId,
+            },
+            data: {
+                status: client_1.Status.INACTIF,
+                lastSee: new Date(),
+            },
+        });
+        const users = await this.prisma.user.findMany();
+        for (const user of users) {
+            if (user.id !== senderId) {
+                wss.to(user.id).emit("updateStatusGeust", {});
+            }
+        }
     }
     async updateData(ids, wss) {
         wss.to(ids.senderId).emit("updateData", {});

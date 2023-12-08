@@ -11,6 +11,7 @@ import SBSection from "./SBSection";
 import SBItems from "./SBItems";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { useGlobalContext } from "@/app/protected/context/store";
 
 
 export default function SideBar() {
@@ -81,7 +82,7 @@ export default function SideBar() {
       index: 7,
     },
   ];
-
+  const { user, socket } = useGlobalContext();
   const handleItemClick = (index: number) => {
     // Create a copy of isSelectedList and toggle the state for the clicked item
     const updatedIsSelectedList = [];
@@ -92,6 +93,9 @@ export default function SideBar() {
     if (index === 7) {
       Cookies.remove("access_token", { sameSite: 'none', secure: true });
       Cookies.remove("intra_id", { sameSite: 'none', secure: true });
+      if (socket) {
+        socket.emit('updateStatusGeust', user.id);
+      }
     }
     setIsSelectedList(updatedIsSelectedList);
   };

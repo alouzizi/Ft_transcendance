@@ -63,6 +63,12 @@ export class SocketGateway
     this.socketGatewayService.updateData(ids, this.server);
   }
 
+
+  @SubscribeMessage("updateStatusGeust")
+  async updateStatusGeust(@MessageBody() senderId: string) {
+    this.socketGatewayService.updateStatusGeust(senderId, this.server);
+  }
+
   @SubscribeMessage("updateChannel")
   async updateChannel(@MessageBody() ids: CreateMessageDto) {
     this.socketGatewayService.updateChannel(ids, this.server);

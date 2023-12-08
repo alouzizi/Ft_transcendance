@@ -32,6 +32,7 @@ const BoxChat = () => {
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
     const [msg, setMsg] = useState('');
+    const [msgError, setMsgError] = useState(false);
     const [Allmsg, setAllMessage] = useState<messageDto[]>([]);
 
     const { geust, user, socket, setGeust, updateInfo, displayChat, setDisplayChat } = useGlobalContext();
@@ -165,7 +166,6 @@ const BoxChat = () => {
         }
     }
 
-
     async function getDataAllMessage() {
         let msgs;
         if (geust.isUser)
@@ -175,6 +175,7 @@ const BoxChat = () => {
         if (msgs !== undefined) setAllMessage(msgs);
 
     }
+
     useEffect(() => {
         if (socket && geust.id !== "-1" && user.id !== "-1") {
             getDataAllMessage();
@@ -339,14 +340,18 @@ const BoxChat = () => {
                     handleSendMessage();
                 }}>
                     {/* radius="large"  */}
-                    <div className="flex bg-white mx-4  p-1 border rounded-[14px]" >
+                    <div className={`flex bg-white mx-4  p-1 border rounded-[14px] 
+                            ${msgError ? "border-red-500" : ""} `} >
                         <input type={"text"} className="bg-white m-1 flex flex-grow w-px
                         text-black placeholder-gray-600 text-sm outline-none "
                             value={msg}
                             disabled={isMuted}
                             placeholder={!isMuted ? "  Type your message" : " You are muted from this channel"}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                setMsg(event.target.value);
+                                setMsgError(false);
+                                if (event.target.value.length < 1000)
+                                    setMsg(event.target.value);
+                                else setMsgError(true);
                             }}
                         >
                         </input>
