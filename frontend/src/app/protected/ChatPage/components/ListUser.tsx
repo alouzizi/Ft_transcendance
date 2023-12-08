@@ -358,7 +358,7 @@ const ListUser = () => {
           <DialogActions>
             <button onClick={async () => {
               let vld = false;
-              if (password !== '')
+              if (password.trim() !== '')
                 vld = await validePassword(user.id, idChannel, password);
               if (vld) {
                 setOpenConfirm(false);

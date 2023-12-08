@@ -15,9 +15,9 @@ export async function createChannel(channelData: channelDto, senderId: string) {
       }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
-  } catch (error) { }
+  } catch (error) {
+  }
 }
 
 export async function updateChannel(
@@ -36,7 +36,6 @@ export async function updateChannel(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -57,7 +56,6 @@ export async function addUserToChannel(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -73,7 +71,6 @@ export async function checkOwnerIsAdmin(senderId: string, channelId: string) {
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -89,7 +86,6 @@ export async function leaveChannel(senderId: string, channelId: string) {
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -110,7 +106,6 @@ export async function changeStatusAdmin(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -126,7 +121,6 @@ export async function getChannel(senderId: string, channelId: string) {
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -147,7 +141,6 @@ export async function validePassword(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -167,7 +160,6 @@ export async function kickMember(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -188,7 +180,6 @@ export async function cancelTimeOut(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -208,7 +199,6 @@ export async function ChangeStatusBanned(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -227,7 +217,6 @@ export async function checkUserIsInChannel(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -243,7 +232,6 @@ export async function joinChannel(senderId: string, channelId: string) {
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -265,7 +253,6 @@ export async function muteUserChannel(
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }
@@ -281,7 +268,6 @@ export async function checkIsMuted(senderId: string, channelId: string) {
     }
     );
     const data = await res.data;
-    if (data.error) throw Error;
     return data;
   } catch (error) { }
 }

@@ -56,6 +56,7 @@ export class SocketGatewayService {
   }
 
   async handleDisconnect(client: Socket, wss: Server) {
+    console.log("handleDisconnect")
     try {
       if (typeof client.handshake.query.senderId === "string") {
         await this.prisma.user.update({
@@ -90,17 +91,14 @@ export class SocketGatewayService {
   }
 
   async emitNewMessage(ids: CreateMessageDto, wss: Server) {
-    console.log("===== emitNewMessage called ==========")
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({
         where: { channelId: ids.receivedId },
       });
       for (const member of channelMembers) {
-        console.log("------> ", member.userId)
         wss.to(member.userId).emit("emitNewMessage", {});
       }
     } else wss.to(ids.receivedId).emit("emitNewMessage", {});
-    console.log("===== end ==========")
   }
 
   async updateChannel(ids: CreateMessageDto, wss: Server) {

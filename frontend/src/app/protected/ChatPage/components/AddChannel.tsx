@@ -84,8 +84,14 @@ export default function AlertAddChannel() {
         if (res !== undefined) {
             if (res.status === 200) {
                 getDataGeust(res.id, false);
+                socket?.emit('emitNewMessage', {
+                    senderId: user.id,
+                    receivedId: res.id,
+                    isDirectMessage: false
+                });
                 setOpen(false);
             } else if (res.status === 202) { setErrorName(res.error); }
+            else { console.log("erroror") }
         }
     }
 
@@ -181,11 +187,13 @@ export default function AlertAddChannel() {
 
                             <div style={{ cursor: 'pointer' }}
                                 className={(channelData.channelType === ChannelType.Private) ? styles : ""} onClick={() => {
-                                    if (!channelData.protected) {
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channelType: ChannelType.Private };
-                                        });
-                                    }
+                                    console.log("called")
+                                    setChannelData((prevState) => {
+                                        return {
+                                            ...prevState, channelType: ChannelType.Private,
+                                            channelPassword: '', protected: false
+                                        };
+                                    });
 
                                 }}>
                                 <Text size='2' weight="bold">Private</Text>
@@ -213,14 +221,13 @@ export default function AlertAddChannel() {
                                     <Checkbox style={{ color: "#254BD6" }} checked={channelData.protected} onChange={(event) => {
                                         setErrorKey('');
                                         setChannelData((prevState) => {
-                                            return { ...prevState, channlePassword: '' };
+                                            return {
+                                                ...prevState, channelPassword: '',
+                                                protected: event.target.checked,
+                                                channelType: ChannelType.Public
+                                            };
                                         });
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, protected: event.target.checked };
-                                        });
-                                        setChannelData((prevState) => {
-                                            return { ...prevState, channelType: ChannelType.Public };
-                                        });
+
                                     }}
                                     />}
                                 label="Protected" />

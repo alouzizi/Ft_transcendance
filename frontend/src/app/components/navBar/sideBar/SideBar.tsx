@@ -12,6 +12,7 @@ import SBItems from "./SBItems";
 import { useState } from "react";
 import Cookies from "js-cookie";
 
+
 export default function SideBar() {
   // Create an array to store the isSelected state for each item
   const [isSelectedList, setIsSelectedList] = useState([
@@ -89,8 +90,8 @@ export default function SideBar() {
     }
     updatedIsSelectedList[index] = true;
     if (index === 7) {
-      Cookies.remove("access_token");
-      Cookies.remove("intra_id");
+      Cookies.remove("access_token", { sameSite: 'none', secure: true });
+      Cookies.remove("intra_id", { sameSite: 'none', secure: true });
     }
     setIsSelectedList(updatedIsSelectedList);
   };

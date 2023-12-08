@@ -194,9 +194,15 @@ export default function UpdateChannel() {
                                     value="private"
                                     className='text-white '
                                     onClick={() => {
+
                                         setChannelData((prevState) => {
                                             return { ...prevState, channelType: ChannelType.Private };
                                         });
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, protected: false };
+                                        })
+
+
                                     }}
                                 />} label="Private" />
 
@@ -210,6 +216,9 @@ export default function UpdateChannel() {
                                 return { ...prevState, protected: event.target.checked };
                             })
                             if (event.target.checked) {
+                                setChannelData((prevState) => {
+                                    return { ...prevState, channelType: ChannelType.Public };
+                                });
                                 setChannelData((prevState) => {
                                     return { ...prevState, channelPassword: channel.channelPassword };
                                 })
@@ -261,7 +270,6 @@ export default function UpdateChannel() {
                     }}>
                     Rest
                 </Text>
-//da
                 <button onClick={() => {
                     if (!isSameChannel(channel, channelData)) {
                         const parsName = channelNameSchema.safeParse(channelData.channelName);

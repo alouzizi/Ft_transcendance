@@ -67,7 +67,7 @@ let ChannelService = class ChannelService {
                     channelId: newChannel.id,
                 },
             });
-            createChannelDto.channelMember.forEach(async (item) => {
+            const promises = createChannelDto.channelMember.map(async (item) => {
                 this.notificationService.createNotification({
                     senderId: senderId,
                     recieverId: item,
@@ -82,6 +82,7 @@ let ChannelService = class ChannelService {
                 });
                 this.createMessageInfoChannel(senderId, newChannel.id, item, "added");
             });
+            await Promise.all(promises);
             return { ...newChannel, status: 200 };
         }
         catch (error) {

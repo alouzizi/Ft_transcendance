@@ -90,17 +90,18 @@ export default function AlertsAddUserChannel() {
 
               <div
                 className="border px-3 border-[#1f3175] cursor-pointer"
-                onClick={async () => {
-                  await addUserToChannel(user.id, geust.id, elm.id);
-                  setSearsh("");
-                  socket?.emit('emitNewMessage', {
-                    senderId: user.id,
-                    receivedId: geust.id,
-                    isDirectMessage: false
-                  });
-                  socket?.emit('changeStatusMember', geust.id);
-                  handleClose();
-                }}>
+                onClick={
+                  async () => {
+                    await addUserToChannel(user.id, geust.id, elm.id);
+                    setSearsh("");
+                    socket?.emit('emitNewMessage', {
+                      senderId: user.id,
+                      receivedId: geust.id,
+                      isDirectMessage: false
+                    });
+                    socket?.emit('changeStatusMember', geust.id);
+                    handleClose();
+                  }}>
                 <Text size="2" weight="medium">
                   Add
                 </Text>
