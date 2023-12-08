@@ -17,7 +17,7 @@ async function bootstrap() {
         credentials: true,
     });
     app.use(cookieParser());
-    await app.listen(4002);
+    await app.listen(4000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

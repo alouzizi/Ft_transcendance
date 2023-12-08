@@ -10,7 +10,7 @@ export default function LevelBar(prompt: { level: number; completed: number }) {
       bg-color-main-transparent rounded-xl 
 
         // small screen
-        h-14 w-2/3 bottom-1/3 mb-4 left-[18%]  top-1/4
+        h-14 w-2/3 bottom-1/3 mb-4 left-[18%]  top-[22%]
         
         // Big screen
         2xl:h-14 2xl:w-1/2  2xl:top-auto 2xl:bottom-1/3 2xl:mb-8 2xl:left-[25%] 

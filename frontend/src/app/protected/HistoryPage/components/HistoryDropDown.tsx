@@ -29,13 +29,13 @@ export default function HistoryDropDown(prompt: {
 
   React.useEffect(() => {
     function isWined(record: gameHistoryDto, isWined: boolean) {
-      let senderId = record.receiverUsr;
-      let receiverId = record.senderUsr;
+      let senderId = record.receiverId;
+      let receiverId = record.senderId;
       let senderPoints = record.senderPoints;
       let receiverPoints = record.receiverPoints;
       if (isWined) {
-        senderId = record.receiverUsr;
-        receiverId = record.senderUsr;
+        senderId = record.receiverId;
+        receiverId = record.senderId;
         senderPoints = record.receiverPoints;
         receiverPoints = record.senderPoints;
       }
@@ -62,7 +62,7 @@ export default function HistoryDropDown(prompt: {
         );
       }
       setGameHistoryFormated(gameHistoryTmp);
-      console.log("gameHistoryFormated", gameHistoryFormated);
+      // console.log("gameHistoryFormated", gameHistoryFormated);
     }
 
     selectItems();

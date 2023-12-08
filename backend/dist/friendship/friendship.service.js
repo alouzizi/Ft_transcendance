@@ -53,9 +53,11 @@ let FriendshipService = class FriendshipService {
                     nickname: recieverUsr,
                 },
             });
+            console.log(oneUser);
             return oneUser;
         }
         catch (error) {
+            console.log("oneUser error");
             return { error: error };
         }
     }
