@@ -50,7 +50,6 @@ let UserController = class UserController {
         return await this.userService.updateNickname(intra_id, nickname);
     }
     uploadImage(file, senderId) {
-        console.log('----> ', file.path);
         return this.userService.uploadImage(senderId, file.path);
     }
     async getUsersCanJoinChannel(senderId, channelId) {
@@ -119,7 +118,6 @@ __decorate([
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
             filename: (req, file, cb) => {
-                console.log("00", file);
                 const name = file.originalname.split(".")[0];
                 const fileExtension = file.originalname.split(".")[1];
                 const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;

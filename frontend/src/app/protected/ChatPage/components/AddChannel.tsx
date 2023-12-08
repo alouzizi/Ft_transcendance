@@ -24,10 +24,11 @@ enum ChannelType {
 export default function AlertAddChannel() {
     const [open, setOpen] = React.useState(false);
 
-    const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
-    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
+    const channelNameSchema = z.string().min(3).max(15).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
+    const channelkeySchema = z.string().min(3).max(12).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
 
     const [errorName, setErrorName] = useState("");
+    const [lenNameError, setLenNameError] = useState(0);
     const [errorKey, setErrorKey] = useState("");
 
 
@@ -200,18 +201,28 @@ export default function AlertAddChannel() {
                             </div>
                         </div >
                         <div className="flex bg-[#F6F7FA] mt-3  border rounded-[10px]  w-[10rem] md:w-[15rem]" >
-                            <input type={"text"} className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[9rem] md:w-[15rem] 
+                            <input type={"text"} className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[7rem] md:w-[15rem] 
                         text-black placeholder-gray-600 text-sm outline-none rounded-[10px] mr-1"
                                 value={channelData.channelName}
                                 placeholder='Channel Name'
                                 onChange={(e) => {
-                                    setErrorName('');
-                                    setChannelData((prevState) => {
-                                        return { ...prevState, channelName: e.target.value };
-                                    });
+                                    if (e.target.value.length < 100) {
+                                        setErrorName('');
+                                        if (e.target.value.length > 15) {
+                                            setLenNameError(15 - e.target.value.length);
+                                        } else setLenNameError(0);
+                                        setChannelData((prevState) => {
+                                            return { ...prevState, channelName: e.target.value };
+                                        });
+                                    }
                                 }}
                             >
                             </input>
+                            <div className='flex items-center pr-1' >
+                                {lenNameError !== 0 ?
+                                    <div className='text-red-500 text-[14px]'>{lenNameError}</div> :
+                                    <></>}
+                            </div>
                         </div >
                         {errorName && <Text as="div" color='red'>{errorName}</Text>}
 

@@ -26,13 +26,13 @@ export class NotificationService {
     });
 
     if (!notification) {
-      console.log("User tried to delete a record that does not exist");
+      // console.log("User tried to delete a record that does not exist");
       throw new NotFoundException("There is no notification with the given ID");
     }
     await this.prisma.notificationTable.delete({
       where: { id: notificationId },
     });
-    console.log(`Notification with ID ${notificationId} has been deleted.`);
+    // console.log(`Notification with ID ${notificationId} has been deleted.`);
 
     return;
   }

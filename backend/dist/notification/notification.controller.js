@@ -26,7 +26,6 @@ let NotificationController = class NotificationController {
     }
     async deleteNotification(notificationId) {
         try {
-            console.log(notificationId);
             await this.notificationService.deleteNotification(notificationId);
             return { statusCode: 200, message: "Notification successfully deleted" };
         }

@@ -96,7 +96,6 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
-    // console.log("-----> , ", user)
     return authenticator.verify({
       token: authCode,
       secret: user.twoFactorAuthSecret,

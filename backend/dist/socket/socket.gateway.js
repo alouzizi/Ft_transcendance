@@ -36,7 +36,6 @@ let SocketGateway = class SocketGateway {
         this.inviteRoom = new Map();
     }
     afterInit(server) {
-        console.log("Gateway Initialized");
     }
     async handleConnection(client) {
         this.socketGatewayService.handleConnection(client, this.server);

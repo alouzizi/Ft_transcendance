@@ -28,8 +28,8 @@ export default function UpdateChannel() {
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const channelNameSchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
-    const channelkeySchema = z.string().min(3).max(50).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
+    const channelNameSchema = z.string().min(3).max(15).refine((name) => /^[a-zA-Z0-9_-]+$/.test(name))
+    const channelkeySchema = z.string().min(3).max(12).refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name))
     const [errorName, setErrorName] = useState("");
     const [errorKey, setErrorKey] = useState("");
 
@@ -49,7 +49,6 @@ export default function UpdateChannel() {
 
     useEffect(() => {
         const getData = async (data: { idChannel: string }) => {
-            console.log('gerdata called ', data);
             if (geust.id === data.idChannel) {
                 const tmp: channelDto = await getChannel(user.id, geust.id);
                 setChannel(tmp);
@@ -96,6 +95,7 @@ export default function UpdateChannel() {
                 senderId: user.id,
                 receivedId: geust.id,
             });
+            toast.success("Channel has been updated");
         }
     }
 

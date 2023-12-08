@@ -32,7 +32,7 @@ export class SocketGateway
   @WebSocketServer() server: Server;
 
   afterInit(server: any) {
-    console.log("Gateway Initialized");
+    // console.log("Gateway Initialized");
   }
 
   async handleConnection(client: Socket) {

@@ -4,7 +4,7 @@ import { isEmpty } from "class-validator";
 
 @Injectable()
 export class FriendshipService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async unBlockedUser_2(sendId: string, recivedId: string) {
     try {
