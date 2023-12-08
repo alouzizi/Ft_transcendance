@@ -56,7 +56,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
           <div onClick={(e) => {
             e.preventDefault()
             setOpenAlert(true);
-          }} className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center">
+          }} className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center cursor-pointer">
             <p className="text-white  pr-2">Open Account</p>
             <FaArrowCircleRight size="20" />
           </div>
