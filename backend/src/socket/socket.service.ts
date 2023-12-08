@@ -6,7 +6,7 @@ import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 
 @Injectable()
 export class SocketGatewayService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async handleConnection(client: Socket, wss: Server) {
     try {
@@ -52,7 +52,7 @@ export class SocketGatewayService {
           }
         }
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async handleDisconnect(client: Socket, wss: Server) {
@@ -74,7 +74,7 @@ export class SocketGatewayService {
           }
         }
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async updateData(ids: CreateMessageDto, wss: Server) {
@@ -90,17 +90,17 @@ export class SocketGatewayService {
   }
 
   async emitNewMessage(ids: CreateMessageDto, wss: Server) {
-    console.log("===== emitNewMessage called ==========")
+    console.log("===== emitNewMessage called ==========");
     if (ids.isDirectMessage === false) {
       const channelMembers = await this.prisma.channelMember.findMany({
         where: { channelId: ids.receivedId },
       });
       for (const member of channelMembers) {
-        console.log("------> ", member.userId)
+        console.log("------> ", member.userId);
         wss.to(member.userId).emit("emitNewMessage", {});
       }
     } else wss.to(ids.receivedId).emit("emitNewMessage", {});
-    console.log("===== end ==========")
+    console.log("===== end ==========");
   }
 
   async updateChannel(ids: CreateMessageDto, wss: Server) {
@@ -108,28 +108,31 @@ export class SocketGatewayService {
       where: { channelId: ids.receivedId },
     });
     for (const member of channelMembers) {
-      wss.to(member.userId).emit("updateChannel", { idChannel: ids.receivedId });
+      wss
+        .to(member.userId)
+        .emit("updateChannel", { idChannel: ids.receivedId });
     }
   }
-
-
 
   async mutedUserInChannel(idChannel: string, wss: Server) {
     const channelMembers = await this.prisma.channelMember.findMany({
       where: { channelId: idChannel },
     });
     for (const member of channelMembers) {
-      wss.to(member.userId).emit("mutedUserInChannel", { idChannel: idChannel });
+      wss
+        .to(member.userId)
+        .emit("mutedUserInChannel", { idChannel: idChannel });
     }
   }
 
   async changeStatusMember(idChannel: string, wss: Server) {
-
     const channelMembers = await this.prisma.channelMember.findMany({
       where: { channelId: idChannel },
     });
     for (const member of channelMembers) {
-      wss.to(member.userId).emit("changeStatusMember", { channelId: idChannel });
+      wss
+        .to(member.userId)
+        .emit("changeStatusMember", { channelId: idChannel });
     }
   }
 

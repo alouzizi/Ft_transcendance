@@ -31,7 +31,7 @@ type ownerDto = {
   level: string;
   status: Status;
 
-  // inGaming: boolean,
+  inGaming: boolean;
   // status: Status;
 };
 

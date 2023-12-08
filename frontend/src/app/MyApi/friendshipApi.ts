@@ -33,7 +33,10 @@ export async function getNavSearchUsers(userId: string) {
     return res;
   }
 }
-
+enum Status {
+  ACTIF = "ACTIF",
+  INACTIF = "INACTIF",
+}
 export async function getUserByNick(recieverUsr: string) {
   let res: ownerDto = {
     id: "-1",
@@ -44,6 +47,7 @@ export async function getUserByNick(recieverUsr: string) {
     profilePic: "",
     isTwoFactorAuthEnabled: true,
     level: "0.0",
+    inGaming: false,
     status: Status.INACTIF,
   };
   try {

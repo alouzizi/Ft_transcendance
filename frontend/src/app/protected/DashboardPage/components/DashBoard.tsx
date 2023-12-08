@@ -117,10 +117,10 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         )}
 
         <LevelBar level={level[0]} completed={level[1]} />
-        <div className="left-[50%] bottom-[45%]"></div>
 
-        <img
-          className="
+        {user.id == prompt.friend.id || isBlocked ? (
+          <img
+            className="
          border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] 
           hover:shadow-transparent rounded-full object-cover absolute
         transition-all duration-700 ease-in-out overflow-hidden
@@ -132,9 +132,57 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
-          src={prompt.friend.profilePic}
-          alt=""
-        />
+            src={prompt.friend.profilePic}
+            alt=""
+          />
+        ) : (
+          <div
+            className="absolute transition-all duration-700 ease-in-out  w-fit h-fit
+        z-10 left-[50%] bottom-[45%] -ml-12 mx-auto mb-[-1.5rem]
+         2xl:top-auto 2xl:bottom-1/3 2xl:left-6 2xl:mx-auto 2xl:mb-[-2rem]"
+          >
+            <Badge
+              badgeContent={
+                prompt.friend.inGaming
+                  ? "in game"
+                  : prompt.friend.status === "ACTIF"
+                  ? "online"
+                  : "offline"
+              }
+              sx={{
+                "& .MuiBadge-badge": {
+                  backgroundColor: prompt.friend.inGaming
+                    ? "#4069FF"
+                    : prompt.friend.status === "ACTIF"
+                    ? "#49D629"
+                    : "#7C7D7C",
+
+                  margin: "0.5rem 0 0.6rem 0",
+                  borderRadius: 50,
+                  border: "2px solid #111623",
+                },
+              }}
+              overlap="rectangular"
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+            >
+              <img
+                className="object-cover mx-auto  rounded-full 
+          
+        // small screen
+        w-16 h-16
+        // Big screen
+        md:w-20 md:h-20
+        2xl:w-24 2xl:h-24
+        "
+                src={prompt.friend.profilePic}
+                alt=""
+              />
+            </Badge>
+          </div>
+        )}
 
         <div
           className="
@@ -163,9 +211,6 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             </h1>
             <div className="flex flex-row w-fit">
               <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
-              <p className="text-gray-400 text-sm ml-2">
-                {prompt.friend.status}
-              </p>
             </div>
           </div>
 

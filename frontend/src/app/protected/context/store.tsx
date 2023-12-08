@@ -57,17 +57,16 @@ const GlobalContext = createContext<ContextProps>({
     selectedMap: "isLeft",
     isLeft: true,
   },
-  setInviteData: () => { },
+  setInviteData: () => {},
 
   displayChat: false,
-  setDisplayChat: () => { },
+  setDisplayChat: () => {},
 
   updateInfo: 1,
-  setUpdateInfo: () => { },
+  setUpdateInfo: () => {},
 
   openAlertErro: false,
-  setOpenAlertError: () => { },
-
+  setOpenAlertError: () => {},
 
   user: {
     id: "-1",
@@ -77,9 +76,11 @@ const GlobalContext = createContext<ContextProps>({
     nickname: "",
     profilePic: "",
     isTwoFactorAuthEnabled: true,
+    status: Status.INACTIF,
+    inGaming: false,
     level: "0.0",
   },
-  setUser: () => { },
+  setUser: () => {},
 
   geust: {
     isUser: true,
@@ -90,9 +91,9 @@ const GlobalContext = createContext<ContextProps>({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
-    inGaming: false
+    inGaming: false,
   },
-  setGeust: () => { },
+  setGeust: () => {},
 
   socket: null,
 });
@@ -108,7 +109,6 @@ export const GlobalContextProvider = ({
   const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
 
-
   const [user, setUser] = useState<ownerDto>({
     id: "-1",
     intra_id: "",
@@ -118,7 +118,8 @@ export const GlobalContextProvider = ({
     profilePic: "",
     isTwoFactorAuthEnabled: true,
     level: "0.0",
-
+    status: Status.INACTIF,
+    inGaming: false,
   });
 
   const [inviteData, setInviteData] = useState<any>({
@@ -138,7 +139,7 @@ export const GlobalContextProvider = ({
     lastSee: 0,
     lenUser: 0,
     idUserOwner: "",
-    inGaming: false
+    inGaming: false,
   });
 
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -152,13 +153,10 @@ export const GlobalContextProvider = ({
         },
       });
       setSocket(socket);
-      socket.on("connect", () => {
-      });
-      socket.on("disconnect", () => {
-      });
+      socket.on("connect", () => {});
+      socket.on("disconnect", () => {});
     }
   }, [user.id]);
-
 
   useEffect(() => {
     const getDataUser = async () => {
@@ -196,7 +194,6 @@ export const GlobalContextProvider = ({
     }
   }, [socket]);
 
-
   const [data, setData] = useState("");
 
   useEffect(() => {
@@ -230,7 +227,6 @@ export const GlobalContextProvider = ({
 
   const [openConfirm, setOpenConfirm] = useState(false);
   const [inviterdName, setInvitedName] = useState("");
-
 
   if (user.id === "-1") return <div></div>;
   return (
@@ -306,7 +302,7 @@ export const GlobalContextProvider = ({
                 onClick={async () => {
                   socket?.emit("accept", data);
                   setOpenConfirm(false);
-                  router.push('/protected/GamePage/invite');
+                  router.push("/protected/GamePage/invite");
                 }}
                 className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
                 text-xs  px-4 py-2 mx-2
@@ -323,7 +319,10 @@ export const GlobalContextProvider = ({
         <Snackbar open={openAlertErro} autoHideDuration={6000}>
           <Alert
             severity="error"
-            onClose={() => { setOpenAlertError(false); }}>
+            onClose={() => {
+              setOpenAlertError(false);
+            }}
+          >
             This is an error in the server!
           </Alert>
         </Snackbar>

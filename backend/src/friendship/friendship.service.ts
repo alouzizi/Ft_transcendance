@@ -4,7 +4,7 @@ import { isEmpty } from "class-validator";
 
 @Injectable()
 export class FriendshipService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async unBlockedUser_2(sendId: string, recivedId: string) {
     try {
@@ -44,7 +44,7 @@ export class FriendshipService {
       });
       return allUsers;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -55,9 +55,11 @@ export class FriendshipService {
           nickname: recieverUsr,
         },
       });
+      console.log(oneUser);
       return oneUser;
     } catch (error) {
-      return {error: error}
+      console.log("oneUser error");
+      return { error: error };
     }
   }
 
@@ -86,7 +88,7 @@ export class FriendshipService {
         isBlocked: false,
       };
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -101,7 +103,7 @@ export class FriendshipService {
       }
       return onlineFriends;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -132,7 +134,7 @@ export class FriendshipService {
       });
       return allFriends;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
@@ -177,7 +179,7 @@ export class FriendshipService {
       });
       return formattedPendingFriends;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
@@ -202,7 +204,7 @@ export class FriendshipService {
       }
       return blockedFriends;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
@@ -252,7 +254,7 @@ export class FriendshipService {
       });
       return possibleFriends;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -288,7 +290,7 @@ export class FriendshipService {
       });
       return possibleFriends;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -321,7 +323,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -356,7 +358,7 @@ export class FriendshipService {
       }
       return { error: "null" };
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -372,7 +374,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
   async rejectFriendRequest(senderId: string, recieverId: string) {
@@ -387,7 +389,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -417,7 +419,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -433,7 +435,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -466,7 +468,7 @@ export class FriendshipService {
       }
       return friendToDelete;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 }

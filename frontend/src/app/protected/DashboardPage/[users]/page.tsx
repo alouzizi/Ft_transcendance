@@ -9,8 +9,7 @@ import ErrorPage from "../components/ErrorPage";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();
-  const { updateInfo } = useGlobalContext();
-  const [isBlocked, setIsBlocked] = useState(false);
+  const { socket, updateInfo } = useGlobalContext();
 
   useEffect(() => {
     const userName = pathname;
@@ -26,9 +25,15 @@ export default function DashboardPage() {
       }
     }
     getData();
-  }, [pathname, updateInfo, isBlocked]);
+    if (socket) {
+      socket.on("updateStatusGeust", getData);
+      return () => {
+        socket.off("updateStatusGeust", getData);
+      };
+    }
+  }, [pathname, updateInfo, socket]);
 
-  if (friend && friend.id != "-1") {
+  if (friend) {
     return <DashBoard friend={friend} />;
   } else {
     return <ErrorPage />;

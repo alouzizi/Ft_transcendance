@@ -36,7 +36,7 @@ export default function GameStartAlert() {
             //   setOpenConfirm(false);
             //   // router.push('/protected/GamePage/invite');
             // }}
-            className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
+            className="w-fit font-meduim  rounded-md   text-white bg-[#2d55e6] hover:bg-color-main-whith
                             text-xs  px-4 py-2 mx-2
                             md:text-sm lg:text-md lg:px-4"
           >
