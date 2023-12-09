@@ -53,4 +53,6 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     private inviteRoom;
     onIvite(client: Socket, data: any): void;
     onAccept(client: Socket, data: any): void;
+    onDeclien(client: Socket, Id: any): void;
+    onOut(client: Socket, Id: any): void;
 }

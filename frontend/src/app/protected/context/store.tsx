@@ -19,7 +19,8 @@ import {
 } from "react";
 import { Socket, io } from "socket.io-client";
 import { Backend_URL } from "../../../../lib/Constants";
-
+import Lottie from "lottie-react";
+import loadingc from "../../assets/loading.json";
 import { ImCross } from "react-icons/im";
 
 enum Status {
@@ -214,8 +215,12 @@ export const GlobalContextProvider = ({
           selectedMap: 2,
           isLeft: data.userId1 == user.id ? false : true,
         });
+        setOpenConfirm(false);
         router.push("/protected/GamePage/invite");
       });
+      socket.on("declien", () => {
+        setOpenConfirm(false);
+      })
       // }
     }
   }, [socket, data]);
@@ -256,7 +261,13 @@ export const GlobalContextProvider = ({
             color="red"
           >
             <div
-              onClick={() => setOpenConfirm(false)}
+              onClick={() => {
+                if (user.id === inviteData.userId1)
+                  socket?.emit("decline", inviteData.userId2);
+                else
+                  socket?.emit("decline", inviteData.userId1);
+                setOpenConfirm(false)
+              }}
               className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
             >
               <ImCross className="text-gray-400 hover:text-gray-300 cursor-pointer" />
@@ -266,43 +277,59 @@ export const GlobalContextProvider = ({
               alt=""
               className=" w-40 text-sm mx-auto"
             />
-            <DialogContent>
-              <div className="flex flex-col rounded-2xl my-4">
-                <p className="text-gray-300  text-center">
-                  <span className="font-700 text-white hover:underline">
-                    {inviterdName}
-                  </span>{" "}
-                  invite you to pongMaster match
-                </p>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <div className="flex flex-row items-center justify-center"></div>
-              <button
-                onClick={async () => {
-                  // socket?.emit("accept", data);
-                  setOpenConfirm(false);
-                  // router.push("/protected/GamePage/invite");
-                }}
-                className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
-                            text-xs  px-4 py-2 mx-2
-                            md:text-sm lg:text-md lg:px-4"
-              >
-                Decline
-              </button>
-              <button
-                onClick={async () => {
-                  socket?.emit("accept", data);
-                  setOpenConfirm(false);
-                  router.push("/protected/GamePage/invite");
-                }}
-                className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
-                text-xs  px-4 py-2 mx-2
-                md:text-sm lg:text-md lg:px-4"
-              >
-                Accept
-              </button>
-            </DialogActions>
+            {
+              user.nickname !== inviterdName ?
+                <div>
+                  <DialogContent>
+                    <div className="flex flex-col rounded-2xl my-4">
+                      <p className="text-gray-300  text-center">
+                        <span className="font-700 text-white hover:underline">
+                          {inviterdName}
+                        </span>{" "}
+                        invite you to pongMaster match
+                      </p>
+                    </div>
+                  </DialogContent>
+                  <DialogActions>
+                    <div className="flex flex-row items-center justify-center"></div>
+                    <button
+                      onClick={async () => {
+                        socket?.emit("decline", inviteData.userId1);
+                        setOpenConfirm(false);
+
+                        // router.push("/protected/GamePage/invite");
+                      }}
+                      className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
+                          text-xs  px-4 py-2 mx-2
+                          md:text-sm lg:text-md lg:px-4"
+                    >
+                      Decline
+                    </button>
+                    <button
+                      onClick={async () => {
+                        socket?.emit("accept", data);
+                        setOpenConfirm(false);
+                        router.push("/protected/GamePage/invite");
+                      }}
+                      className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
+              text-xs  px-4 py-2 mx-2
+              md:text-sm lg:text-md lg:px-4"
+                    >
+                      Accept
+                    </button>
+                  </DialogActions>
+                </div> :
+                <div>
+                  <DialogContent>
+                    <div className="flex flex-col rounded-2xl my-4 text-center">
+
+
+                      <Lottie animationData={loadingc} loop={true} className="h-20 w-20" />
+
+                    </div>
+                  </DialogContent>
+                </div>
+            }
           </div>
         </Dialog>
       </div>

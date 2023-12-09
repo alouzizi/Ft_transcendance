@@ -154,6 +154,12 @@ let SocketGateway = class SocketGateway {
                 ro.ball.y - ro.ball.radius < 0) {
                 ro.ball.velocityY = -ro.ball.velocityY;
             }
+            if (ro.ball.y + ro.ball.radius > 400) {
+                ro.ball.y = 400 - 5;
+            }
+            else if (ro.ball.y - ro.ball.radius < 0) {
+                ro.ball.y = 5;
+            }
             let user = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
             if (this.collision(ro.ball, user)) {
                 let collidePoint = ro.ball.y - (user.y + user.height / 2);
@@ -319,6 +325,7 @@ let SocketGateway = class SocketGateway {
     onIvite(client, data) {
         this.inviteRoom.set(data.userId1, client);
         client.join(data.userId1);
+        this.server.to(data.userId1).emit("invite", data);
         this.server.to(data.userId2).emit("invite", data);
     }
     onAccept(client, data) {
@@ -339,6 +346,13 @@ let SocketGateway = class SocketGateway {
         this.gameService.resetBall(this.roomState.get(roomName).ball);
         this.startEmittingBallPosition(roomName, data.userId2);
         this.clients.clear();
+    }
+    onDeclien(client, Id) {
+        this.server.to(Id).emit("declien");
+    }
+    onOut(client, Id) {
+        this.clients.delete(Id);
+        this.joindClients.delete(Id);
     }
 };
 exports.SocketGateway = SocketGateway;
@@ -462,6 +476,18 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "onAccept", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("decline"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "onDeclien", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("clear"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "onOut", null);
 exports.SocketGateway = SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)(),
     __metadata("design:paramtypes", [socket_service_1.SocketGatewayService,

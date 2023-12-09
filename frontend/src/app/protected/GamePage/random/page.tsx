@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { CustomAlert } from "../components/taost";
 import Mycards from "../components/Cards";
 import { useGlobalContext } from "../../context/store";
+import { Socket } from "socket.io-client";
 
 export default function Home() {
   const { user, socket } = useGlobalContext();
@@ -80,16 +81,17 @@ export default function Home() {
       });
 
       const handlePopstate = (event: PopStateEvent) => {
-          if (gameStarted)
-            socket?.emit("opponentLeft", { userId: user.id, room: room,});
-          setButtonClicked(false);
-          setGameStarted(false);
-          setMessage("Start game!");
+        if (gameStarted)
+          socket?.emit("opponentLeft", { userId: user.id, room: room, });
+        setButtonClicked(false);
+        setGameStarted(false);
+        setMessage("Start game!");
       };
 
       window.addEventListener("popstate", handlePopstate);
 
       return () => {
+
         // window.removeEventListener("popstate", handlePopstate);
         socket?.off("startGame");
         socket?.off("whichSide");
@@ -97,8 +99,16 @@ export default function Home() {
         socket?.off("opponentLeft");
       };
     } else return;
-  }, [user.id, gameStarted, showAlert, message, buttonClicked, room]);
+  }, [user.id, gameStarted, showAlert, message, buttonClicked, room, socket]);
 
+
+  useEffect(() => {
+    if (socket) {
+      return () => {
+        socket.emit("clear", user.id);
+      }
+    }
+  }, [socket])
   return (
     <div className="my-8">
       {showAlert && <CustomAlert message="Opponent Left" />}

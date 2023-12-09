@@ -205,6 +205,11 @@ export class SocketGateway
         ) {
           ro.ball.velocityY = -ro.ball.velocityY;
         }
+        if (ro.ball.y + ro.ball.radius > 400) {
+          ro.ball.y = 400 - 5;
+        } else if (ro.ball.y - ro.ball.radius < 0) {
+          ro.ball.y = 5;
+        }
         let user: any = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
         if (this.collision(ro.ball, user)) {
           let collidePoint = ro.ball.y - (user.y + user.height / 2);
@@ -444,6 +449,7 @@ export class SocketGateway
     client.join(data.userId1);
 
     // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
+    this.server.to(data.userId1).emit("invite", data);
     this.server.to(data.userId2).emit("invite", data);
   }
 
@@ -474,6 +480,28 @@ export class SocketGateway
     this.gameService.resetBall(this.roomState.get(roomName).ball);
     this.startEmittingBallPosition(roomName, data.userId2);
     this.clients.clear();
+  }
+
+  @SubscribeMessage("decline")
+  onDeclien(client: Socket, Id: any) {
+    // this.inviteRoom.set(data.userId1, client);
+    // client.join(data.userId1);
+
+    // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
+    this.server.to(Id).emit("declien");
+    // this.server.to(data.userId2).emit("declien", data);
+  }
+
+  @SubscribeMessage("clear")
+  onOut(client: Socket, Id: any) {
+
+    this.clients.delete(Id);
+    this.joindClients.delete(Id);
+    // this.clients.set(id, client);
+    // this.joindClients.set(id, 0);
+    // Id.leave(Id);
+    // client.join(id);
+
   }
 }
 
