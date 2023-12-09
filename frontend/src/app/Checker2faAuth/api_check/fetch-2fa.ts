@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Backend_URL } from "../../../../../lib/Constants";
+import { Backend_URL } from "../../../../lib/Constants";
 
 
 export const auth_2fa = async (intra_id: string, keyQrCode: string) => {

@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
 import { Backend_URL } from "../../../../../lib/Constants";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { getDataOwner } from "../IpaSettings/fetch-user";
 import axios from "axios";
 
