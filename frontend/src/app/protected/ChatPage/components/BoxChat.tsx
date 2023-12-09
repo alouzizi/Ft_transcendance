@@ -320,7 +320,14 @@ const BoxChat = () => {
                             <></> :
                             <RiPingPongFill size={20} className='cursor-pointer'
                                 onClick={() => {
-                                    PlayInvite({ userId1: user.id, userId2: geust.id, socket: socket, nameInveted: user.nickname })
+                                    console.log("owner=", user.id)
+                                    console.log("invtedd=", geust.id)
+                                    PlayInvite({
+                                        userId1: user.id,
+                                        userId2: geust.id,
+                                        socket: socket,
+                                        nameInveted: user.nickname
+                                    })
                                 }} />)
 
                     }

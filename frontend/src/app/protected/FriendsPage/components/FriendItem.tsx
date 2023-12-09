@@ -108,6 +108,8 @@ export default function FriendItem(prompt: {
       <Link href={`/protected/DashboardPage/${prompt.friendInfo.nickname}`}>
         <div className="flex flex-row cursor-pointer">
           {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
+
+
           <Badge
             badgeContent={4}
             sx={{

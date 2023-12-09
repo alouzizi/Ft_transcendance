@@ -111,14 +111,14 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
         }}
       >
         <div className=" flex flex-col bg-color-main-dark py-2 px-2 rounded-none cursor-pointer">
-          <p
+          {/* <p
             onClick={handlePlayMatch}
             className="text-white text-sm rounded-md ml-0 py-2 pl-2 pr-14
                     
                     hover:bg-color-main-whith  "
           >
             play match
-          </p>
+          </p> */}
           <p
             onClick={handleRemoveFriend}
             className="text-red-500 text-sm rounded-md ml-0 py-2 pl-2 pr-14

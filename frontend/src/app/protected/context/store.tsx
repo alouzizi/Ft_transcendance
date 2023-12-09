@@ -278,7 +278,7 @@ export const GlobalContextProvider = ({
               className=" w-40 text-sm mx-auto"
             />
             {
-              user.nickname !== inviterdName ?
+              user.id !== inviteData.userId1 ?
                 <div>
                   <DialogContent>
                     <div className="flex flex-col rounded-2xl my-4">

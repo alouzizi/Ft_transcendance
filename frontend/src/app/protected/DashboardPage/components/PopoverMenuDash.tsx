@@ -37,9 +37,13 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
+    console.log("owner=", prompt.user.id)
+    console.log("invtedd=", prompt.friendInfo.id)
     PlayInvite({
+
       userId1: prompt.user.id,
       userId2: prompt.friendInfo.id,
+
       socket: socket,
       nameInveted: prompt.friendInfo.nickname,
     });
