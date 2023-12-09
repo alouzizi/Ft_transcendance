@@ -46,7 +46,6 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
         } else {
           dataTmp = [];
         }
-        console.log(dataTmp);
         setData(dataTmp);
         return data;
       } catch (error: any) {
@@ -54,11 +53,10 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
       }
     }
     getData();
-    if (socket) {
-      socket.on("updateStatusGeust", getData);
-    }
-  }, [user.id, prompt.itemsStatus, updateInfo, socket]);
-  //   useEffect(() => {}, [data]);
+    // if (user.id && socket) {
+    //   socket.on("updateStatusGeust", getData);
+    // }
+  }, [user.id, prompt.itemsStatus, updateInfo]);
 
   return (
     <DataContext.Provider value={{ data, setData }}>
