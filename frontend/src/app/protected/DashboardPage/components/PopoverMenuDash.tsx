@@ -132,14 +132,18 @@ export default function PopoverMenuDash(prompt: {
         }}
       >
         <div className=" flex flex-col bg-color-main-dark py-2 px-2 rounded-none cursor-pointer">
-          <p
-            onClick={handlePlayMatch}
-            className="text-white text-sm rounded-md ml-0 py-2 pl-2 pr-14
+          {!prompt.friendInfo.inGaming ? (
+            <p
+              onClick={handlePlayMatch}
+              className="text-white text-sm rounded-md ml-0 py-2 pl-2 pr-14
                     
                     hover:bg-color-main-whith  "
-          >
-            Play match
-          </p>
+            >
+              Play match
+            </p>
+          ) : (
+            <div />
+          )}
           {prompt.isFriend ? (
             <div>
               <p

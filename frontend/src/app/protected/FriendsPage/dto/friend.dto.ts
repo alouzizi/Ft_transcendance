@@ -6,6 +6,7 @@ type friendDto = {
   status: fStatus;
   lastSee: number;
   friendship: number;
+  inGaming: boolean;
   isYouSender: boolean;
 };
 

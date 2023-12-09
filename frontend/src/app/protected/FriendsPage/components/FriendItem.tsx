@@ -17,12 +17,14 @@ import { useGlobalDataContext } from "./FriendCategory";
 import PopoverMenu from "./PopoverMenu";
 import { useGlobalContext } from "../../context/store";
 import { getUserGeust } from "../../ChatPage/api/fetch-users";
+import { useEffect } from "react";
 export default function FriendItem(prompt: {
   friendInfo: friendDto;
   itemsStatus: string;
 }) {
   // ==================== handleUnblock =====================
-  const { user, socket, setGeust } = useGlobalContext();
+  const { updateInfo, user, socket, setGeust } = useGlobalContext();
+
   const contxt = useGlobalDataContext();
   const router = useRouter();
   async function handleUnblock(): Promise<void> {
@@ -208,11 +210,15 @@ export default function FriendItem(prompt: {
             text-md p-1 mr-2
                 md:text-lg md:p-2 md:mr-4"
             >
-              <FaMessage onClick={async () => {
-                const geustTemp: geustDto = await getUserGeust(prompt.friendInfo.id);
-                setGeust(geustTemp)
-                router.push("/protected/ChatPage");
-              }} />
+              <FaMessage
+                onClick={async () => {
+                  const geustTemp: geustDto = await getUserGeust(
+                    prompt.friendInfo.id
+                  );
+                  setGeust(geustTemp);
+                  router.push("/protected/ChatPage");
+                }}
+              />
             </div>
           </Tooltip>
         </div>

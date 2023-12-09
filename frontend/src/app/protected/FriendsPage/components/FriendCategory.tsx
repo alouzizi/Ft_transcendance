@@ -30,7 +30,7 @@ const DataContext = createContext<ContextProps>({
 // ====================== create context ======================
 export default function FriendCategory(prompt: { itemsStatus: string }) {
   const [data, setData] = useState<friendDto[]>([]);
-  const { updateInfo, user } = useGlobalContext();
+  const { updateInfo, user, socket } = useGlobalContext();
   useEffect(() => {
     async function getData() {
       try {
@@ -46,6 +46,7 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
         } else {
           dataTmp = [];
         }
+        console.log(dataTmp);
         setData(dataTmp);
         return data;
       } catch (error: any) {
@@ -53,7 +54,10 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
       }
     }
     getData();
-  }, [user.id, prompt.itemsStatus, updateInfo]);
+    if (socket) {
+      socket.on("updateStatusGeust", getData);
+    }
+  }, [user.id, prompt.itemsStatus, updateInfo, socket]);
   //   useEffect(() => {}, [data]);
 
   return (
