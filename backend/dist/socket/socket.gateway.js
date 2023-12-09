@@ -155,10 +155,10 @@ let SocketGateway = class SocketGateway {
                 ro.ball.velocityY = -ro.ball.velocityY;
             }
             if (ro.ball.y + ro.ball.radius > 400) {
-                ro.ball.y = 400 - 5;
+                ro.ball.y -= 10;
             }
             else if (ro.ball.y - ro.ball.radius < 0) {
-                ro.ball.y = 5;
+                ro.ball.y += 10;
             }
             let user = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
             if (this.collision(ro.ball, user)) {
@@ -206,7 +206,7 @@ let SocketGateway = class SocketGateway {
                 console.log(player1, player2);
                 this.server.to(roomName).emit("gameOver", "draw");
             }
-            if (p1.score > p2.score) {
+            else if (p1.score > p2.score) {
                 console.log(player1, player2);
                 this.server.to(player1).emit("gameOver", "win");
                 this.server.to(player2).emit("gameOver", "lose");

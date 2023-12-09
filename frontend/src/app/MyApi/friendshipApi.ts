@@ -1,4 +1,3 @@
-import { Backend_URL } from "../../../lib/Constants";
 import Cookies from "js-cookie";
 
 // ================================================================
@@ -15,7 +14,7 @@ export async function getNavSearchUsers(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/navSearchUsers/${userId}`,
+      `${process.env.Backend_URL}/friendship/navSearchUsers/${userId}`,
       {
         method: "GET",
         headers: {
@@ -56,7 +55,7 @@ export async function getUserByNick(recieverUsr: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/getUserByNick/${recieverUsr}`,
+      `${process.env.Backend_URL}/friendship/getUserByNick/${recieverUsr}`,
       {
         method: "GET",
         headers: {
@@ -85,7 +84,7 @@ export async function getIsBlocked(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/isBlocked/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/isBlocked/${senderId}/${recieverId}`,
       {
         method: "GET",
         headers: {
@@ -112,7 +111,7 @@ export async function getOnlineFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/onlineFriends/${userId}`,
+      `${process.env.Backend_URL}/friendship/onlineFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -140,7 +139,7 @@ export async function getAllFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/allFriends/${userId}`,
+      `${process.env.Backend_URL}/friendship/allFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -167,7 +166,7 @@ export async function getPendingFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/pendingFriends/${userId}`,
+      `${process.env.Backend_URL}/friendship/pendingFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -194,7 +193,7 @@ export async function getBlockedFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/blockedFriends/${userId}`,
+      `${process.env.Backend_URL}/friendship/blockedFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -221,7 +220,7 @@ export async function getAllPossibleFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/allPossibleFriends/${userId}`,
+      `${process.env.Backend_URL}/friendship/allPossibleFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -255,7 +254,7 @@ export async function removeFriend(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/removeFriend/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/removeFriend/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -276,7 +275,7 @@ export async function blockFriend(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/blockFriend/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/blockFriend/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -297,7 +296,7 @@ export async function unblockFriend(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/unblockFriend/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/unblockFriend/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -318,7 +317,7 @@ export async function sendFriendRequest(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/sendFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/sendFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -342,7 +341,7 @@ export async function unsendFriendRequest(
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/unsendFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/unsendFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -367,7 +366,7 @@ export async function rejectFriendRequest(
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/rejectFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/rejectFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -391,7 +390,7 @@ export async function acceptFriendRequest(
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/acceptFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.Backend_URL}/friendship/acceptFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {

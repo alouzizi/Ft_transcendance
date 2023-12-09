@@ -12,14 +12,14 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChannelDto, memberChannelDto } from "./dto/create-channel.dto";
 import * as bcrypt from "bcrypt";
 import { NotificationService } from "src/notification/notification.service";
-import { AES, enc } from 'crypto-js';
+import { AES, enc } from "crypto-js";
 
 @Injectable()
 export class ChannelService {
   constructor(
     private prisma: PrismaService,
     private readonly notificationService: NotificationService
-  ) { }
+  ) {}
 
   async createMessageInfoChannel(
     senderId: string,
@@ -27,7 +27,6 @@ export class ChannelService {
     userId: string,
     msg: string
   ) {
-
     const user: User = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -44,21 +43,21 @@ export class ChannelService {
     });
   }
 
-
-
   decryptMessage = (cipherText: string) => {
     try {
       const bytes = AES.decrypt(cipherText, process.env.CRYPTO_JS_KEY);
       const decrypted = bytes.toString(enc.Utf8);
       return decrypted;
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   async createChannel(createChannelDto: CreateChannelDto, senderId: string) {
-    let cipherText = '';
+    let cipherText = "";
     if (createChannelDto.channelPassword !== "")
-      cipherText = AES.encrypt(createChannelDto.channelPassword, process.env.CRYPTO_JS_KEY);
+      cipherText = AES.encrypt(
+        createChannelDto.channelPassword,
+        process.env.CRYPTO_JS_KEY
+      );
 
     try {
       const newChannel = await this.prisma.channel.create({
@@ -88,23 +87,24 @@ export class ChannelService {
         },
       });
       // add members
-      const promises = createChannelDto.channelMember.map(async (item: string) => {
+      const promises = createChannelDto.channelMember.map(
+        async (item: string) => {
+          this.notificationService.createNotification({
+            senderId: senderId,
+            recieverId: item,
+            subject: "you've been invited to group",
+          });
 
-        this.notificationService.createNotification({
-          senderId: senderId,
-          recieverId: item,
-          subject: "you've been invited to group",
-        });
-
-        await this.prisma.channelMember.create({
-          data: {
-            userId: item,
-            isAdmin: false,
-            channelId: newChannel.id,
-          },
-        });
-        this.createMessageInfoChannel(senderId, newChannel.id, item, "added");
-      });
+          await this.prisma.channelMember.create({
+            data: {
+              userId: item,
+              isAdmin: false,
+              channelId: newChannel.id,
+            },
+          });
+          this.createMessageInfoChannel(senderId, newChannel.id, item, "added");
+        }
+      );
       await Promise.all(promises);
 
       return { ...newChannel, status: 200 };
@@ -125,20 +125,20 @@ export class ChannelService {
     updateChannelDto: CreateChannelDto
   ) {
     try {
-
-      const memberAdmin = await this.prisma.channelMember.findFirst(
-        {
-          where: {
-            channelId: channelId,
-            userId: senderId,
-            isAdmin: true
-          }
-        }
-      )
+      const memberAdmin = await this.prisma.channelMember.findFirst({
+        where: {
+          channelId: channelId,
+          userId: senderId,
+          isAdmin: true,
+        },
+      });
       if (!memberAdmin) return { status: 204, error: "you are not admin" };
       let pass: string = "";
       if (updateChannelDto.channelPassword != "" && updateChannelDto.protected)
-        pass = AES.encrypt(updateChannelDto.channelPassword, process.env.CRYPTO_JS_KEY);
+        pass = AES.encrypt(
+          updateChannelDto.channelPassword,
+          process.env.CRYPTO_JS_KEY
+        );
       const channelUpdate: Channel = await this.prisma.channel.update({
         where: { id: channelId },
         data: {
@@ -149,13 +149,15 @@ export class ChannelService {
           avatar: updateChannelDto.avatar,
         },
       });
-      const userUpdate = await this.prisma.user.findUnique({ where: { id: senderId } });
+      const userUpdate = await this.prisma.user.findUnique({
+        where: { id: senderId },
+      });
       this.createMessageInfoChannel(
         senderId,
         channelId,
         "",
         `${userUpdate.nickname}'s update in the channel.`
-      )
+      );
 
       let pass2 = "";
       if (channelUpdate.channelPassword !== "")
@@ -181,20 +183,19 @@ export class ChannelService {
   async uploadImageChannel(senderId: string, channelId: string, path: string) {
     try {
       const member = await this.prisma.channelMember.findFirst({
-        where: { channelId: channelId, userId: senderId }
-      })
+        where: { channelId: channelId, userId: senderId },
+      });
       if (member.isAdmin) {
         await this.prisma.channel.update({
           where: {
             id: channelId,
           },
           data: {
-            avatar: process.env.BACK_HOST + `${path}`
-          }
-        })
+            avatar: process.env.BACK_HOST + `/${path}`,
+          },
+        });
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   async checkOwnerIsAdmin(senderId: string, channelId: string) {
@@ -239,7 +240,6 @@ export class ChannelService {
   }
 
   async getChannel(senderId: string, channelId: string) {
-
     try {
       const channel = await this.prisma.channel.findUnique({
         where: {
@@ -327,8 +327,8 @@ export class ChannelService {
           member.userId === channel.channelOwnerId
             ? "Owner"
             : member.isAdmin
-              ? "Admin"
-              : "User",
+            ? "Admin"
+            : "User",
         unmuted_at,
       };
       result.push(temp);

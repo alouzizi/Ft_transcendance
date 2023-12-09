@@ -51,18 +51,19 @@ export default function FriendCategory(prompt: { itemsStatus: string }) {
           dataTmp = [];
         }
 
-        console.log("getData called -------------")
-        if (socket) {
-          socket.on("updateStatusGeust", getData);
-        }
-        // return data;
+        console.log("getData called -------------", updateInfo);
       } catch (error: any) {
         console.log("getData error: " + error);
       }
     }
     getData();
+    if (socket) {
+      socket.on("updateStatusGeust", getData);
+    }
+    return () => {
+      socket?.off("updateStatusGeust", getData);
+    };
   }, [user.id, prompt.itemsStatus, updateInfo, socket]);
-  //   useEffect(() => {}, [data]);
 
   return (
     <DataContext.Provider value={{ data, setData }}>

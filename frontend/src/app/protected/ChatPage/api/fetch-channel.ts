@@ -1,23 +1,21 @@
 import axios from "axios";
-import { Backend_URL } from "../../../../../lib/Constants";
 import Cookies from "js-cookie";
 
 export async function createChannel(channelData: channelDto, senderId: string) {
   const token = Cookies.get("access_token");
   try {
     const res = await axios.post(
-      Backend_URL + `/channel/createChannel/${senderId}`,
+      process.env.Backend_URL + `/channel/createChannel/${senderId}`,
       channelData,
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     const data = await res.data;
     return data;
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 export async function updateChannel(
@@ -28,16 +26,18 @@ export async function updateChannel(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.post(
-      Backend_URL + `/channel/updateChannel/${senderId}/${channelId}`,
-      channelData, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/updateChannel/${senderId}/${channelId}`,
+      channelData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function addUserToChannel(
@@ -48,46 +48,51 @@ export async function addUserToChannel(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL +
-      `/channel/addUserToChannel/${senderId}/${channelId}/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/addUserToChannel/${senderId}/${channelId}/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 //
 export async function checkOwnerIsAdmin(senderId: string, channelId: string) {
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/checkOwnerIsAdmin/${senderId}/${channelId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/checkOwnerIsAdmin/${senderId}/${channelId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function leaveChannel(senderId: string, channelId: string) {
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/leaveChannel/${senderId}/${channelId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/leaveChannel/${senderId}/${channelId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function changeStatusAdmin(
@@ -98,31 +103,33 @@ export async function changeStatusAdmin(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL +
-      `/channel/changeStatusAdmin/${senderId}/${channelId}/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/changeStatusAdmin/${senderId}/${channelId}/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getChannel(senderId: string, channelId: string) {
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/getChannel/${senderId}/${channelId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL + `/channel/getChannel/${senderId}/${channelId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function validePassword(
@@ -133,16 +140,17 @@ export async function validePassword(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL +
-      `/channel/validePassword/${senderId}/${channelId}/${password}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/validePassword/${senderId}/${channelId}/${password}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function kickMember(
@@ -153,15 +161,17 @@ export async function kickMember(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/kickmember/${senderId}/${channelId}/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/kickmember/${senderId}/${channelId}/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function cancelTimeOut(
@@ -172,16 +182,17 @@ export async function cancelTimeOut(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL +
-      `/channel/cancelTimeOutByAdmin/${senderId}/${channelId}/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/cancelTimeOutByAdmin/${senderId}/${channelId}/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function ChangeStatusBanned(
@@ -192,15 +203,17 @@ export async function ChangeStatusBanned(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/bannedmember/${senderId}/${channelId}/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/bannedmember/${senderId}/${channelId}/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function checkUserIsInChannel(
@@ -210,30 +223,33 @@ export async function checkUserIsInChannel(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/checkUserIsInChannel/${senderId}/${channelId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/checkUserIsInChannel/${senderId}/${channelId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function joinChannel(senderId: string, channelId: string) {
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/joinChannel/${senderId}/${channelId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL + `/channel/joinChannel/${senderId}/${channelId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function muteUserChannel(
@@ -245,29 +261,32 @@ export async function muteUserChannel(
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL +
-      `/channel/muteUserChannel/${senderId}/${channelId}/${userId}/${timer}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/muteUserChannel/${senderId}/${channelId}/${userId}/${timer}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function checkIsMuted(senderId: string, channelId: string) {
   try {
     const token = Cookies.get("access_token");
     const res = await axios.get(
-      Backend_URL + `/channel/checkIsMuted/${senderId}/${channelId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+      process.env.Backend_URL +
+        `/channel/checkIsMuted/${senderId}/${channelId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
     );
     const data = await res.data;
     return data;
-  } catch (error) { }
+  } catch (error) {}
 }

@@ -7,20 +7,16 @@ import { toDataURL } from "qrcode";
 import { authenticator } from "otplib";
 import { Response } from "express";
 
-
 @Injectable({})
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
     private jwtService: JwtService
-  ) { }
-
+  ) {}
 
   async callbackStratiegs(req: any, res: Response) {
-    const ret = await this.valiadteUserAndCreateJWT(
-      req.user.intra_id
-    );
+    const ret = await this.valiadteUserAndCreateJWT(req.user.intra_id);
     if (ret) {
       res.cookie("intra_id", req.user.intra_id);
       const diff =
@@ -31,7 +27,7 @@ export class AuthService {
         return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
       }
       if (req.user.isTwoFactorAuthEnabled)
-        return res.redirect(process.env.FRONT_HOST + "/Checker2faAuth");
+        return res.redirect(process.env.FRONT_HOST + "Checker2faAuth");
       res.cookie("access_token", ret.access_token);
       res.redirect(process.env.FRONT_HOST + "protected/DashboardPage");
     }
@@ -100,6 +96,5 @@ export class AuthService {
       token: authCode,
       secret: user.twoFactorAuthSecret,
     });
-
   }
 }

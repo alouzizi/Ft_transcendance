@@ -1,4 +1,3 @@
-import { Backend_URL } from "../../../lib/Constants";
 import Cookies from "js-cookie";
 
 // ================================================================
@@ -15,7 +14,7 @@ export async function getGameHistory(senderId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/game/gameHistory/${senderId}`,
+      `${process.env.Backend_URL}/game/gameHistory/${senderId}`,
       {
         method: "GET",
         headers: {
@@ -38,13 +37,16 @@ export async function getLeaderBoard() {
   let res: LeaderBoard[] = [];
   try {
     const token = Cookies.get("access_token");
-    const response = await fetch(`${Backend_URL}/game/LeaderBoard/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.Backend_URL}/game/LeaderBoard/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.ok) {
       res = await response.json();
     }
@@ -72,7 +74,7 @@ export async function getGlobalInfos(senderId: string) {
     const token = Cookies.get("access_token");
 
     const response = await fetch(
-      `${Backend_URL}/game/globalInfos/${senderId}`,
+      `${process.env.Backend_URL}/game/globalInfos/${senderId}`,
       {
         method: "GET",
         headers: {
@@ -210,7 +212,7 @@ export async function getUserRanking(senderId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/game/userRanking/${senderId}`,
+      `${process.env.Backend_URL}/game/userRanking/${senderId}`,
       {
         method: "GET",
         headers: {

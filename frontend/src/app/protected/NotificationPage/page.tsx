@@ -6,7 +6,6 @@ import { createNotification } from "./api/createNotification";
 import { FaTrashCan } from "react-icons/fa6";
 import React from "react";
 import Modal from "react-modal";
-import { Backend_URL } from "../../../../lib/Constants";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { getUserGeust } from "../ChatPage/api/fetch-users";
@@ -41,7 +40,7 @@ export default function NotificationPage() {
     "send you friend request",
     "invite you to a PongMaster game",
     "you've been invited to group",
-    "send message"
+    "send message",
   ];
   let randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
 
@@ -76,12 +75,12 @@ export default function NotificationPage() {
     const getData = async () => {
       const token = Cookies.get("access_token");
       const res = await axios.get(
-        Backend_URL +
-        `/notification/getNotifications/${user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
+        process.env.Backend_URL + `/notification/getNotifications/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      }
       );
       const data = await res.data;
       setItems(data);
@@ -92,13 +91,12 @@ export default function NotificationPage() {
   const DeleteFn = async (id: string) => {
     const token = Cookies.get("access_token");
     const response = await axios.delete(
-      Backend_URL + `/notification/deletenotifications/${id}`,
+      process.env.Backend_URL + `/notification/deletenotifications/${id}`,
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
-
     ); // ${user.id}
     const data = await response.data;
     setDelete((prevDelete) => !prevDelete);
@@ -133,7 +131,8 @@ export default function NotificationPage() {
             <span style={{ marginRight: "8px" }} />
             <button
               className="bg-blue-900 text-white px-1 rounded-3xl"
-              onClick={handleDecline} >
+              onClick={handleDecline}
+            >
               Decline
             </button>
           </div>
@@ -148,23 +147,26 @@ export default function NotificationPage() {
 
   return (
     <div className=" bg-color-main h-screen w-screen pl-32 text-white">
-
       <h1 className="text-2xl font-bold mb-4">Notification</h1>
       <div className="flex items-center justify-between w-[80%]">
         <p className="hover:underline cursor-pointer">ALL- {items.length}</p>
-        <p className="hover:underline cursor-pointer"
+        <p
+          className="hover:underline cursor-pointer"
           onClick={async () => {
             const token = Cookies.get("access_token");
             const response = await axios.delete(
-              Backend_URL + `/notification/clearAll/${user.id}`,
+              process.env.Backend_URL + `/notification/clearAll/${user.id}`,
               {
                 headers: {
-                  'Authorization': `Bearer ${token}`,
-                }
+                  Authorization: `Bearer ${token}`,
+                },
               }
             ); // ${user.id}
             setDelete((prevDelete) => !prevDelete);
-          }}>clear all</p>
+          }}
+        >
+          clear all
+        </p>
       </div>
       <div className="w-[80%] h-64 ">
         {items.map((item: any, index) => (
@@ -183,10 +185,12 @@ export default function NotificationPage() {
                           src={item.user.profilePic}
                           alt=""
                           onClick={async () => {
-                            console.log(item.subjet)
-                            if (item.subjet.includes('send')) {
-                              const geustTemp: geustDto = await getUserGeust(item.receivedId);
-                              setGeust(geustTemp)
+                            console.log(item.subjet);
+                            if (item.subjet.includes("send")) {
+                              const geustTemp: geustDto = await getUserGeust(
+                                item.receivedId
+                              );
+                              setGeust(geustTemp);
                               DeleteFn(item.id);
                               router.push("/protected/ChatPage");
                             }

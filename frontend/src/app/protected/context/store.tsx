@@ -18,7 +18,6 @@ import {
   useState,
 } from "react";
 import { Socket, io } from "socket.io-client";
-import { Backend_URL } from "../../../../lib/Constants";
 import Lottie from "lottie-react";
 import loadingc from "../../assets/loading.json";
 import { ImCross } from "react-icons/im";
@@ -55,13 +54,13 @@ const GlobalContext = createContext<ContextProps>({
     selectedMap: "isLeft",
     isLeft: true,
   },
-  setInviteData: () => { },
+  setInviteData: () => {},
 
   displayChat: false,
-  setDisplayChat: () => { },
+  setDisplayChat: () => {},
 
   updateInfo: 1,
-  setUpdateInfo: () => { },
+  setUpdateInfo: () => {},
 
   user: {
     id: "-1",
@@ -75,7 +74,7 @@ const GlobalContext = createContext<ContextProps>({
     inGaming: false,
     level: "0.0",
   },
-  setUser: () => { },
+  setUser: () => {},
 
   geust: {
     isUser: true,
@@ -88,7 +87,7 @@ const GlobalContext = createContext<ContextProps>({
     idUserOwner: "",
     inGaming: false,
   },
-  setGeust: () => { },
+  setGeust: () => {},
 
   socket: null,
 });
@@ -140,15 +139,15 @@ export const GlobalContextProvider = ({
 
   useEffect(() => {
     if (user.id && user.id != "-1") {
-      const socket = io(Backend_URL, {
+      const socket = io(process.env.Backend_URL || "localhost", {
         transports: ["websocket"],
         query: {
           senderId: user.id,
         },
       });
       setSocket(socket);
-      socket.on("connect", () => { });
-      socket.on("disconnect", () => { });
+      socket.on("connect", () => {});
+      socket.on("disconnect", () => {});
     }
   }, [user.id]);
 
@@ -156,7 +155,7 @@ export const GlobalContextProvider = ({
     const getDataUser = async () => {
       try {
         const token = Cookies.get("access_token");
-        const res = await fetch(Backend_URL + `/user/intra/`, {
+        const res = await fetch(process.env.Backend_URL + `/user/intra/`, {
           method: "GET",
           headers: {
             authorization: `Bearer ${token}`,
@@ -220,7 +219,7 @@ export const GlobalContextProvider = ({
       });
       socket.on("declien", () => {
         setOpenConfirm(false);
-      })
+      });
       // }
     }
   }, [socket, data]);
@@ -255,7 +254,8 @@ export const GlobalContextProvider = ({
           }}
           open={openConfirm}
           // onClose={() => setOpenConfirm(false)}
-          className="">
+          className=""
+        >
           <div
             className="bg-[#010611be] w-fit sm:m-4 p-2 sm:p-4 md:m-8 md-6 rounded-2xl border-2 border-white "
             color="red"
@@ -264,9 +264,8 @@ export const GlobalContextProvider = ({
               onClick={() => {
                 if (user.id === inviteData.userId1)
                   socket?.emit("decline", inviteData.userId2);
-                else
-                  socket?.emit("decline", inviteData.userId1);
-                setOpenConfirm(false)
+                else socket?.emit("decline", inviteData.userId1);
+                setOpenConfirm(false);
               }}
               className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
             >
@@ -277,63 +276,63 @@ export const GlobalContextProvider = ({
               alt=""
               className=" w-40 text-sm mx-auto"
             />
-            {
-              user.id !== inviteData.userId1 ?
-                <div>
-                  <DialogContent>
-                    <div className="flex flex-col rounded-2xl my-4">
-                      <p className="text-gray-300  text-center">
-                        <span className="font-700 text-white hover:underline">
-                          {inviterdName}
-                        </span>{" "}
-                        invite you to pongMaster match
-                      </p>
-                    </div>
-                  </DialogContent>
-                  <DialogActions>
-                    <div className="flex flex-row items-center justify-center"></div>
-                    <button
-                      onClick={async () => {
-                        socket?.emit("decline", inviteData.userId1);
-                        setOpenConfirm(false);
+            {user.id !== inviteData.userId1 ? (
+              <div>
+                <DialogContent>
+                  <div className="flex flex-col rounded-2xl my-4">
+                    <p className="text-gray-300  text-center">
+                      <span className="font-700 text-white hover:underline">
+                        {inviterdName}
+                      </span>{" "}
+                      invite you to pongMaster match
+                    </p>
+                  </div>
+                </DialogContent>
+                <DialogActions>
+                  <div className="flex flex-row items-center justify-center"></div>
+                  <button
+                    onClick={async () => {
+                      socket?.emit("decline", inviteData.userId1);
+                      setOpenConfirm(false);
 
-                        // router.push("/protected/GamePage/invite");
-                      }}
-                      className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
+                      // router.push("/protected/GamePage/invite");
+                    }}
+                    className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
                           text-xs  px-4 py-2 mx-2
                           md:text-sm lg:text-md lg:px-4"
-                    >
-                      Decline
-                    </button>
-                    <button
-                      onClick={async () => {
-                        socket?.emit("accept", data);
-                        setOpenConfirm(false);
-                        router.push("/protected/GamePage/invite");
-                      }}
-                      className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
+                  >
+                    Decline
+                  </button>
+                  <button
+                    onClick={async () => {
+                      socket?.emit("accept", data);
+                      setOpenConfirm(false);
+                      router.push("/protected/GamePage/invite");
+                    }}
+                    className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
               text-xs  px-4 py-2 mx-2
               md:text-sm lg:text-md lg:px-4"
-                    >
-                      Accept
-                    </button>
-                  </DialogActions>
-                </div> :
-                <div>
-                  <DialogContent>
-                    <div className="flex flex-col rounded-2xl my-4 text-center">
-
-
-                      <Lottie animationData={loadingc} loop={true} className="h-20 w-20" />
-
-                    </div>
-                  </DialogContent>
-                </div>
-            }
+                  >
+                    Accept
+                  </button>
+                </DialogActions>
+              </div>
+            ) : (
+              <div>
+                <DialogContent>
+                  <div className="flex flex-col rounded-2xl my-4 text-center">
+                    <Lottie
+                      animationData={loadingc}
+                      loop={true}
+                      className="h-20 w-20"
+                    />
+                  </div>
+                </DialogContent>
+              </div>
+            )}
           </div>
         </Dialog>
       </div>
-
 
       {children}
     </GlobalContext.Provider>

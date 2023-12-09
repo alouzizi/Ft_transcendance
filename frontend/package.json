@@ -27,6 +27,7 @@
     "cloudinary": "^1.41.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
     "js-cookie": "^3.0.5",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.284.0",

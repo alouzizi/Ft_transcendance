@@ -10,7 +10,7 @@ import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findById(id: string) {
     try {
@@ -176,7 +176,7 @@ export class UserService {
           lastSee: user.lastSee,
           lenUser: 0,
           idUserOwner: 0,
-          inGaming: user.inGaming
+          inGaming: user.inGaming,
         };
       return {
         isUser: true,
@@ -220,9 +220,13 @@ export class UserService {
     try {
       let nickname = user1.login42.toString();
       let i = 0;
-      let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
+      let check = await this.prisma.user.findUnique({
+        where: { nickname: nickname },
+      });
       while (check) {
-        check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
+        check = await this.prisma.user.findUnique({
+          where: { nickname: `${nickname}_${i}` },
+        });
         nickname = `${nickname}_${i}`;
         i++;
       }
@@ -238,7 +242,7 @@ export class UserService {
         },
       });
       return user;
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async setTwoFactorAuthSecret(secret: string, intra_id: string) {
@@ -310,12 +314,10 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: process.env.BACK_HOST + `${path}`,
+          profilePic: process.env.BACK_HOST + `/${path}`,
         },
       });
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
 
   async findByIntraId(intra_id: string) {
@@ -339,15 +341,14 @@ export class UserService {
   async startGameing(senderId: string) {
     await this.prisma.user.update({
       where: { id: senderId },
-      data: { inGaming: true }
-    })
+      data: { inGaming: true },
+    });
   }
 
   async finishGaming(senderId: string) {
     await this.prisma.user.update({
       where: { id: senderId },
-      data: { inGaming: false }
-    })
+      data: { inGaming: false },
+    });
   }
-
 }

@@ -9,9 +9,7 @@ import { Request } from "express";
 
 @Injectable()
 export class JwtGuard implements CanActivate {
-  constructor(
-    private jwtService: JwtService,
-  ) { }
+  constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -34,8 +32,8 @@ export class JwtGuard implements CanActivate {
   private extractTokenFromHeader(request: Request) {
     if (request.headers.authorization) {
       const [type, token] = request.headers.authorization.split(" ") ?? [];
-      return (type === "Bearer") ? token : undefined;
+      return type === "Bearer" ? token : undefined;
     }
-    return undefined
+    return undefined;
   }
 }

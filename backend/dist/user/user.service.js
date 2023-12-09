@@ -174,7 +174,7 @@ let UserService = class UserService {
                     lastSee: user.lastSee,
                     lenUser: 0,
                     idUserOwner: 0,
-                    inGaming: user.inGaming
+                    inGaming: user.inGaming,
                 };
             return {
                 isUser: true,
@@ -216,9 +216,13 @@ let UserService = class UserService {
         try {
             let nickname = user1.login42.toString();
             let i = 0;
-            let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
+            let check = await this.prisma.user.findUnique({
+                where: { nickname: nickname },
+            });
             while (check) {
-                check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
+                check = await this.prisma.user.findUnique({
+                    where: { nickname: `${nickname}_${i}` },
+                });
                 nickname = `${nickname}_${i}`;
                 i++;
             }
@@ -303,12 +307,11 @@ let UserService = class UserService {
                     intra_id: intra_id,
                 },
                 data: {
-                    profilePic: process.env.BACK_HOST + `${path}`,
+                    profilePic: process.env.BACK_HOST + `/${path}`,
                 },
             });
         }
-        catch (error) {
-        }
+        catch (error) { }
     }
     async findByIntraId(intra_id) {
         return this.prisma.user.findUnique({
@@ -328,13 +331,13 @@ let UserService = class UserService {
     async startGameing(senderId) {
         await this.prisma.user.update({
             where: { id: senderId },
-            data: { inGaming: true }
+            data: { inGaming: true },
         });
     }
     async finishGaming(senderId) {
         await this.prisma.user.update({
             where: { id: senderId },
-            data: { inGaming: false }
+            data: { inGaming: false },
         });
     }
 };

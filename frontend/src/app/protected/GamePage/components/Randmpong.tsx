@@ -194,6 +194,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
 
     return () => {
+      // socket?.emit("opponentLeft", { room: inviteData.room, userId: user.id });
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);

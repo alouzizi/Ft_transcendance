@@ -25,8 +25,7 @@ let ChannelService = class ChannelService {
                 const decrypted = bytes.toString(crypto_js_1.enc.Utf8);
                 return decrypted;
             }
-            catch (err) {
-            }
+            catch (err) { }
         };
     }
     async createMessageInfoChannel(senderId, channelId, userId, msg) {
@@ -45,7 +44,7 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
-        let cipherText = '';
+        let cipherText = "";
         if (createChannelDto.channelPassword !== "")
             cipherText = crypto_js_1.AES.encrypt(createChannelDto.channelPassword, process.env.CRYPTO_JS_KEY);
         try {
@@ -102,8 +101,8 @@ let ChannelService = class ChannelService {
                 where: {
                     channelId: channelId,
                     userId: senderId,
-                    isAdmin: true
-                }
+                    isAdmin: true,
+                },
             });
             if (!memberAdmin)
                 return { status: 204, error: "you are not admin" };
@@ -120,7 +119,9 @@ let ChannelService = class ChannelService {
                     avatar: updateChannelDto.avatar,
                 },
             });
-            const userUpdate = await this.prisma.user.findUnique({ where: { id: senderId } });
+            const userUpdate = await this.prisma.user.findUnique({
+                where: { id: senderId },
+            });
             this.createMessageInfoChannel(senderId, channelId, "", `${userUpdate.nickname}'s update in the channel.`);
             let pass2 = "";
             if (channelUpdate.channelPassword !== "")
@@ -147,7 +148,7 @@ let ChannelService = class ChannelService {
     async uploadImageChannel(senderId, channelId, path) {
         try {
             const member = await this.prisma.channelMember.findFirst({
-                where: { channelId: channelId, userId: senderId }
+                where: { channelId: channelId, userId: senderId },
             });
             if (member.isAdmin) {
                 await this.prisma.channel.update({
@@ -155,13 +156,12 @@ let ChannelService = class ChannelService {
                         id: channelId,
                     },
                     data: {
-                        avatar: process.env.BACK_HOST + `${path}`
-                    }
+                        avatar: process.env.BACK_HOST + `/${path}`,
+                    },
                 });
             }
         }
-        catch (error) {
-        }
+        catch (error) { }
     }
     async checkOwnerIsAdmin(senderId, channelId) {
         try {

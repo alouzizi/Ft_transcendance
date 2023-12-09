@@ -10,10 +10,14 @@ const nextConfig = {
     ];
   },
 
+  env: {
+    Backend_URL: process.env.BACK_HOST,
+    DomainImg: process.env.DMN_IMG,
+  },
+
   images: {
-    domains: ["cdn.intra.42.fr", "localhost", "lh3.googleusercontent.com"],
+    domains: ["cdn.intra.42.fr", "localhost", process.env.DMN_IMG],
   },
 };
 
 module.exports = nextConfig;
-
