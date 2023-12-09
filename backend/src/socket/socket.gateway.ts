@@ -32,7 +32,7 @@ export class SocketGateway
   @WebSocketServer() server: Server;
 
   afterInit(server: any) {
-    console.log("Gateway Initialized");
+    // console.log("Gateway Initialized");
   }
 
   async handleConnection(client: Socket) {
@@ -61,6 +61,12 @@ export class SocketGateway
   @SubscribeMessage("updateData")
   async updateData(@MessageBody() ids: CreateMessageDto) {
     this.socketGatewayService.updateData(ids, this.server);
+  }
+
+
+  @SubscribeMessage("updateStatusGeust")
+  async updateStatusGeust(@MessageBody() senderId: string) {
+    this.socketGatewayService.updateStatusGeust(senderId, this.server);
   }
 
   @SubscribeMessage("updateChannel")

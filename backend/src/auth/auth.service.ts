@@ -31,7 +31,7 @@ export class AuthService {
         return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
       }
       if (req.user.isTwoFactorAuthEnabled)
-        return res.redirect(process.env.FRONT_HOST + "public/Checker2faAuth");
+        return res.redirect(process.env.FRONT_HOST + "/Checker2faAuth");
       res.cookie("access_token", ret.access_token);
       res.redirect(process.env.FRONT_HOST + "protected/DashboardPage");
     }
@@ -96,7 +96,6 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
-    // console.log("-----> , ", user)
     return authenticator.verify({
       token: authCode,
       secret: user.twoFactorAuthSecret,

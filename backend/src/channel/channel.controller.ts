@@ -38,7 +38,6 @@ export class ChannelController {
     storage: diskStorage({
       destination: './uploads',
       filename: (req, file, cb) => {
-        console.log("00", file);
         const name = file.originalname.split(".")[0];
         const fileExtension = file.originalname.split(".")[1];
         const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
@@ -55,7 +54,6 @@ export class ChannelController {
     @Param("senderId") senderId: string,
     @Param("channelId") channelId: string,
   ) {
-    console.log('first', file.path);
     return this.channelService.uploadImageChannel(senderId, channelId, file.path);
   }
 

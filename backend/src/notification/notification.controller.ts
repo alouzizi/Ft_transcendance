@@ -17,7 +17,6 @@ export class NotificationController {
   @UseGuards(JwtGuard)
   async deleteNotification(@Param('notificationId') notificationId: string) {
     try {
-      console.log(notificationId);
       await this.notificationService.deleteNotification(notificationId);
       // console.log(`Notification with ID ${notificationId} has been deleted.`);
 

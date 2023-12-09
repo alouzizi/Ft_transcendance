@@ -18,7 +18,7 @@ enum Status {
 export default function MembersChannel() {
 
     const [searsh, setSearsh] = useState('');
-    const { user, geust, socket, updateInfo, setUpdateInfo, setGeust } = useGlobalContext();
+    const { user, geust, socket, setGeust } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
@@ -75,6 +75,24 @@ export default function MembersChannel() {
     }, [socket, geust.id]);
 
     useEffect(() => {
+        if (socket) {
+            socket.on("leaveChannel", getMemberChannel);
+            return () => {
+                socket.off("leaveChannel", getMemberChannel);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("updateChannel", getMemberChannel);
+            return () => {
+                socket.off("updateChannel", getMemberChannel);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
         const handleKickedMemeber = async (data: { channelId: string, memberId: string }) => {
             if (user.id === data.memberId) {
                 router.push('/protected/ChatPage');
@@ -84,7 +102,7 @@ export default function MembersChannel() {
                         id: '-1',
                     }
                 });
-            } else { getMemberChannel() }
+            } else { getMemberChannel(), console.log("kickedFromChannel called") }
         }
         if (socket) {
             socket.on("kickedFromChannel", handleKickedMemeber);
@@ -241,6 +259,11 @@ export default function MembersChannel() {
                         inGaming: false
                     });
                     const tmp = await leaveChannel(user.id, geust.id);
+                    socket?.emit('updateChannel', {
+                        senderId: user.id,
+                        receivedId: geust.id,
+                        isDirectMessage: false
+                    });
                     router.push('/protected/ChatPage');
                 }}
                     className="flex items-center rounded-md text-red-500 px-2

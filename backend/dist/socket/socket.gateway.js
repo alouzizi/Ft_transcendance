@@ -36,7 +36,6 @@ let SocketGateway = class SocketGateway {
         this.inviteRoom = new Map();
     }
     afterInit(server) {
-        console.log("Gateway Initialized");
     }
     async handleConnection(client) {
         this.socketGatewayService.handleConnection(client, this.server);
@@ -59,6 +58,9 @@ let SocketGateway = class SocketGateway {
     }
     async updateData(ids) {
         this.socketGatewayService.updateData(ids, this.server);
+    }
+    async updateStatusGeust(senderId) {
+        this.socketGatewayService.updateStatusGeust(senderId, this.server);
     }
     async updateChannel(ids) {
         this.socketGatewayService.updateChannel(ids, this.server);
@@ -358,6 +360,13 @@ __decorate([
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "updateData", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("updateStatusGeust"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "updateStatusGeust", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("updateChannel"),
     __param(0, (0, websockets_1.MessageBody)()),

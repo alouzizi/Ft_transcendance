@@ -13,7 +13,6 @@ exports.ChannelService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
-const bcrypt = require("bcrypt");
 const notification_service_1 = require("../notification/notification.service");
 const crypto_js_1 = require("crypto-js");
 let ChannelService = class ChannelService {
@@ -68,7 +67,7 @@ let ChannelService = class ChannelService {
                     channelId: newChannel.id,
                 },
             });
-            createChannelDto.channelMember.forEach(async (item) => {
+            const promises = createChannelDto.channelMember.map(async (item) => {
                 this.notificationService.createNotification({
                     senderId: senderId,
                     recieverId: item,
@@ -83,6 +82,7 @@ let ChannelService = class ChannelService {
                 });
                 this.createMessageInfoChannel(senderId, newChannel.id, item, "added");
             });
+            await Promise.all(promises);
             return { ...newChannel, status: 200 };
         }
         catch (error) {
@@ -474,8 +474,10 @@ let ChannelService = class ChannelService {
             const channel = await this.prisma.channel.findUnique({
                 where: { id: channelId },
             });
-            const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
-            if (passwordMatch) {
+            let pass = "";
+            if (channel.channelPassword !== "")
+                pass = this.decryptMessage(channel.channelPassword);
+            if (pass === password) {
                 return true;
             }
             else {

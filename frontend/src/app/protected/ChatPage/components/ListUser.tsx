@@ -6,14 +6,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from 'react';
 import { FaGamepad } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useGlobalContext } from '../../context/store';
 import { joinChannel, validePassword } from '../api/fetch-channel';
-import { checkIsBlocked, getChannelGeust, getUserForMsg, getUserGeust, getVueGeust } from '../api/fetch-users';
+import { getChannelGeust, getUserForMsg, getUserGeust } from '../api/fetch-users';
 import AlertAddChannel from './AddChannel';
 import { extractHoursAndM } from './widgetMsg';
 
@@ -24,7 +23,6 @@ enum Status {
 
 const ListUser = () => {
 
-  const router = useRouter();
 
   const { setGeust, geust, socket, user, displayChat, setDisplayChat } = useGlobalContext();
 
@@ -46,9 +44,6 @@ const ListUser = () => {
       }
     }
   }, [socket, user.id, geust.id, direct])
-
-
-
 
   const getDataGeust = async (tmp: messageDto) => {
     let geustTemp: geustDto;
@@ -114,26 +109,33 @@ const ListUser = () => {
 
   useEffect(() => {
     if (socket) {
-      const kickedFromChannel = () => {
-        setGeust({
-          isUser: false,
-          id: "-1",
-          nickname: "blabla",
-          profilePic: "",
-          status: Status.INACTIF,
-          lastSee: 0,
-          lenUser: 0,
-          idUserOwner: "",
-          inGaming: false
-        });
-        setDirect(true);
+      const kickedFromChannel = async (data: any) => {
+        console.log("kickedFromChannel called", data)
+        if (geust.id === data.channelId) {
+          setGeust({
+            isUser: false,
+            id: "-1",
+            nickname: "blabla",
+            profilePic: "",
+            status: Status.INACTIF,
+            lastSee: 0,
+            lenUser: 0,
+            idUserOwner: "",
+            inGaming: false
+          });
+          setDirect(true);
+        } else {
+          const usersList = await getUserForMsg(user.id);
+          if (usersList !== undefined) setItemList(usersList);
+        }
       };
       socket.on("kickedFromChannel", kickedFromChannel);
       return () => {
         socket.off("kickedFromChannel", kickedFromChannel);
       };
     }
-  }, [socket]);
+  }, [socket, geust.id]);
+
 
 
   const widgetUser = (el: messageDto, index: number) => {
@@ -233,7 +235,6 @@ const ListUser = () => {
             onClick={async () => {
               if (!el.isChannProtected) {
                 await joinChannel(user.id, el.receivedId);
-                console.log("geust name = ", geust.nickname)
                 socket?.emit('updateChannel', {
                   senderId: user.id,
                   receivedId: el.receivedId,
@@ -357,17 +358,16 @@ const ListUser = () => {
           <DialogActions>
             <button onClick={async () => {
               let vld = false;
-              if (password !== '')
+              if (password.trim() !== '')
                 vld = await validePassword(user.id, idChannel, password);
               if (vld) {
                 setOpenConfirm(false);
                 await joinChannel(user.id, idChannel);
                 const gst = await getChannelGeust(idChannel);
-                socket?.emit('updateData', {
-                  content: '',
+                socket?.emit('updateChannel', {
                   senderId: user.id,
-                  isDirectMessage: false,
                   receivedId: idChannel,
+                  isDirectMessage: false
                 });
                 setGeust(gst);
                 setDisplayChat(true);

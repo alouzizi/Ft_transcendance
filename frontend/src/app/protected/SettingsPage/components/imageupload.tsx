@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
 import { Backend_URL } from "../../../../../lib/Constants";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { getDataOwner } from "../IpaSettings/fetch-user";
 import axios from "axios";
 
@@ -17,7 +18,9 @@ const ImageUpload = () => {
   const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = Cookies.get("access_token");
     const file = e.target.files?.[0];
-    if (file && file.size) {
+
+    if (file && file.size && file.size < 0.5 * 1024 * 1024) {
+      console.log("file.size=", file.size)
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -34,8 +37,10 @@ const ImageUpload = () => {
             headers: {
               authorization: `Bearer ${token}`,
             },
-          }
+          },
+
         );
+
         toast.success("Image uploaded successfully");
         const tmp = await getDataOwner(user.intra_id);
         setUser(tmp);

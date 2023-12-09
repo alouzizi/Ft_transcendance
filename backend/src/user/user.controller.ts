@@ -72,7 +72,6 @@ export class UserController {
     storage: diskStorage({
       destination: './uploads',
       filename: (req, file, cb) => {
-        console.log("00", file);
         const name = file.originalname.split(".")[0];
         const fileExtension = file.originalname.split(".")[1];
         const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
@@ -88,7 +87,6 @@ export class UserController {
   uploadImage(@UploadedFile() file: Express.Multer.File,
     @Param("intra_id") senderId: string,
   ) {
-    console.log('----> ', file.path);
     return this.userService.uploadImage(senderId, file.path);
   }
 

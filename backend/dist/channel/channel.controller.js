@@ -38,7 +38,6 @@ let ChannelController = class ChannelController {
         return this.channelService.updateChannel(senderId, channelId, channelData);
     }
     uploadImage(file, senderId, channelId) {
-        console.log('first', file.path);
         return this.channelService.uploadImageChannel(senderId, channelId, file.path);
     }
     checkOwnerIsAdmin(senderId, channelId) {
@@ -114,7 +113,6 @@ __decorate([
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
             filename: (req, file, cb) => {
-                console.log("00", file);
                 const name = file.originalname.split(".")[0];
                 const fileExtension = file.originalname.split(".")[1];
                 const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
