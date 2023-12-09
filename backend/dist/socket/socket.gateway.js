@@ -190,7 +190,7 @@ let SocketGateway = class SocketGateway {
                     this.gameState(roomName, { player: this.rooms.get(roomName)[1], score: ro.player2.score }, { player: this.rooms.get(roomName)[0], score: ro.player1.score });
             }
             this.server.to(roomName).emit("updateTheBall", ro.ball);
-        }, 20));
+        }, 25));
     }
     async gameState(roomName, p1, p2) {
         const player1 = this.rooms.get(roomName)[0];

@@ -8,9 +8,7 @@ import { Backend_URL } from '../../../../../lib/Constants';
 export default function AlertOpenAccount({ openAlert, setOpenAlert }:
     { openAlert: boolean, setOpenAlert: any }) {
 
-    const handleLogin = async () => {
 
-    };
 
     return <div>
         <Dialog open={openAlert}

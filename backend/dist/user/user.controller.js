@@ -22,23 +22,23 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getUserProfile(id) {
-        return await this.userService.findById(id);
-    }
-    async getUserByIdintr(id_intra) {
-        const user = await this.userService.findByIntraId(id_intra);
-        const temp = {
-            id: user.id,
-            intra_id: user.intra_id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            nickname: user.nickname,
-            profilePic: user.profilePic,
-            isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
-            level: user.level,
-            inGaming: user.inGaming
-        };
-        return temp;
+    async getUserByIdintr(req) {
+        try {
+            const user = await this.userService.findByIntraId(req.user.sub);
+            const temp = {
+                id: user.id,
+                intra_id: user.intra_id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                nickname: user.nickname,
+                profilePic: user.profilePic,
+                isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
+                level: user.level,
+                inGaming: user.inGaming
+            };
+            return temp;
+        }
+        catch (error) { }
     }
     async getAllUser() {
         return await this.userService.findAllUsers();
@@ -73,19 +73,11 @@ let UserController = class UserController {
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Get)(":id"),
+    (0, common_1.Get)("/intra"),
     (0, common_1.UseGuards)(guard_1.JwtGuard),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "getUserProfile", null);
-__decorate([
-    (0, common_1.Get)("/intra/:id_intra"),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
-    __param(0, (0, common_1.Param)("id_intra")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserByIdintr", null);
 __decorate([

@@ -37,9 +37,6 @@ interface ContextProps {
   displayChat: boolean;
   setDisplayChat: Dispatch<SetStateAction<boolean>>;
 
-  openAlertErro: boolean;
-  setOpenAlertError: Dispatch<SetStateAction<boolean>>;
-
   user: ownerDto;
   setUser: Dispatch<SetStateAction<ownerDto>>;
 
@@ -57,16 +54,13 @@ const GlobalContext = createContext<ContextProps>({
     selectedMap: "isLeft",
     isLeft: true,
   },
-  setInviteData: () => {},
+  setInviteData: () => { },
 
   displayChat: false,
-  setDisplayChat: () => {},
+  setDisplayChat: () => { },
 
   updateInfo: 1,
-  setUpdateInfo: () => {},
-
-  openAlertErro: false,
-  setOpenAlertError: () => {},
+  setUpdateInfo: () => { },
 
   user: {
     id: "-1",
@@ -80,7 +74,7 @@ const GlobalContext = createContext<ContextProps>({
     inGaming: false,
     level: "0.0",
   },
-  setUser: () => {},
+  setUser: () => { },
 
   geust: {
     isUser: true,
@@ -93,7 +87,7 @@ const GlobalContext = createContext<ContextProps>({
     idUserOwner: "",
     inGaming: false,
   },
-  setGeust: () => {},
+  setGeust: () => { },
 
   socket: null,
 });
@@ -106,7 +100,6 @@ export const GlobalContextProvider = ({
   const router = useRouter();
 
   const [displayChat, setDisplayChat] = useState<boolean>(false);
-  const [openAlertErro, setOpenAlertError] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
 
   const [user, setUser] = useState<ownerDto>({
@@ -153,8 +146,8 @@ export const GlobalContextProvider = ({
         },
       });
       setSocket(socket);
-      socket.on("connect", () => {});
-      socket.on("disconnect", () => {});
+      socket.on("connect", () => { });
+      socket.on("disconnect", () => { });
     }
   }, [user.id]);
 
@@ -162,14 +155,14 @@ export const GlobalContextProvider = ({
     const getDataUser = async () => {
       try {
         const token = Cookies.get("access_token");
-        const id_intra = Cookies.get("intra_id");
-        const res = await fetch(Backend_URL + `/user/intra/${id_intra}`, {
+        const res = await fetch(Backend_URL + `/user/intra/`, {
           method: "GET",
           headers: {
             authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
+
         if (res.ok) {
           const owner = await res.json();
           setUser(owner);
@@ -178,6 +171,7 @@ export const GlobalContextProvider = ({
         }
       } catch (error) {
         router.push("/public/HomePage");
+        console.log(error);
       }
     };
     if (user.id === "-1") getDataUser();
@@ -211,6 +205,7 @@ export const GlobalContextProvider = ({
         setOpenConfirm(true);
         setInvitedName(data.nameInveted);
       });
+
       socket.on("startGame", (data) => {
         setInviteData({
           userId1: data.userId1,
@@ -239,8 +234,6 @@ export const GlobalContextProvider = ({
         socket,
         updateInfo,
         setUpdateInfo,
-        openAlertErro,
-        setOpenAlertError,
         displayChat,
         setDisplayChat,
         inviteData,
@@ -256,9 +249,8 @@ export const GlobalContextProvider = ({
             },
           }}
           open={openConfirm}
-          onClose={() => setOpenConfirm(false)}
-          className=""
-        >
+          // onClose={() => setOpenConfirm(false)}
+          className="">
           <div
             className="bg-[#010611be] w-fit sm:m-4 p-2 sm:p-4 md:m-8 md-6 rounded-2xl border-2 border-white "
             color="red"
@@ -315,18 +307,7 @@ export const GlobalContextProvider = ({
         </Dialog>
       </div>
 
-      <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={openAlertErro} autoHideDuration={6000}>
-          <Alert
-            severity="error"
-            onClose={() => {
-              setOpenAlertError(false);
-            }}
-          >
-            This is an error in the server!
-          </Alert>
-        </Snackbar>
-      </Stack>
+
       {children}
     </GlobalContext.Provider>
   );

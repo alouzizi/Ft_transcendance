@@ -1,10 +1,10 @@
 import { Backend_URL } from "../../../../../lib/Constants";
 import Cookies from "js-cookie";
 
-export async function getDataOwner(intra_id: string) {
+export async function getDataOwner() {
     const token = Cookies.get("access_token");
     try {
-        const res = await fetch(Backend_URL + `/user/intra/${intra_id}`, {
+        const res = await fetch(Backend_URL + `/user/intra`, {
             method: "GET",
             headers: {
                 authorization: `Bearer ${token}`,

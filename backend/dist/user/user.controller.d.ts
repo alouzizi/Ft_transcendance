@@ -3,26 +3,7 @@ import { UserService } from "./user.service";
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    getUserProfile(id: string): Promise<{
-        id: string;
-        intra_id: string;
-        first_name: string;
-        last_name: string;
-        nickname: string;
-        email: string;
-        profilePic: string;
-        inGaming: boolean;
-        isTwoFactorAuthEnabled: boolean;
-        twoFactorAuthSecret: string;
-        level: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.Status;
-        lastSee: Date;
-    } | {
-        error: boolean;
-    }>;
-    getUserByIdintr(id_intra: string): Promise<{
+    getUserByIdintr(req: any): Promise<{
         id: string;
         intra_id: string;
         first_name: string;

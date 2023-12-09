@@ -172,7 +172,7 @@ export default function SettingsPage() {
                         toast.error("nickname aleady exist");
                       else if (response.status === 201) {
                         toast.success("nickname has been change");
-                        const tmp = await getDataOwner(user.intra_id);
+                        const tmp = await getDataOwner();
                         setUser(tmp);
                       }
                     } catch (error) { }

@@ -5,6 +5,8 @@ import {
   Get,
   Param,
   Post,
+  Req,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors
@@ -21,28 +23,30 @@ export class UserController {
 
   }
 
-  @Get(":id")
-  @UseGuards(JwtGuard)
-  async getUserProfile(@Param("id") id: string) {
-    return await this.userService.findById(id);
-  }
+  // @Get(":id")
+  // @UseGuards(JwtGuard)
+  // async getUserProfile(@Param("id") id: string) {
+  //   return await this.userService.findById(id);
+  // }
 
-  @Get("/intra/:id_intra")
+  @Get("/intra")
   @UseGuards(JwtGuard)
-  async getUserByIdintr(@Param("id_intra") id_intra: string) {
-    const user: User = await this.userService.findByIntraId(id_intra);
-    const temp = {
-      id: user.id,
-      intra_id: user.intra_id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      nickname: user.nickname,
-      profilePic: user.profilePic,
-      isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
-      level: user.level,
-      inGaming: user.inGaming
-    };
-    return temp;
+  async getUserByIdintr(@Req() req: any) {
+    try {
+      const user: User = await this.userService.findByIntraId(req.user.sub);
+      const temp = {
+        id: user.id,
+        intra_id: user.intra_id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        nickname: user.nickname,
+        profilePic: user.profilePic,
+        isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
+        level: user.level,
+        inGaming: user.inGaming
+      };
+      return temp;
+    } catch (error) { }
   }
 
 

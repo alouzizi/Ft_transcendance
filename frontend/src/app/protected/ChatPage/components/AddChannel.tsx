@@ -45,7 +45,7 @@ export default function AlertAddChannel() {
 
     const [memberSearch, setMemberSearch] = useState('');
 
-    const { user, setGeust, socket, setOpenAlertError } = useGlobalContext();
+    const { user, setGeust, socket } = useGlobalContext();
     const [valideUsers, setValideUsers] = useState<userDto[]>([]);
     const [usersFilter, setUsersFilter] = useState<userDto[]>([]);
 
@@ -55,8 +55,6 @@ export default function AlertAddChannel() {
                 const temp = await getValideUsers(user.id);
                 if (temp !== undefined)
                     setValideUsers(temp);
-                else
-                    setOpenAlertError(true);
             }
         }
         getData();
@@ -76,8 +74,7 @@ export default function AlertAddChannel() {
         const temp = await getVueGeust(id, isUser);
         if (temp !== undefined)
             setGeust(temp);
-        else
-            setOpenAlertError(true);
+
     };
 
     async function createChannelServer() {

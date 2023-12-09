@@ -26,7 +26,7 @@ export class AuthService {
       const diff =
         (new Date().getTime() - new Date(`${req.user.createdAt}`).getTime()) /
         1000;
-      if (diff < 120) {
+      if (diff < 60) {
         res.cookie("access_token", ret.access_token);
         return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
       }

@@ -263,7 +263,7 @@ export class SocketGateway
           // this.gameState(roomName, ro.player1.score, ro.player2.score);
         }
         this.server.to(roomName).emit("updateTheBall", ro.ball);
-      }, 20)
+      }, 25)
     );
   }
 
