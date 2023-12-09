@@ -12,6 +12,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { z } from "zod";
 import { checkOwnerIsAdmin, getChannel, updateChannel } from "../../api/fetch-channel";
 import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import { Backend_URL } from '../../../../../../lib/Constants';
 import Cookies from "js-cookie";
 import { getVueGeust } from '../../api/fetch-users';
@@ -118,7 +119,7 @@ export default function UpdateChannel() {
                         style={{ display: 'none' }}
                         onChange={async (event: any) => {
                             const file = event.target.files[0];
-                            if (file && file.size) {
+                            if (file && file.size && file.size < 0.5 * 1024 * 1024) {
                                 const reader = new FileReader();
                                 reader.readAsDataURL(file);
                                 reader.onload = () => {
