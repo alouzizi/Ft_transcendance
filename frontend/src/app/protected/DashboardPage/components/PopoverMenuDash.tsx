@@ -1,7 +1,5 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   blockFriend,
@@ -9,12 +7,12 @@ import {
   sendFriendRequest,
 } from "@/app/MyApi/friendshipApi";
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
-import { useState } from "react";
 import { useGlobalContext } from "../../context/store";
 import PlayInvite from "../../GamePage/components/Invite";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;
+  user: ownerDto;
   isFriend: boolean;
 }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -22,7 +20,7 @@ export default function PopoverMenuDash(prompt: {
   );
 
   // ==================== popover configs =====================
-  const { user, socket } = useGlobalContext();
+  const { socket } = useGlobalContext();
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,63 +37,74 @@ export default function PopoverMenuDash(prompt: {
   const contxt = useGlobalDataContext();
 
   function handlePlayMatch() {
-    PlayInvite({ userId1: user.id, userId2: prompt.friendInfo.id, socket: socket, nameInveted: prompt.friendInfo.nickname })
+    //console.log("owner=", prompt.user.id);
+    //console.log("invtedd=", prompt.friendInfo.id);
+    PlayInvite({
+      userId1: prompt.user.id,
+      userId2: prompt.friendInfo.id,
+
+      socket: socket,
+      nameInveted: prompt.user.nickname,
+    });
     handleClose();
   }
 
   async function handleRemoveFriend() {
     try {
-      await removeFriend(user.id, prompt.friendInfo.id);
+      await removeFriend(prompt.user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
       socket?.emit("updateData", {
         content: "",
-        senderId: user.id,
+        senderId: prompt.user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleRemoveFriend: " + error);
+      //console.log("handleRemoveFriend: " + error);
     }
     handleClose();
   }
 
   async function handleBlockFriend() {
     try {
-      await blockFriend(user.id, prompt.friendInfo.id);
+      await blockFriend(prompt.user.id, prompt.friendInfo.id);
       const updatedData = contxt.data.filter(
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-      socket?.emit('blockUserToUser', { senderId: user.id, receivedId: prompt.friendInfo.id });
+      socket?.emit("blockUserToUser", {
+        senderId: prompt.user.id,
+        receivedId: prompt.friendInfo.id,
+      });
       socket?.emit("updateData", {
         content: "",
-        senderId: user.id,
+        senderId: prompt.user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleBlockFriend: " + error);
+      //console.log("handleBlockFriend: " + error);
     }
     handleClose();
   }
 
   async function handleInvite() {
     try {
-      await sendFriendRequest(user.id, prompt.friendInfo.id);
+      await sendFriendRequest(prompt.user.id, prompt.friendInfo.id);
       socket?.emit("updateData", {
         content: "",
-        senderId: user.id,
+        senderId: prompt.user.id,
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleInvite: " + error);
+      //console.log("handleInvite: " + error);
     }
     handleClose();
-    // console.log("handleInvite: " + userInfo.username);
+    // //console.log("handleInvite: " + userInfo.username);
   }
   // ===================== /handle popover options ===============
 
@@ -126,14 +135,18 @@ export default function PopoverMenuDash(prompt: {
         }}
       >
         <div className=" flex flex-col bg-color-main-dark py-2 px-2 rounded-none cursor-pointer">
-          <p
-            onClick={handlePlayMatch}
-            className="text-white text-sm rounded-md ml-0 py-2 pl-2 pr-14
+          {!prompt.friendInfo.inGaming ? (
+            <p
+              onClick={handlePlayMatch}
+              className="text-white text-sm rounded-md ml-0 py-2 pl-2 pr-14
                     
                     hover:bg-color-main-whith  "
-          >
-            Play match
-          </p>
+            >
+              Play match
+            </p>
+          ) : (
+            <div />
+          )}
           {prompt.isFriend ? (
             <div>
               <p

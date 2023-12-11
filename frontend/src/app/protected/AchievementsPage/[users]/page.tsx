@@ -15,20 +15,20 @@ export default function AchievementsPage() {
     const userName = pathname;
     const segments = userName.split("/");
     const lastSegment = segments.pop() ?? "";
-    console.log(lastSegment);
+    //console.log(lastSegment);
     async function getData() {
       try {
         const usr = await getUserByNick(lastSegment);
         setFriend(usr);
 
         const isBlocked = await getIsBlocked(user.id, usr.id);
-        console.log(isBlocked);
+        //console.log(isBlocked);
         if (isBlocked.isBlocked) {
           setFriend(undefined);
           return;
         }
       } catch (error: any) {
-        console.log("Friend alert getData error: " + error);
+        //console.log("Friend alert getData error: " + error);
       }
     }
     getData();

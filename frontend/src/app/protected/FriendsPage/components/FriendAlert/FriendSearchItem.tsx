@@ -29,7 +29,7 @@ export default function FriendSearchItem(prompt: {
         receivedId: userInfo.id,
       });
     } catch (error) {
-      console.log("handleInvite: " + error);
+      //console.log("handleInvite: " + error);
     }
   }
   // ================== /handle Invite ==================

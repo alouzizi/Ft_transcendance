@@ -7,6 +7,7 @@ import { useGlobalDataContext } from "./FriendCategory";
 
 import { blockFriend, removeFriend } from "@/app/MyApi/friendshipApi";
 import { useGlobalContext } from "../../context/store";
+import PlayInvite from "../../GamePage/components/Invite";
 
 export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -32,7 +33,12 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
   const { user, socket } = useGlobalContext();
 
   function handlePlayMatch() {
-    console.log("play match with friend: " + prompt.friendInfo.nickname);
+    PlayInvite({
+      userId1: user.id,
+      userId2: prompt.friendInfo.id,
+      socket: socket,
+      nameInveted: prompt.friendInfo.nickname,
+    });
     handleClose();
   }
 
@@ -50,7 +56,7 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleRemoveFriend: " + error);
+      //console.log("handleRemoveFriend: " + error);
     }
     handleClose();
   }
@@ -62,7 +68,10 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
         (item) => item.id !== prompt.friendInfo.id
       );
       contxt.setData(updatedData);
-      socket?.emit('blockUserToUser', { senderId: user.id, receivedId: prompt.friendInfo.id });
+      socket?.emit("blockUserToUser", {
+        senderId: user.id,
+        receivedId: prompt.friendInfo.id,
+      });
       socket?.emit("updateData", {
         content: "",
         senderId: user.id,
@@ -70,7 +79,7 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleBlockFriend: " + error);
+      //console.log("handleBlockFriend: " + error);
     }
     handleClose();
   }
@@ -102,14 +111,14 @@ export default function PopoverMenu(prompt: { friendInfo: friendDto }) {
         }}
       >
         <div className=" flex flex-col bg-color-main-dark py-2 px-2 rounded-none cursor-pointer">
-          <p
+          {/* <p
             onClick={handlePlayMatch}
             className="text-white text-sm rounded-md ml-0 py-2 pl-2 pr-14
                     
                     hover:bg-color-main-whith  "
           >
             play match
-          </p>
+          </p> */}
           <p
             onClick={handleRemoveFriend}
             className="text-red-500 text-sm rounded-md ml-0 py-2 pl-2 pr-14

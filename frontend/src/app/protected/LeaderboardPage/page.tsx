@@ -13,7 +13,7 @@ export default function LeaderboardPage() {
         const leaderBoardTmp = await getLeaderBoard();
         setLeaderBoardList(leaderBoardTmp);
       } catch (error: any) {
-        console.log("getData error: " + error);
+        //console.log("getData error: " + error);
       }
     }
     getData();

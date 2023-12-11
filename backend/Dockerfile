@@ -24,4 +24,3 @@ EXPOSE 4000
 
 CMD ["bash", "script.sh"]
 
-

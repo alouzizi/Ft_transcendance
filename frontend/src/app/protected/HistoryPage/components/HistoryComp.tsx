@@ -20,7 +20,7 @@ export default function HistoryComp(prompt: { friend: ownerDto }) {
         const gameHistoryTmp = await getGameHistory(prompt.friend.id);
         setGameHistory(gameHistoryTmp);
       } catch (error: any) {
-        console.log("getData error: " + error);
+        //console.log("getData error: " + error);
       }
     }
     getData();

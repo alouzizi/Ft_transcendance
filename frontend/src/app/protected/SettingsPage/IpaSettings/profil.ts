@@ -1,14 +1,12 @@
 // import axios from "axios";
-// import { Backend_URL } from "../../../../../lib/Constants";
+// import { NEXT_PUBLIC_BACK } from "../../../../../lib/Constants";
 // import Cookies from "js-cookie";
-
-
 
 // export async function activate2af(intra_id: string, keyQrCode: string) {
 //     const token = Cookies.get("access_token");
 //     try {
 //         const response = await axios.post(
-//             Backend_URL +
+//             NEXT_PUBLIC_BACK +
 //             `/auth/2fa//${intra_id}/${keyQrCode}`, {
 //             headers: {
 //                 'Authorization': `Bearer ${token}`,
@@ -19,7 +17,7 @@
 //         // if (data.error) throw Error;
 //         // return data;
 
-//         console.log("---> ", response);
+//         //console.log("---> ", response);
 //         // if (response.ok) {
 //         //   setChecked(true);
 //         //   setUrlImage("");
@@ -31,6 +29,6 @@
 //         // }
 
 //     } catch (e) {
-//         // console.log(e)
+//         // //console.log(e)
 //     }
 // }

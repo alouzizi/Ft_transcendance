@@ -6,6 +6,7 @@ export declare class SocketGatewayService {
     constructor(prisma: PrismaService);
     handleConnection(client: Socket, wss: Server): Promise<void>;
     handleDisconnect(client: Socket, wss: Server): Promise<void>;
+    updateStatusGeust(senderId: string, wss: Server): Promise<void>;
     updateData(ids: CreateMessageDto, wss: Server): Promise<void>;
     emitNewMessage(ids: CreateMessageDto, wss: Server): Promise<void>;
     updateChannel(ids: CreateMessageDto, wss: Server): Promise<void>;

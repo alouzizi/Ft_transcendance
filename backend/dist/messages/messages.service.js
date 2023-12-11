@@ -339,7 +339,8 @@ let MessagesService = class MessagesService {
                     break;
                 }
             }
-            if (find)
+            const bannedMember = await this.prisma.bannedMember.findMany({ where: { userId: senderId, channelId: chl.id } });
+            if (find || bannedMember.length)
                 continue;
             const temp = {
                 isDirectMessage: false,

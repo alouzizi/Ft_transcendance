@@ -30,31 +30,40 @@ const DataContext = createContext<ContextProps>({
 // ====================== create context ======================
 export default function FriendCategory(prompt: { itemsStatus: string }) {
   const [data, setData] = useState<friendDto[]>([]);
-  const { updateInfo, user } = useGlobalContext();
+  const { updateInfo, user, socket } = useGlobalContext();
   useEffect(() => {
     async function getData() {
       try {
         let dataTmp: friendDto[] = [];
         if (prompt.itemsStatus === "Online") {
           dataTmp = await getOnlineFriends(user.id);
+          setData(dataTmp);
         } else if (prompt.itemsStatus === "All") {
           dataTmp = await getAllFriends(user.id);
+          setData(dataTmp);
         } else if (prompt.itemsStatus === "Pending") {
           dataTmp = await getPendingFriends(user.id);
+          setData(dataTmp);
         } else if (prompt.itemsStatus === "Blocked") {
           dataTmp = await getBlockedFriends(user.id);
+          setData(dataTmp);
         } else {
           dataTmp = [];
         }
-        setData(dataTmp);
-        return data;
+
+        //console.log("getData called -------------", updateInfo);
       } catch (error: any) {
-        console.log("getData error: " + error);
+        //console.log("getData error: " + error);
       }
     }
     getData();
-  }, [user.id, prompt.itemsStatus, updateInfo]);
-  //   useEffect(() => {}, [data]);
+    if (socket) {
+      socket.on("updateStatusGeust", getData);
+    }
+    return () => {
+      socket?.off("updateStatusGeust", getData);
+    };
+  }, [user.id, prompt.itemsStatus, updateInfo, socket]);
 
   return (
     <DataContext.Provider value={{ data, setData }}>

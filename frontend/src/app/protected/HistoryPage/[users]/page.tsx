@@ -25,7 +25,7 @@ export default function HistoryPage() {
           return;
         }
       } catch (error: any) {
-        console.log("Friend alert getData error: " + error);
+        //console.log("Friend alert getData error: " + error);
       }
     }
     getData();

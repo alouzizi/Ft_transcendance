@@ -32,13 +32,11 @@ let NotificationService = class NotificationService {
             where: { id: notificationId },
         });
         if (!notification) {
-            console.log("User tried to delete a record that does not exist");
             throw new common_2.NotFoundException("There is no notification with the given ID");
         }
         await this.prisma.notificationTable.delete({
             where: { id: notificationId },
         });
-        console.log(`Notification with ID ${notificationId} has been deleted.`);
         return;
     }
     async clearAll(senderId) {

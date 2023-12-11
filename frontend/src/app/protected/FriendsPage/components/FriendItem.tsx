@@ -39,7 +39,7 @@ export default function FriendItem(prompt: {
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleBlockFriend: " + error);
+      //console.log("handleBlockFriend: " + error);
     }
   }
   // ==================== /handleUnblock =====================
@@ -59,7 +59,7 @@ export default function FriendItem(prompt: {
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleReject: " + error);
+      //console.log("handleReject: " + error);
     }
   }
   // ==================== /handleReject =====================
@@ -79,7 +79,7 @@ export default function FriendItem(prompt: {
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleAccept: " + error);
+      //console.log("handleAccept: " + error);
     }
   }
   // ==================== /handleAccept =====================
@@ -99,7 +99,7 @@ export default function FriendItem(prompt: {
         receivedId: prompt.friendInfo.id,
       });
     } catch (error) {
-      console.log("handleCancel: " + error);
+      //console.log("handleCancel: " + error);
     }
   }
   // ==================== /handleCancel =====================
@@ -108,6 +108,7 @@ export default function FriendItem(prompt: {
       <Link href={`/protected/DashboardPage/${prompt.friendInfo.nickname}`}>
         <div className="flex flex-row cursor-pointer">
           {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
+
           <Badge
             badgeContent={4}
             sx={{
@@ -208,11 +209,15 @@ export default function FriendItem(prompt: {
             text-md p-1 mr-2
                 md:text-lg md:p-2 md:mr-4"
             >
-              <FaMessage onClick={async () => {
-                const geustTemp: geustDto = await getUserGeust(prompt.friendInfo.id);
-                setGeust(geustTemp)
-                router.push("/protected/ChatPage");
-              }} />
+              <FaMessage
+                onClick={async () => {
+                  const geustTemp: geustDto = await getUserGeust(
+                    prompt.friendInfo.id
+                  );
+                  setGeust(geustTemp);
+                  router.push("/protected/ChatPage");
+                }}
+              />
             </div>
           </Tooltip>
         </div>

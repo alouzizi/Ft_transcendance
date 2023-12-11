@@ -62,7 +62,7 @@ export default function HistoryDropDown(prompt: {
         );
       }
       setGameHistoryFormated(gameHistoryTmp);
-      console.log("gameHistoryFormated", gameHistoryFormated);
+      // //console.log("gameHistoryFormated", gameHistoryFormated);
     }
 
     selectItems();
@@ -73,7 +73,7 @@ export default function HistoryDropDown(prompt: {
         const gameHistoryTmp = await getGameHistory(prompt.friend.id);
         setGameHistoryFormated(gameHistoryTmp);
       } catch (error: any) {
-        console.log("getData error: " + error);
+        //console.log("getData error: " + error);
       }
     }
     getData();

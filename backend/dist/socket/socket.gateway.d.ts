@@ -17,6 +17,7 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     handleDisconnect(client: Socket): Promise<void>;
     createMessage(createMessageDto: CreateMessageDto): Promise<void>;
     updateData(ids: CreateMessageDto): Promise<void>;
+    updateStatusGeust(senderId: string): Promise<void>;
     updateChannel(ids: CreateMessageDto): Promise<void>;
     isTyping(ids: CreateMessageDto): Promise<void>;
     kickedFromChannel(ids: any): Promise<void>;
@@ -52,4 +53,6 @@ export declare class SocketGateway implements OnGatewayInit, OnGatewayConnection
     private inviteRoom;
     onIvite(client: Socket, data: any): void;
     onAccept(client: Socket, data: any): void;
+    onDeclien(client: Socket, Id: any): void;
+    onOut(client: Socket, Id: any): void;
 }

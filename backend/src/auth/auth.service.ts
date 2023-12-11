@@ -7,31 +7,27 @@ import { toDataURL } from "qrcode";
 import { authenticator } from "otplib";
 import { Response } from "express";
 
-
 @Injectable({})
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
     private jwtService: JwtService
-  ) { }
-
+  ) {}
 
   async callbackStratiegs(req: any, res: Response) {
-    const ret = await this.valiadteUserAndCreateJWT(
-      req.user.intra_id
-    );
+    const ret = await this.valiadteUserAndCreateJWT(req.user.intra_id);
     if (ret) {
       res.cookie("intra_id", req.user.intra_id);
       const diff =
         (new Date().getTime() - new Date(`${req.user.createdAt}`).getTime()) /
         1000;
-      if (diff < 120) {
+      if (diff < 60) {
         res.cookie("access_token", ret.access_token);
         return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
       }
       if (req.user.isTwoFactorAuthEnabled)
-        return res.redirect(process.env.FRONT_HOST + "public/Checker2faAuth");
+        return res.redirect(process.env.FRONT_HOST + "Checker2faAuth");
       res.cookie("access_token", ret.access_token);
       res.redirect(process.env.FRONT_HOST + "protected/DashboardPage");
     }
@@ -96,11 +92,9 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
-    // console.log("-----> , ", user)
     return authenticator.verify({
       token: authCode,
       secret: user.twoFactorAuthSecret,
     });
-
   }
 }

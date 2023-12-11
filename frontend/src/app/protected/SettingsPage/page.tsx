@@ -9,31 +9,43 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Backend_URL } from "../../../../lib/Constants";
 import ImageUpload from "./components/imageupload";
 import { getDataOwner } from "./IpaSettings/fetch-user";
-import { generateUrlQr, turnOff_2FA, turnOn_2FA } from "./IpaSettings/fetch-qrcode";
+import {
+  generateUrlQr,
+  turnOff_2FA,
+  turnOn_2FA,
+} from "./IpaSettings/fetch-qrcode";
+import { z } from "zod";
 
 export default function SettingsPage() {
-  const token = Cookies.get("access_token");
-
-
   const { user, setUser } = useGlobalContext();
 
   const [checked, setChecked] = useState(false);
   const [urlImage, setUrlImage] = useState("");
-  const [newNickName, setNickName] = useState("");
+
   const [keyQrCode, setKeyQrCode] = useState("");
 
+  const newNickNameSchema = z
+    .string()
+    .min(3)
+    .max(15)
+    .refine((name) => /^[a-zA-Z0-9_\-]+$/.test(name));
+  const [newNickName, setNickName] = useState("");
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (user && user.id !== "-1" && !event.target.checked && user.isTwoFactorAuthEnabled) {
+    if (
+      user &&
+      user.id !== "-1" &&
+      !event.target.checked &&
+      user.isTwoFactorAuthEnabled
+    ) {
       await turnOff_2FA(user.intra_id);
       setChecked(false);
       toast.success("2fa authentication turned off successfully");
     } else if (event.target.checked) {
       setChecked(event.target.checked);
-      const urlImg = await generateUrlQr()
+      const urlImg = await generateUrlQr();
       if (urlImg) setUrlImage(urlImg);
     } else if (!event.target.checked) {
       setUrlImage("");
@@ -50,13 +62,17 @@ export default function SettingsPage() {
 
   return (
     <div className="h-fit min-h-screen">
-
       <div className="pt-5 pl-20  text-white text-2xl/[29px] mb-5 mt-5">
         <Text weight="bold">Edit Profile</Text>
       </div>
 
       <div className="flex flex-col items-center ">
-        <Text weight="bold" className="text-gray-400 text-xl w-[30rem] md:w-[10rem]">Cover Image</Text>
+        <Text
+          weight="bold"
+          className="text-gray-400 text-xl w-[30rem] md:w-[10rem]"
+        >
+          Cover Image
+        </Text>
         <div className="mt-2 mb-4">
           <img
             className="rounded-2xl h-[10rem] md:w-[30rem] w-[10rem]"
@@ -64,7 +80,12 @@ export default function SettingsPage() {
           ></img>
         </div>
 
-        <Text weight="bold" className="text-gray-400 text-xl md:w-[30rem] w-[10rem]">Profile Image</Text>
+        <Text
+          weight="bold"
+          className="text-gray-400 text-xl md:w-[30rem] w-[10rem]"
+        >
+          Profile Image
+        </Text>
         <div className="md:w-[30rem] w-[10rem] mt-4">
           <ImageUpload />
         </div>
@@ -85,7 +106,9 @@ export default function SettingsPage() {
           <div className="md:w-[30rem] w-[10rem] mt-3">
             <div className="flex items-center justify-start ">
               <Switch checked={checked} color="info" onChange={handleChange} />
-              <label className="text-white text-sm md:text-lg">Two-factor Authentification</label>
+              <label className="text-white text-sm md:text-lg">
+                Two-factor Authentification
+              </label>
             </div>
 
             {urlImage === "" ? (
@@ -133,8 +156,7 @@ export default function SettingsPage() {
                       } else {
                         toast.error("Wrong authentication code");
                       }
-                    } catch (e) {
-                    }
+                    } catch (e) {}
                   }}
                 >
                   Active 2FA
@@ -143,36 +165,44 @@ export default function SettingsPage() {
             )}
           </div>
           <div className="flex items-end justify-end md:w-[30rem] w-[10rem]">
-            <button onClick={async (e) => {
-              e.preventDefault();
-              if (newNickName !== user.nickname) {
-                if (newNickName.length > 20 || newNickName.length < 3) {
-                  toast.error("nickname error");
-                } else {
-                  try {
-                    const response = await fetch(
-                      Backend_URL +
-                      `/user/updateNickname/${user.intra_id}/${newNickName.toLowerCase()}`,
-                      {
-                        method: "POST",
-                        headers: {
-                          authorization: `Bearer ${token}`,
-                          "Content-Type": "application/json",
-                        },
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                if (newNickName !== user.nickname) {
+                  const validationResult =
+                    newNickNameSchema.safeParse(newNickName);
+                  //console.log("newNickName=", newNickName);
+                  //console.log("validationResult=", validationResult);
+                  if (!validationResult.success) {
+                    toast.error("nickname error");
+                  } else {
+                    try {
+                      const token = Cookies.get("access_token");
+                      const response = await fetch(
+                        `${process.env.NEXT_PUBLIC_BACK}/user/updateNickname/${
+                          user.intra_id
+                        }/${newNickName.toLowerCase()}`,
+                        {
+                          method: "POST",
+                          headers: {
+                            authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                          },
+                        }
+                      );
+                      if (response.status === 409)
+                        toast.error("nickname aleady exist");
+                      else if (response.status === 201) {
+                        toast.success("nickname has been change");
+                        const tmp = await getDataOwner();
+                        setUser(tmp);
                       }
-                    );
-                    if (response.status === 409)
-                      toast.error("nickname aleady exist");
-                    else if (response.status === 201) {
-                      toast.success("nickname has been change");
-                      const tmp = await getDataOwner(user.intra_id);
-                      setUser(tmp);
-                    }
-                  } catch (error) { }
+                    } catch (error) {}
+                  }
                 }
-              }
-            }}
-              className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center mb-5 mt-3">
+              }}
+              className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center mb-5 mt-3"
+            >
               <div className="text-white  pr-2">Save</div>
             </button>
           </div>
@@ -182,5 +212,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
-

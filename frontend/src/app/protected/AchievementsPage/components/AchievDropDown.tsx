@@ -61,7 +61,7 @@ export default function AchievDropDown(prompt: {
         const globalInfoTmp = await getGlobalInfos(prompt.friend.id);
         setGlobalInfo(globalInfoTmp);
       } catch (error: any) {
-        console.log("getData error: " + error);
+        //console.log("getData error: " + error);
       }
     }
     getData();

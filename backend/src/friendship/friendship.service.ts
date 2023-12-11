@@ -44,7 +44,7 @@ export class FriendshipService {
       });
       return allUsers;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -55,9 +55,11 @@ export class FriendshipService {
           nickname: recieverUsr,
         },
       });
+      //console.log(oneUser);
       return oneUser;
     } catch (error) {
-      return {error: error}
+      //console.log("oneUser error");
+      return { error: error };
     }
   }
 
@@ -86,7 +88,7 @@ export class FriendshipService {
         isBlocked: false,
       };
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -101,7 +103,7 @@ export class FriendshipService {
       }
       return onlineFriends;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -132,7 +134,7 @@ export class FriendshipService {
       });
       return allFriends;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
@@ -177,7 +179,7 @@ export class FriendshipService {
       });
       return formattedPendingFriends;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
@@ -196,13 +198,13 @@ export class FriendshipService {
           },
         });
         if (!isEmpty(user)) {
-          console.log(user);
+          //console.log(user);
           blockedFriends.push(user);
         }
       }
       return blockedFriends;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
@@ -252,7 +254,7 @@ export class FriendshipService {
       });
       return possibleFriends;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -288,7 +290,7 @@ export class FriendshipService {
       });
       return possibleFriends;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -321,7 +323,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -335,7 +337,7 @@ export class FriendshipService {
           },
         },
       });
-      console.log("userToAccept : ", userToAccept);
+      //console.log("userToAccept : ", userToAccept);
       if (userToAccept) {
         const user = await this.prisma.friend.create({
           data: {
@@ -343,7 +345,7 @@ export class FriendshipService {
             receivedId: recieverId,
           },
         });
-        console.log();
+        //console.log();
         await this.prisma.friendRequest.delete({
           where: {
             Unique_Sender_Receiver: {
@@ -356,7 +358,7 @@ export class FriendshipService {
       }
       return { error: "null" };
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -372,7 +374,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
   async rejectFriendRequest(senderId: string, recieverId: string) {
@@ -387,7 +389,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -417,7 +419,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -433,7 +435,7 @@ export class FriendshipService {
       });
       return user;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 
@@ -466,7 +468,7 @@ export class FriendshipService {
       }
       return friendToDelete;
     } catch (error) {
-      return {error: error}
+      return { error: error };
     }
   }
 }

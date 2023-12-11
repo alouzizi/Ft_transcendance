@@ -23,7 +23,7 @@
 //     }
 //   };
 //   useEffect(() => {
-//     console.log("user --> ", user);
+//     //console.log("user --> ", user);
 //   }, [user.id]);
 //   return (
 //     <div className="kborder ml-4 -mt-24">

@@ -18,7 +18,7 @@ enum Status {
 export default function MembersChannel() {
 
     const [searsh, setSearsh] = useState('');
-    const { user, geust, socket, updateInfo, setUpdateInfo, setGeust } = useGlobalContext();
+    const { user, geust, socket, setGeust } = useGlobalContext();
     const [members, setMembers] = useState<memberChannelDto[]>([]);
     const [bannedmembers, setBannedMembers] = useState<memberChannelDto[]>([]);
     const [membersFiltred, setMembersFlitred] = useState<memberChannelDto[]>([]);
@@ -39,8 +39,8 @@ export default function MembersChannel() {
 
 
     const getMemberChannelForEmit = async (data: { idChannel: string }) => {
-        console.log(geust.id)
-        console.log(data.idChannel);
+        //console.log(geust.id)
+        //console.log(data.idChannel);
         if (geust.id === data.idChannel) {
             const tmp: { regularMembres: memberChannelDto[], bannedMembers: memberChannelDto[] }
                 = await getMembersChannel(geust.id);
@@ -70,6 +70,24 @@ export default function MembersChannel() {
             socket.on("changeStatusMember", getMemberChannel);
             return () => {
                 socket.off("changeStatusMember", getMemberChannel);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("leaveChannel", getMemberChannel);
+            return () => {
+                socket.off("leaveChannel", getMemberChannel);
+            };
+        }
+    }, [socket, geust.id]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("updateChannel", getMemberChannel);
+            return () => {
+                socket.off("updateChannel", getMemberChannel);
             };
         }
     }, [socket, geust.id]);
@@ -241,6 +259,11 @@ export default function MembersChannel() {
                         inGaming: false
                     });
                     const tmp = await leaveChannel(user.id, geust.id);
+                    socket?.emit('updateChannel', {
+                        senderId: user.id,
+                        receivedId: geust.id,
+                        isDirectMessage: false
+                    });
                     router.push('/protected/ChatPage');
                 }}
                     className="flex items-center rounded-md text-red-500 px-2

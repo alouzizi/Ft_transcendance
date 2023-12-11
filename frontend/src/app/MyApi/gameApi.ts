@@ -1,4 +1,3 @@
-import { Backend_URL } from "../../../lib/Constants";
 import Cookies from "js-cookie";
 
 // ================================================================
@@ -15,7 +14,7 @@ export async function getGameHistory(senderId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/game/gameHistory/${senderId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/game/gameHistory/${senderId}`,
       {
         method: "GET",
         headers: {
@@ -29,7 +28,7 @@ export async function getGameHistory(senderId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getGameHistory error: " + error);
+    //console.log("getGameHistory error: " + error);
     return res;
   }
 }
@@ -38,19 +37,22 @@ export async function getLeaderBoard() {
   let res: LeaderBoard[] = [];
   try {
     const token = Cookies.get("access_token");
-    const response = await fetch(`${Backend_URL}/game/LeaderBoard/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK}/game/LeaderBoard/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.ok) {
       res = await response.json();
     }
     return res;
   } catch (error: any) {
-    console.log("getLeaderBoard error: " + error);
+    //console.log("getLeaderBoard error: " + error);
     return res;
   }
 }
@@ -72,7 +74,7 @@ export async function getGlobalInfos(senderId: string) {
     const token = Cookies.get("access_token");
 
     const response = await fetch(
-      `${Backend_URL}/game/globalInfos/${senderId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/game/globalInfos/${senderId}`,
       {
         method: "GET",
         headers: {
@@ -86,7 +88,7 @@ export async function getGlobalInfos(senderId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getGlobalInfos error: " + error);
+    //console.log("getGlobalInfos error: " + error);
     return res;
   }
 }
@@ -210,7 +212,7 @@ export async function getUserRanking(senderId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/game/userRanking/${senderId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/game/userRanking/${senderId}`,
       {
         method: "GET",
         headers: {
@@ -224,7 +226,7 @@ export async function getUserRanking(senderId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getUserRanking error: " + error);
+    //console.log("getUserRanking error: " + error);
     return res;
   }
 }

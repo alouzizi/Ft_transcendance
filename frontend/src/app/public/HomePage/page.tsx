@@ -1,12 +1,10 @@
 "use client";
 import { Text } from "@radix-ui/themes";
-import { useState } from 'react';
+import { useState } from "react";
 import { FaArrowCircleRight } from "react-icons/fa";
-import AlertOpenAccount from './components/alertOpenAcc';
+import AlertOpenAccount from "./components/alertOpenAcc";
 
 export default function HomePage() {
-
-
   const [openAlert, setOpenAlert] = useState(false);
 
   return (
@@ -16,10 +14,13 @@ export default function HomePage() {
           Welcome to PongMaster Where Pong Legends Are Born! 🏓💥
         </Text>
 
-        <div onClick={(e) => {
-          e.preventDefault()
-          setOpenAlert(true);
-        }} className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center">
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            setOpenAlert(true);
+          }}
+          className="bg-[#4069FF] px-4 py-2 rounded-md mt-4 flex items-center cursor-pointer"
+        >
           <p className="text-white  pr-2">Open Account</p>
           <FaArrowCircleRight size="20" />
         </div>

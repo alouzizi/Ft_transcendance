@@ -1,7 +1,6 @@
 #! /bin/sh
 
 npx prisma generate
-
-npx prisma migrate dev --name init
-
+sleep 20
+npx prisma migrate dev 
 npm run s

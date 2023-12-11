@@ -1,5 +1,9 @@
 "use client";
-import { getAllFriends, getUserByNick } from "@/app/MyApi/friendshipApi";
+import {
+  getAllFriends,
+  getIsBlocked,
+  getUserByNick,
+} from "@/app/MyApi/friendshipApi";
 import {
   getAchievmentsData,
   getGameHistory,
@@ -15,6 +19,7 @@ import { useEffect, useState } from "react";
 import AchievementItem from "../../AchievementsPage/components/AchievementItem";
 import { useGlobalContext } from "../../context/store";
 import PopoverMenuDash from "./PopoverMenuDash";
+import Badge from "@mui/material/Badge";
 export default function DashBoard(prompt: { friend: ownerDto }) {
   const router = useRouter();
   const { user, updateInfo } = useGlobalContext();
@@ -34,6 +39,8 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
     (acheiv) => acheiv.isUnlocked
   );
   const [level, setLevel] = useState([0, 0]);
+  const [isBlocked, setIsBlocked] = useState(true);
+
   useEffect(() => {
     async function getData() {
       try {
@@ -55,7 +62,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         // for fetch the friends
         const dataTmp = await getAllFriends(prompt.friend.id);
         setIsFriend(
-          dataTmp.some((element: friendDto) => element.id === prompt.friend.id)
+          dataTmp.some((element: friendDto) => element.id === user.id)
         );
 
         // for fetch the globalInfoTmp
@@ -69,8 +76,12 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
             globalInfoTmp.NbrOfAllMatches;
           setWinRate(winRate);
         }
+
+        // for check if friend is blocked
+        const isBlockedTmp = await getIsBlocked(user.id, prompt.friend.id);
+        setIsBlocked(isBlockedTmp.isBlocked);
       } catch (error: any) {
-        console.log("getData error: " + error);
+        //console.log("getData error: " + error);
       }
     }
     getData();
@@ -94,17 +105,21 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         "
         style={{ backgroundImage: "url('/bg-info.png')" }}
       >
-        {user.id !== prompt.friend.id ? (
-          <PopoverMenuDash friendInfo={prompt.friend} isFriend={isFriend} />
-        ) : (
+        {user.id == prompt.friend.id || isBlocked ? (
           <div />
+        ) : (
+          <PopoverMenuDash
+            friendInfo={prompt.friend}
+            user={user}
+            isFriend={isFriend}
+          />
         )}
 
         <LevelBar level={level[0]} completed={level[1]} />
 
-
-        <img
-          className="
+        {user.id == prompt.friend.id || isBlocked ? (
+          <img
+            className="
          border-color-main shadow-[0px_0px_10px_rgba(0,0,0,0)] 
           hover:shadow-transparent rounded-full object-cover absolute
         transition-all duration-700 ease-in-out overflow-hidden
@@ -116,9 +131,57 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           // big screen 
           2xl:w-28 2xl:h-28  2xl:mx-auto 2xl:mb-[-2rem] 2xl:border-2
           2xl:z-10 2xl:top-auto 2xl:bottom-1/3 2xl:left-6 "
-          src={prompt.friend.profilePic}
-          alt=""
-        />
+            src={prompt.friend.profilePic}
+            alt=""
+          />
+        ) : (
+          <div
+            className="absolute transition-all duration-700 ease-in-out  w-fit h-fit
+        z-10 left-[50%] bottom-[45%] -ml-12 mx-auto mb-[-1.5rem]
+         2xl:top-auto 2xl:bottom-1/3 2xl:left-6 2xl:mx-auto 2xl:mb-[-2rem]"
+          >
+            <Badge
+              badgeContent={
+                prompt.friend.inGaming
+                  ? "in game"
+                  : prompt.friend.status === "ACTIF"
+                  ? "online"
+                  : "offline"
+              }
+              sx={{
+                "& .MuiBadge-badge": {
+                  backgroundColor: prompt.friend.inGaming
+                    ? "#4069FF"
+                    : prompt.friend.status === "ACTIF"
+                    ? "#49D629"
+                    : "#7C7D7C",
+
+                  margin: "0.5rem 0 0.6rem 0",
+                  borderRadius: 50,
+                  border: "2px solid #111623",
+                },
+              }}
+              overlap="rectangular"
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+            >
+              <img
+                className="object-cover mx-auto  rounded-full 
+          
+        // small screen
+        w-16 h-16
+        // Big screen
+        md:w-20 md:h-20
+        2xl:w-24 2xl:h-24
+        "
+                src={prompt.friend.profilePic}
+                alt=""
+              />
+            </Badge>
+          </div>
+        )}
 
         <div
           className="
@@ -131,19 +194,23 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
 
           // big screen 
           2xl:flex 2xl:flex-row 2xl:justify-between 2xl:w-full 2xl:h-1/3 2xl:bottom-0
-          ">
+          "
+        >
           <div
             className=" 
           // small screen
-          mt-12
+          mt-12 w-fit
           // Big screen
           2xl:ml-6 2xl:mt-2 2xl:w-1/3
+          
           "
           >
             <h1 className="text-white text-sm">
               {prompt.friend.first_name} {prompt.friend.last_name}
             </h1>
-            <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
+            <div className="flex flex-row w-fit">
+              <p className="text-gray-400 text-sm">@{prompt.friend.nickname}</p>
+            </div>
           </div>
 
           <div

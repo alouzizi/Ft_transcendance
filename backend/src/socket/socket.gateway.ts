@@ -32,7 +32,7 @@ export class SocketGateway
   @WebSocketServer() server: Server;
 
   afterInit(server: any) {
-    console.log("Gateway Initialized");
+    // //console.log("Gateway Initialized");
   }
 
   async handleConnection(client: Socket) {
@@ -61,6 +61,12 @@ export class SocketGateway
   @SubscribeMessage("updateData")
   async updateData(@MessageBody() ids: CreateMessageDto) {
     this.socketGatewayService.updateData(ids, this.server);
+  }
+
+
+  @SubscribeMessage("updateStatusGeust")
+  async updateStatusGeust(@MessageBody() senderId: string) {
+    this.socketGatewayService.updateStatusGeust(senderId, this.server);
   }
 
   @SubscribeMessage("updateChannel")
@@ -198,6 +204,15 @@ export class SocketGateway
           ro.ball.y - ro.ball.radius < 0
         ) {
           ro.ball.velocityY = -ro.ball.velocityY;
+
+        }
+        if (ro.ball.y + ro.ball.radius > 400) {
+
+          ro.ball.y -= 10;
+          // ro.ball.velocityX = -ro.ball.velocityX;
+        } else if (ro.ball.y - ro.ball.radius < 0) {
+          // ro.ball.velocityY = -ro.ball.velocityY
+          ro.ball.y += 10;
         }
         let user: any = ro.ball.x < 600 / 2 ? ro.player1 : ro.player2;
         if (this.collision(ro.ball, user)) {
@@ -257,7 +272,7 @@ export class SocketGateway
           // this.gameState(roomName, ro.player1.score, ro.player2.score);
         }
         this.server.to(roomName).emit("updateTheBall", ro.ball);
-      }, 20)
+      }, 25)
     );
   }
 
@@ -271,15 +286,15 @@ export class SocketGateway
 
     if (p1.score + p2.score === this.ROUND_LIMIT) {
       if (p1.score == p2.score) {
-        console.log(player1, player2);
+        //console.log(player1, player2);
         this.server.to(roomName).emit("gameOver", "draw");
       }
-      if (p1.score > p2.score) {
-        console.log(player1, player2);
+      else if (p1.score > p2.score) {
+        //console.log(player1, player2);
         this.server.to(player1).emit("gameOver", "win");
         this.server.to(player2).emit("gameOver", "lose");
       } else {
-        console.log(player1, player2);
+        //console.log(player1, player2);
         this.server.to(player1).emit("gameOver", "lose");
         this.server.to(player2).emit("gameOver", "win");
       }
@@ -438,6 +453,7 @@ export class SocketGateway
     client.join(data.userId1);
 
     // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
+    this.server.to(data.userId1).emit("invite", data);
     this.server.to(data.userId2).emit("invite", data);
   }
 
@@ -468,6 +484,28 @@ export class SocketGateway
     this.gameService.resetBall(this.roomState.get(roomName).ball);
     this.startEmittingBallPosition(roomName, data.userId2);
     this.clients.clear();
+  }
+
+  @SubscribeMessage("decline")
+  onDeclien(client: Socket, Id: any) {
+    // this.inviteRoom.set(data.userId1, client);
+    // client.join(data.userId1);
+
+    // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
+    this.server.to(Id).emit("declien");
+    // this.server.to(data.userId2).emit("declien", data);
+  }
+
+  @SubscribeMessage("clear")
+  onOut(client: Socket, Id: any) {
+
+    this.clients.delete(Id);
+    this.joindClients.delete(Id);
+    // this.clients.set(id, client);
+    // this.joindClients.set(id, 0);
+    // Id.leave(Id);
+    // client.join(id);
+
   }
 }
 

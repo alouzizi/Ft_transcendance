@@ -10,7 +10,7 @@ import { BlockedUser, Prisma, Status, User } from "@prisma/client";
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findById(id: string) {
     try {
@@ -176,7 +176,7 @@ export class UserService {
           lastSee: user.lastSee,
           lenUser: 0,
           idUserOwner: 0,
-          inGaming: user.inGaming
+          inGaming: user.inGaming,
         };
       return {
         isUser: true,
@@ -218,18 +218,10 @@ export class UserService {
 
   async createUser(user1: any) {
     try {
-      let nickname = user1.login42.toString();
-      let i = 0;
-      let check = await this.prisma.user.findUnique({ where: { nickname: nickname } });
-      while (check) {
-        check = await this.prisma.user.findUnique({ where: { nickname: `${nickname}_${i}` } });
-        nickname = `${nickname}_${i}`;
-        i++;
-      }
       const user = await this.prisma.user.create({
         data: {
           intra_id: user1.intra_id.toString(),
-          nickname: nickname,
+          nickname: user1.login42,
           email: user1.email.toString(),
           profilePic: user1.profilePicture.toString(),
           last_name: user1.last_name,
@@ -238,7 +230,7 @@ export class UserService {
         },
       });
       return user;
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async setTwoFactorAuthSecret(secret: string, intra_id: string) {
@@ -310,28 +302,27 @@ export class UserService {
           intra_id: intra_id,
         },
         data: {
-          profilePic: process.env.BACK_HOST + `${path}`,
+          profilePic: process.env.BACK_HOST + `/${path}`,
         },
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   async findByIntraId(intra_id: string) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { intra_id: intra_id },
     });
+    return user;
   }
 
   async findByIds(id: string) {
-    return this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: { id: id },
     });
   }
 
   async deleteUser(id: string) {
-    return this.prisma.user.delete({
+    return await this.prisma.user.delete({
       where: { id: id },
     });
   }
@@ -339,15 +330,14 @@ export class UserService {
   async startGameing(senderId: string) {
     await this.prisma.user.update({
       where: { id: senderId },
-      data: { inGaming: true }
-    })
+      data: { inGaming: true },
+    });
   }
 
   async finishGaming(senderId: string) {
     await this.prisma.user.update({
       where: { id: senderId },
-      data: { inGaming: false }
-    })
+      data: { inGaming: false },
+    });
   }
-
 }

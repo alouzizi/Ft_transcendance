@@ -40,7 +40,7 @@ export function FriendAlert(props: SimpleDialogProps) {
         setPendingFriendsList(pendingFriendsListTmp);
         setData(AllPossibleFriendsDataTmp);
       } catch (error: any) {
-        console.log("Friend alert getData error: " + error);
+        //console.log("Friend alert getData error: " + error);
       }
     }
     getData();

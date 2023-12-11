@@ -1,4 +1,3 @@
-import { Backend_URL } from "../../../lib/Constants";
 import Cookies from "js-cookie";
 
 // ================================================================
@@ -15,7 +14,7 @@ export async function getNavSearchUsers(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/navSearchUsers/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/navSearchUsers/${userId}`,
       {
         method: "GET",
         headers: {
@@ -29,11 +28,14 @@ export async function getNavSearchUsers(userId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getNavSearchUsers error: " + error);
+    //console.log("getNavSearchUsers error: " + error);
     return res;
   }
 }
-
+enum Status {
+  ACTIF = "ACTIF",
+  INACTIF = "INACTIF",
+}
 export async function getUserByNick(recieverUsr: string) {
   let res: ownerDto = {
     id: "-1",
@@ -44,6 +46,8 @@ export async function getUserByNick(recieverUsr: string) {
     profilePic: "",
     isTwoFactorAuthEnabled: true,
     level: "0.0",
+    inGaming: false,
+    status: Status.INACTIF,
   };
   try {
     if (!recieverUsr) {
@@ -51,7 +55,7 @@ export async function getUserByNick(recieverUsr: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/getUserByNick/${recieverUsr}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/getUserByNick/${recieverUsr}`,
       {
         method: "GET",
         headers: {
@@ -65,7 +69,7 @@ export async function getUserByNick(recieverUsr: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getUserByNick error: " + error);
+    //console.log("getUserByNick error: " + error);
     return res;
   }
 }
@@ -80,7 +84,7 @@ export async function getIsBlocked(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/isBlocked/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/isBlocked/${senderId}/${recieverId}`,
       {
         method: "GET",
         headers: {
@@ -94,7 +98,7 @@ export async function getIsBlocked(senderId: string, recieverId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getIsBlocked error: " + error);
+    //console.log("getIsBlocked error: " + error);
     return res;
   }
 }
@@ -107,7 +111,7 @@ export async function getOnlineFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/onlineFriends/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/onlineFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -122,7 +126,7 @@ export async function getOnlineFriends(userId: string) {
 
     return res;
   } catch (error: any) {
-    console.log("getOnlineFriends error: " + error);
+    //console.log("getOnlineFriends error: " + error);
     return res;
   }
 }
@@ -135,7 +139,7 @@ export async function getAllFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/allFriends/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/allFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -149,7 +153,7 @@ export async function getAllFriends(userId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getAllFriends error: " + error);
+    //console.log("getAllFriends error: " + error);
     return res;
   }
 }
@@ -162,7 +166,7 @@ export async function getPendingFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/pendingFriends/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/pendingFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -176,7 +180,7 @@ export async function getPendingFriends(userId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getPendingFriends error: " + error);
+    //console.log("getPendingFriends error: " + error);
     return res;
   }
 }
@@ -189,7 +193,7 @@ export async function getBlockedFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/blockedFriends/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/blockedFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -203,7 +207,7 @@ export async function getBlockedFriends(userId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getBlockedFriends error: " + error);
+    //console.log("getBlockedFriends error: " + error);
     return res;
   }
 }
@@ -216,7 +220,7 @@ export async function getAllPossibleFriends(userId: string) {
     }
     const token = Cookies.get("access_token");
     const response = await fetch(
-      `${Backend_URL}/friendship/allPossibleFriends/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/allPossibleFriends/${userId}`,
       {
         method: "GET",
         headers: {
@@ -230,7 +234,7 @@ export async function getAllPossibleFriends(userId: string) {
     }
     return res;
   } catch (error: any) {
-    console.log("getAllPossibleFriends error: " + error);
+    //console.log("getAllPossibleFriends error: " + error);
     return res;
   }
 }
@@ -250,7 +254,7 @@ export async function removeFriend(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/removeFriend/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/removeFriend/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -260,7 +264,7 @@ export async function removeFriend(senderId: string, recieverId: string) {
       }
     );
   } catch (error: any) {
-    console.log("removeFriend error: " + error);
+    //console.log("removeFriend error: " + error);
   }
 }
 
@@ -271,7 +275,7 @@ export async function blockFriend(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/blockFriend/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/blockFriend/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -281,7 +285,7 @@ export async function blockFriend(senderId: string, recieverId: string) {
       }
     );
   } catch (error: any) {
-    console.log("blockFriend error: " + error);
+    //console.log("blockFriend error: " + error);
   }
 }
 
@@ -292,7 +296,7 @@ export async function unblockFriend(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/unblockFriend/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/unblockFriend/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -302,7 +306,7 @@ export async function unblockFriend(senderId: string, recieverId: string) {
       }
     );
   } catch (error: any) {
-    console.log("unblockFriend error: " + error);
+    //console.log("unblockFriend error: " + error);
   }
 }
 
@@ -313,7 +317,7 @@ export async function sendFriendRequest(senderId: string, recieverId: string) {
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/sendFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/sendFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -323,7 +327,7 @@ export async function sendFriendRequest(senderId: string, recieverId: string) {
       }
     );
   } catch (error: any) {
-    console.log("sendFriendRequest error: " + error);
+    //console.log("sendFriendRequest error: " + error);
   }
 }
 
@@ -337,7 +341,7 @@ export async function unsendFriendRequest(
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/unsendFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/unsendFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -347,7 +351,7 @@ export async function unsendFriendRequest(
       }
     );
   } catch (error: any) {
-    console.log("unsendFriendRequest error: " + error);
+    //console.log("unsendFriendRequest error: " + error);
     return null;
   }
 }
@@ -362,7 +366,7 @@ export async function rejectFriendRequest(
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/rejectFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/rejectFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -372,7 +376,7 @@ export async function rejectFriendRequest(
       }
     );
   } catch (error: any) {
-    console.log("rejectFriendRequest error: " + error);
+    //console.log("rejectFriendRequest error: " + error);
   }
 }
 
@@ -386,7 +390,7 @@ export async function acceptFriendRequest(
     }
     const token = Cookies.get("access_token");
     await fetch(
-      `${Backend_URL}/friendship/acceptFriendRequest/${senderId}/${recieverId}`,
+      `${process.env.NEXT_PUBLIC_BACK}/friendship/acceptFriendRequest/${senderId}/${recieverId}`,
       {
         method: "POST",
         headers: {
@@ -396,6 +400,6 @@ export async function acceptFriendRequest(
       }
     );
   } catch (error: any) {
-    console.log("acceptFriendRequest error: " + error);
+    //console.log("acceptFriendRequest error: " + error);
   }
 }

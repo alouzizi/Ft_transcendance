@@ -13,7 +13,6 @@ exports.ChannelService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
-const bcrypt = require("bcrypt");
 const notification_service_1 = require("../notification/notification.service");
 const crypto_js_1 = require("crypto-js");
 let ChannelService = class ChannelService {
@@ -26,8 +25,7 @@ let ChannelService = class ChannelService {
                 const decrypted = bytes.toString(crypto_js_1.enc.Utf8);
                 return decrypted;
             }
-            catch (err) {
-            }
+            catch (err) { }
         };
     }
     async createMessageInfoChannel(senderId, channelId, userId, msg) {
@@ -46,7 +44,7 @@ let ChannelService = class ChannelService {
         });
     }
     async createChannel(createChannelDto, senderId) {
-        let cipherText = '';
+        let cipherText = "";
         if (createChannelDto.channelPassword !== "")
             cipherText = crypto_js_1.AES.encrypt(createChannelDto.channelPassword, process.env.CRYPTO_JS_KEY);
         try {
@@ -68,7 +66,7 @@ let ChannelService = class ChannelService {
                     channelId: newChannel.id,
                 },
             });
-            createChannelDto.channelMember.forEach(async (item) => {
+            const promises = createChannelDto.channelMember.map(async (item) => {
                 this.notificationService.createNotification({
                     senderId: senderId,
                     recieverId: item,
@@ -83,6 +81,7 @@ let ChannelService = class ChannelService {
                 });
                 this.createMessageInfoChannel(senderId, newChannel.id, item, "added");
             });
+            await Promise.all(promises);
             return { ...newChannel, status: 200 };
         }
         catch (error) {
@@ -102,8 +101,8 @@ let ChannelService = class ChannelService {
                 where: {
                     channelId: channelId,
                     userId: senderId,
-                    isAdmin: true
-                }
+                    isAdmin: true,
+                },
             });
             if (!memberAdmin)
                 return { status: 204, error: "you are not admin" };
@@ -120,7 +119,9 @@ let ChannelService = class ChannelService {
                     avatar: updateChannelDto.avatar,
                 },
             });
-            const userUpdate = await this.prisma.user.findUnique({ where: { id: senderId } });
+            const userUpdate = await this.prisma.user.findUnique({
+                where: { id: senderId },
+            });
             this.createMessageInfoChannel(senderId, channelId, "", `${userUpdate.nickname}'s update in the channel.`);
             let pass2 = "";
             if (channelUpdate.channelPassword !== "")
@@ -147,7 +148,7 @@ let ChannelService = class ChannelService {
     async uploadImageChannel(senderId, channelId, path) {
         try {
             const member = await this.prisma.channelMember.findFirst({
-                where: { channelId: channelId, userId: senderId }
+                where: { channelId: channelId, userId: senderId },
             });
             if (member.isAdmin) {
                 await this.prisma.channel.update({
@@ -155,13 +156,12 @@ let ChannelService = class ChannelService {
                         id: channelId,
                     },
                     data: {
-                        avatar: process.env.BACK_HOST + `${path}`
-                    }
+                        avatar: process.env.BACK_HOST + `/${path}`,
+                    },
                 });
             }
         }
-        catch (error) {
-        }
+        catch (error) { }
     }
     async checkOwnerIsAdmin(senderId, channelId) {
         try {
@@ -474,8 +474,10 @@ let ChannelService = class ChannelService {
             const channel = await this.prisma.channel.findUnique({
                 where: { id: channelId },
             });
-            const passwordMatch = await bcrypt.compare(password, channel.channelPassword);
-            if (passwordMatch) {
+            let pass = "";
+            if (channel.channelPassword !== "")
+                pass = this.decryptMessage(channel.channelPassword);
+            if (pass === password) {
                 return true;
             }
             else {
