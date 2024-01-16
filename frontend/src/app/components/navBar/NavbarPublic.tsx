@@ -21,9 +21,9 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
 
           <div className="space-x-4 flex">
             <Link
-              href="/HomePage"
+              href="/public/HomePage"
               className={
-                pathname === "/HomePage"
+                pathname === "/public/HomePage"
                   ? ""
                   : "text-gray-400"
               }
@@ -32,17 +32,17 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
               <div> HOME</div>
             </Link>
             <Link
-              href="/AboutPage"
+              href="/public/AboutPage"
               className={
-                pathname === "/AboutPage" ? "" : "text-gray-400"
+                pathname === "/public/AboutPage" ? "" : "text-gray-400"
               }
             >
               <div> ABOUT</div>
             </Link>
             <Link
-              href="/ContactPage"
+              href="/public/ContactPage"
               className={
-                pathname === "/ContactPage" ? "" : "text-gray-400"}
+                pathname === "/public/ContactPage" ? "" : "text-gray-400"}
             >
               <div>CONTACT</div>
             </Link>

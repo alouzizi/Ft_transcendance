@@ -146,7 +146,8 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
         }
       }, 20);
       setTimeout(() => {
-        router.push('/GamePage');
+        // router.push('/GamePage');
+        router.back();
       }, 2500);
     });
     function handleWindowResize() {

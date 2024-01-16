@@ -337,7 +337,6 @@ let SocketGateway = class SocketGateway {
     onAccept(client, data) {
         this.inviteRoom.set(data.userId2, client);
         client.join(data.userId2);
-        this.server.to(data.userId2).emit("accepted", data);
         const roomName = data.userId1 + data.userId2;
         const sockets = [
             this.inviteRoom.get(data.userId1),

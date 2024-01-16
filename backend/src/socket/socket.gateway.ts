@@ -478,7 +478,8 @@ export class SocketGateway
     this.inviteRoom.set(data.userId2, client);
     client.join(data.userId2);
 
-    this.server.to(data.userId2).emit("accepted", data);
+    // this.server.to(data.userId2).emit("accepted", data);
+
     const roomName = data.userId1 + data.userId2;
     const sockets: Socket[] = [
       this.inviteRoom.get(data.userId1),
@@ -493,13 +494,14 @@ export class SocketGateway
     sockets.forEach((socket) => {
       socket.join(roomName);
     });
-
     this.server.to(roomName).emit("startGame", data);
     this.GameInit(roomName);
 
     this.gameService.resetBall(this.roomState.get(roomName).ball);
     this.startEmittingBallPosition(roomName, data.userId2);
     this.clients.clear();
+
+
   }
 
   @SubscribeMessage("decline")

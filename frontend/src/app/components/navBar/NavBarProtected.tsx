@@ -3,12 +3,11 @@ import { ReactNode, useState } from 'react';
 import { FiMenu } from 'react-icons/fi';
 import SerachNav from './search/NavSearch';
 import SideBar from './sideBar/SideBar';
-import { GlobalContextProvider } from '@/app/protected/context/store';
 export default function NavBarProtected(prompt: { children: ReactNode }) {
   const [show, setShow] = useState(false);
 
   return (
-    <GlobalContextProvider>
+    <div>
       <div className="flex flex-col  h-screen text-white bg-color-main l-5">
         <div className={` md:h-20 bg-color-main-dark z-1 w-screen `}>
           <div
@@ -47,6 +46,6 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
 
         <div className="h-[100%] ml-7 ">{prompt.children}</div>
       </div>
-    </GlobalContextProvider>
+    </div>
   );
 }

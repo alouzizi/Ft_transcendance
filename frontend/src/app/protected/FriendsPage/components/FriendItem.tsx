@@ -219,7 +219,7 @@ export default function FriendItem(prompt: {
                   localStorage.setItem('geust.id-user', prompt.friendInfo.id);
                   console.log(geust)
 
-                  router.push("protected/ChatPage");
+                  router.push("/protected/ChatPage");
                 }}
               />
             </div>

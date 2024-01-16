@@ -73,7 +73,7 @@ const Pong = () => {
           }
         }, 20);
         setTimeout(() => {
-          router.push('/GamePage');
+          router.push('/protected/GamePage');
         }, 2500);
       } else {
         animationFrameId1 = window.requestAnimationFrame(update);

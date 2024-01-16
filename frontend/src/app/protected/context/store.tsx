@@ -106,7 +106,7 @@ export const GlobalContextProvider = ({
   const currentPath = usePathname();
   const [displayChat, setDisplayChat] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
-
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const [user, setUser] = useState<ownerDto>({
@@ -221,6 +221,9 @@ export const GlobalContextProvider = ({
         setInvitedName(data.nameInveted);
       });
     }
+    return () => {
+      if (socket) socket.off("invite");
+    }
   }, [socket, data]);
 
   useEffect(() => {
@@ -237,19 +240,27 @@ export const GlobalContextProvider = ({
         router.push('/protected/GamePage/invite');
       });
     }
+    return () => {
+      if (socket) socket.off("startGame");
+    }
   }, [socket, data]);
 
   useEffect(() => {
     if (socket) {
-
       socket.on('declien', () => {
         setOpenConfirm(false);
       });
     }
+    return () => {
+      if (socket) socket.off("declien");
+    }
   }, [socket, data]);
 
+  useEffect(() => {
+    console.log("openConfirm------>", openConfirm);
+  }, [openConfirm]);
 
-  const [openConfirm, setOpenConfirm] = useState(false);
+
   const [inviterdName, setInvitedName] = useState('');
 
   console.log('---------- useContext Called ----------');

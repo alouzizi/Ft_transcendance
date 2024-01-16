@@ -55,7 +55,7 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       socket?.on("opponentLeft", () => {
-        router.replace("/GamePage/random");
+        router.replace("/protected/GamePage/random");
         setShowAlert(true);
         setGameStarted(false);
         setButtonClicked(false);
@@ -82,7 +82,7 @@ export default function Home() {
         setShowAlert(true);
         setGameStarted(false);
         setMessage("Start game!");
-        router.replace("/GamePage/random");
+        router.replace("/protected/GamePage/random");
       });
       const handlePopstate = (event: PopStateEvent) => {
         if (gameStarted)
