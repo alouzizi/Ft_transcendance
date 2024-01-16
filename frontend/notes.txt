@@ -1,0 +1,59 @@
+*****************************************************************
+                        HIX CODER TASKS
+*****************************************************************
+=============================================================================================================
+tasks :
+- in the alertFriend don't show blocked friends ✅
+- develop end point for who send you friend request and verse versa ✅
+- add little green status to the user avatar in friendItem and searchFriendItem ✅
+- change the friendItem on the pending category ✅
+- develop friend page where you can see their profile✅
+-------------------
+- use sockets in friends page✅
+- make the logic of acheivments page
+
+errors:
+- when using 2 alert friend at same time not realtime✅
+- when block friend I can find it in the nav search ✅
+- when block friend I can find it in its route using direct link ✅
+
+- when request friend from both sides ✅
+
+
+game level:
+- in the first 10 levels after wining a game you win 100px
+- between 10 and 20 you win 200px
+- and > 20 you win 300px
+
+- first level need 200px and each level heigher need another 100px
+
+============================================================================================================
+✅✅✅✅✅✅✅✅✅✅
+playedMatches ==> 100%
+winedMatches ==>
+win rate = (wm *100 )  / pm
+
+==================
+ranking ==> wm
+
+============================================================================================================
+✅achievments:
+✅✅✅✅✅✅✅✅✅✅
+- nbr of matches
+- nbr of friends
+- winned matches
+- blocked users
+- losed matches
+- nbr of invited friend
+
+============================================================================================================
+
+to do :
+- fix the all history and acheivments for other users✅
+- fix the level✅
+- fix fetching errors✅
+- add loader✅
+- merge with ali ✅
+- fix some responsive errors✅
+- fix backend urls
+- fix the find blocked or not exist friend page [error page]
