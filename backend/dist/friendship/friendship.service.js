@@ -53,11 +53,9 @@ let FriendshipService = class FriendshipService {
                     nickname: recieverUsr,
                 },
             });
-            //console.log(oneUser);
             return oneUser;
         }
         catch (error) {
-            //console.log("oneUser error");
             return { error: error };
         }
     }
@@ -190,7 +188,6 @@ let FriendshipService = class FriendshipService {
                     },
                 });
                 if (!(0, class_validator_1.isEmpty)(user)) {
-                    //console.log(user);
                     blockedFriends.push(user);
                 }
             }
@@ -317,7 +314,6 @@ let FriendshipService = class FriendshipService {
                     },
                 },
             });
-            //console.log("userToAccept : ", userToAccept);
             if (userToAccept) {
                 const user = await this.prisma.friend.create({
                     data: {
@@ -325,7 +321,6 @@ let FriendshipService = class FriendshipService {
                         receivedId: recieverId,
                     },
                 });
-                //console.log();
                 await this.prisma.friendRequest.delete({
                     where: {
                         Unique_Sender_Receiver: {

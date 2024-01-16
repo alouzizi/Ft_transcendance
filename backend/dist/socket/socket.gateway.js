@@ -203,16 +203,13 @@ let SocketGateway = class SocketGateway {
         const player2 = this.rooms.get(roomName)[1];
         if (p1.score + p2.score === this.ROUND_LIMIT) {
             if (p1.score == p2.score) {
-                //console.log(player1, player2);
                 this.server.to(roomName).emit("gameOver", "draw");
             }
             else if (p1.score > p2.score) {
-                //console.log(player1, player2);
                 this.server.to(player1).emit("gameOver", "win");
                 this.server.to(player2).emit("gameOver", "lose");
             }
             else {
-                //console.log(player1, player2);
                 this.server.to(player1).emit("gameOver", "lose");
                 this.server.to(player2).emit("gameOver", "win");
             }

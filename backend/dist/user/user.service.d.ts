@@ -18,6 +18,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     } | {
         error: boolean;
     }>;
@@ -37,6 +38,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -57,6 +59,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -76,6 +79,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -153,6 +157,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }>;
     setTwoFactorAuthSecret(secret: string, intra_id: string): Promise<void>;
     turnOnTwoFactorAuth(intra_id: string): Promise<void>;
@@ -173,6 +178,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[]>;
     updateNickname(intra_id: string, nickname: string): Promise<{
         status: number;
@@ -195,6 +201,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }>;
     findByIds(id: string): Promise<{
         id: string;
@@ -212,6 +219,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }>;
     deleteUser(id: string): Promise<{
         id: string;
@@ -229,6 +237,7 @@ export declare class UserService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }>;
     startGameing(senderId: string): Promise<void>;
     finishGaming(senderId: string): Promise<void>;

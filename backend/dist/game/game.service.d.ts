@@ -35,6 +35,7 @@ export declare class GameService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }>;
     getNbrOfMatches(recieverId: string, isWined: number): Promise<number>;
     catch(error: any): {
@@ -85,6 +86,7 @@ export declare class GameService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     } | {
         error: any;
     }>;
@@ -104,6 +106,7 @@ export declare class GameService {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     } | {
         error: any;
     }>;

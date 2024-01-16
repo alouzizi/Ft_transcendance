@@ -30,6 +30,7 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -50,6 +51,7 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -74,6 +76,7 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;

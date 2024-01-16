@@ -214,22 +214,10 @@ let UserService = class UserService {
     }
     async createUser(user1) {
         try {
-            let nickname = user1.login42.toString();
-            let i = 0;
-            let check = await this.prisma.user.findUnique({
-                where: { nickname: nickname },
-            });
-            while (check) {
-                check = await this.prisma.user.findUnique({
-                    where: { nickname: `${nickname}_${i}` },
-                });
-                nickname = `${nickname}_${i}`;
-                i++;
-            }
             const user = await this.prisma.user.create({
                 data: {
                     intra_id: user1.intra_id.toString(),
-                    nickname: nickname,
+                    nickname: user1.login42,
                     email: user1.email.toString(),
                     profilePic: user1.profilePicture.toString(),
                     last_name: user1.last_name,

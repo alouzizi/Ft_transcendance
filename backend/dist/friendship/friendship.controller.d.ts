@@ -21,6 +21,7 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: any;
     }>;
@@ -40,6 +41,7 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     } | {
         error: any;
     }>;
@@ -69,6 +71,7 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[]>;
     getPendingFriends(sender: string): Promise<{
         isYouSender: boolean;
@@ -87,6 +90,7 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[]>;
     getBlockedFriends(sender: string): Promise<any[]>;
     getAllPossibleFriends(sender: string): Promise<{
@@ -105,6 +109,7 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: any;
     }>;
@@ -124,6 +129,7 @@ export declare class FriendshipController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: any;
     }>;
