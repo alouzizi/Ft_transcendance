@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useGlobalDataContext } from "./FriendCategory";
 
-import { blockFriend, removeFriend } from "@/app/MyApi/friendshipApi";
+import { blockFriend, removeFriend } from "../apiFriend/friendshipApi";
 import { useGlobalContext } from "../../context/store";
 import PlayInvite from "../../GamePage/components/Invite";
 

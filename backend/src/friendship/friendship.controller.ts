@@ -11,12 +11,12 @@ import { JwtGuard } from "src/auth/guard";
 
 // @UseGuards(JwtGuard)
 @Controller("friendship")
+@UseGuards(JwtGuard)
 export class FriendshipController {
   constructor(private readonly friendshipService: FriendshipService) { }
 
 
   @Delete("/unBlockedUser/:sender/:recived")
-  @UseGuards(JwtGuard)
   async unBlockedUser(
     @Param("sender") sender: string,
     @Param("recived") recived: string
@@ -40,22 +40,19 @@ export class FriendshipController {
 
   // for get all users
   @Get("/allUsers/:sender")
-  @UseGuards(JwtGuard)
   async getallUsers(@Param("sender") sender: string) {
     return this.friendshipService.getAllUsers(sender);
   }
 
   // for get one user
   @Get("/getUserByNick/:recieverUsr")
-   @UseGuards(JwtGuard)
-async getUserByNick(@Param("recieverUsr") reciever: string) {
+  async getUserByNick(@Param("recieverUsr") reciever: string) {
     return this.friendshipService.getUserByNick(reciever);
   }
 
   // for is Bolcked
   @Get("/isBlocked/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async getIsBlocked(
+  async getIsBlocked(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
@@ -64,43 +61,37 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for get all online friends
   @Get("/onlineFriends/:sender")
-   @UseGuards(JwtGuard)
-   async getOnlineFriends(@Param("sender") sender: string) {
+  async getOnlineFriends(@Param("sender") sender: string) {
     return this.friendshipService.getOnlineFriends(sender);
   }
 
   // for get all friends
   @Get("/allFriends/:sender")
-   @UseGuards(JwtGuard)
-   async getAllFriends(@Param("sender") sender: string) {
+  async getAllFriends(@Param("sender") sender: string) {
     return this.friendshipService.getAllFriends(sender);
   }
 
   // for get pending friends
   @Get("/pendingFriends/:sender")
-   @UseGuards(JwtGuard)
-   async getPendingFriends(@Param("sender") sender: string) {
+  async getPendingFriends(@Param("sender") sender: string) {
     return this.friendshipService.getPendingFriends(sender);
   }
 
   // for get blocked friends
   @Get("/blockedFriends/:sender")
-   @UseGuards(JwtGuard)
-   async getBlockedFriends(@Param("sender") sender: string) {
+  async getBlockedFriends(@Param("sender") sender: string) {
     return this.friendshipService.getBlockedFriends(sender);
   }
 
   // for get allPossibleFriends
   @Get("/allPossibleFriends/:sender")
-   @UseGuards(JwtGuard)
-   async getAllPossibleFriends(@Param("sender") sender: string) {
+  async getAllPossibleFriends(@Param("sender") sender: string) {
     return this.friendshipService.getAllPossibleFriends(sender);
   }
 
   // for get navSearchUsers
   @Get("/navSearchUsers/:sender")
-   @UseGuards(JwtGuard)
-   async getNavSearchUsers(@Param("sender") sender: string) {
+  async getNavSearchUsers(@Param("sender") sender: string) {
     return this.friendshipService.getNavSearchUsers(sender);
   }
 
@@ -108,8 +99,7 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for send friend request
   @Post("/sendFriendRequest/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async sendFriendRequest(
+  async sendFriendRequest(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
@@ -118,8 +108,7 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for accept Friend Request
   @Post("/acceptFriendRequest/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async acceptFriendRequest(
+  async acceptFriendRequest(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
@@ -128,8 +117,7 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for unsend friend request
   @Post("/unsendFriendRequest/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async unsendFriendRequest(
+  async unsendFriendRequest(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
@@ -138,8 +126,7 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for reject Friend Request
   @Post("/rejectFriendRequest/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async rejectFriendRequest(
+  async rejectFriendRequest(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
@@ -148,8 +135,7 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for block friend
   @Post("/blockFriend/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async blockFriend(
+  async blockFriend(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {
@@ -158,7 +144,6 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for unblock friend
   @Post("/unblockFriend/:sender/:reciever")
-  @UseGuards(JwtGuard)
   async unblockFriend(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
@@ -168,8 +153,7 @@ async getUserByNick(@Param("recieverUsr") reciever: string) {
 
   // for remove friend
   @Post("/removeFriend/:sender/:reciever")
-   @UseGuards(JwtGuard)
-   async removeFriend(
+  async removeFriend(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
   ) {

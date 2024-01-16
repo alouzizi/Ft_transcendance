@@ -16,8 +16,12 @@ import { SocketGatewayService } from "./socket.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { GameService } from "src/game/game.service";
 import { BallDto, PaddleDto } from "src/game/dto";
+import { UseGuards } from "@nestjs/common";
+import { JwtGuardSocket } from 'src/auth/guard/jwt.guard-socket';
 // import { PongServise } from "src/game/game.service";
 
+
+@UseGuards(JwtGuardSocket)
 @WebSocketGateway()
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -35,11 +39,14 @@ export class SocketGateway
     // //console.log("Gateway Initialized");
   }
 
+
   async handleConnection(client: Socket) {
+    console.log("handleConnection------------");
     this.socketGatewayService.handleConnection(client, this.server);
   }
 
   async handleDisconnect(client: Socket) {
+    console.log("clientDisconnected------------");
     this.socketGatewayService.handleDisconnect(client, this.server);
     if (this.clients.has(client.id)) {
       this.clients.delete(client.id);
@@ -53,6 +60,7 @@ export class SocketGateway
     }
   }
 
+  // @UseGuards(JwtGuardSocket)
   @SubscribeMessage("createMessage")
   async createMessage(@MessageBody() createMessageDto: CreateMessageDto) {
     await this.messagesService.createMessage(this.server, createMessageDto);
@@ -110,6 +118,12 @@ export class SocketGateway
   @SubscribeMessage("messagsSeenEmit")
   async messagsSeenEmit(@MessageBody() ids: CreateMessageDto) {
     this.socketGatewayService.messagsSeenEmit(ids, this.server);
+  }
+
+
+  @SubscribeMessage("sendNotification")
+  async handleNotif(@MessageBody() receivedId: string) {
+    this.server.to(receivedId).emit("sendNotification");
   }
 
 
@@ -308,6 +322,7 @@ export class SocketGateway
       this.stopEmittingBallPosition(roomName);
     }
   }
+
   async stopEmittingBallPosition(roomName: string) {
     if (this.rooms.get(roomName) && this.rooms.get(roomName).length > 1) {
       const id = this.rooms.get(roomName)[0];
@@ -343,7 +358,6 @@ export class SocketGateway
     } else {
       this.clients.set(id, client);
       this.joindClients.set(id, 0);
-
       client.join(id);
     }
   }
@@ -351,6 +365,7 @@ export class SocketGateway
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, @MessageBody() id: string) {
     this.joindRoom++;
+    let player1: string = ""
     if (this.clients.size === 2 && this.joindRoom > 1) {
       this.joindRoom = 0;
       const roomName = `room-${Date.now()}`;
@@ -363,6 +378,7 @@ export class SocketGateway
         if (id === client) {
           this.server.to(client).emit("whichSide", true);
         } else {
+          player1 = client;
           this.server.to(client).emit("whichSide", false);
         }
       });
@@ -370,7 +386,7 @@ export class SocketGateway
         client.join(roomName);
       });
       // setTimeout(() => {
-      this.server.to(roomName).emit("startGame", roomName);
+      this.server.to(roomName).emit("startGame", { player1: player1, player2: id, roomName: roomName });
       // this.gameService.startGame();
       this.GameInit(roomName);
       this.gameService.resetBall(this.roomState.get(roomName).ball);

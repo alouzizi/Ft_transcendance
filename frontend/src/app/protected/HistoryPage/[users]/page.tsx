@@ -1,5 +1,5 @@
 "use client";
-import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
+import { getIsBlocked, getUserByNick } from "@/app/FriendsPage/apiFriend/friendshipApi";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ErrorPage from "../../DashboardPage/components/ErrorPage";

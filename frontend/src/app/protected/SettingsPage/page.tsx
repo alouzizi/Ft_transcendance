@@ -1,68 +1,72 @@
-"use client";
-import { useGlobalContext } from "@/app/protected/context/store";
-import Button from "@mui/material/Button";
-import Switch from "@mui/material/Switch";
-import { Text } from "@radix-ui/themes";
-import axios from "axios";
-import Cookies from "js-cookie";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import ImageUpload from "./components/imageupload";
-import { getDataOwner } from "./IpaSettings/fetch-user";
+'use client';
+
+import Button from '@mui/material/Button';
+import Switch from '@mui/material/Switch';
+import { Text } from '@radix-ui/themes';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ImageUpload from './components/imageupload';
+import { getDataOwner } from './IpaSettings/fetch-user';
 import {
   generateUrlQr,
   turnOff_2FA,
   turnOn_2FA,
-} from "./IpaSettings/fetch-qrcode";
-import { z } from "zod";
+} from './IpaSettings/fetch-qrcode';
+import { z } from 'zod';
+import { useRouter } from 'next/navigation';
+import { useGlobalContext } from '../context/store';
 
 export default function SettingsPage() {
+  const router = useRouter();
+
   const { user, setUser } = useGlobalContext();
 
   const [checked, setChecked] = useState(false);
-  const [urlImage, setUrlImage] = useState("");
+  const [urlImage, setUrlImage] = useState('');
 
-  const [keyQrCode, setKeyQrCode] = useState("");
+  const [keyQrCode, setKeyQrCode] = useState('');
 
   const newNickNameSchema = z
     .string()
     .min(3)
     .max(15)
     .refine((name) => /^[a-zA-Z0-9_\-]+$/.test(name));
-  const [newNickName, setNickName] = useState("");
+  const [newNickName, setNickName] = useState('');
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (
       user &&
-      user.id !== "-1" &&
+      user.id !== '-1' &&
       !event.target.checked &&
       user.isTwoFactorAuthEnabled
     ) {
       await turnOff_2FA(user.intra_id);
       setChecked(false);
-      toast.success("2fa authentication turned off successfully");
+      toast.success('2fa authentication turned off successfully');
     } else if (event.target.checked) {
       setChecked(event.target.checked);
       const urlImg = await generateUrlQr();
       if (urlImg) setUrlImage(urlImg);
     } else if (!event.target.checked) {
-      setUrlImage("");
+      setUrlImage('');
       setChecked(event.target.checked);
     }
   };
 
   useEffect(() => {
-    if (user.id != "-1" && user.isTwoFactorAuthEnabled) {
+    if (user.id != '-1' && user.isTwoFactorAuthEnabled) {
       setChecked(true);
     }
     setNickName(user.nickname);
   }, [user.id]);
 
   return (
-    <div className="h-fit min-h-screen">
-      <div className="pt-5 pl-20  text-white text-2xl/[29px] mb-5 mt-5">
+    <div className="">
+      <div className="pt-5 pl-28  text-white text-2xl/[29px] mb-5 mt-5">
         <Text weight="bold">Edit Profile</Text>
       </div>
 
@@ -111,7 +115,7 @@ export default function SettingsPage() {
               </label>
             </div>
 
-            {urlImage === "" ? (
+            {urlImage === '' ? (
               <></>
             ) : (
               <Image
@@ -122,7 +126,7 @@ export default function SettingsPage() {
                 className="w-40 h-40"
               />
             )}
-            {urlImage === "" ? (
+            {urlImage === '' ? (
               <></>
             ) : (
               <div className="flex my-3">
@@ -142,21 +146,21 @@ export default function SettingsPage() {
                   className="ml-2 bg-[#4069FF]"
                   onClick={async () => {
                     try {
-                      if (keyQrCode !== "") {
+                      if (keyQrCode !== '') {
                         const data = await turnOn_2FA(user.intra_id, keyQrCode);
                         if (data) {
                           setChecked(true);
-                          setUrlImage("");
+                          setUrlImage('');
                           toast.success(
-                            "2fa authentication turned on successfully"
+                            '2fa authentication turned on successfully',
                           );
                         } else {
-                          toast.error("Wrong authentication code");
+                          toast.error('Wrong authentication code');
                         }
                       } else {
-                        toast.error("Wrong authentication code");
+                        toast.error('Wrong authentication code');
                       }
-                    } catch (e) {}
+                    } catch (e) { }
                   }}
                 >
                   Active 2FA
@@ -171,34 +175,36 @@ export default function SettingsPage() {
                 if (newNickName !== user.nickname) {
                   const validationResult =
                     newNickNameSchema.safeParse(newNickName);
-                  //console.log("newNickName=", newNickName);
-                  //console.log("validationResult=", validationResult);
                   if (!validationResult.success) {
-                    toast.error("nickname error");
+                    toast.error('Invalid username');
                   } else {
                     try {
-                      const token = Cookies.get("access_token");
+                      const token = Cookies.get('access_token');
                       const response = await fetch(
-                        `${process.env.NEXT_PUBLIC_BACK}/user/updateNickname/${
-                          user.intra_id
+                        `${process.env.NEXT_PUBLIC_BACK}/user/updateNickname/${user.intra_id
                         }/${newNickName.toLowerCase()}`,
                         {
-                          method: "POST",
+                          method: 'POST',
                           headers: {
                             authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
+                            'Content-Type': 'application/json',
                           },
-                        }
+                        },
                       );
+                      console.log(response);
                       if (response.status === 409)
-                        toast.error("nickname aleady exist");
-                      else if (response.status === 201) {
-                        toast.success("nickname has been change");
+                        toast.error('nickname aleady exist');
+                      else if (response.status === 400) {
+                        toast.error('Invalid usernames');
+                      } else if (response.status === 201) {
+                        toast.success('nickname has been change');
                         const tmp = await getDataOwner();
                         setUser(tmp);
                       }
-                    } catch (error) {}
+                    } catch (error) { }
                   }
+                } else {
+                  router.push('/protected/DashboardPage');
                 }
               }}
               className="bg-[#4069FF] px-7 py-1 rounded-2xl  flex items-center mb-5 mt-3"

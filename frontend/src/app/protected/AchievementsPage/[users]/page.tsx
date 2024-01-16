@@ -1,11 +1,12 @@
 "use client";
-import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
+
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ErrorPage from "../../DashboardPage/components/ErrorPage";
 import AchievComp from "../components/AchievComp";
 import { useGlobalContext } from "../../context/store";
+import { getIsBlocked, getUserByNick } from "../../FriendsPage/apiFriend/friendshipApi";
 export default function AchievementsPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();

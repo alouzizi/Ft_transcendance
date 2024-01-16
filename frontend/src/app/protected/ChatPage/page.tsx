@@ -1,12 +1,18 @@
+'use client'
+import { useEffect, useState } from 'react';
 import BoxChat from './components/BoxChat';
 import ListUser from './components/ListUser';
+import { useGlobalContext } from '../context/store';
+import Cookies from 'js-cookie';
+import { Socket, io } from 'socket.io-client';
 
-const PageChat = async () => {
-  // md:bg-color-main bg-white
+const PageChat = () => {
+
+ 
   return (
-    <div className="flex justify-center items-center h-fit min-h-screen text-black ">
-      <ListUser />
-      <BoxChat />
+    <div className="flex justify-center items-center text-black h-[100%]  ">
+      <ListUser  />
+      <BoxChat  />
     </div>
   );
 };

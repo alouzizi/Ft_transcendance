@@ -9,11 +9,11 @@ import { Request } from "express";
 
 @Injectable()
 export class JwtGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-
+    // console.log("request=", request.handshake.headers.cookie)
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();

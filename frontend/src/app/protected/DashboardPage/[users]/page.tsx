@@ -1,11 +1,12 @@
 "use client";
-import { getIsBlocked, getUserByNick } from "@/app/MyApi/friendshipApi";
+
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashBoard from "../components/DashBoard";
 
 import { useGlobalContext } from "../../context/store";
 import ErrorPage from "../components/ErrorPage";
+import { getUserByNick } from "../../FriendsPage/apiFriend/friendshipApi";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();

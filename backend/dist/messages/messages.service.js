@@ -87,12 +87,15 @@ let MessagesService = class MessagesService {
                 isBlocked: false
             };
             if (notSendTo === "") {
-                server.to(msg.receivedId).emit('emitNewMessage', temp);
                 this.notificationService.createNotification({
                     senderId: msg.senderId,
                     recieverId: msg.receivedId,
                     subject: "send message",
+                    channelId: "",
+                    type: 'SendMessage'
                 });
+                server.to(msg.receivedId).emit('emitNewMessage', temp);
+                server.to(msg.receivedId).emit('sendNotification', temp);
             }
             server.to(msg.senderId).emit('emitNewMessage', temp);
         }
@@ -103,6 +106,9 @@ let MessagesService = class MessagesService {
     async createChannelMessage(server, createMessageDto) {
         try {
             let notSendTo = "";
+            const isUserInChannel = await this.prisma.channelMember.findUnique({ where: { Unique_userId_channelId: { userId: createMessageDto.senderId, channelId: createMessageDto.receivedId } } });
+            if (!isUserInChannel)
+                return;
             const channel = await this.prisma.channel.findUnique({ where: { id: createMessageDto.receivedId } });
             const channelMember = await this.prisma.channelMember.findMany({ where: { channelId: createMessageDto.receivedId } });
             const senderUser = await this.prisma.user.findUnique({ where: { id: createMessageDto.senderId } });
@@ -155,14 +161,14 @@ let MessagesService = class MessagesService {
             }
         }
         catch (error) {
-            return { error: true };
         }
     }
     async getDirectMessage(senderId, receivedId) {
         try {
             const msgUserTemp = await this.prisma.message.findMany({
                 where: {
-                    OR: [{ senderId, receivedId },
+                    OR: [
+                        { senderId, receivedId },
                         { senderId: receivedId, receivedId: senderId },
                     ],
                 },
@@ -207,8 +213,8 @@ let MessagesService = class MessagesService {
             return result;
         }
         catch (error) {
-            return { error: true };
         }
+        return null;
     }
     async getChannelMessage(senderId, channelId) {
         try {
@@ -226,11 +232,8 @@ let MessagesService = class MessagesService {
             if (user) {
                 const result = await Promise.all(msgUserTemp
                     .filter((msg) => {
-                    return (!msg.notSendTo.includes(senderId) && user.createdAt < msg.createdAt)
-                        || (msg.content.includes('create') ||
-                            msg.content.includes('add') ||
-                            (msg.content.includes('create'))
-                                && msg.InfoMessage == true);
+                    return ((!msg.notSendTo.includes(senderId) && user.createdAt < msg.createdAt)
+                        || ((msg.content.includes('create') || msg.content.includes('add') || msg.content.includes('create')) && msg.InfoMessage == true));
                 })
                     .map(async (msg) => {
                     const senderUser = await this.prisma.user.findUnique({ where: { id: msg.senderId } });
@@ -481,8 +484,8 @@ let MessagesService = class MessagesService {
             return result;
         }
         catch (error) {
-            return { error: true };
         }
+        return null;
     }
 };
 exports.MessagesService = MessagesService;

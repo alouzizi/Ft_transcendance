@@ -1,14 +1,11 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import {
-  blockFriend,
-  removeFriend,
-  sendFriendRequest,
-} from "@/app/MyApi/friendshipApi";
+
 import { useGlobalDataContext } from "../../FriendsPage/components/FriendCategory";
 import { useGlobalContext } from "../../context/store";
 import PlayInvite from "../../GamePage/components/Invite";
+import { blockFriend, removeFriend, sendFriendRequest } from "../../FriendsPage/apiFriend/friendshipApi";
 
 export default function PopoverMenuDash(prompt: {
   friendInfo: ownerDto;

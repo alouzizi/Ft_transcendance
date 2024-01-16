@@ -36,6 +36,7 @@ enum Status {
   ACTIF = "ACTIF",
   INACTIF = "INACTIF",
 }
+
 export async function getUserByNick(recieverUsr: string) {
   let res: ownerDto = {
     id: "-1",
@@ -48,6 +49,7 @@ export async function getUserByNick(recieverUsr: string) {
     level: "0.0",
     inGaming: false,
     status: Status.INACTIF,
+    nbrNotifications: 0
   };
   try {
     if (!recieverUsr) {

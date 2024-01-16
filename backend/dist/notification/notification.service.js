@@ -23,6 +23,8 @@ let NotificationService = class NotificationService {
                 senderId: createNotificationDto.senderId,
                 recieverId: createNotificationDto.recieverId,
                 subjet: createNotificationDto.subject,
+                type: createNotificationDto.type,
+                channelId: createNotificationDto.channelId
             },
         });
         return 'Notification created succesfully';

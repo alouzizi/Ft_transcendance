@@ -15,6 +15,8 @@ export class NotificationService {
         senderId: createNotificationDto.senderId,
         recieverId: createNotificationDto.recieverId,
         subjet: createNotificationDto.subject,
+        type: createNotificationDto.type,
+        channelId: createNotificationDto.channelId
       },
     });
     return 'Notification created succesfully';
@@ -26,13 +28,11 @@ export class NotificationService {
     });
 
     if (!notification) {
-      // //console.log("User tried to delete a record that does not exist");
       throw new NotFoundException("There is no notification with the given ID");
     }
     await this.prisma.notificationTable.delete({
       where: { id: notificationId },
     });
-    // //console.log(`Notification with ID ${notificationId} has been deleted.`);
 
     return;
   }

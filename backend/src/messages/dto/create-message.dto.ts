@@ -1,5 +1,4 @@
-import { ChannelType, MessageStatus, Status } from "@prisma/client";
-
+import { ChannelType, MessageStatus, Status } from '@prisma/client';
 
 export class CreateMessageDto {
   content: string;
@@ -12,9 +11,6 @@ export class CreateMessageDto {
   InfoMessage: boolean;
 }
 
-
-
-
 export class messageDto {
   isDirectMessage: boolean;
 
@@ -22,7 +18,7 @@ export class messageDto {
 
   senderId: string; // in channle or direct Msg
   senderName: string; // in channle or direct Msg
-  senderPic: string;  // in channle or direct Msg
+  senderPic: string; // in channle or direct Msg
 
   contentMsg: string; // lastMsg or simpleMsg
   createdAt: Date;
@@ -34,7 +30,6 @@ export class messageDto {
   receivedStatus: Status; // in DirectMsg
   nbrMessageNoRead: number;
 
-
   OwnerChannelId: String;
   isChannProtected: boolean;
 
@@ -43,7 +38,4 @@ export class messageDto {
   isBlocked: boolean;
 
   // status: Status;
-
 }
-
-

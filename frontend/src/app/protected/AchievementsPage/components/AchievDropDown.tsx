@@ -12,7 +12,8 @@ import {
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import AchievementItem from "./AchievementItem";
 import { useGlobalContext } from "../../context/store";
-import { getAchievmentsData, getGlobalInfos } from "@/app/MyApi/gameApi";
+import { getAchievmentsData, getGlobalInfos } from "../../FriendsPage/apiFriend/gameApi";
+
 
 export default function AchievDropDown(prompt: {
   items: string[];

@@ -1,140 +1,127 @@
-"use client";
-import Badge from "@mui/material/Badge";
-import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import { Avatar, Flex, ScrollArea, Text } from "@radix-ui/themes";
-import { useEffect, useState } from "react";
-import { FaGamepad } from "react-icons/fa";
-import { IoMdAddCircle } from "react-icons/io";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { useGlobalContext } from "../../context/store";
-import { joinChannel, validePassword } from "../api/fetch-channel";
+'use client';
+import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Avatar, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import { useEffect, useState } from 'react';
+import { FaGamepad } from 'react-icons/fa';
+import { IoMdAddCircle } from 'react-icons/io';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { useGlobalContext } from '../../context/store';
+import { joinChannel, validePassword } from '../api/fetch-channel';
 import {
   getChannelGeust,
   getUserForMsg,
   getUserGeust,
-} from "../api/fetch-users";
-import AlertAddChannel from "./AddChannel";
-import { extractHoursAndM } from "./widgetMsg";
+} from '../api/fetch-users';
+import AlertAddChannel from './AddChannel';
+import { extractHoursAndM } from './widgetMsg';
+import { Socket } from 'socket.io-client';
 
 enum Status {
-  ACTIF = "ACTIF",
-  INACTIF = "INACTIF",
+  ACTIF = 'ACTIF',
+  INACTIF = 'INACTIF',
 }
 
 const ListUser = () => {
-  const { setGeust, geust, socket, user, displayChat, setDisplayChat } =
+  const { setGeust, geust, user, socket, displayChat, setDisplayChat } =
     useGlobalContext();
 
   const [itemList, setItemList] = useState<messageDto[]>([]);
 
   const [direct, setDirect] = useState<boolean>(true);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
-    if (socket && user.id !== "-1") {
+    if (user.id !== '-1' && socket) {
       const getListUsers = async () => {
         const usersList = await getUserForMsg(user.id);
         if (usersList !== undefined) setItemList(usersList);
       };
       getListUsers();
-      socket.on("emitNewMessage", getListUsers);
+      socket.on('emitNewMessage', getListUsers);
       return () => {
-        socket.off("emitNewMessage", getListUsers);
+        socket.off('emitNewMessage', getListUsers);
       };
     }
   }, [socket, user.id, geust.id, direct]);
 
-  const getDataGeust = async (tmp: messageDto) => {
-    let geustTemp: geustDto;
-    if (tmp.isDirectMessage) geustTemp = await getUserGeust(tmp.receivedId);
-    else geustTemp = await getChannelGeust(tmp.receivedId);
-    if (geustTemp !== undefined) setGeust(geustTemp);
-  };
+
 
   useEffect(() => {
     if (socket) {
       const updateStatusGeust = async () => {
-        if (geust.id !== "-1" && geust.isUser) {
+        if (geust.id !== '-1' && geust.isUser) {
           const geustTemp = await getUserGeust(geust.id);
           if (geustTemp !== undefined) setGeust(geustTemp);
         }
         const usersList = await getUserForMsg(user.id);
         if (usersList !== undefined) setItemList(usersList);
       };
-      socket.on("updateStatusGeust", updateStatusGeust);
+      socket.on('updateStatusGeust', updateStatusGeust);
       return () => {
-        socket.off("updateStatusGeust", updateStatusGeust);
+        socket.off('updateStatusGeust', updateStatusGeust);
       };
     }
   }, [socket, geust.id]);
 
   useEffect(() => {
-    if (socket && user.id !== "-1" && geust.id !== "-1" && geust.isUser) {
+    if (socket && user.id !== '-1' && geust.id !== '-1' && geust.isUser) {
       const updateStatusGeust = async () => {
-        if (geust.id !== "-1" && geust.isUser) {
+        if (geust.id !== '-1' && geust.isUser) {
           const geustTemp = await getUserGeust(geust.id);
           if (geustTemp !== undefined) setGeust(geustTemp);
         }
         const usersList = await getUserForMsg(user.id);
         if (usersList !== undefined) setItemList(usersList);
       };
-      socket.on("blockUserToUser", updateStatusGeust);
+      socket.on('blockUserToUser', updateStatusGeust);
       return () => {
-        socket.off("blockUserToUser", updateStatusGeust);
+        socket.off('blockUserToUser', updateStatusGeust);
       };
     }
   }, [socket, user.id, geust.id]);
 
+
+
+  const getDataGeust = async (tmp: messageDto) => {
+    let geustTemp: geustDto;
+    if (tmp.isDirectMessage) geustTemp = await getUserGeust(tmp.receivedId);
+    else geustTemp = await getChannelGeust(user.id, tmp.receivedId);
+    if (geustTemp !== undefined) setGeust(geustTemp);
+  };
+
   useEffect(() => {
-    if (geust.id === "-1") {
-      if (direct) {
+    const getData = async (id: string) => {
+      const tmp = await getUserGeust(id);
+      setGeust(tmp);
+    }
+    if (geust.id === '-1') {
+      const idGeust = localStorage.getItem("geust.id-user") || "id";
+      localStorage.removeItem('geust.id-user');
+      if (idGeust !== 'id')
+        getData(idGeust);
+      else {
         if (itemListDirect.length !== 0) {
           getDataGeust(itemListDirect[0]);
         } else if (itemListChannel.length !== 0) {
           getDataGeust(itemListChannel[0]);
         }
-      } else {
-        if (itemListChannel.length !== 0) {
-          getDataGeust(itemListChannel[0]);
-        } else if (itemListDirect.length !== 0) {
-          getDataGeust(itemListDirect[0]);
-        }
       }
+
     }
+
   }, [direct, itemList, geust.id]);
 
+
+
   useEffect(() => {
-    if (socket) {
-      const kickedFromChannel = async (data: any) => {
-        //console.log("kickedFromChannel called", data)
-        if (geust.id === data.channelId) {
-          setGeust({
-            isUser: false,
-            id: "-1",
-            nickname: "blabla",
-            profilePic: "",
-            status: Status.INACTIF,
-            lastSee: 0,
-            lenUser: 0,
-            idUserOwner: "",
-            inGaming: false,
-          });
-          setDirect(true);
-        } else {
-          const usersList = await getUserForMsg(user.id);
-          if (usersList !== undefined) setItemList(usersList);
-        }
-      };
-      socket.on("kickedFromChannel", kickedFromChannel);
-      return () => {
-        socket.off("kickedFromChannel", kickedFromChannel);
-      };
-    }
-  }, [socket, geust.id]);
+    if (geust.id !== '-1' && !geust.isUser)
+      localStorage.setItem('geust.id-channel', geust.id);
+  }, [geust.id]);
 
   const widgetUser = (el: messageDto, index: number) => {
     return (
@@ -143,10 +130,10 @@ const ListUser = () => {
         className="relative border-b py-2 pl-3 border-[#E9ECF1] border-1.5 cursor-pointer"
         key={index}
         style={{
-          background: el.receivedId === geust.id ? "#F1F3F9" : "white",
+          background: el.receivedId === geust.id ? '#F1F3F9' : 'white',
         }}
         onClick={() => {
-          if (el.isDirectMessage || el.contentMsg !== "") {
+          if (el.isDirectMessage || el.contentMsg !== '') {
             getDataGeust(el);
             setDisplayChat(true);
           }
@@ -156,23 +143,22 @@ const ListUser = () => {
           <Badge
             badgeContent={<div>{el.inGaming ? <FaGamepad /> : <></>}</div>}
             sx={{
-              "& .MuiBadge-badge": {
-                backgroundColor: `${
-                  el.receivedStatus === "ACTIF" && !el.isBlocked
-                    ? "#07F102"
-                    : "#B4B4B4"
-                }`,
+              '& .MuiBadge-badge': {
+                backgroundColor: `${el.receivedStatus === 'ACTIF' && !el.isBlocked
+                  ? '#07F102'
+                  : '#B4B4B4'
+                  }`,
                 width: 15,
                 height: 15,
                 borderRadius: 50,
-                border: "2px solid #ffffff",
+                border: '2px solid #ffffff',
               },
             }}
-            variant={el.inGaming && !el.isBlocked ? "standard" : "dot"}
+            variant={el.inGaming && !el.isBlocked ? 'standard' : 'dot'}
             overlap="circular"
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
+              vertical: 'bottom',
+              horizontal: 'right',
             }}
           >
             <Avatar size="3" src={el.receivedPic} radius="full" fallback="T" />
@@ -184,7 +170,7 @@ const ListUser = () => {
           <Text size="2" weight="bold">
             {el.receivedName}
           </Text>
-          {el.contentMsg === "" ? (
+          {el.contentMsg === '' ? (
             <></>
           ) : (
             <Box className="w-32 line-clamp-1 overflow-hidden text-sm">
@@ -199,7 +185,7 @@ const ListUser = () => {
         </Flex>
 
         <Text size="1" className="absolute bottom-0 right-4">
-          {el.contentMsg === "" ? "" : extractHoursAndM(el.createdAt)}
+          {el.contentMsg === '' ? '' : extractHoursAndM(el.createdAt)}
         </Text>
 
         {el.receivedId === geust.id ? (
@@ -207,7 +193,7 @@ const ListUser = () => {
             sx={{
               width: 6,
               height: 40,
-              backgroundColor: "#254BD6",
+              backgroundColor: '#254BD6',
               borderTopLeftRadius: 15,
               borderBottomLeftRadius: 15,
             }}
@@ -222,8 +208,8 @@ const ListUser = () => {
             <Badge
               badgeContent={el.nbrMessageNoRead}
               sx={{
-                "& .MuiBadge-badge": {
-                  backgroundColor: "#254BD6",
+                '& .MuiBadge-badge': {
+                  backgroundColor: '#254BD6',
                 },
               }}
             ></Badge>
@@ -232,17 +218,13 @@ const ListUser = () => {
           <div></div>
         )}
 
-        {el.contentMsg === "" && !el.isDirectMessage ? (
+        {el.contentMsg === '' && !el.isDirectMessage ? (
           <div
             className="absolute  right-6 cursor-pointer"
             onClick={async () => {
               if (!el.isChannProtected) {
                 await joinChannel(user.id, el.receivedId);
-                socket?.emit("updateChannel", {
-                  senderId: user.id,
-                  receivedId: el.receivedId,
-                  isDirectMessage: false,
-                });
+
                 getDataGeust(el);
                 setDisplayChat(true);
               } else {
@@ -263,9 +245,9 @@ const ListUser = () => {
   const itemListDirect = itemList.filter((item: messageDto) => {
     return (
       item.isDirectMessage &&
-      ((item.contentMsg !== "" && search === "") ||
-        (item.receivedName.includes(search) && search !== "") ||
-        search === "*")
+      ((item.contentMsg !== '' && search === '') ||
+        (item.receivedName.includes(search) && search !== '') ||
+        search === '*')
     );
   });
   const userWidgetDirect: JSX.Element | JSX.Element[] =
@@ -280,9 +262,9 @@ const ListUser = () => {
   const itemListChannel = itemList.filter((item: messageDto) => {
     return (
       !item.isDirectMessage &&
-      ((item.contentMsg !== "" && search === "") ||
-        (item.receivedName.includes(search) && search !== "") ||
-        search === "*")
+      ((item.contentMsg !== '' && search === '') ||
+        (item.receivedName.includes(search) && search !== '') ||
+        search === '*')
     );
   });
   const userWidgetChannel: JSX.Element | JSX.Element[] =
@@ -295,25 +277,25 @@ const ListUser = () => {
     );
 
   // ALERT CONFIM PASS
-  const [idChannel, setIdChannel] = useState("");
+  const [idChannel, setIdChannel] = useState('');
   const [openConfirm, setOpenConfirm] = useState(false);
   const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
-  const [password, setPassword] = useState("");
-  const [notMatch, setNotMatch] = useState("");
+  const [password, setPassword] = useState('');
+  const [notMatch, setNotMatch] = useState('');
 
   let styles: string =
-    "px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md";
+    'px-4 py-2 my-2 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
-    <Box
-      className={
-        // h900px
-        `bg-white h-[800px] w-[90%] rounded-[15px]
-        ${!displayChat ? "" : "hidden"}
+    <div
+      className={`bg-white h-[600px]  rounded-[15px] 
+        ${!displayChat ? '' : 'hidden'}
+
         md:block
-        md:w-[300px]`
-      }
+        md:w-[300px]
+        w-[90%]
+        `}
     >
-      <div className="flex border-b items-center justify-between p-4">
+      <div className="flex border-b items-center justify-between p-3">
         <Text size="5" weight="bold">
           CHAT
         </Text>
@@ -326,8 +308,8 @@ const ListUser = () => {
 
       <div className="flex items-center justify-around bg-[#F6F7FA] mx-5 my-2 rounded-[10px]">
         <div
-          style={{ cursor: "pointer" }}
-          className={direct ? styles : ""}
+          style={{ cursor: 'pointer' }}
+          className={direct ? styles : ''}
           onClick={() => {
             setDirect(true);
           }}
@@ -337,8 +319,8 @@ const ListUser = () => {
           </Text>
         </div>
         <div
-          style={{ cursor: "pointer" }}
-          className={!direct ? styles : ""}
+          style={{ cursor: 'pointer' }}
+          className={!direct ? styles : ''}
           onClick={() => {
             setDirect(false);
           }}
@@ -351,18 +333,17 @@ const ListUser = () => {
 
       <div className="flex bg-[#F6F7FA] mx-5 my-3  border rounded-md">
         <input
-          type={"text"}
+          type={'text'}
           className="bg-[#F6F7FA] m-1 flex flex-grow
                         text-black placeholder-gray-600 text-sm outline-none"
           value={search}
-          placeholder={direct ? "search a friends" : "search a group"}
+          placeholder={direct ? 'search a friends' : 'search a group'}
           onChange={(e) => {
             setSearch(e.target.value);
           }}
         ></input>
       </div>
-
-      <ScrollArea scrollbars="vertical" style={{ height: 600 }}>
+      <ScrollArea scrollbars="vertical" style={{ height: 400 }}>
         <Box>
           <Flex direction="column">
             {direct ? userWidgetDirect : userWidgetChannel}
@@ -383,17 +364,17 @@ const ListUser = () => {
               className="flex bg-[#f1f3f8] text-black border border-[#1f3175]
       placeholder-gray-300 text-sm focus:border-white
       rounded-lg  w-full p-1.5 outline-none"
-              style={{ borderColor: notMatch === "" ? "#1f3175" : "red" }}
+              style={{ borderColor: notMatch === '' ? '#1f3175' : 'red' }}
             >
               <input
-                type={isPasswordVisibleAlert ? "text" : "password"}
+                type={isPasswordVisibleAlert ? 'text' : 'password'}
                 className="bg-[#f1f3f8]
             text-black
       placeholder-gray-300 text-sm outline-none"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setNotMatch("");
+                  setNotMatch('');
                 }}
               ></input>
               <div
@@ -417,22 +398,18 @@ const ListUser = () => {
             <button
               onClick={async () => {
                 let vld = false;
-                if (password.trim() !== "")
+                if (password.trim() !== '')
                   vld = await validePassword(user.id, idChannel, password);
                 if (vld) {
                   setOpenConfirm(false);
                   await joinChannel(user.id, idChannel);
-                  const gst = await getChannelGeust(idChannel);
-                  socket?.emit("updateChannel", {
-                    senderId: user.id,
-                    receivedId: idChannel,
-                    isDirectMessage: false,
-                  });
+                  const gst = await getChannelGeust(user.id, idChannel);
+
                   setGeust(gst);
                   setDisplayChat(true);
-                  setPassword("");
+                  setPassword('');
                 } else {
-                  setNotMatch("Password not Match");
+                  setNotMatch('Password not Match');
                 }
               }}
               className="w-fit font-meduim  py-1 rounded-md   text-white bg-[#4069ff]
@@ -444,7 +421,7 @@ const ListUser = () => {
           </DialogActions>
         </Dialog>
       </div>
-    </Box>
+    </div>
   );
 };
 

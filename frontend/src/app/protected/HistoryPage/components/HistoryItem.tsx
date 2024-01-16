@@ -20,7 +20,7 @@ export default function HistoryItem(prompt: {
       <div className="flex flex-col justify-start my-auto cursor-pointer w-1/3">
         <Link
           className="flex flex-col w-full items-start "
-          href={`/protected/DashboardPage/${prompt.firstPlayerName}`}
+          href={`/DashboardPage/${prompt.firstPlayerName}`}
         >
           <img
             className=" object-cover   rounded-full 
@@ -59,7 +59,7 @@ export default function HistoryItem(prompt: {
       <div className="flex flex-col items-end my-auto cursor-pointer w-1/3 ">
         <Link
           className="flex flex-col w-full items-end "
-          href={`/protected/DashboardPage/${prompt.secondPlayerName}`}
+          href={`/DashboardPage/${prompt.secondPlayerName}`}
         >
           <img
             className="object-cover  rounded-full mr-

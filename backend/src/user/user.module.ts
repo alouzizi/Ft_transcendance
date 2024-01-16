@@ -10,7 +10,14 @@ import { MulterModule } from '@nestjs/platform-express';
 import { NotificationService } from 'src/notification/notification.service';
 
 @Module({
-  providers: [UserService, PrismaService, JwtService, AuthService, ChannelService, NotificationService],
+  providers: [
+    UserService,
+    PrismaService,
+    JwtService,
+    AuthService,
+    ChannelService,
+    NotificationService,
+  ],
   controllers: [UserController],
   imports: [
     MulterModule.register({
@@ -19,6 +26,6 @@ import { NotificationService } from 'src/notification/notification.service';
         fileSize: 1024 * 1024,
       },
     }),
-  ]
+  ],
 })
-export class UserModule { }
+export class UserModule {}

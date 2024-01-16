@@ -1,5 +1,4 @@
 "use client";
-import { useGlobalContext } from "@/app/protected/context/store";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,22 +12,25 @@ import {
   changeStatusAdmin,
   kickMember,
   muteUserChannel,
-  validePassword,
-} from "../../api/fetch-channel";
+} from "../../ChatPage/api/fetch-channel";
 import { Text } from "@radix-ui/themes";
 import { MdOutlineCancel } from "react-icons/md";
 import { LiaEdit } from "react-icons/lia";
 import { useState } from "react";
 import { z } from "zod";
+import { useGlobalContext } from "../../context/store";
 
 const ITEM_HEIGHT = 48;
 
 export default function LongMenu({
   member,
   banned,
+  setUpdate,
 }: {
   member: memberChannelDto;
   banned: boolean;
+  setUpdate: any
+
 }) {
   const allOptions = {
     reguler: [
@@ -64,25 +66,19 @@ export default function LongMenu({
     if (typeof e === "string") {
       if ("Make Group Admin" === e || "Remove Group Admin" === e) {
         await changeStatusAdmin(user.id, geust.id, member.userId);
-        socket?.emit("changeStatusMember", geust.id);
       } else if ("ban from Group" === e || "unban from Group" === e) {
         await ChangeStatusBanned(user.id, geust.id, member.userId);
-        socket?.emit("kickedFromChannel", {
-          memberId: member.userId,
-          channelId: geust.id,
-        });
+
       } else if ("kick from Group" === e) {
         await kickMember(user.id, geust.id, member.userId);
-        socket?.emit("kickedFromChannel", {
-          memberId: member.userId,
-          channelId: geust.id,
-        });
+
       } else if ("Cancel Timeout" === e) {
         await cancelTimeOut(user.id, geust.id, member.userId);
         socket?.emit("mutedUserInChannel", geust.id);
       } else if ("Timeout" === e) {
         setOpenTimeout(true);
       }
+      setUpdate((pre: number) => pre + 1)
     }
     setAnchorEl(null);
   };
@@ -203,11 +199,10 @@ export default function LongMenu({
                   <Text
                     key={index}
                     className={`border border-black text-[14px] p-1 cursor-pointer m-2 
-                                    ${
-                                      index === timeSelected
-                                        ? "bg-[#4069FF] text-white"
-                                        : ""
-                                    }`}
+                                    ${index === timeSelected
+                        ? "bg-[#4069FF] text-white"
+                        : ""
+                      }`}
                     onClick={() => {
                       setTimeSelected(index);
                     }}
@@ -231,7 +226,6 @@ export default function LongMenu({
 
             <button
               onClick={async () => {
-                //console.log(timeInSecond[timeSelected]);
                 if (showInput) {
                   const parsTimer = timerSchema.safeParse(timerInput);
                   if (!parsTimer.success) {
@@ -259,7 +253,9 @@ export default function LongMenu({
                   setOpenTimeout(false);
                   socket?.emit("mutedUserInChannel", geust.id);
                 }
-              }}
+                setUpdate((pre: number) => pre + 1)
+              }
+              }
               className="w-fit font-meduim  py-1 rounded-md text-white bg-[#4069FF]
                             text-xs  
                                 md:text-sm lg:text-md px-2"

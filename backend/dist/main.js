@@ -7,13 +7,12 @@ const cookieParser = require("cookie-parser");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
     app.useGlobalPipes(new common_1.ValidationPipe({
-        whitelist: true,
         forbidNonWhitelisted: true,
         transform: true,
     }));
     app.enableCors({
-        origin: "*",
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        origin: process.env.FRONT_HOST,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
     });
     app.use(cookieParser());

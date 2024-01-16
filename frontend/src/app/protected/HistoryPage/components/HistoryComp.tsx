@@ -1,12 +1,11 @@
 "use client";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
-import HistoryItem from "@/app/protected/HistoryPage/components/HistoryItem";
-import MyDropDown from "@/app/protected/HistoryPage/components/HistoryDropDown";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGlobalContext } from "../../context/store";
-import { getGameHistory } from "@/app/MyApi/gameApi";
+import { getGameHistory } from "../../FriendsPage/apiFriend/gameApi";
+import HistoryDropDown from "./HistoryDropDown";
+
 
 export default function HistoryComp(prompt: { friend: ownerDto }) {
   const items = ["All", "Wins", "Loses", "Draws"];
@@ -39,7 +38,7 @@ export default function HistoryComp(prompt: { friend: ownerDto }) {
           Game History
         </h1>
       </div>
-      <MyDropDown
+      <HistoryDropDown
         items={items}
         gameHistory={gameHistory}
         friend={prompt.friend}

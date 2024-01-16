@@ -2,16 +2,18 @@
 
 import Pong from "../components/Randmpong";
 import { Canvas, canvasContext } from "../components/interface";
-
+import { Avatar } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { CustomAlert } from "../components/taost";
 import Mycards from "../components/Cards";
 import { useGlobalContext } from "../../context/store";
-import { Socket } from "socket.io-client";
+import { getUser } from "../../ChatPage/api/fetch-users";
+
 
 export default function Home() {
+
   const { user, socket } = useGlobalContext();
   const router = useRouter();
   const [message, setMessage] = useState("Start game!");
@@ -21,6 +23,7 @@ export default function Home() {
 
   const [gameStarted, setGameStarted] = useState(false);
   const startGameHandler = () => {
+
     if (!buttonClicked) {
       setMessage("Waiting ...");
       socket?.emit("clientId", user.id);
@@ -46,10 +49,13 @@ export default function Home() {
     setSelectedMap(mapNumber);
   };
 
+  const [leftAvatr, setLeftAvatar] = useState("");
+  const [rightAvatr, setRightAvatar] = useState("");
+  const [playerId, setPlayerIs] = useState({ "id1": "", "id2": "" })
   useEffect(() => {
     if (typeof window !== "undefined") {
       socket?.on("opponentLeft", () => {
-        router.replace("/protected/GamePage");
+        router.replace("/GamePage/random");
         setShowAlert(true);
         setGameStarted(false);
         setButtonClicked(false);
@@ -62,24 +68,22 @@ export default function Home() {
         }, 3000);
       }
 
-      socket?.on("startGame", (room: string) => {
-        setRoom(room);
+      socket?.on("startGame", (data: any) => {
+        setPlayerIs({ "id1": data.player1, "id2": data.player2 })
+        setRoom(data.roomName);
         setGameStarted(true);
         setMessage("Play again!");
       });
-
+      socket?.on("whichSide", (isLeft: boolean) => {
+        setLeft(isLeft);
+      });
       socket?.on("alreadyExist", () => {
         setButtonClicked(false);
         setShowAlert(true);
         setGameStarted(false);
         setMessage("Start game!");
-        router.replace("/protected/GamePage/random");
+        router.replace("/GamePage/random");
       });
-
-      socket?.on("whichSide", (isLeft: boolean) => {
-        setLeft(isLeft);
-      });
-
       const handlePopstate = (event: PopStateEvent) => {
         if (gameStarted)
           socket?.emit("opponentLeft", { userId: user.id, room: room, });
@@ -103,16 +107,36 @@ export default function Home() {
 
 
   useEffect(() => {
+    const getDataGeustRight = async (id: string) => {
+      const geust = await getUser(id)
+      setRightAvatar(geust.profilePic);
+    }
+    const getDataGeustLeft = async (id: string) => {
+      const geust = await getUser(id)
+      setLeftAvatar(geust.profilePic);
+    }
+    if (gameStarted) {
+      if (user.id === playerId.id1) setRightAvatar(user.profilePic);
+      else getDataGeustRight(playerId.id1);
+
+      if (user.id === playerId.id2) setLeftAvatar(user.profilePic);
+      else getDataGeustLeft(playerId.id2);
+
+    }
+  }, [room, left, playerId.id1, playerId.id2, gameStarted])
+
+  useEffect(() => {
     if (socket) {
       return () => {
         socket.emit("clear", user.id);
       }
     }
   }, [socket])
+  // 
   return (
-    <div className="my-8">
+    <div className="mt-2  h-full flex items-center justify-center">
       {showAlert && <CustomAlert message="Opponent Left" />}
-      <div className="w-screen min-h-screen h-fit flex flex-col justify-center items-center bg-color-main">
+      <div className="w-screen flex flex-col justify-center items-center bg-color-main">
         <canvasContext.Provider value={canvas}>
           {!gameStarted && (
             <div className="flex flex-col lg:flex-row justify-center items-center my-10">
@@ -156,9 +180,29 @@ export default function Home() {
               <div className="bg-white w-3 h-1/3 rounded-full mb-36 mr-4"></div>
             </div>
           )}
+
+
+          {gameStarted && (
+            <div className="w-1/2  flex items-center justify-around mb-3">
+              <Avatar
+                size="4"
+                src={leftAvatr}
+                radius="full"
+                fallback="T"
+              />
+              <Avatar
+                size="4"
+                src={rightAvatr}
+                radius="full"
+                fallback="T"
+              />
+            </div>
+          )}
+
           {gameStarted && (
             <Pong room={room} isLeft={left} difficulty={selectedMap} />
           )}
+
         </canvasContext.Provider>
       </div>
     </div>

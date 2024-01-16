@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  getAllPossibleFriends,
-  getPendingFriends,
-} from "@/app/MyApi/friendshipApi";
+
 import Dialog from "@mui/material/Dialog";
 import * as React from "react";
 import { ChangeEvent, useState } from "react";
 import { ImCross } from "react-icons/im";
 import FriendSearchItem from "./FriendSearchItem";
 import { useGlobalContext } from "@/app/protected/context/store";
+import { getAllPossibleFriends, getPendingFriends } from "../../apiFriend/friendshipApi";
 
 export interface SimpleDialogProps {
   open: boolean;

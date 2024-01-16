@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Text } from "@radix-ui/themes";
-import AboutItem from "./AboutItem";
+import { Text } from '@radix-ui/themes';
+import AboutItem from './AboutItem';
 export default function AboutPage() {
   return (
     <div className="flex flex-col bg-color-main w-screen h-fit h-min-screen items-center justify-around ">
@@ -41,9 +41,9 @@ export default function AboutPage() {
 
         <div className="w-full bg-[#111623]">
           <div
-            className="py-6 my-6   max-w-4xl mx-auto
+            className="py-6 my-6   max-w-4xl mx-auto 
         
-        grid 
+            grid place-items-center items-center
           
          // small screen
          grid-cols-2 gap-x-5 gap-y-3 w-[70%]
@@ -56,36 +56,41 @@ export default function AboutPage() {
         "
           >
             <AboutItem
-              name={"Hamza Boumahdi"}
-              role={"Software developer"}
-              image={"https://avatars.githubusercontent.com/u/93520723?v=4"}
+              name={'Hamza Boumahdi'}
+              linkdin={'https://www.linkedin.com/in/hamza-boumahdi/'}
+              role={'Software developer'}
+              image={'https://avatars.githubusercontent.com/u/93520723?v=4'}
             />
             <AboutItem
-              name={"Ali Louzizi"}
-              role={"Software developer"}
+              name={'Ali Louzizi'}
+              linkdin={'https://www.linkedin.com/in/alilouzizi/'}
+              role={'Software developer'}
               image={
-                "https://cdn.intra.42.fr/users/67e2a8e9ce8710fe1d6df41c600895b7/alouzizi.jpg"
+                'https://cdn.intra.42.fr/users/67e2a8e9ce8710fe1d6df41c600895b7/alouzizi.jpg'
               }
             />
             <AboutItem
-              name={"Lhoussaine Ahammam"}
-              role={"Software developer"}
+              name={'Lhoussaine Ahammam'}
+              linkdin={'https://www.linkedin.com/in/ahammam-lhoussaine/'}
+              role={'Software developer'}
               image={
-                "https://cdn.intra.42.fr/users/e812cee4ab5714ce8d741370f87db885/lahammam.jpg"
+                'https://cdn.intra.42.fr/users/e812cee4ab5714ce8d741370f87db885/lahammam.jpg'
               }
             />
             <AboutItem
-              name={"Saliha Lammari"}
-              role={"Software developer"}
+              name={'Saliha Lammari'}
+              linkdin={'https://www.linkedin.com/in/saliha-lammari/'}
+              role={'Software developer'}
               image={
-                "https://cdn.intra.42.fr/users/d375c15c56b88f37ea3f5a2a26942aa1/slammari.jpg"
+                'https://cdn.intra.42.fr/users/d375c15c56b88f37ea3f5a2a26942aa1/slammari.jpg'
               }
             />
             <AboutItem
-              name={"Younes Jarhbou"}
-              role={"Software developer"}
+              name={'Younes Jarhbou'}
+              linkdin={'https://www.linkedin.com/in/younes-jarhbou-95618a1b3/'}
+              role={'Software developer'}
               image={
-                "https://cdn.intra.42.fr/users/7c758168152fe135cf85b9f3b4f229d5/yjarhbou.jpg"
+                'https://cdn.intra.42.fr/users/7c758168152fe135cf85b9f3b4f229d5/yjarhbou.jpg'
               }
             />
           </div>

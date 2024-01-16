@@ -14,7 +14,7 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_42_1 = require("passport-42");
 const user_service_1 = require("../../user/user.service");
-let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, "42-intranet") {
+let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, '42-intranet') {
     constructor(userService) {
         super({
             clientID: process.env.CLIENT_ID_42,
@@ -27,8 +27,8 @@ let FortyTwoIntranetStrategy = class FortyTwoIntranetStrategy extends (0, passpo
     validateUser(profile) {
         const { id, first_name, last_name, image, login } = profile._json;
         const user = {
-            intra_id: typeof id === "string" ? id : id.toString(),
-            email: profile["emails"][0]["value"],
+            intra_id: typeof id === 'string' ? id : id.toString(),
+            email: profile['emails'][0]['value'],
             first_name: first_name,
             last_name: last_name,
             profilePicture: image.link,

@@ -6,7 +6,7 @@ import {
   rejectFriendRequest,
   unblockFriend,
   unsendFriendRequest,
-} from "@/app/MyApi/friendshipApi";
+} from "../apiFriend/friendshipApi";
 import Badge from "@mui/material/Badge";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
@@ -17,12 +17,13 @@ import { useGlobalDataContext } from "./FriendCategory";
 import PopoverMenu from "./PopoverMenu";
 import { useGlobalContext } from "../../context/store";
 import { getUserGeust } from "../../ChatPage/api/fetch-users";
+
 export default function FriendItem(prompt: {
   friendInfo: friendDto;
   itemsStatus: string;
 }) {
   // ==================== handleUnblock =====================
-  const { user, socket, setGeust } = useGlobalContext();
+  const { user, socket, geust } = useGlobalContext();
   const contxt = useGlobalDataContext();
   const router = useRouter();
   async function handleUnblock(): Promise<void> {
@@ -105,7 +106,7 @@ export default function FriendItem(prompt: {
   // ==================== /handleCancel =====================
   return (
     <div className=" my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
-      <Link href={`/protected/DashboardPage/${prompt.friendInfo.nickname}`}>
+      <Link href={`/DashboardPage/${prompt.friendInfo.nickname}`}>
         <div className="flex flex-row cursor-pointer">
           {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
 
@@ -214,8 +215,11 @@ export default function FriendItem(prompt: {
                   const geustTemp: geustDto = await getUserGeust(
                     prompt.friendInfo.id
                   );
-                  setGeust(geustTemp);
-                  router.push("/protected/ChatPage");
+                  // setGeust(geustTemp);
+                  localStorage.setItem('geust.id-user', prompt.friendInfo.id);
+                  console.log(geust)
+
+                  router.push("protected/ChatPage");
                 }}
               />
             </div>

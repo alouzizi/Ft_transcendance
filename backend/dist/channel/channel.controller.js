@@ -19,16 +19,13 @@ const client_1 = require("@prisma/client");
 const multer_1 = require("multer");
 const guard_1 = require("../auth/guard");
 const channel_service_1 = require("./channel.service");
+const create_channel_dto_1 = require("./dto/create-channel.dto");
 let ChannelController = class ChannelController {
     constructor(channelService) {
         this.channelService = channelService;
     }
     createChannel(createChannelDto, senderId) {
-        const channelData = {
-            ...createChannelDto,
-            channelType: (createChannelDto.channelType == 'Private') ? client_1.ChannelType.Private : client_1.ChannelType.Public,
-        };
-        return this.channelService.createChannel(channelData, senderId);
+        return this.channelService.createChannel(createChannelDto, senderId);
     }
     updateChannel(createChannelDto, senderId, channelId) {
         const channelData = {
@@ -52,8 +49,8 @@ let ChannelController = class ChannelController {
     getChannel(senderId, channelId) {
         return this.channelService.getChannel(senderId, channelId);
     }
-    getMembersChannel(id) {
-        return this.channelService.getMembersChannel(id);
+    getMembersChannel(senderId, id) {
+        return this.channelService.getMembersChannel(senderId, id);
     }
     changeStatusAdmin(senderId, channelId, userId) {
         return this.channelService.changeStatusAdmin(senderId, channelId, userId);
@@ -89,16 +86,14 @@ let ChannelController = class ChannelController {
 exports.ChannelController = ChannelController;
 __decorate([
     (0, common_1.Post)('/createChannel/:senderId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('senderId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [create_channel_dto_1.CreateChannelDto, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "createChannel", null);
 __decorate([
     (0, common_1.Post)('/updateChannel/:senderId/:channelId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('senderId')),
     __param(2, (0, common_1.Param)('channelId')),
@@ -108,7 +103,6 @@ __decorate([
 ], ChannelController.prototype, "updateChannel", null);
 __decorate([
     (0, common_1.Post)("/uploadImage/:senderId/:channelId"),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
@@ -134,7 +128,6 @@ __decorate([
 ], ChannelController.prototype, "uploadImage", null);
 __decorate([
     (0, common_1.Get)('/checkOwnerIsAdmin/:senderId/:channelId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __metadata("design:type", Function),
@@ -143,7 +136,6 @@ __decorate([
 ], ChannelController.prototype, "checkOwnerIsAdmin", null);
 __decorate([
     (0, common_1.Get)('/checkUserIsInChannel/:senderId/:channelId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __metadata("design:type", Function),
@@ -152,7 +144,6 @@ __decorate([
 ], ChannelController.prototype, "checkUserIsInChannel", null);
 __decorate([
     (0, common_1.Get)('/addUserToChannel/:senderId/:channelId/:userId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),
@@ -162,7 +153,6 @@ __decorate([
 ], ChannelController.prototype, "addUserToChannel", null);
 __decorate([
     (0, common_1.Get)('/getChannel/:senderId/:channelId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __metadata("design:type", Function),
@@ -170,16 +160,15 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "getChannel", null);
 __decorate([
-    (0, common_1.Get)('/getMembersChannel/:id'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('/getMembersChannel/:senderId/:id'),
+    __param(0, (0, common_1.Param)('senderId')),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ChannelController.prototype, "getMembersChannel", null);
 __decorate([
     (0, common_1.Get)('/changeStatusAdmin/:senderId/:channelId/:userId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),
@@ -189,7 +178,6 @@ __decorate([
 ], ChannelController.prototype, "changeStatusAdmin", null);
 __decorate([
     (0, common_1.Get)('/kickmember/:senderId/:channelId/:userId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),
@@ -199,7 +187,6 @@ __decorate([
 ], ChannelController.prototype, "kickMember", null);
 __decorate([
     (0, common_1.Get)('/bannedmember/:senderId/:channelId/:userId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),
@@ -209,7 +196,6 @@ __decorate([
 ], ChannelController.prototype, "banMember", null);
 __decorate([
     (0, common_1.Get)('/leaveChannel/:senderId/:channelId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __metadata("design:type", Function),
@@ -218,7 +204,6 @@ __decorate([
 ], ChannelController.prototype, "leaveChannel", null);
 __decorate([
     (0, common_1.Get)('/validePassword/:senderId/:channelId/:password'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('password')),
@@ -228,7 +213,6 @@ __decorate([
 ], ChannelController.prototype, "validePassword", null);
 __decorate([
     (0, common_1.Get)('/getValideChannels/:senderId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -236,7 +220,6 @@ __decorate([
 ], ChannelController.prototype, "getValideChannels", null);
 __decorate([
     (0, common_1.Get)('/joinChannel/:senderId/:channelId/'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __metadata("design:type", Function),
@@ -245,7 +228,6 @@ __decorate([
 ], ChannelController.prototype, "joinChannel", null);
 __decorate([
     (0, common_1.Get)('/muteUserChannel/:senderId/:channelId/:userId/:timer'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),
@@ -256,7 +238,6 @@ __decorate([
 ], ChannelController.prototype, "muteUserChannel", null);
 __decorate([
     (0, common_1.Get)('/checkIsMuted/:senderId/:channelId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __metadata("design:type", Function),
@@ -265,7 +246,6 @@ __decorate([
 ], ChannelController.prototype, "checkIsMuted", null);
 __decorate([
     (0, common_1.Get)('/cancelTimeOutByAdmin/:senderId/:channelId/:userId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __param(1, (0, common_1.Param)('channelId')),
     __param(2, (0, common_1.Param)('userId')),
@@ -275,6 +255,7 @@ __decorate([
 ], ChannelController.prototype, "cancelTimeOutByAdmin", null);
 exports.ChannelController = ChannelController = __decorate([
     (0, common_1.Controller)('channel'),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __metadata("design:paramtypes", [channel_service_1.ChannelService])
 ], ChannelController);
 //# sourceMappingURL=channel.controller.js.map

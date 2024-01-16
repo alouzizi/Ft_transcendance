@@ -2,13 +2,14 @@
 import { BiImageAdd } from "react-icons/bi";
 import { useState } from "react";
 import Image from "next/image";
-import { useGlobalContext } from "@/app/protected/context/store";
+
 import Cookies from "js-cookie";
 import Badge from "@mui/material/Badge";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getDataOwner } from "../IpaSettings/fetch-user";
 import axios from "axios";
+import { useGlobalContext } from "../../context/store";
 
 const ImageUpload = () => {
   const { user, setUser } = useGlobalContext();

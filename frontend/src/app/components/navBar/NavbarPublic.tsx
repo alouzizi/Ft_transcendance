@@ -1,8 +1,6 @@
 "use client";
-import AlertOpenAccount from '@/app/public/HomePage/components/alertOpenAcc';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import { Button } from "@radix-ui/themes";
+
+import AlertOpenAccount from "@/app/public/HomePage/components/alertOpenAcc";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
@@ -10,44 +8,41 @@ import { FaArrowCircleRight } from "react-icons/fa";
 
 export default function NavBarPublic(prompt: { children: ReactNode }) {
   const pathname = usePathname();
-
-
-
   const [openAlert, setOpenAlert] = useState(false);
-
 
   return (
     <div className="flex flex-col  h-screen  text-white ">
       <div className="w-full bg-color-main  flex flex-row justify-center items-center py-4 pt-8">
         <div className="container flex items-center justify-between  ">
 
-          <Link href="/public/HomePage">
+          <Link href="/HomePage">
             <img className="h-8" src="/PongMaster.svg" alt="PongMaster" />
           </Link>
 
           <div className="space-x-4 flex">
             <Link
-              href="/public/HomePage"
+              href="/HomePage"
               className={
-                pathname === "/public/HomePage"
+                pathname === "/HomePage"
                   ? ""
                   : "text-gray-400"
               }
             >
+
               <div> HOME</div>
             </Link>
             <Link
-              href="/public/AboutPage"
+              href="/AboutPage"
               className={
-                pathname === "/public/AboutPage" ? "" : "text-gray-400"
+                pathname === "/AboutPage" ? "" : "text-gray-400"
               }
             >
               <div> ABOUT</div>
             </Link>
             <Link
-              href="/public/ContactPage"
+              href="/ContactPage"
               className={
-                pathname === "/public/ContactPage" ? "" : "text-gray-400"}
+                pathname === "/ContactPage" ? "" : "text-gray-400"}
             >
               <div>CONTACT</div>
             </Link>

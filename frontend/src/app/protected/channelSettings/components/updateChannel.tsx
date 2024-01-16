@@ -1,28 +1,29 @@
-"use client";
-import { useGlobalContext } from "@/app/protected/context/store";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import { Avatar, Text } from "@radix-ui/themes";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { z } from "zod";
+'use client';
+
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { Avatar, Text } from '@radix-ui/themes';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { z } from 'zod';
 import {
   checkOwnerIsAdmin,
   getChannel,
   updateChannel,
-} from "../../api/fetch-channel";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
-import { getVueGeust } from "../../api/fetch-users";
+} from '../../ChatPage/api/fetch-channel';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
+import { getVueGeust } from '../../ChatPage/api/fetch-users';
+import { useGlobalContext } from '../../context/store';
 
 enum ChannelType {
-  Public = "Public",
-  Private = "Private",
+  Public = 'Public',
+  Private = 'Private',
 }
 
 export default function UpdateChannel() {
@@ -40,16 +41,16 @@ export default function UpdateChannel() {
     .min(3)
     .max(12)
     .refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name));
-  const [errorName, setErrorName] = useState("");
-  const [errorKey, setErrorKey] = useState("");
+  const [errorName, setErrorName] = useState('');
+  const [errorKey, setErrorKey] = useState('');
 
-  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedImage, setSelectedImage] = useState<string>('');
   const [channelData, setChannelData] = useState<channelDto>({
-    channelName: "",
+    channelName: '',
     channelType: ChannelType.Public,
-    channelPassword: "",
-    channelOwnerId: "",
-    avatar: "",
+    channelPassword: '',
+    channelOwnerId: '',
+    avatar: '',
     protected: false,
     channelMember: [],
   });
@@ -64,13 +65,8 @@ export default function UpdateChannel() {
         setChannelData(tmp);
       }
     };
-    if (geust.id !== "-1" && !geust.isUser) getData({ idChannel: geust.id });
-    if (socket) {
-      socket.on("updateChannel", getData);
-      return () => {
-        socket.off("updateChannel", getData);
-      };
-    }
+    if (geust.id !== '-1' && !geust.isUser) getData({ idChannel: geust.id });
+
   }, [socket, geust.id]);
 
   const [isOwnerAdmin, setIsOwnerAdmin] = useState(false);
@@ -79,12 +75,12 @@ export default function UpdateChannel() {
       const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
       setIsOwnerAdmin(tmp);
     };
-    if (geust.id !== "-1" && user.id !== "-1" && !geust.isUser) getData();
-  }, []);
+    if (geust.id !== '-1' && user.id !== '-1' && !geust.isUser) getData();
+  }, [socket, geust.id]);
 
   const isSameChannel = (
     channel1: channelDto,
-    channel2: channelDto
+    channel2: channelDto,
   ): boolean => {
     return (
       channel1.channelName === channel2.channelName &&
@@ -97,17 +93,12 @@ export default function UpdateChannel() {
 
   const updateChannelServer = async () => {
     const res = await updateChannel(channelData, user.id, geust.id);
-    if (res && res.status === 202) {
-      setErrorName(res.error);
-    } else if (res && res.status === 200) {
-      setChannel(res.channel);
-      setChannelData(res.channel);
-      socket?.emit("updateChannel", {
-        content: "",
-        senderId: user.id,
-        receivedId: geust.id,
-      });
-      toast.success("Channel has been updated");
+    console.log("res=", res);
+    if (res && res.status === 409) {
+      setErrorName('Name is already used');
+    } else if (res && res.status === 201) {
+      setChannel(channelData);
+      toast.success('Channel has been updated');
     }
   };
 
@@ -130,7 +121,7 @@ export default function UpdateChannel() {
             type="file"
             accept="image/*"
             disabled={!(isOwnerAdmin || !channel.protected)}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             onChange={async (event: any) => {
               const file = event.target.files[0];
               if (file && file.size && file.size < 0.5 * 1024 * 1024) {
@@ -141,26 +132,26 @@ export default function UpdateChannel() {
                 };
 
                 const formData = new FormData();
-                formData.append("file", file);
+                formData.append('file', file);
                 try {
-                  const token = Cookies.get("access_token");
+                  const token = Cookies.get('access_token');
                   const response = await fetch(
                     `${process.env.NEXT_PUBLIC_BACK}/channel/uploadImage/${user.id}/${geust.id}`,
                     {
-                      method: "POST",
+                      method: 'POST',
                       body: formData,
                       headers: {
                         authorization: `Bearer ${token}`,
                       },
-                    }
+                    },
                   );
-                  toast.success("Image uploaded successfully");
-                  const temp = await getVueGeust(geust.id, false);
+                  toast.success('Image uploaded successfully');
+                  const temp = await getVueGeust(user.id, geust.id, false);
                   setGeust(temp);
                 } catch (error) {
-                  toast.error("Error uploading image");
+                  toast.error('Error uploading image');
                 }
-              } else toast.error("Error uploading image");
+              } else toast.error('Error uploading image');
             }}
           />
         </label>
@@ -182,7 +173,7 @@ export default function UpdateChannel() {
             value={channelData.channelName}
             onChange={(e) => {
               if (isOwnerAdmin) {
-                setErrorName("");
+                setErrorName('');
                 setChannelData((prevState) => {
                   return { ...prevState, channelName: e.target.value };
                 });
@@ -256,7 +247,7 @@ export default function UpdateChannel() {
                     });
                   } else {
                     setChannelData((prevState) => {
-                      return { ...prevState, channelPassword: "" };
+                      return { ...prevState, channelPassword: '' };
                     });
                   }
                 }}
@@ -271,7 +262,7 @@ export default function UpdateChannel() {
                     rounded-lg  w-full p-1.5 outline-none"
           >
             <input
-              type={isPasswordVisible ? "text" : "password"}
+              type={isPasswordVisible ? 'text' : 'password'}
               className="bg-[#111623] text-white
                   placeholder-gray-300 text-sm outline-none"
               placeholder={channelData.channelPassword}
@@ -279,7 +270,7 @@ export default function UpdateChannel() {
               required={channelData.protected}
               value={channelData.channelPassword}
               onChange={(e) => {
-                setErrorKey("");
+                setErrorKey('');
                 setChannelData((prevState) => {
                   return { ...prevState, channelPassword: e.target.value };
                 });
@@ -313,8 +304,8 @@ export default function UpdateChannel() {
           onClick={() => {
             setChannelData({ ...channel });
             setIsPasswordVisible(false);
-            setErrorKey("");
-            setErrorName("");
+            setErrorKey('');
+            setErrorName('');
           }}
         >
           Rest
@@ -323,27 +314,28 @@ export default function UpdateChannel() {
           onClick={() => {
             if (!isSameChannel(channel, channelData)) {
               const parsName = channelNameSchema.safeParse(
-                channelData.channelName
+                channelData.channelName,
               );
               const parskey = channelkeySchema.safeParse(
-                channelData.channelPassword
+                channelData.channelPassword,
               );
               if (
-                parsName.success &&
+                parsName.success
+                &&
                 (parskey.success || !channelData.protected)
               ) {
                 updateChannelServer();
               } else {
-                if (!parsName.success) setErrorName("Invalid channel name");
+                if (!parsName.success) setErrorName('Invalid channel name');
                 if (!parskey.success && channelData.protected)
-                  setErrorKey("Invalid channel key");
+                  setErrorKey('Invalid channel key');
               }
             }
           }}
-          className="rounded-sm text-[#254BD6] hover:text-white hover:bg-[#254BD6] ml-3 p-1 px-3"
+          className="rounded-lg text-[#254BD6] hover:text-white hover:bg-[#254BD6] ml-6 p-0.5 px-3 border "
         >
           <Text size="3" weight="bold">
-            {" "}
+            {' '}
             Save Changes
           </Text>
         </button>

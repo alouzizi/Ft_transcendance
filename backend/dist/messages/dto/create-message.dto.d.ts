@@ -1,4 +1,4 @@
-import { MessageStatus, Status } from "@prisma/client";
+import { MessageStatus, Status } from '@prisma/client';
 export declare class CreateMessageDto {
     content: string;
     senderId: string;

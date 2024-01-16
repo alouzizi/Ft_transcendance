@@ -8,13 +8,9 @@ import {
   SetStateAction,
 } from "react";
 import FriendItem from "./FriendItem";
-import {
-  getAllFriends,
-  getBlockedFriends,
-  getOnlineFriends,
-  getPendingFriends,
-} from "@/app/MyApi/friendshipApi";
+
 import { useGlobalContext } from "../../context/store";
+import { getAllFriends, getBlockedFriends, getOnlineFriends, getPendingFriends } from "../apiFriend/friendshipApi";
 
 // ====================== create context ======================
 interface ContextProps {

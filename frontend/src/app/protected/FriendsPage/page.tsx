@@ -38,11 +38,10 @@ export default function FriendsPage() {
   function getIconStyle(index: number) {
     const iconStyle = ` font-bold  py-1 rounded-md  
     transition ease-in-out delay-100
-    ${
-      isSelectedList[index]
+    ${isSelectedList[index]
         ? "text-white bg-[#515562] hover:bg-[#515562] hover:text-white"
         : "text-gray-300 bg-transparent hover:bg-[#2A2F40] hover:text-slate-50"
-    }
+      }
 
     // small screen
     text-xs px-2 mr-1.5
@@ -80,7 +79,7 @@ export default function FriendsPage() {
   // ================== /friend alert ==================
 
   return (
-    <div className="flex flex-col bg-color-main h-screen w-screen ">
+    <div className="flex flex-col bg-color-main w-screen ">
       <div className="flex flex-col justify-end mt-12 mb-8 ml-8  md:ml-24 ">
         <h1 className="text-left font-bold text-lg md:text-2xl mb-12">
           Friends
@@ -110,13 +109,11 @@ export default function FriendsPage() {
 
           <button
             className="mr-4 w-fit font-meduim  py-1 rounded-md   bg-green-700 hover:bg-green-600
-          
-         
-          // small screen
-          text-xs px-2
-          // big screen 
-          md:text-sm lg:text-md lg:px-4 
-          "
+            // small screen
+            text-xs px-2
+            // big screen 
+            md:text-sm lg:text-md lg:px-4 
+            "
             onClick={handleClickOpen}
           >
             Add Friend

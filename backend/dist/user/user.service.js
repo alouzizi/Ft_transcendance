@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const zod_1 = require("zod");
 const client_1 = require("@prisma/client");
 let UserService = class UserService {
     constructor(prisma) {
@@ -178,10 +179,10 @@ let UserService = class UserService {
                 };
             return {
                 isUser: true,
-                id: "-1",
-                nickname: "",
-                profilePic: "",
-                status: "",
+                id: '-1',
+                nickname: '',
+                profilePic: '',
+                status: '',
                 lastSee: 0,
                 lenUser: 0,
                 idUserOwner: 0,
@@ -191,22 +192,29 @@ let UserService = class UserService {
             return { error: true };
         }
     }
-    async getChannelGeust(id) {
+    async getChannelGeust(senderId, id) {
         try {
-            const channel = await this.prisma.channel.findUnique({ where: { id } });
-            const members = await this.prisma.channelMember.findMany({
-                where: { channelId: id },
+            const isMemberExist = await this.prisma.channelMember.findMany({
+                where: { userId: senderId, channelId: id },
             });
-            return {
-                isUser: false,
-                id: id,
-                nickname: channel.channelName,
-                profilePic: channel.avatar,
-                status: client_1.Status.INACTIF,
-                lastSee: channel.createdAt,
-                lenUser: members.length,
-                idUserOwner: channel.channelOwnerId,
-            };
+            if (isMemberExist.length !== 0) {
+                const channel = await this.prisma.channel.findUnique({ where: { id } });
+                const members = await this.prisma.channelMember.findMany({
+                    where: { channelId: id },
+                });
+                return {
+                    isUser: false,
+                    id: id,
+                    nickname: channel.channelName,
+                    profilePic: channel.avatar,
+                    status: client_1.Status.INACTIF,
+                    lastSee: channel.createdAt,
+                    lenUser: members.length,
+                    idUserOwner: channel.channelOwnerId,
+                };
+            }
+            else
+                return null;
         }
         catch {
             return { error: true };
@@ -214,22 +222,10 @@ let UserService = class UserService {
     }
     async createUser(user1) {
         try {
-            let nickname = user1.login42.toString();
-            let i = 0;
-            let check = await this.prisma.user.findUnique({
-                where: { nickname: nickname },
-            });
-            while (check) {
-                check = await this.prisma.user.findUnique({
-                    where: { nickname: `${nickname}_${i}` },
-                });
-                nickname = `${nickname}_${i}`;
-                i++;
-            }
             const user = await this.prisma.user.create({
                 data: {
                     intra_id: user1.intra_id.toString(),
-                    nickname: nickname,
+                    nickname: user1.login42,
                     email: user1.email.toString(),
                     profilePic: user1.profilePicture.toString(),
                     last_name: user1.last_name,
@@ -279,6 +275,14 @@ let UserService = class UserService {
         if (usr.nickname === nickname) {
             return;
         }
+        const validName = zod_1.z
+            .string()
+            .min(3)
+            .max(15)
+            .refine((name) => /^[a-zA-Z0-9_\-]+$/.test(name)).safeParse(nickname);
+        if (!validName.success) {
+            throw new common_1.HttpException('Invalid nickname', common_1.HttpStatus.BAD_REQUEST);
+        }
         try {
             const user = await this.prisma.user.update({
                 where: {
@@ -291,8 +295,8 @@ let UserService = class UserService {
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
-                if (error.code === "P2002") {
-                    throw new common_1.HttpException("nickname aleady exist", common_1.HttpStatus.CONFLICT);
+                if (error.code === 'P2002') {
+                    throw new common_1.HttpException('nickname aleady exist', common_1.HttpStatus.CONFLICT);
                 }
                 else {
                     return { status: 202, error: true };
@@ -318,6 +322,27 @@ let UserService = class UserService {
             where: { intra_id: intra_id },
         });
         return user;
+    }
+    async findByOwnerById(intra_id) {
+        const user = await this.prisma.user.findUnique({
+            where: { intra_id: intra_id },
+        });
+        const noti = await this.prisma.notificationTable.findMany({
+            where: { recieverId: user.id },
+        });
+        const temp = {
+            id: user.id,
+            intra_id: user.intra_id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            nickname: user.nickname,
+            profilePic: user.profilePic,
+            isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
+            level: user.level,
+            inGaming: user.inGaming,
+            nbrNotifications: noti.length,
+        };
+        return temp;
     }
     async findByIds(id) {
         return await this.prisma.user.findUnique({

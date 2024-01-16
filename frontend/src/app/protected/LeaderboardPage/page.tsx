@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import LeaderBItem from "./components/LeaderBItem";
 import { useGlobalContext } from "../context/store";
-import { getLeaderBoard } from "@/app/MyApi/gameApi";
+import { getLeaderBoard } from "../FriendsPage/apiFriend/gameApi";
+
 
 export default function LeaderboardPage() {
   const { updateInfo } = useGlobalContext();
@@ -19,7 +20,7 @@ export default function LeaderboardPage() {
     getData();
   }, [updateInfo]);
   return (
-    <div className="flex flex-col bg-color-main h-fit w-screen min-h-screen ">
+    <div className="flex flex-col bg-color-main  w-screen   ">
       <h1
         className="text-left font-bold text-md sm:text-lg md:text-2xl 
         mt-6 md:mt-12 mb-4 md:mb-12 ml-12  md:ml-24"

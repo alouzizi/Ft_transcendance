@@ -10,12 +10,8 @@ export declare class MessagesService {
     createDirectMessage(server: Server, createMessageDto: CreateMessageDto): Promise<{
         error: boolean;
     }>;
-    createChannelMessage(server: Server, createMessageDto: CreateMessageDto): Promise<{
-        error: boolean;
-    }>;
-    getDirectMessage(senderId: string, receivedId: string): Promise<messageDto[] | {
-        error: boolean;
-    }>;
+    createChannelMessage(server: Server, createMessageDto: CreateMessageDto): Promise<void>;
+    getDirectMessage(senderId: string, receivedId: string): Promise<messageDto[]>;
     getChannelMessage(senderId: string, channelId: string): Promise<messageDto[] | {
         error: boolean;
     }>;
@@ -32,7 +28,5 @@ export declare class MessagesService {
         InfoMessage: boolean;
     }>;
     getChannleForMsg(senderId: string): Promise<messageDto[]>;
-    getMessageForList(senderId: string): Promise<messageDto[] | {
-        error: boolean;
-    }>;
+    getMessageForList(senderId: string): Promise<messageDto[]>;
 }

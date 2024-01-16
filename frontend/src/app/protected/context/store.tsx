@@ -1,14 +1,12 @@
-"use client";
+'use client';
 
-import Alert from "@mui/material/Alert";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import Snackbar from "@mui/material/Snackbar";
-import Stack from "@mui/material/Stack";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import * as React from "react";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Cookies from 'js-cookie';
+import Lottie from 'lottie-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 import {
   Dispatch,
   SetStateAction,
@@ -16,18 +14,21 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { Socket, io } from "socket.io-client";
-import Lottie from "lottie-react";
-import loadingc from "../../assets/loading.json";
-import { ImCross } from "react-icons/im";
+} from 'react';
+import { ImCross } from 'react-icons/im';
+import { Socket, io } from 'socket.io-client';
+import loadingc from '../../assets/loading.json';
+import { usePathname } from 'next/navigation';
 
 enum Status {
-  ACTIF = "ACTIF",
-  INACTIF = "INACTIF",
+  ACTIF = 'ACTIF',
+  INACTIF = 'INACTIF',
 }
 
 interface ContextProps {
+  isAuthenticated: boolean;
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+
   updateInfo: number;
   setUpdateInfo: Dispatch<SetStateAction<number>>;
 
@@ -47,47 +48,51 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
+  isAuthenticated: false,
+  setIsAuthenticated: () => { },
+
   inviteData: {
-    userId1: "-1",
-    userId2: "-1",
-    room: "-1",
-    selectedMap: "isLeft",
+    userId1: '-1',
+    userId2: '-1',
+    room: '-1',
+    selectedMap: 'isLeft',
     isLeft: true,
   },
-  setInviteData: () => {},
+  setInviteData: () => { },
 
   displayChat: false,
-  setDisplayChat: () => {},
+  setDisplayChat: () => { },
 
   updateInfo: 1,
-  setUpdateInfo: () => {},
+  setUpdateInfo: () => { },
 
   user: {
-    id: "-1",
-    intra_id: "",
-    first_name: "",
-    last_name: "",
-    nickname: "",
-    profilePic: "",
+    id: '-1',
+    intra_id: '',
+    first_name: '',
+    last_name: '',
+    nickname: '',
+    profilePic: '',
     isTwoFactorAuthEnabled: true,
     status: Status.INACTIF,
     inGaming: false,
-    level: "0.0",
+    level: '0.0',
+    nbrNotifications: 0,
   },
-  setUser: () => {},
+  setUser: () => { },
 
   geust: {
     isUser: true,
-    id: "-1",
-    nickname: "",
-    profilePic: "",
+    id: '-1',
+    nickname: '',
+    profilePic: '',
     status: Status.INACTIF,
     lastSee: 0,
     lenUser: 0,
-    idUserOwner: "",
+    idUserOwner: '',
     inGaming: false,
   },
-  setGeust: () => {},
+  setGeust: () => { },
 
   socket: null,
 });
@@ -98,84 +103,94 @@ export const GlobalContextProvider = ({
   children: React.ReactNode;
 }) => {
   const router = useRouter();
-
+  const currentPath = usePathname();
   const [displayChat, setDisplayChat] = useState<boolean>(false);
   const [updateInfo, setUpdateInfo] = useState<number>(1);
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   const [user, setUser] = useState<ownerDto>({
-    id: "-1",
-    intra_id: "",
-    first_name: "",
-    last_name: "",
-    nickname: "",
-    profilePic: "",
+    id: '-1',
+    intra_id: '',
+    first_name: '',
+    last_name: '',
+    nickname: '',
+    profilePic: '',
     isTwoFactorAuthEnabled: true,
-    level: "0.0",
+    level: '0.0',
     status: Status.INACTIF,
     inGaming: false,
+    nbrNotifications: 0,
   });
 
   const [inviteData, setInviteData] = useState<any>({
-    userId1: "-1",
-    userId2: "-1",
-    room: "-1",
-    selectedMap: "isLeft",
+    userId1: '-1',
+    userId2: '-1',
+    room: '-1',
+    selectedMap: 'isLeft',
     isLeft: true,
   });
 
   const [geust, setGeust] = useState<geustDto>({
     isUser: true,
-    id: "-1",
-    nickname: "",
-    profilePic: "",
+    id: '-1',
+    nickname: '',
+    profilePic: '',
     status: Status.INACTIF,
     lastSee: 0,
     lenUser: 0,
-    idUserOwner: "",
+    idUserOwner: '',
     inGaming: false,
   });
 
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    if (user.id && user.id != "-1") {
-      const socket = io(`${process.env.NEXT_PUBLIC_BACK}` || "localhost", {
-        transports: ["websocket"],
+    if (user.id && user.id != '-1') {
+      const token = Cookies.get('access_token');
+      const socket = io(`${process.env.NEXT_PUBLIC_BACK}` || 'localhost', {
+        transports: ['websocket'],
         query: {
           senderId: user.id,
+          token: `Bearer ${token}`,
         },
       });
       setSocket(socket);
-      socket.on("connect", () => {});
-      socket.on("disconnect", () => {});
     }
   }, [user.id]);
 
   useEffect(() => {
     const getDataUser = async () => {
       try {
-        const token = Cookies.get("access_token");
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACK}/user/intra/`, {
-          method: "GET",
+        const token = Cookies.get('access_token');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACK}/user/intra`, {
+          method: 'GET',
           headers: {
             authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         });
 
         if (res.ok) {
           const owner = await res.json();
+          setIsAuthenticated(true);
           setUser(owner);
         } else {
-          router.push("/public/HomePage");
+          router.push('/public/HomePage');
         }
       } catch (error) {
-        router.push("/public/HomePage");
-        //console.log(error);
+        router.push('/public/HomePage');
       }
     };
-    if (user.id === "-1") getDataUser();
-  }, []);
+    if (user.id === '-1') getDataUser();
+
+    if (socket) {
+      socket.on('sendNotification', getDataUser);
+      return () => {
+        socket.off('sendNotification', getDataUser);
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     const update = async () => {
@@ -184,16 +199,16 @@ export const GlobalContextProvider = ({
       });
     };
     if (socket) {
-      socket.on("updateData", update);
+      socket.on('updateData', update);
     }
   }, [socket]);
 
-  const [data, setData] = useState("");
+  const [data, setData] = useState('');
+
 
   useEffect(() => {
-    // socket here <<< ---------------------------------->>>
     if (socket) {
-      socket.on("invite", (data) => {
+      socket.on('invite', (data) => {
         setData(data);
         setInviteData({
           userId1: data.userId1,
@@ -205,8 +220,13 @@ export const GlobalContextProvider = ({
         setOpenConfirm(true);
         setInvitedName(data.nameInveted);
       });
+    }
+  }, [socket, data]);
 
-      socket.on("startGame", (data) => {
+  useEffect(() => {
+    if (socket) {
+      socket.on('startGame', (data) => {
+        setOpenConfirm(false);
         setInviteData({
           userId1: data.userId1,
           userId2: data.userId2,
@@ -214,23 +234,31 @@ export const GlobalContextProvider = ({
           selectedMap: 2,
           isLeft: data.userId1 == user.id ? false : true,
         });
-        setOpenConfirm(false);
-        router.push("/protected/GamePage/invite");
+        router.push('/protected/GamePage/invite');
       });
-      socket.on("declien", () => {
-        setOpenConfirm(false);
-      });
-      // }
     }
   }, [socket, data]);
 
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const [inviterdName, setInvitedName] = useState("");
+  useEffect(() => {
+    if (socket) {
 
-  if (user.id === "-1") return <div></div>;
+      socket.on('declien', () => {
+        setOpenConfirm(false);
+      });
+    }
+  }, [socket, data]);
+
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [inviterdName, setInvitedName] = useState('');
+
+  console.log('---------- useContext Called ----------');
+  if (socket === null) return <></>
   return (
     <GlobalContext.Provider
       value={{
+        isAuthenticated,
+        setIsAuthenticated,
         geust,
         setGeust,
         user,
@@ -248,8 +276,8 @@ export const GlobalContextProvider = ({
         <Dialog
           PaperProps={{
             style: {
-              backgroundColor: "transparent",
-              boxShadow: "none",
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
             },
           }}
           open={openConfirm}
@@ -262,10 +290,11 @@ export const GlobalContextProvider = ({
           >
             <div
               onClick={() => {
-                if (user.id === inviteData.userId1)
-                  socket?.emit("decline", inviteData.userId2);
-                else socket?.emit("decline", inviteData.userId1);
                 setOpenConfirm(false);
+                if (user.id === inviteData.userId1)
+                  socket?.emit('decline', inviteData.userId2);
+                else socket?.emit('decline', inviteData.userId1);
+
               }}
               className="flex flex-row justify-end mb-2 text-sm md:text-md lg:text-lg"
             >
@@ -283,7 +312,7 @@ export const GlobalContextProvider = ({
                     <p className="text-gray-300  text-center">
                       <span className="font-700 text-white hover:underline">
                         {inviterdName}
-                      </span>{" "}
+                      </span>{' '}
                       invite you to pongMaster match
                     </p>
                   </div>
@@ -292,10 +321,9 @@ export const GlobalContextProvider = ({
                   <div className="flex flex-row items-center justify-center"></div>
                   <button
                     onClick={async () => {
-                      socket?.emit("decline", inviteData.userId1);
                       setOpenConfirm(false);
+                      socket?.emit('decline', inviteData.userId1);
 
-                      // router.push("/protected/GamePage/invite");
                     }}
                     className="w-fit font-meduim  rounded-md   text-white bg-[#323C52] hover:bg-[#43516e]
                           text-xs  px-4 py-2 mx-2
@@ -305,9 +333,8 @@ export const GlobalContextProvider = ({
                   </button>
                   <button
                     onClick={async () => {
-                      socket?.emit("accept", data);
                       setOpenConfirm(false);
-                      router.push("/protected/GamePage/invite");
+                      socket?.emit('accept', data);
                     }}
                     className="w-fit font-meduim  rounded-md   text-white bg-color-main-whith hover:bg-[#2d55e6]
               text-xs  px-4 py-2 mx-2

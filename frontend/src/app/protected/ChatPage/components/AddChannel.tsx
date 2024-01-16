@@ -1,28 +1,28 @@
-"use client";
-import { Button, DialogActions } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { Box, Flex, ScrollArea, Text } from "@radix-ui/themes";
-import * as React from "react";
-import { useEffect, useState } from "react";
+'use client';
+import { Button, DialogActions } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { Box, Flex, ScrollArea, Text } from '@radix-ui/themes';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import {
   IoAddOutline,
   IoCloseOutline,
   IoPersonAdd,
   IoPersonRemove,
-} from "react-icons/io5";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { z } from "zod";
-import { useGlobalContext } from "../../context/store";
-import { createChannel } from "../api/fetch-channel";
-import { getValideUsers, getVueGeust } from "../api/fetch-users";
+} from 'react-icons/io5';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { z } from 'zod';
+import { useGlobalContext } from '../../context/store';
+import { createChannel } from '../api/fetch-channel';
+import { getValideUsers, getVueGeust } from '../api/fetch-users';
 
 enum ChannelType {
-  Public = "Public",
-  Private = "Private",
+  Public = 'Public',
+  Private = 'Private',
 }
 
 export default function AlertAddChannel() {
@@ -39,21 +39,21 @@ export default function AlertAddChannel() {
     .max(12)
     .refine((name) => /^[a-zA-Z0-9_\-@#*!.]+$/.test(name));
 
-  const [errorName, setErrorName] = useState("");
+  const [errorName, setErrorName] = useState('');
   const [lenNameError, setLenNameError] = useState(0);
-  const [errorKey, setErrorKey] = useState("");
+  const [errorKey, setErrorKey] = useState('');
 
   const [channelData, setChannelData] = useState<channelDto>({
-    channelName: "",
+    channelName: '',
     channelType: ChannelType.Public,
-    channelPassword: "",
-    channelOwnerId: "",
-    avatar: "",
+    channelPassword: '',
+    channelOwnerId: '',
+    avatar: '',
     protected: false,
     channelMember: [],
   });
 
-  const [memberSearch, setMemberSearch] = useState("");
+  const [memberSearch, setMemberSearch] = useState('');
 
   const { user, setGeust, socket } = useGlobalContext();
   const [valideUsers, setValideUsers] = useState<userDto[]>([]);
@@ -61,7 +61,7 @@ export default function AlertAddChannel() {
 
   useEffect(() => {
     async function getData() {
-      if (user.id !== "-1") {
+      if (user.id !== '-1') {
         const temp = await getValideUsers(user.id);
         if (temp !== undefined) setValideUsers(temp);
       }
@@ -73,15 +73,15 @@ export default function AlertAddChannel() {
     const tmp: userDto[] = valideUsers.filter((elm) => {
       const username = elm.nickname;
       return (
-        (username.includes(memberSearch) && memberSearch != "") ||
-        memberSearch === "*"
+        (username.includes(memberSearch) && memberSearch != '') ||
+        memberSearch === '*'
       );
     });
     if (valideUsers.length) setUsersFilter(tmp);
   }, [memberSearch, valideUsers]);
 
   const getDataGeust = async (id: string, isUser: Boolean) => {
-    const temp = await getVueGeust(id, isUser);
+    const temp = await getVueGeust(user.id, id, isUser);
     if (temp !== undefined) setGeust(temp);
   };
 
@@ -90,11 +90,14 @@ export default function AlertAddChannel() {
     if (res !== undefined) {
       if (res.status === 200) {
         getDataGeust(res.id, false);
-        socket?.emit("emitNewMessage", {
+        socket?.emit('emitNewMessage', {
           senderId: user.id,
           receivedId: res.id,
           isDirectMessage: false,
         });
+        for (const userId of channelData.channelMember) {
+          socket?.emit('sendNotification', userId);
+        }
         setOpen(false);
       } else if (res.status === 202) {
         setErrorName(res.error);
@@ -106,15 +109,15 @@ export default function AlertAddChannel() {
 
   useEffect(() => {
     setChannelData({
-      channelName: "",
+      channelName: '',
       channelType: ChannelType.Public,
-      channelPassword: "",
+      channelPassword: '',
       channelMember: [],
-      channelOwnerId: "",
+      channelOwnerId: '',
       protected: false,
-      avatar: "",
+      avatar: '',
     });
-    setMemberSearch("");
+    setMemberSearch('');
     setUsersFilter([]);
   }, [open]);
 
@@ -144,7 +147,7 @@ export default function AlertAddChannel() {
               onClick={() => {
                 setChannelData((prevState) => {
                   const updatedChannelMember = prevState.channelMember.filter(
-                    (memberId) => memberId !== elm.id
+                    (memberId) => memberId !== elm.id,
                   );
                   return {
                     ...prevState,
@@ -173,7 +176,7 @@ export default function AlertAddChannel() {
   const [isPasswordVisibleAlert, setIsPasswordVisibleAlert] = useState(false);
 
   let styles: string =
-    "px-2 md:px-8 py-1 my-1.5 rounded-[36px] text-[#254BD6] bg-white shadow-md";
+    'px-2 md:px-8 py-1 my-1.5 rounded-[36px] text-[#254BD6] bg-white shadow-md';
   return (
     <div>
       <div
@@ -190,7 +193,7 @@ export default function AlertAddChannel() {
           <IoCloseOutline onClick={() => setOpen(false)} size="25" />
         </div>
         <DialogTitle style={{ padding: 0, paddingLeft: 15 }} textAlign="start">
-          {"Create Channel"}
+          {'Create Channel'}
         </DialogTitle>
         <DialogContent
           style={{ padding: 0, paddingLeft: 15, paddingRight: 40 }}
@@ -199,9 +202,9 @@ export default function AlertAddChannel() {
           <div className="pt-5">
             <div className="flex items-center justify-around bg-[#F6F7FA] rounded-[10px] border w-[10rem] md:w-[15rem]">
               <div
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 className={
-                  channelData.channelType === ChannelType.Public ? styles : ""
+                  channelData.channelType === ChannelType.Public ? styles : ''
                 }
                 onClick={() => {
                   setChannelData((prevState) => {
@@ -215,9 +218,9 @@ export default function AlertAddChannel() {
               </div>
 
               <div
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
                 className={
-                  channelData.channelType === ChannelType.Private ? styles : ""
+                  channelData.channelType === ChannelType.Private ? styles : ''
                 }
                 onClick={() => {
                   //console.log("called");
@@ -225,7 +228,7 @@ export default function AlertAddChannel() {
                     return {
                       ...prevState,
                       channelType: ChannelType.Private,
-                      channelPassword: "",
+                      channelPassword: '',
                       protected: false,
                     };
                   });
@@ -238,14 +241,14 @@ export default function AlertAddChannel() {
             </div>
             <div className="flex bg-[#F6F7FA] mt-3  border rounded-[10px]  w-[10rem] md:w-[15rem]">
               <input
-                type={"text"}
+                type={'text'}
                 className="bg-[#F6F7FA] m-1 p-1 flex flex-grow  w-[7rem] md:w-[15rem] 
                         text-black placeholder-gray-600 text-sm outline-none rounded-[10px] mr-1"
                 value={channelData.channelName}
                 placeholder="Channel Name"
                 onChange={(e) => {
                   if (e.target.value.length < 100) {
-                    setErrorName("");
+                    setErrorName('');
                     if (e.target.value.length > 15) {
                       setLenNameError(15 - e.target.value.length);
                     } else setLenNameError(0);
@@ -273,14 +276,14 @@ export default function AlertAddChannel() {
               <FormControlLabel
                 control={
                   <Checkbox
-                    style={{ color: "#254BD6" }}
+                    style={{ color: '#254BD6' }}
                     checked={channelData.protected}
                     onChange={(event) => {
-                      setErrorKey("");
+                      setErrorKey('');
                       setChannelData((prevState) => {
                         return {
                           ...prevState,
-                          channelPassword: "",
+                          channelPassword: '',
                           protected: event.target.checked,
                           channelType: ChannelType.Public,
                         };
@@ -298,11 +301,11 @@ export default function AlertAddChannel() {
                         text-black placeholder-gray-600 text-sm outline-none"
                 disabled={!channelData.protected}
                 required={channelData.protected}
-                type={isPasswordVisibleAlert ? "text" : "password"}
+                type={isPasswordVisibleAlert ? 'text' : 'password'}
                 placeholder="Channel Key"
                 value={channelData.channelPassword}
                 onChange={(e) => {
-                  setErrorKey(""),
+                  setErrorKey(''),
                     setChannelData((prevState) => {
                       return { ...prevState, channelPassword: e.target.value };
                     });
@@ -346,21 +349,21 @@ export default function AlertAddChannel() {
             </div>
           </div>
 
-          <DialogActions style={{ justifyContent: "center" }}>
+          <DialogActions style={{ justifyContent: 'center' }}>
             <Button
               style={{
-                background: "#4069FF",
-                color: "white",
+                background: '#4069FF',
+                color: 'white',
                 paddingLeft: 20,
                 paddingRight: 20,
                 border: 10,
               }}
               onClick={() => {
                 const parsName = channelNameSchema.safeParse(
-                  channelData.channelName
+                  channelData.channelName,
                 );
                 const parskey = channelkeySchema.safeParse(
-                  channelData.channelPassword
+                  channelData.channelPassword,
                 );
                 if (
                   parsName.success &&
@@ -368,9 +371,9 @@ export default function AlertAddChannel() {
                 ) {
                   createChannelServer();
                 } else {
-                  if (!parsName.success) setErrorName("Invalid channel name");
+                  if (!parsName.success) setErrorName('Invalid channel name');
                   if (!parskey.success && channelData.protected)
-                    setErrorKey("Invalid channel key");
+                    setErrorKey('Invalid channel key');
                 }
               }}
             >

@@ -10,7 +10,7 @@ export default function ContactPage() {
   const [message, setMessage] = useState('');
 
   return (
-    <div className="flex md:flex-row flex-col-reverse justify-center items-center">
+    <div className="flex md:flex-row flex-col-reverse justify-center items-center h-[90%]">
 
       <div className="flex  flex-col w-[50%] items-center">
         <Text weight='bold' className="text-center text-[20px] ">

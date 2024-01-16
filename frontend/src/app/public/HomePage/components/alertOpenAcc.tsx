@@ -1,8 +1,8 @@
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import { Button } from "@radix-ui/themes";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import { Button } from '@radix-ui/themes';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 export default function AlertOpenAccount({
   openAlert,
@@ -17,8 +17,8 @@ export default function AlertOpenAccount({
         open={openAlert}
         PaperProps={{
           style: {
-            backgroundColor: "transparent",
-            boxShadow: "none",
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
           },
         }}
         onClose={() => {
@@ -27,11 +27,12 @@ export default function AlertOpenAccount({
       >
         <DialogContent className="flex flex-col items-center p-10 justify-around  bg-[#7D7676] bg-opacity-70 rounded-lg">
           <img className="h-20" src="/PongMaster.svg" alt="PongMaster" />
-          <p className="text-white text-xl">open account using</p>
+          <p className="text-white text-xl">Open account using</p>
           <div className="flex">
             <Button
               onClick={() => {
-                // window.location.href = process.env.NEXT_PUBLIC_BACK + "/auth/google"
+                window.location.href =
+                  process.env.NEXT_PUBLIC_BACK + '/auth/google';
               }}
             >
               <div
@@ -45,11 +46,6 @@ export default function AlertOpenAccount({
             <Button
               onClick={() => {
                 window.location.href = `${process.env.NEXT_PUBLIC_BACK}/auth/login42`;
-
-                // //console.log(
-                //   "process.env.NEXT_PUBLIC_BACK=",
-                //   process.env.NEXT_PUBLIC_BACK
-                // );
               }}
             >
               <div

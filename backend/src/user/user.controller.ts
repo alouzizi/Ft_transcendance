@@ -9,140 +9,113 @@ import {
   UnauthorizedException,
   UploadedFile,
   UseGuards,
-  UseInterceptors
-} from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { User } from "@prisma/client";
-import { diskStorage } from "multer";
-import { JwtGuard } from "src/auth/guard";
-import { UserService } from "./user.service";
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from '@prisma/client';
+import { diskStorage } from 'multer';
+import { JwtGuard } from 'src/auth/guard';
+import { UserService } from './user.service';
 
-@Controller("user")
+@Controller('user')
+@UseGuards(JwtGuard)
 export class UserController {
-  constructor(private userService: UserService,) {
+  constructor(private userService: UserService) { }
 
+  @Get('geust/:id')
+  async getUserProfile(@Param('id') id: string) {
+    return await this.userService.findById(id);
   }
 
-  // @Get(":id")
-  // @UseGuards(JwtGuard)
-  // async getUserProfile(@Param("id") id: string) {
-  //   return await this.userService.findById(id);
-  // }
-
-  @Get("/intra")
-  @UseGuards(JwtGuard)
+  @Get('/intra')
   async getUserByIdintr(@Req() req: any) {
     try {
-      const user: User = await this.userService.findByIntraId(req.user.sub);
-      const temp = {
-        id: user.id,
-        intra_id: user.intra_id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        nickname: user.nickname,
-        profilePic: user.profilePic,
-        isTwoFactorAuthEnabled: user.isTwoFactorAuthEnabled,
-        level: user.level,
-        inGaming: user.inGaming
-      };
-      return temp;
+      const user = await this.userService.findByOwnerById(req.user.sub);
+      return user;
     } catch (error) { }
   }
 
-
-  @Get("/all")
-  @UseGuards(JwtGuard)
+  @Get('/all')
   async getAllUser() {
     return await this.userService.findAllUsers();
   }
 
-  @Get("/getValideUsers/:id")
-  async getValideUsers(@Param("id") senderId: string) {
+  @Get('/getValideUsers/:id')
+  async getValideUsers(@Param('id') senderId: string) {
     return await this.userService.getValideUsers(senderId);
   }
 
-  @Post("updateNickname/:intra_id/:nickname")
-  @UseGuards(JwtGuard)
+  @Post('updateNickname/:intra_id/:nickname')
   async updatUserdata(
-    @Param("intra_id") intra_id: string,
-    @Param("nickname") nickname: string,
+    @Param('intra_id') intra_id: string,
+    @Param('nickname') nickname: string,
   ) {
     return await this.userService.updateNickname(intra_id, nickname);
   }
 
-  @Post("/uploadImage/:intra_id")
-  @UseGuards(JwtGuard)
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (req, file, cb) => {
-        const name = file.originalname.split(".")[0];
-        const fileExtension = file.originalname.split(".")[1];
-        const newFileName = name.split(" ").join("_") + "_" + Date.now() + "." + fileExtension;
-        cb(null, newFileName);
+  @Post('/uploadImage/:intra_id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const name = file.originalname.split('.')[0];
+          const fileExtension = file.originalname.split('.')[1];
+          const newFileName =
+            name.split(' ').join('_') + '_' + Date.now() + '.' + fileExtension;
+          cb(null, newFileName);
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+          return cb(null, false);
+        cb(null, true);
       },
     }),
-    fileFilter: (req, file, cb) => {
-      if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
-        return cb(null, false);
-      cb(null, true);
-    }
-  }))
-  uploadImage(@UploadedFile() file: Express.Multer.File,
-    @Param("intra_id") senderId: string,
+  )
+  uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('intra_id') senderId: string,
   ) {
     return this.userService.uploadImage(senderId, file.path);
   }
 
-
-  @Get("/getUsersCanJoinChannel/:senderId/:channelId")
-  @UseGuards(JwtGuard)
+  @Get('/getUsersCanJoinChannel/:senderId/:channelId')
   async getUsersCanJoinChannel(
-    @Param("senderId") senderId: string,
-    @Param("channelId") channelId: string
+    @Param('senderId') senderId: string,
+    @Param('channelId') channelId: string,
   ) {
     return await this.userService.usersCanJoinChannel(senderId, channelId);
   }
 
-  @Get("getUserGeust/:id")
-  @UseGuards(JwtGuard)
-  async getUserGeust(@Param("id") id: string) {
+  @Get('getUserGeust/:id')
+  async getUserGeust(@Param('id') id: string) {
     return await this.userService.getUserGeust(id);
   }
 
-  @Get("getChannelGeust/:id")
-  @UseGuards(JwtGuard)
-  async getChannelGeust(@Param("id") id: string) {
-    return await this.userService.getChannelGeust(id);
+  @Get('getChannelGeust/:senderId/:id')
+  async getChannelGeust(
+    @Param('senderId') senderId: string,
+    @Param('id') id: string,
+  ) {
+    return await this.userService.getChannelGeust(senderId, id);
   }
 
-  @Get("checkIsBlocked/:senderId/:receivedId")
-  @UseGuards(JwtGuard)
+  @Get('checkIsBlocked/:senderId/:receivedId')
   async checkIsBlocked(
-    @Param("senderId") senderId: string,
-    @Param("receivedId") receivedId: string
+    @Param('senderId') senderId: string,
+    @Param('receivedId') receivedId: string,
   ) {
     return await this.userService.checkIsBlocked(senderId, receivedId);
   }
 
-  @Post("startGameing/:senderId")
-  @UseGuards(JwtGuard)
-  async startGameing(
-    @Param("senderId") senderId: string,
-  ) {
+  @Post('startGameing/:senderId')
+  async startGameing(@Param('senderId') senderId: string) {
     return await this.userService.startGameing(senderId);
   }
 
-  @Post("finishGaming/:senderId")
-  @UseGuards(JwtGuard)
-  async finishGaming(
-    @Param("senderId") senderId: string,
-  ) {
+  @Post('finishGaming/:senderId')
+  async finishGaming(@Param('senderId') senderId: string) {
     return await this.userService.finishGaming(senderId);
   }
-
 }
-
-
-
-

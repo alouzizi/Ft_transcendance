@@ -49,6 +49,7 @@ export declare class GameController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     } | {
         error: any;
     }>;

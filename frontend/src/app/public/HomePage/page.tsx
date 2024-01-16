@@ -8,7 +8,8 @@ export default function HomePage() {
   const [openAlert, setOpenAlert] = useState(false);
 
   return (
-    <div className="flex justify-center items-center flex-col-reverse md:flex-row">
+
+    <div className="flex justify-center items-center flex-col-reverse md:flex-row h-screen">
       <div className="flex flex-col w-[50%] items-center ">
         <Text weight="bold" className="text-center text-[20px] w-[50%]">
           Welcome to PongMaster Where Pong Legends Are Born! 🏓💥
@@ -32,5 +33,6 @@ export default function HomePage() {
         <img src="/home.png" />
       </div>
     </div>
+
   );
 }

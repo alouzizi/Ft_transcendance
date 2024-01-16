@@ -23,12 +23,16 @@ export declare class NotificationService {
             updatedAt: Date;
             status: import(".prisma/client").$Enums.Status;
             lastSee: Date;
+            nbrNotifications: number;
         };
     } & {
         id: string;
+        type: import(".prisma/client").$Enums.NotificationType;
         subjet: string;
         senderId: string;
         recieverId: string;
+        channelId: string;
         createdAt: Date;
+        updatedAt: Date;
     })[]>;
 }

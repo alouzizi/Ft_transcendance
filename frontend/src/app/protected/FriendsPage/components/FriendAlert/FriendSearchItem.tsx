@@ -1,10 +1,10 @@
 "use client";
-import { sendFriendRequest } from "@/app/MyApi/friendshipApi";
-import { useGlobalContext } from "@/app/protected/context/store";
 
+import { useGlobalContext } from "@/app/protected/context/store";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaMessage } from "react-icons/fa6";
+import { sendFriendRequest } from "../../apiFriend/friendshipApi";
 
 export default function FriendSearchItem(prompt: {
   userInfo: friendDto;
@@ -45,7 +45,7 @@ export default function FriendSearchItem(prompt: {
      
      "
     >
-      <Link href={`/protected/DashboardPage/${prompt.userInfo.nickname}`}>
+      <Link href={`/DashboardPage/${prompt.userInfo.nickname}`}>
         <div className=" cursor-pointer flex flex-row ">
           <img
             className="object-cover mx-auto  rounded-full 

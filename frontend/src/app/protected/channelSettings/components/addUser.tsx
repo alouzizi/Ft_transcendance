@@ -1,5 +1,4 @@
 "use client";
-import { useGlobalContext } from "@/app/protected/context/store";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { Avatar, Box, Flex, ScrollArea, Text } from "@radix-ui/themes";
@@ -11,10 +10,13 @@ import {
   addUserToChannel,
   checkOwnerIsAdmin,
   getChannel,
-} from "../../api/fetch-channel";
-import { usersCanJoinChannel } from "../../api/fetch-users";
+} from "../../ChatPage/api/fetch-channel";
+import { usersCanJoinChannel } from "../../ChatPage/api/fetch-users";
+import { useGlobalContext } from "../../context/store";
 
-export default function AlertsAddUserChannel() {
+export default function AlertsAddUserChannel(
+  { setUpdate }: { setUpdate: any }
+) {
   const [open, setOpen] = React.useState(false);
   const [searsh, setSearsh] = useState("");
   const [valideUsers, setValideUsers] = useState<userDto[]>([]);
@@ -94,12 +96,13 @@ export default function AlertsAddUserChannel() {
                   async () => {
                     await addUserToChannel(user.id, geust.id, elm.id);
                     setSearsh("");
+                    setUpdate((pre: number) => pre + 1)
                     socket?.emit('emitNewMessage', {
                       senderId: user.id,
                       receivedId: geust.id,
                       isDirectMessage: false
                     });
-                    socket?.emit('changeStatusMember', geust.id);
+                    socket?.emit("sendNotification", elm.id);
                     handleClose();
                   }}>
                 <Text size="2" weight="medium">

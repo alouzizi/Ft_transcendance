@@ -1,11 +1,10 @@
 import React from 'react';
 
-const LayoutGame = async ({ children }: { children: React.ReactNode }) => {
+const Layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       {children}
     </div>
   );
 };
-
-export default LayoutGame;
+export default Layout;

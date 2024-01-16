@@ -27,15 +27,14 @@ let NotificationController = class NotificationController {
     async deleteNotification(notificationId) {
         try {
             await this.notificationService.deleteNotification(notificationId);
-            return { statusCode: 200, message: "Notification successfully deleted" };
+            return { statusCode: 200, message: 'Notification successfully deleted' };
         }
         catch (error) {
             if (error instanceof common_2.NotFoundException) {
                 return { statusCode: 404, message: error.message };
             }
             else {
-                console.error(error);
-                return { statusCode: 500, message: "Internal server error" };
+                return { statusCode: 500, message: 'Internal server error' };
             }
         }
     }
@@ -58,7 +57,6 @@ __decorate([
 ], NotificationController.prototype, "createNotification", null);
 __decorate([
     (0, common_1.Delete)('/deletenotifications/:notificationId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('notificationId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -66,7 +64,6 @@ __decorate([
 ], NotificationController.prototype, "deleteNotification", null);
 __decorate([
     (0, common_1.Get)('/getNotifications/:senderId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -74,7 +71,6 @@ __decorate([
 ], NotificationController.prototype, "fetchNotifications", null);
 __decorate([
     (0, common_1.Delete)('/clearAll/:senderId'),
-    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)('senderId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -82,6 +78,7 @@ __decorate([
 ], NotificationController.prototype, "clearAll", null);
 exports.NotificationController = NotificationController = __decorate([
     (0, common_1.Controller)('notification'),
+    (0, common_1.UseGuards)(guard_1.JwtGuard),
     __metadata("design:paramtypes", [notification_service_1.NotificationService])
 ], NotificationController);
 //# sourceMappingURL=notification.controller.js.map

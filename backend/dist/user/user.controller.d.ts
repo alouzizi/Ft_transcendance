@@ -1,8 +1,28 @@
 /// <reference types="multer" />
-import { UserService } from "./user.service";
+import { UserService } from './user.service';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
+    getUserProfile(id: string): Promise<{
+        id: string;
+        intra_id: string;
+        first_name: string;
+        last_name: string;
+        nickname: string;
+        email: string;
+        profilePic: string;
+        inGaming: boolean;
+        isTwoFactorAuthEnabled: boolean;
+        twoFactorAuthSecret: string;
+        level: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.Status;
+        lastSee: Date;
+        nbrNotifications: number;
+    } | {
+        error: boolean;
+    }>;
     getUserByIdintr(req: any): Promise<{
         id: string;
         intra_id: string;
@@ -13,6 +33,7 @@ export declare class UserController {
         isTwoFactorAuthEnabled: boolean;
         level: string;
         inGaming: boolean;
+        nbrNotifications: number;
     }>;
     getAllUser(): Promise<{
         id: string;
@@ -30,6 +51,7 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -50,6 +72,7 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -74,6 +97,7 @@ export declare class UserController {
         updatedAt: Date;
         status: import(".prisma/client").$Enums.Status;
         lastSee: Date;
+        nbrNotifications: number;
     }[] | {
         error: boolean;
     }>;
@@ -111,7 +135,7 @@ export declare class UserController {
         idUserOwner?: undefined;
         inGaming?: undefined;
     }>;
-    getChannelGeust(id: string): Promise<{
+    getChannelGeust(senderId: string, id: string): Promise<{
         isUser: boolean;
         id: string;
         nickname: string;

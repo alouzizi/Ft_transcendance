@@ -43,7 +43,6 @@ let GameController = class GameController {
 exports.GameController = GameController;
 __decorate([
     (0, common_1.Get)("/gameHistory/:senderId"),
-    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -51,7 +50,6 @@ __decorate([
 ], GameController.prototype, "getGameHistory", null);
 __decorate([
     (0, common_1.Get)("/globalInfos/:recieverId"),
-    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("recieverId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -59,7 +57,6 @@ __decorate([
 ], GameController.prototype, "getGlobalInfos", null);
 __decorate([
     (0, common_1.Get)("/userRanking/:senderId"),
-    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -67,14 +64,12 @@ __decorate([
 ], GameController.prototype, "getUserRanking", null);
 __decorate([
     (0, common_1.Get)("/LeaderBoard/"),
-    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "getLeaderBoard", null);
 __decorate([
     (0, common_1.Post)("/updateLevel/:senderId/:newLevel"),
-    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __param(1, (0, common_1.Param)("newLevel")),
     __metadata("design:type", Function),
@@ -83,7 +78,6 @@ __decorate([
 ], GameController.prototype, "updateLevel", null);
 __decorate([
     (0, common_1.Post)("/updateGameHistory/:senderId/:recieverId/:senderPt/:recieverPt"),
-    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __param(0, (0, common_1.Param)("senderId")),
     __param(1, (0, common_1.Param)("recieverId")),
     __param(2, (0, common_1.Param)("senderPt")),
@@ -94,6 +88,7 @@ __decorate([
 ], GameController.prototype, "updateGameHistory", null);
 exports.GameController = GameController = __decorate([
     (0, common_1.Controller)("game"),
+    (0, common_2.UseGuards)(guard_1.JwtGuard),
     __metadata("design:paramtypes", [game_service_1.GameService])
 ], GameController);
 //# sourceMappingURL=game.controller.js.map

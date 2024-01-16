@@ -1,6 +1,6 @@
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateChannelDto, memberChannelDto } from "./dto/create-channel.dto";
-import { NotificationService } from "src/notification/notification.service";
+import { NotificationService } from 'src/notification/notification.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateChannelDto, memberChannelDto } from './dto/create-channel.dto';
 export declare class ChannelService {
     private prisma;
     private readonly notificationService;
@@ -28,32 +28,21 @@ export declare class ChannelService {
     updateChannel(senderId: string, channelId: string, updateChannelDto: CreateChannelDto): Promise<{
         status: number;
         error: string;
-        channel?: undefined;
     } | {
-        status: number;
-        channel: {
-            channelPassword: string;
-            id: string;
-            channelName: string;
-            channelType: import(".prisma/client").$Enums.ChannelType;
-            protected: boolean;
-            createdAt: Date;
-            avatar: string;
-            channelOwnerId: string;
-        };
-        error?: undefined;
-    } | {
-        error: boolean;
+        channelPassword: string;
+        id: string;
+        channelName: string;
+        channelType: import(".prisma/client").$Enums.ChannelType;
+        protected: boolean;
+        createdAt: Date;
+        avatar: string;
+        channelOwnerId: string;
         status?: undefined;
-        channel?: undefined;
+        error?: undefined;
     }>;
     uploadImageChannel(senderId: string, channelId: string, path: string): Promise<void>;
-    checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean | {
-        error: boolean;
-    }>;
-    addUserToChannel(senderId: string, channelId: string, userId: string): Promise<{
-        error: boolean;
-    }>;
+    checkOwnerIsAdmin(senderId: string, channelId: string): Promise<boolean>;
+    addUserToChannel(senderId: string, channelId: string, userId: string): Promise<void>;
     getChannel(senderId: string, channelId: string): Promise<{
         channelName: string;
         channelType: import(".prisma/client").$Enums.ChannelType;
@@ -61,15 +50,6 @@ export declare class ChannelService {
         protected: boolean;
         avatar: string;
         channelOwnerId: string;
-        error?: undefined;
-    } | {
-        error: boolean;
-        channelName?: undefined;
-        channelType?: undefined;
-        channelPassword?: undefined;
-        protected?: undefined;
-        avatar?: undefined;
-        channelOwnerId?: undefined;
     }>;
     findChannelById(id: string): Promise<{
         id: string;
@@ -85,36 +65,19 @@ export declare class ChannelService {
     }>;
     getMembersBanned(id: string): Promise<memberChannelDto[]>;
     getRegularMembers(id: string): Promise<memberChannelDto[]>;
-    getMembersChannel(id: string): Promise<{
+    getMembersChannel(senderId: string, channelId: string): Promise<{
         bannedMembers: memberChannelDto[];
         regularMembres: memberChannelDto[];
-        error?: undefined;
-    } | {
-        error: boolean;
-        bannedMembers?: undefined;
-        regularMembres?: undefined;
     }>;
-    changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean | {
-        error: boolean;
-    }>;
-    leaveChannel(senderId: string, channelId: string): Promise<boolean | {
-        error: boolean;
-    }>;
-    KickMember(senderId: string, channelId: string, userId: string): Promise<boolean | {
-        error: boolean;
-    }>;
+    changeStatusAdmin(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    leaveChannel(senderId: string, channelId: string): Promise<boolean>;
+    KickMember(senderId: string, channelId: string, userId: string): Promise<boolean>;
     checkUserIsInChannel(senderId: string, channelId: string): Promise<boolean | {
         error: boolean;
     }>;
-    changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean | {
-        error: boolean;
-    }>;
-    validePassword(senderId: string, channelId: string, password: string): Promise<boolean | {
-        error: boolean;
-    }>;
-    checkIsBanner(senderId: string, channelId: string): Promise<boolean | {
-        error: boolean;
-    }>;
+    changeStatutsBanned(senderId: string, channelId: string, userId: string): Promise<boolean>;
+    validePassword(senderId: string, channelId: string, password: string): Promise<boolean>;
+    checkIsBanner(senderId: string, channelId: string): Promise<boolean>;
     getValideChannels(senderId: string): Promise<{
         id: string;
         channelName: string;
@@ -127,14 +90,10 @@ export declare class ChannelService {
     joinChannel(senderId: string, channelId: string): Promise<{
         error: boolean;
     }>;
-    muteUserFromChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<{
-        error: boolean;
-    }>;
+    muteUserFromChannel(senderId: string, channelId: string, userId: string, timer: string): Promise<void>;
     cancelTimeOutByAdmin(senderId: string, channelId: string, userId: string): Promise<{
         error: boolean;
     }>;
     cancelTimeOut(senderId: string, channelId: string): Promise<number>;
-    checkIsMuted(senderId: string, channelId: string): Promise<number | {
-        error: boolean;
-    }>;
+    checkIsMuted(senderId: string, channelId: string): Promise<number>;
 }

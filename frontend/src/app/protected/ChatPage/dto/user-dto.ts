@@ -1,6 +1,6 @@
 enum Status {
-  ACTIF = "ACTIF",
-  INACTIF = "INACTIF",
+  ACTIF = 'ACTIF',
+  INACTIF = 'INACTIF',
 }
 
 type userDto = {
@@ -29,9 +29,9 @@ type ownerDto = {
   profilePic: string;
   isTwoFactorAuthEnabled: boolean;
   level: string;
+  nbrNotifications: Number;
 
-
-  inGaming: boolean,
+  inGaming: boolean;
   status: Status;
 };
 
@@ -53,9 +53,9 @@ type geustDto = {
 };
 
 enum MessageStatus {
-  NotReceived = "NotReceived",
-  Received = "Received",
-  Seen = "Seen",
+  NotReceived = 'NotReceived',
+  Received = 'Received',
+  Seen = 'Seen',
 }
 
 type messageDto = {
@@ -95,8 +95,8 @@ type reqFriendsDto = {
 };
 
 enum ChannelType {
-  Public = "Public",
-  Private = "Private",
+  Public = 'Public',
+  Private = 'Private',
 }
 
 type channelDto = {

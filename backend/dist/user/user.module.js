@@ -21,7 +21,14 @@ let UserModule = class UserModule {
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
-        providers: [user_service_1.UserService, prisma_service_1.PrismaService, jwt_1.JwtService, auth_service_1.AuthService, channel_service_1.ChannelService, notification_service_1.NotificationService],
+        providers: [
+            user_service_1.UserService,
+            prisma_service_1.PrismaService,
+            jwt_1.JwtService,
+            auth_service_1.AuthService,
+            channel_service_1.ChannelService,
+            notification_service_1.NotificationService,
+        ],
         controllers: [user_controller_1.UserController],
         imports: [
             platform_express_1.MulterModule.register({
@@ -30,7 +37,7 @@ exports.UserModule = UserModule = __decorate([
                     fileSize: 1024 * 1024,
                 },
             }),
-        ]
+        ],
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

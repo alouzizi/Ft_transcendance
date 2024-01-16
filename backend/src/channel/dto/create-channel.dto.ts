@@ -1,4 +1,3 @@
-// import { ChannelType } from "@prisma/client";
 
 import { Status } from "@prisma/client";
 
@@ -9,6 +8,7 @@ enum ChannelType {
     Public = 'Public',
     Private = 'Private'
 }
+
 
 export class CreateChannelDto {
     channelName: string;

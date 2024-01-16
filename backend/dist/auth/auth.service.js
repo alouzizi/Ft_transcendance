@@ -30,12 +30,12 @@ let AuthService = class AuthService {
                 1000;
             if (diff < 60) {
                 res.cookie("access_token", ret.access_token);
-                return res.redirect(process.env.FRONT_HOST + "protected/SettingsPage");
+                return res.redirect(process.env.FRONT_HOST + "/protected/SettingsPage");
             }
             if (req.user.isTwoFactorAuthEnabled)
-                return res.redirect(process.env.FRONT_HOST + "Checker2faAuth");
+                return res.redirect(process.env.FRONT_HOST + "/Checker2faAuth");
             res.cookie("access_token", ret.access_token);
-            res.redirect(process.env.FRONT_HOST + "protected/DashboardPage");
+            res.redirect(process.env.FRONT_HOST + "/protected/DashboardPage");
         }
     }
     async valiadteUserAndCreateJWT(intra_id) {

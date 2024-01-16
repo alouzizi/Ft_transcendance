@@ -20,6 +20,8 @@ const create_message_dto_1 = require("../messages/dto/create-message.dto");
 const socket_service_1 = require("./socket.service");
 const prisma_service_1 = require("../prisma/prisma.service");
 const game_service_1 = require("../game/game.service");
+const common_1 = require("@nestjs/common");
+const jwt_guard_socket_1 = require("../auth/guard/jwt.guard-socket");
 let SocketGateway = class SocketGateway {
     constructor(socketGatewayService, messagesService, gameService, prisma) {
         this.socketGatewayService = socketGatewayService;
@@ -38,9 +40,11 @@ let SocketGateway = class SocketGateway {
     afterInit(server) {
     }
     async handleConnection(client) {
+        console.log("handleConnection------------");
         this.socketGatewayService.handleConnection(client, this.server);
     }
     async handleDisconnect(client) {
+        console.log("clientDisconnected------------");
         this.socketGatewayService.handleDisconnect(client, this.server);
         if (this.clients.has(client.id)) {
             this.clients.delete(client.id);
@@ -86,6 +90,9 @@ let SocketGateway = class SocketGateway {
     }
     async messagsSeenEmit(ids) {
         this.socketGatewayService.messagsSeenEmit(ids, this.server);
+    }
+    async handleNotif(receivedId) {
+        this.server.to(receivedId).emit("sendNotification");
     }
     GameInit(roomName) {
         this.roomState.set(roomName, {
@@ -203,16 +210,13 @@ let SocketGateway = class SocketGateway {
         const player2 = this.rooms.get(roomName)[1];
         if (p1.score + p2.score === this.ROUND_LIMIT) {
             if (p1.score == p2.score) {
-                //console.log(player1, player2);
                 this.server.to(roomName).emit("gameOver", "draw");
             }
             else if (p1.score > p2.score) {
-                //console.log(player1, player2);
                 this.server.to(player1).emit("gameOver", "win");
                 this.server.to(player2).emit("gameOver", "lose");
             }
             else {
-                //console.log(player1, player2);
                 this.server.to(player1).emit("gameOver", "lose");
                 this.server.to(player2).emit("gameOver", "win");
             }
@@ -256,6 +260,7 @@ let SocketGateway = class SocketGateway {
     }
     handleJoinRoom(client, id) {
         this.joindRoom++;
+        let player1 = "";
         if (this.clients.size === 2 && this.joindRoom > 1) {
             this.joindRoom = 0;
             const roomName = `room-${Date.now()}`;
@@ -268,13 +273,14 @@ let SocketGateway = class SocketGateway {
                     this.server.to(client).emit("whichSide", true);
                 }
                 else {
+                    player1 = client;
                     this.server.to(client).emit("whichSide", false);
                 }
             });
             clientArray2.forEach((client) => {
                 client.join(roomName);
             });
-            this.server.to(roomName).emit("startGame", roomName);
+            this.server.to(roomName).emit("startGame", { player1: player1, player2: id, roomName: roomName });
             this.GameInit(roomName);
             this.gameService.resetBall(this.roomState.get(roomName).ball);
             this.startEmittingBallPosition(roomName, id);
@@ -438,6 +444,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "messagsSeenEmit", null);
 __decorate([
+    (0, websockets_1.SubscribeMessage)("sendNotification"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "handleNotif", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)("clientId"),
     __param(0, (0, websockets_1.ConnectedSocket)()),
     __param(1, (0, websockets_1.MessageBody)()),
@@ -489,6 +502,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "onOut", null);
 exports.SocketGateway = SocketGateway = __decorate([
+    (0, common_1.UseGuards)(jwt_guard_socket_1.JwtGuardSocket),
     (0, websockets_1.WebSocketGateway)(),
     __metadata("design:paramtypes", [socket_service_1.SocketGatewayService,
         messages_service_1.MessagesService,
