@@ -162,9 +162,9 @@ export default function NotificationPage() {
   };
 
   return (
-    <div className=" bg-color-main  w-screen pl-32 text-white">
+    <div className=" bg-color-main  pr-5 pl-32 text-white">
       <h1 className="text-2xl font-bold mb-4">Notification</h1>
-      <div className="flex items-center justify-between w-[80%]">
+      <div className="flex items-center justify-between w-[80%]s">
         <p className="hover:underline cursor-pointer">ALL- {items.length}</p>
         <p
           className="hover:underline cursor-pointer"

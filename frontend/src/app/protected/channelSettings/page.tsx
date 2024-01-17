@@ -1,5 +1,4 @@
 'use client';
-import { useGlobalContext } from '@/app/context/store';
 import { Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import { getVueGeust } from '../ChatPage/api/fetch-users';
@@ -7,8 +6,9 @@ import { checkOwnerIsAdmin } from '../ChatPage/api/fetch-channel';
 import { IoArrowBack } from 'react-icons/io5';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useRouter } from 'next/navigation';
-import MembersChannel from './components/membersChannel';
+import { useGlobalContext } from '../context/store';
 import UpdateChannel from './components/updateChannel';
+import MembersChannel from './components/membersChannel';
 
 const PageChat = () => {
   const router = useRouter();

@@ -8,8 +8,8 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
 
   return (
     <div>
-      <div className="flex flex-col  h-screen text-white bg-color-main l-5">
-        <div className={` md:h-20 bg-color-main-dark z-1 w-screen `}>
+      <div className="flex flex-col  h-screen text-white bg-color-main">
+        <div className={` md:h-20 bg-color-main-dark z-1  `}>
           <div
             className={` flex flex-row justify-items-start  my-auto  md:h-20  w-full
            bg-color-main-dark z-10  ${show ? 'pl-20 sm:pl-24 md:pl-28 ' : ''}
@@ -44,7 +44,7 @@ export default function NavBarProtected(prompt: { children: ReactNode }) {
           ></div>
         </div>
 
-        <div className="h-[100%] ml-7 ">{prompt.children}</div>
+        <div className="h-[100%]">{prompt.children}</div>
       </div>
     </div>
   );

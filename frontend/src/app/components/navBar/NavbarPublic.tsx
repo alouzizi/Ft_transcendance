@@ -11,11 +11,11 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
   const [openAlert, setOpenAlert] = useState(false);
 
   return (
-    <div className="flex flex-col  h-screen  text-white ">
-      <div className="w-full bg-color-main  flex flex-row justify-center items-center py-4 pt-8">
+    <div className="flex flex-col  h-screen  text-white">
+      <div className="w-full bg-color-main  flex flex-row justify-center items-center py-4 pt-4">
         <div className="container flex items-center justify-between  ">
 
-          <Link href="/HomePage">
+          <Link href="/public/HomePage">
             <img className="h-8" src="/PongMaster.svg" alt="PongMaster" />
           </Link>
 
@@ -58,6 +58,7 @@ export default function NavBarPublic(prompt: { children: ReactNode }) {
         </div>
 
       </div>
+
       {prompt.children}
 
 

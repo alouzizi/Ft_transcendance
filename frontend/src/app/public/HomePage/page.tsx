@@ -9,7 +9,7 @@ export default function HomePage() {
 
   return (
 
-    <div className="flex justify-center items-center flex-col-reverse md:flex-row h-screen">
+    <div className="flex justify-center items-center flex-col-reverse md:flex-row h-full">
       <div className="flex flex-col w-[50%] items-center ">
         <Text weight="bold" className="text-center text-[20px] w-[50%]">
           Welcome to PongMaster Where Pong Legends Are Born! 🏓💥
@@ -26,7 +26,6 @@ export default function HomePage() {
           <FaArrowCircleRight size="20" />
         </div>
       </div>
-
       <AlertOpenAccount openAlert={openAlert} setOpenAlert={setOpenAlert} />
 
       <div className="w-[40%]">
