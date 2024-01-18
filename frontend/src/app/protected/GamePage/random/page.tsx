@@ -134,7 +134,7 @@ export default function Home() {
   }, [socket])
   // 
   return (
-    <div className="mt-2  h-full flex items-center justify-center">
+    <div className="mt-2  h-full flex items-center justify-center ">
       {showAlert && <CustomAlert message="Opponent Left" />}
       <div className="w-screen flex flex-col justify-center items-center bg-color-main">
         <canvasContext.Provider value={canvas}>

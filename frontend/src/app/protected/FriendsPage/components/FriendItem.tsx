@@ -23,7 +23,7 @@ export default function FriendItem(prompt: {
   itemsStatus: string;
 }) {
   // ==================== handleUnblock =====================
-  const { user, socket, geust } = useGlobalContext();
+  const { user, socket, geust, setGeust } = useGlobalContext();
   const contxt = useGlobalDataContext();
   const router = useRouter();
   async function handleUnblock(): Promise<void> {
@@ -106,7 +106,7 @@ export default function FriendItem(prompt: {
   // ==================== /handleCancel =====================
   return (
     <div className=" my-2  flex flex-row justify-between bg-[#2A2F40] hover:bg-[#515562] py-2 px-4 rounded-lg">
-      <Link href={`/DashboardPage/${prompt.friendInfo.nickname}`}>
+      <Link href={`/protected/DashboardPage/${prompt.friendInfo.nickname}`}>
         <div className="flex flex-row cursor-pointer">
           {/* <Badge badgeContent={0} color="success" invisible={false} /> */}
 
@@ -217,7 +217,7 @@ export default function FriendItem(prompt: {
                   );
                   // setGeust(geustTemp);
                   localStorage.setItem('geust.id-user', prompt.friendInfo.id);
-                  console.log(geust)
+                  setGeust({ ...geust, id: '-1' })
 
                   router.push("/protected/ChatPage");
                 }}

@@ -251,7 +251,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           sectionName="Last Games"
           btnName="See All History"
           btnClicked={() => {
-            router.push('/HistoryPage/' + prompt.friend.nickname);
+            router.push('/protected/HistoryPage/' + prompt.friend.nickname);
           }}
         >
           {gameHistory.length !== 0 ? (
@@ -279,7 +279,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
           sectionName="Achievements"
           btnName="See All Achievements"
           btnClicked={() => {
-            router.push('/AchievementsPage/' + prompt.friend.nickname);
+            router.push('/protected/AchievementsPage/' + prompt.friend.nickname);
           }}
         >
           {achievementsList.length !== 0 ? (

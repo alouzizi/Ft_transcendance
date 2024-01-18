@@ -34,7 +34,7 @@ export default function LeaderBItem(prompt: {
         className="flex flex-row items-center  my-auto cursor-pointer  
         w-2/6
       "
-        href={`/DashboardPage/${prompt.playerUser} `}
+        href={`/protected/DashboardPage/${prompt.playerUser} `}
       >
         <img
           className=" object-cover   rounded-full border-color-main 

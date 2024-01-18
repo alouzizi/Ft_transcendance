@@ -35,6 +35,7 @@ export default function MembersChannel() {
         regularMembres: memberChannelDto[];
         bannedMembers: memberChannelDto[];
       } = await getMembersChannel(user.id, geust.id);
+      if (!tmp || typeof tmp !== 'object') router.push('/protected/ChatPage');
       setMembers(tmp.regularMembres);
       setBannedMembers(tmp.bannedMembers);
       setMembersFlitred(tmp.regularMembres);
@@ -68,7 +69,8 @@ export default function MembersChannel() {
         };
       }
     };
-    mutedTimer();
+    if (members)
+      mutedTimer();
   }, [socket, members]);
 
   const widgetUser = (member: memberChannelDto) => {
@@ -106,12 +108,13 @@ export default function MembersChannel() {
                   {member.role}
                 </Text>
               ) : isUserAdmin() && user.id !== member.userId ? (
-                <LongMenu
-                  member={member}
-                  banned={isMemberExist(member, bannedmembers)}
-                  setUpdate={setUpdate}
-
-                />
+                <div className='cursor-pointer'>
+                  <LongMenu
+                    member={member}
+                    banned={isMemberExist(member, bannedmembers)}
+                    setUpdate={setUpdate}
+                  />
+                </div>
               ) : (
                 <></>
               )}
@@ -130,23 +133,25 @@ export default function MembersChannel() {
     if (tmp) return true;
     return false;
   };
+
   const isUserAdmin = (): boolean => {
-    for (const mbr of members) {
-      if (
-        user.id === mbr.userId &&
-        (mbr.role.includes('Admin') || mbr.role === 'Owner')
-      )
-        return true;
-    }
+    if (members)
+      for (const mbr of members) {
+        if (
+          user.id === mbr.userId &&
+          (mbr.role.includes('Admin') || mbr.role === 'Owner')
+        )
+          return true;
+      }
     return false;
   };
 
-  const widgetMembers = membersFiltred.map(
+  const widgetMembers = membersFiltred && membersFiltred.map(
     (member: memberChannelDto, index) => {
       return <div key={index}>{widgetUser(member)}</div>;
     },
   );
-  const widgetBannedMembers = bannedmembersFiltred.map(
+  const widgetBannedMembers = bannedmembersFiltred && bannedmembersFiltred.map(
     (member: memberChannelDto, index) => {
       return <div key={index}>{widgetUser(member)}</div>;
     },
@@ -154,11 +159,11 @@ export default function MembersChannel() {
 
   useEffect(() => {
     const searchFor = searsh.trim();
-    const memberFiltred = members.filter((mbr) => {
+    const memberFiltred = members && members.filter((mbr) => {
       const username = mbr.nickname;
       return username.includes(searchFor) || searchFor === '';
     });
-    const bannedmemberFiltred = bannedmembers.filter((mbr) => {
+    const bannedmemberFiltred = bannedmembers && bannedmembers.filter((mbr) => {
       const username = mbr.nickname;
       return username.includes(searchFor) || searchFor === '';
     });
@@ -166,6 +171,7 @@ export default function MembersChannel() {
     setBannedMembersFlitred(bannedmemberFiltred);
   }, [searsh]);
 
+  if (!members) return <div>ok</div>
   return (
     <div className="flex flex-col  items-center pt-5 ">
       <div

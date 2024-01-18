@@ -45,7 +45,7 @@ export default function FriendSearchItem(prompt: {
      
      "
     >
-      <Link href={`/DashboardPage/${prompt.userInfo.nickname}`}>
+      <Link href={`/protected/DashboardPage/${prompt.userInfo.nickname}`}>
         <div className=" cursor-pointer flex flex-row ">
           <img
             className="object-cover mx-auto  rounded-full 

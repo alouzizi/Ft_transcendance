@@ -10,6 +10,7 @@ export async function getVueGeust(
   let geustTemp: geustDto;
   if (isUser) geustTemp = await getUserGeust(id);
   else geustTemp = await getChannelGeust(senderId, id);
+  console.log("------>------->-------> temp", geustTemp)
   return geustTemp;
 }
 
@@ -151,6 +152,7 @@ export async function getChannelGeust(senderId: string, id: string) {
       },
     );
     const geust = await res.data;
+    console.log("------>------->-------> geust", geust)
     if (geust.error) throw Error;
     return geust;
   } catch (error) { }

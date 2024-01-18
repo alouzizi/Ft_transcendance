@@ -358,7 +358,7 @@ export const GlobalContextProvider = ({
             ) : (
               <div>
                 <DialogContent>
-                  <div className="flex flex-col rounded-2xl my-4 text-center">
+                  <div className="flex flex-col rounded-2xl my-4 text-center mx-9">
                     <Lottie
                       animationData={loadingc}
                       loop={true}

@@ -1,0 +1,8 @@
+
+
+- page about [error width]
+- public navbar responsive
+
+
+
+

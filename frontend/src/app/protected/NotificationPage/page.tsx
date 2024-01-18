@@ -164,7 +164,7 @@ export default function NotificationPage() {
   return (
     <div className=" bg-color-main  pr-5 pl-32 text-white">
       <h1 className="text-2xl font-bold mb-4">Notification</h1>
-      <div className="flex items-center justify-between w-[80%]s">
+      <div className="flex items-center justify-between w-[80%]">
         <p className="hover:underline cursor-pointer">ALL- {items.length}</p>
         <p
           className="hover:underline cursor-pointer"
@@ -186,10 +186,10 @@ export default function NotificationPage() {
         </p>
       </div>
 
-      <div className="w-[80%] h-64 ">
+      <div className="pb-2">
         {items.map((item: any, index) => widgetItem(item, index))}
       </div>
-      <div className="flex justify-center items-center h-screen mt-30vh "></div>
+      {/* <div className="flex justify-center items-center h-screen mt-30vh "></div> */}
     </div>
   );
 }

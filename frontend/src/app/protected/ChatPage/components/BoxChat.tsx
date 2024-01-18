@@ -158,7 +158,6 @@ const BoxChat = () => {
       if (isBlocked === 1) {
         setUnblockAlert(true);
       } else {
-        console.log("------->", socket);
         socket?.emit('createMessage', {
           isDirectMessage: geust.isUser,
           content: msg.trim(),
@@ -221,7 +220,7 @@ const BoxChat = () => {
 
   }, [socket, geust.id]);
 
-  return geust.id != '-1' ? (
+  return (geust.id != '-1' && typeof geust === 'object') ? (
     <Box
       className={`
     bg-[#F1F3F9]  rounded-[15px]  h-[600px] 
@@ -290,7 +289,7 @@ const BoxChat = () => {
               onClick={() => {
                 if (geust.isUser) {
                   // && !isBlocked
-                  router.push(`/DashboardPage/${geust.nickname}`);
+                  router.push(`/protected/DashboardPage/${geust.nickname}`);
                 }
               }}
               size="2"

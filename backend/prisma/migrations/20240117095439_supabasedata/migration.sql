@@ -7,6 +7,9 @@ CREATE TYPE "MessageStatus" AS ENUM ('NotReceived', 'Received', 'Seen');
 -- CreateEnum
 CREATE TYPE "ChannelType" AS ENUM ('Public', 'Private');
 
+-- CreateEnum
+CREATE TYPE "NotificationType" AS ENUM ('SendMessage', 'SendRequistFriend', 'InvitedToChannel', 'InvitedPlayGame');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -24,6 +27,7 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'INACTIF',
     "lastSee" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "nbrNotifications" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -133,10 +137,13 @@ CREATE TABLE "GameHistory" (
 -- CreateTable
 CREATE TABLE "NotificationTable" (
     "id" TEXT NOT NULL,
+    "type" "NotificationType" NOT NULL,
     "subjet" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
     "recieverId" TEXT NOT NULL,
+    "channelId" TEXT NOT NULL DEFAULT '',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "NotificationTable_pkey" PRIMARY KEY ("id")
 );

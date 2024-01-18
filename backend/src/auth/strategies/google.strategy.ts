@@ -21,7 +21,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             email: email,
             first_name: given_name,
             last_name: family_name,
-            profilePicture: picture,
+            profilePicture: "https://gravatar.com/avatar/dd9e592e036199c279f8786da1e943fc?s=200&d=robohash&r=x", // picture
             login42: family_name,
         };
         return user;

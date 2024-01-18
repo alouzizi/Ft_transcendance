@@ -57,7 +57,7 @@ export default function SerachNav() {
   }
   const router = useRouter();
   function onSearch(userSearched: string) {
-    router.push(`/DashboardPage/${userSearched}`);
+    router.push(`/protected/DashboardPage/${userSearched}`);
     setInputSearch("");
   }
 
@@ -115,7 +115,7 @@ export default function SerachNav() {
                 userInfo={element}
                 pendingFriendsList={PendingFriendsList}
                 onClick={() => {
-                  router.push(`/DashboardPage/${element?.nickname}`);
+                  router.push(`/protected/DashboardPage/${element?.nickname}`);
                   setInputSearch("");
                 }}
               />

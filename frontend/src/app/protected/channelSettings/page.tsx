@@ -1,14 +1,13 @@
 'use client';
 import { Text } from '@radix-ui/themes';
-import { useEffect, useState } from 'react';
-import { getVueGeust } from '../ChatPage/api/fetch-users';
-import { checkOwnerIsAdmin } from '../ChatPage/api/fetch-channel';
-import { IoArrowBack } from 'react-icons/io5';
-import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import { checkOwnerIsAdmin } from '../ChatPage/api/fetch-channel';
+import { getVueGeust } from '../ChatPage/api/fetch-users';
 import { useGlobalContext } from '../context/store';
-import UpdateChannel from './components/updateChannel';
 import MembersChannel from './components/membersChannel';
+import UpdateChannel from './components/updateChannel';
 
 const PageChat = () => {
   const router = useRouter();
@@ -18,9 +17,12 @@ const PageChat = () => {
   useEffect(() => {
     const getDataGeust = async () => {
       const idChannel = localStorage.getItem('geust.id-channel');
+
       if (idChannel) {
         const temp = await getVueGeust(user.id, idChannel, false);
-        if (temp) setGeust(temp);
+
+        console.log("------->------->------->------->------->-------> temp", temp, typeof temp)
+        if (temp && typeof temp === 'object') setGeust(temp);
         else router.back();
       } else router.back();
     };
@@ -34,7 +36,6 @@ const PageChat = () => {
     const getData = async (data: { channelId: string }) => {
       if (geust.id === data.channelId) {
         const tmp: boolean = await checkOwnerIsAdmin(user.id, geust.id);
-        console.log('setIsOwnerAdmin=', isOwnerAdmin);
         setIsOwnerAdmin(tmp);
       }
     };
@@ -43,6 +44,8 @@ const PageChat = () => {
       getData({ channelId: geust.id });
 
   }, [geust.id, user.id]);
+
+
 
   return (
     <div className="bg-color-main">

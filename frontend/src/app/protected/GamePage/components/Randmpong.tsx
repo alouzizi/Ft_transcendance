@@ -146,8 +146,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
         }
       }, 20);
       setTimeout(() => {
-        // router.push('/GamePage');
-        router.back();
+        router.push('/protected/GamePage');
       }, 2500);
     });
     function handleWindowResize() {
@@ -165,7 +164,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
     }
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
-      router.replace('/GamePage/random');
+      router.replace('/protected/GamePage/random');
       socket?.emit("opponentLeft", { room: room, userId: user.id });
 
     };

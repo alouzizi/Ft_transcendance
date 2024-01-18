@@ -1,12 +1,11 @@
 'use client';
-
-import { Text } from '@radix-ui/themes';
 import AboutItem from './AboutItem';
 export default function AboutPage() {
   return (
-    <div className="flex flex-col bg-color-main w-screen h-fit h-min-screen items-center justify-around ">
-      <div className="min-w-fit max-w-[48rem] w-[70%] m-8 sm:m-12 h-fit ">
+    <div className=" flex flex-col bg-color-main  h-fit h-min-screen items-center justify-around ">
+      <div className="min-w-fit max-w-[48rem] w-[70%] m-8 sm:m-12 h-fit  ">
         <div className="relative mx-auto h-fit">
+
           <img
             src="/rt2.png"
             alt="Your Image Alt Text"
@@ -17,17 +16,18 @@ export default function AboutPage() {
             h-fit w-full p-6  top-0 text-xs
           md:top-[20%] md:p-12 md:text-lg
           lg:text-4xl lg:p-16
-          text-md  text-center  text-white"
+          text-md  text-center  text-white  "
           >
             Dive into the passion and hard work that brought PingPongMaster to
             life. Discover how our dedicated team of students crafted an
             exhilarating online ping pong experience just for you.
           </p>
+
         </div>
       </div>
 
       <div className="flex flex-col  w-screen justify-center text-center mb-12 ">
-        {/* text */}
+
         <div className="flex flex-col text-center flex-grow m-4 sm:m-12 p-4">
           <p className="lg:text-4xl sm:text-2xl text-md">
             Let's meet our developers
@@ -37,7 +37,7 @@ export default function AboutPage() {
             strategy, feedback, or just to say hello!
           </p>
         </div>
-        {/* /text */}
+
 
         <div className="w-full bg-[#111623]">
           <div

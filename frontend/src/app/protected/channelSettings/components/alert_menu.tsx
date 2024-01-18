@@ -15,7 +15,6 @@ import {
 } from "../../ChatPage/api/fetch-channel";
 import { Text } from "@radix-ui/themes";
 import { MdOutlineCancel } from "react-icons/md";
-import { LiaEdit } from "react-icons/lia";
 import { useState } from "react";
 import { z } from "zod";
 import { useGlobalContext } from "../../context/store";
@@ -166,39 +165,14 @@ export default function LongMenu({
           >
             <div className="flex items-center pb-2">
               <Text className="text-lg">Duration</Text>
-              <LiaEdit
-                size="18"
-                className="cursor-pointer ml-1.5"
-                onClick={() => {
-                  setShowInput((pre) => !pre);
-                }}
-              />
+
             </div>
             <div className="flex justify-center">
-              {showInput ? (
-                <div>
-                  <div
-                    className="bg-[#111623]   border border-[#1f3175]
-                                     text-sm text-black rounded-lg "
-                  >
-                    <input
-                      type="text"
-                      className="text-sm w-[10rem] h-[30px] rounded-lg bg-gray-200 pl-1"
-                      placeholder="Timer in minutes"
-                      value={timerInput}
-                      onChange={(e) => {
-                        setTimerInput(e.target.value);
-                        setErrorInput("");
-                      }}
-                    />
-                  </div>
-                  <p className="text-sm text-red-600">{errorInput}</p>
-                </div>
-              ) : (
+              {
                 timeout.map((tm: string, index: number) => (
                   <Text
                     key={index}
-                    className={`border border-black text-[14px] p-1 cursor-pointer m-2 
+                    className={`border border-black text-[12px] p-1 cursor-pointer mx-1 
                                     ${index === timeSelected
                         ? "bg-[#4069FF] text-white"
                         : ""
@@ -210,7 +184,7 @@ export default function LongMenu({
                     {tm}
                   </Text>
                 ))
-              )}
+              }
             </div>
           </DialogContent>
           <DialogActions className="  bg-gray-300 mt-3">
@@ -225,40 +199,21 @@ export default function LongMenu({
             </button>
 
             <button
-              onClick={async () => {
-                if (showInput) {
-                  const parsTimer = timerSchema.safeParse(timerInput);
-                  if (!parsTimer.success) {
-                    setErrorInput("Enter a valid Timer");
-                  } else {
-                    const integerValue: number =
-                      parseInt(timerInput) * 60 * 1000;
-                    const timer: string = integerValue.toString();
-                    await muteUserChannel(
-                      user.id,
-                      geust.id,
-                      member.userId,
-                      timer
-                    );
-                    setOpenTimeout(false);
-                    socket?.emit("mutedUserInChannel", geust.id);
-                  }
-                } else {
-                  await muteUserChannel(
-                    user.id,
-                    geust.id,
-                    member.userId,
-                    timeInSecond[timeSelected]
-                  );
-                  setOpenTimeout(false);
-                  socket?.emit("mutedUserInChannel", geust.id);
-                }
-                setUpdate((pre: number) => pre + 1)
-              }
-              }
               className="w-fit font-meduim  py-1 rounded-md text-white bg-[#4069FF]
-                            text-xs  
-                                md:text-sm lg:text-md px-2"
+            text-xs  
+                md:text-sm lg:text-md px-2"
+              onClick={async () => {
+                await muteUserChannel(
+                  user.id,
+                  geust.id,
+                  member.userId,
+                  timeInSecond[timeSelected]
+                );
+                setOpenTimeout(false);
+                socket?.emit("mutedUserInChannel", geust.id);
+                // setUpdate((pre: number) => pre + 1)
+              }}
+
             >
               Time-out
             </button>

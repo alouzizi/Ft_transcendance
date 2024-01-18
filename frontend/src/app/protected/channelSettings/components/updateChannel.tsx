@@ -214,7 +214,7 @@ export default function UpdateChannel() {
                       return { ...prevState, channelType: ChannelType.Private };
                     });
                     setChannelData((prevState) => {
-                      return { ...prevState, protected: false };
+                      return { ...prevState, protected: false, channelPassword: '' };
                     });
                   }}
                 />

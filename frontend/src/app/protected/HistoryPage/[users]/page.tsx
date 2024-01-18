@@ -1,10 +1,11 @@
 "use client";
-import { getIsBlocked, getUserByNick } from "@/app/FriendsPage/apiFriend/friendshipApi";
+
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ErrorPage from "../../DashboardPage/components/ErrorPage";
 import HistoryComp from "../components/HistoryComp";
 import { useGlobalContext } from "../../context/store";
+import { getIsBlocked, getUserByNick } from "../../FriendsPage/apiFriend/friendshipApi";
 export default function HistoryPage() {
   const pathname = usePathname();
   const [friend, setFriend] = useState<ownerDto>();

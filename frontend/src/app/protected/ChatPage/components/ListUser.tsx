@@ -99,21 +99,18 @@ const ListUser = () => {
       const tmp = await getUserGeust(id);
       setGeust(tmp);
     }
+
     if (geust.id === '-1') {
       const idGeust = localStorage.getItem("geust.id-user") || "id";
       localStorage.removeItem('geust.id-user');
       if (idGeust !== 'id')
         getData(idGeust);
-      else {
-        if (itemListDirect.length !== 0) {
-          getDataGeust(itemListDirect[0]);
-        } else if (itemListChannel.length !== 0) {
-          getDataGeust(itemListChannel[0]);
-        }
+      if (itemListDirect.length !== 0) {
+        getDataGeust(itemListDirect[0]);
+      } else if (itemListChannel.length !== 0) {
+        getDataGeust(itemListChannel[0]);
       }
-
     }
-
   }, [direct, itemList, geust.id]);
 
 

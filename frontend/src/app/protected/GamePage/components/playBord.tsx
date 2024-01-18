@@ -57,7 +57,7 @@ const MyComponent = ({
           sm:self-end
           "
         onClick={() => {
-          if (link == "/GamePage/random") {
+          if (link == "/protected/GamePage/random") {
             if (socket?.connected) router.push(link);
             else window.alert("Refresh the page and try again!");
           } else {

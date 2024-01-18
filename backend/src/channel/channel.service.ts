@@ -381,6 +381,7 @@ export class ChannelService {
     } catch (error) {
       return null;
     }
+    return null;
   }
 
   async changeStatusAdmin(senderId: string, channelId: string, userId: string) {

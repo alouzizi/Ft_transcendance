@@ -19,7 +19,6 @@ export default function Home() {
     height: 400,
   };
   useEffect(() => {
-
     socket?.on("opponentLeft", () => {
       router.push("/protected/GamePage");
 
@@ -33,7 +32,6 @@ export default function Home() {
 
     const handlePopstate = (event: PopStateEvent) => {
 
-
       // if(gameStarted)
       // {
       // event.preventDefault();
@@ -46,12 +44,10 @@ export default function Home() {
       // setButtonClicked(false);
       // setGameStarted(false);
       // setMessage("Start game!");
-
+      
       // }
-
       // setShowAlert(true);
       // router.push('/GamePage/random');
-
       // }
     };
     window.addEventListener("popstate", handlePopstate);

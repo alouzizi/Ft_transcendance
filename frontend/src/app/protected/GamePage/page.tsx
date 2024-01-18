@@ -19,7 +19,7 @@ export default function Home() {
           imageSrc="/boot.jpg"
           title="pongmaster bot"
           text="Pongmaster BOT is your ultimate training partner in the game, helping you hone your skills to become a true Pong champion."
-          link="/GamePage/boot"
+          link="/protected/GamePage/boot"
         />
         <h2
           className="text-[#C4C4C4] text-xl/[18px] text-left w-full font-700  font-normal mb-5"
@@ -31,7 +31,7 @@ export default function Home() {
           imageSrc="/random.jpg"
           title="pongmaster random"
           text="Pongmaster RANDOM is when you challenge your skills against unpredictable opponents in thrilling, random-match gameplay!"
-          link="/GamePage/random"
+          link="/protected/GamePage/random"
         />
       </div>
     </div>
