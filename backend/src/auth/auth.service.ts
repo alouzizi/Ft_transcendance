@@ -16,7 +16,6 @@ export class AuthService {
   ) { }
 
   async callbackStratiegs(req: any, res: Response) {
-
     const ret = await this.valiadteUserAndCreateJWT(req.user.intra_id);
 
     if (ret) {

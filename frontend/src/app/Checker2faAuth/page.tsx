@@ -39,7 +39,7 @@ export default function login() {
                   sameSite: 'none',
                   secure: true,
                 });
-                router.push('/DashboardPage');
+                router.push('/protected/DashboardPage');
               } else toast.error('Wrong authentication code');
             } else toast.error('Wrong authentication code');
           }}
