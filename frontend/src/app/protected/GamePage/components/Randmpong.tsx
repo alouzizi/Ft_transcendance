@@ -168,7 +168,32 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
       socket?.emit("opponentLeft", { room: room, userId: user.id });
 
     };
+    const handleToucMove = (e: any) => {
+      e.preventDefault();
+      if (e.touches.length > 0) {
+        // Get the position of the canvas
+        const rect = canvas.getBoundingClientRect();
+    
+        // // Update the player's Y-coordinate based on the first touch point
+        // player.y = e.touches[0].clientY - rect.top - player.height / 2;
 
+        if (!isLeft) {
+          computer.y = e.touches[0].clientY  - rect.top - player.height / 2;
+        } else {
+          player.color = "red";
+          player.y = e.touches[0].clientY  - rect.top - player.height / 2;
+        }
+  
+        socket.emit("updatePaddle", {
+          userId: user.id,
+          room: room,
+          paddle: isLeft ? player.y : computer.y,
+          isLeft: isLeft,
+        });
+      }
+
+    }
+    window.addEventListener('touchmove', handleToucMove);
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener("resize", handleWindowResize);
     window.addEventListener("mousemove", handleMouseMove);
@@ -176,6 +201,7 @@ const Pong = ({ room, isLeft, difficulty }: PongProps) => {
 
 
     return () => {
+      window.removeEventListener('touchmove', handleToucMove);
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);

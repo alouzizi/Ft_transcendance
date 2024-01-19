@@ -12,6 +12,14 @@ export default function updateCanvas(
   if (ball.y + ball.radius > canvasCtx.height || ball.y - ball.radius < 0) {
     ball.velocityY = -ball.velocityY;
   }
+  if (ball.y + ball.radius > 400) {
+
+    ball.y -= 10;
+    // ball.velocityX = -ball.velocityX;
+  } else if (ball.y - ball.radius < 0) {
+    // ball.velocityY = -ball.velocityY
+    ball.y += 10;
+  }
   let user = ball.x < canvasCtx.width / 2 ? player : computer;
   if (collision(ball, user)) {
     let collidePoint = ball.y - (user.y + user.height / 2);

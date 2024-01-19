@@ -45,10 +45,10 @@ const Pong = () => {
     const ctx = canvas.getContext("2d");
     const handleMouseMove = (e: any) => {
       const rect = canvas.getBoundingClientRect();
+      player.y = e.clientY - rect.top - player.height / 2;
       // const mouseY = e.clientY - rect.top - player.height / 2;
       // player.y = Math.min(Math.max(mouseY, 0), (canvas.height + 10) - player.height);
       // player.y = e.clientY - rect.top - player.height / 2;
-      player.y = e.clientY - rect.top - player.height / 2;
     };
     resetBall(canvasCtx, ball);
     function update() {
@@ -99,9 +99,24 @@ const Pong = () => {
         computer.x = canvasCtx.width - 15;
       }
     }
+    const handleToucMove = (e: any) => {
+      e.preventDefault();
+      if (e.touches.length > 0) {
+        // Get the position of the canvas
+        const rect = canvas.getBoundingClientRect();
+    
+        // Update the player's Y-coordinate based on the first touch point
+        player.y = e.touches[0].clientY - rect.top - player.height / 2;
+      }
+
+    }
+
+    window.addEventListener('touchmove', handleToucMove);
     window.addEventListener("resize", handleWindowResize);
     animationFrameId = window.requestAnimationFrame(update);
     return () => {
+      window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener('touchmove', handleToucMove);
       window.cancelAnimationFrame(animationFrameId);
       window.cancelAnimationFrame(animationFrameId1);
       window.removeEventListener("mousemove", handleMouseMove);
