@@ -84,7 +84,7 @@ export default function SideBar() {
     },
     {
       pageName: 'HomePage',
-      icon: <BiSolidLogOut className={`${getIconStyle('/HomePage')}`} />,
+      icon: <BiSolidLogOut className={`${getIconStyle('/public/HomePage')}`} />,
       index: 7,
     },
   ];
