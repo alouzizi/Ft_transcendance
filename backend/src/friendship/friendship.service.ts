@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { isEmpty } from "class-validator";
+import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class FriendshipService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService,
+    private readonly notificationService: NotificationService) { }
 
   async unBlockedUser_2(sendId: string, recivedId: string) {
     try {
@@ -321,6 +323,12 @@ export class FriendshipService {
           receivedId: recieverId,
         },
       });
+      // notif send you friend request
+      await this.notificationService.createNotification({
+        senderId: senderId,
+        recieverId: recieverId,
+        subject: "send you friend request"
+      })
       return user;
     } catch (error) {
       return { error: error };
@@ -354,6 +362,12 @@ export class FriendshipService {
             },
           },
         });
+        // notif send you friend request
+        await this.notificationService.createNotification({
+          senderId: senderId,
+          recieverId: recieverId,
+          subject: "accept friend request"
+        })
         return user;
       }
       return { error: "null" };

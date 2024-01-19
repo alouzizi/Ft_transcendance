@@ -97,14 +97,29 @@ export class MessagesService {
 
       }
       if (notSendTo === "") {
-        this.notificationService.createNotification({
-          senderId: msg.senderId,
-          recieverId: msg.receivedId,
-          subject: "send message",
-          channelId: "",
-          type: 'SendMessage'
-        })
         server.to(msg.receivedId).emit('emitNewMessage', temp);
+
+        const notifs = await this.prisma.notificationTable.findMany({
+          where: {
+            senderId: msg.senderId,
+            recieverId: msg.receivedId,
+            subject: "send message"
+          }
+        })
+
+        if (notifs.length === 0) {
+          await this.notificationService.createNotification({
+            senderId: msg.senderId,
+            recieverId: msg.receivedId,
+            subject: "send message"
+          })
+        } else {
+          await this.prisma.notificationTable.update({
+            where: { id: notifs[0].id }, data: {
+              updatedAt: new Date()
+            }
+          })
+        }
         server.to(msg.receivedId).emit('sendNotification', temp);
       }
       server.to(msg.senderId).emit('emitNewMessage', temp);

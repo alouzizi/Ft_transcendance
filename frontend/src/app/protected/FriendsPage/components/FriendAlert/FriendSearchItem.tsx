@@ -28,6 +28,7 @@ export default function FriendSearchItem(prompt: {
         isDirectMessage: true,
         receivedId: userInfo.id,
       });
+      socket?.emit('sendNotification', userInfo.id);
     } catch (error) {
       //console.log("handleInvite: " + error);
     }

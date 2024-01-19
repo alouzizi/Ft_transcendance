@@ -3,10 +3,12 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { Server, Socket } from "socket.io";
 import { MessageStatus, Status } from "@prisma/client";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
+import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class SocketGatewayService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService,
+    private readonly notificationService: NotificationService) { }
 
   async handleConnection(client: Socket, wss: Server) {
     try {
@@ -74,6 +76,30 @@ export class SocketGatewayService {
     } catch (error) { }
   }
 
+
+  async invitedToPlayNotif(senderId: string, recieverId: string, wss: Server) {
+    const notifs = await this.prisma.notificationTable.findMany({
+      where: {
+        senderId: senderId,
+        recieverId: recieverId,
+        subject: "invite you to a PongMaster game"
+      }
+    })
+    if (notifs.length === 0) {
+      await this.notificationService.createNotification({
+        senderId: senderId,
+        recieverId: recieverId,
+        subject: "invite you to a PongMaster game"
+      })
+    } else {
+      await this.prisma.notificationTable.update({
+        where: { id: notifs[0].id }, data: {
+          updatedAt: new Date()
+        }
+      })
+    }
+    wss.to(recieverId).emit('sendNotification');
+  }
   async updateStatusGeust(senderId: string, wss: Server) {
     await this.prisma.user.update({
       where: {

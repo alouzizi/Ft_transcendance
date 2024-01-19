@@ -97,6 +97,7 @@ export default function PopoverMenuDash(prompt: {
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
+      socket?.emit('sendNotification', prompt.friendInfo.id);
     } catch (error) {
       //console.log("handleInvite: " + error);
     }

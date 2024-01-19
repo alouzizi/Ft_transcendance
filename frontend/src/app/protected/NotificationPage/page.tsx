@@ -37,6 +37,7 @@ export default function NotificationPage() {
   const router = useRouter();
   const subjects = [
     'send you friend request',
+    'accept friend request',
     'invite you to a PongMaster game',
     "you've been invited to group",
     'send message',
@@ -61,6 +62,8 @@ export default function NotificationPage() {
         break;
       case subjects[3]:
         setCurrentAnimationData('send message');
+      case subjects[4]:
+        setCurrentAnimationData('accept friend reques');
         break;
     }
   });
@@ -87,10 +90,10 @@ export default function NotificationPage() {
     if (user.id !== '-1') getData();
     if (socket) {
       socket.on('sendNotification', getData);
-      return () => {
-        socket.off('sendNotification', getData);
-      };
     }
+    return () => {
+      if (socket) socket.off('sendNotification', getData);
+    };
   }, [user.id, socket, Delete]);
 
   const DeleteFn = async (id: string) => {
@@ -116,15 +119,14 @@ export default function NotificationPage() {
         <div className="flex">
           <div className="flex-shrink-0 w-20 h-20 mr-4">
             {(() => {
-              switch (item.subjet) {
+              switch (item.subject) {
                 default:
                   return (
                     <img
                       className="text-[60px] rounded-full  cursor-pointer"
                       src={item.user.profilePic}
-                      alt=""
+                      alt="profile"
                       onClick={async () => {
-                        //console.log(item.subjet);
                         if (item.subjet.includes('send')) {
                           const geustTemp: geustDto = await getUserGeust(
                             item.receivedId,
@@ -143,10 +145,10 @@ export default function NotificationPage() {
           </div>
           <div>
             <p className="text-md lg:text-lg xl:text-2xl ">
-              <strong>{item.user.nickname}</strong> {item.subjet}
+              <strong>{item.user.nickname}</strong> {item.subject}
             </p>
 
-            <p>{formatDateAndTime(item.createdAt)}</p>
+            <p>{formatDateAndTime(item.updatedAt)}</p>
           </div>
         </div>
 

@@ -14,9 +14,7 @@ export class NotificationService {
       data: {
         senderId: createNotificationDto.senderId,
         recieverId: createNotificationDto.recieverId,
-        subjet: createNotificationDto.subject,
-        type: createNotificationDto.type,
-        channelId: createNotificationDto.channelId
+        subject: createNotificationDto.subject,
       },
     });
     return 'Notification created succesfully';

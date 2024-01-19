@@ -129,6 +129,7 @@ export class SocketGateway
 
 
 
+
   ROUND_LIMIT = 6;
   joindRoom = 0;
   private GameInit(roomName: string) {
@@ -471,6 +472,10 @@ export class SocketGateway
     // this.rooms.set(data.userId1 + data.userId2, [data.userId1, data.userId2]);
     this.server.to(data.userId1).emit("invite", data);
     this.server.to(data.userId2).emit("invite", data);
+
+
+    // for notification
+    this.socketGatewayService.invitedToPlayNotif(data.userId1, data.userId2, this.server)
   }
 
   @SubscribeMessage("accept")

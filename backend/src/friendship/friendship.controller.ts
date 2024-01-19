@@ -102,7 +102,7 @@ export class FriendshipController {
   async sendFriendRequest(
     @Param("sender") sender: string,
     @Param("reciever") reciever: string
-  ) {
+  ) { 
     return this.friendshipService.sendFriendRequest(sender, reciever);
   }
 

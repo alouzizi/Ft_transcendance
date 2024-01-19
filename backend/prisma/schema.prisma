@@ -26,18 +26,6 @@ enum ChannelType {
   Private
 }
 
-/// send requist friends
-// add to group
-// msg
-// play a game
-
-enum NotificationType {
-  SendMessage
-  SendRequistFriend
-  InvitedToChannel
-  InvitedPlayGame
-}
-
 model User {
   id         String  @id @default(uuid())
   intra_id   String  @unique
@@ -195,23 +183,12 @@ model GameHistory {
   receiverPoints String
 }
 
-// model NotificationTable {
-//   id         String   @id @default(uuid())
-//   subjet     String
-//   senderId   String
-//   recieverId String
-//   createdAt  DateTime @default(now())
-//   user       User?    @relation(fields: [senderId], references: [id])
-// }
-
 model NotificationTable {
-  id         String           @id @default(uuid())
-  
-  type       NotificationType
-  subjet     String
+  id String @id @default(uuid())
+
+  subject    String
   senderId   String
   recieverId String
-  channelId  String           @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

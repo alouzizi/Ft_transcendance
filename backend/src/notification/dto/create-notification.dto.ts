@@ -1,11 +1,9 @@
-import { NotificationType } from "@prisma/client";
+
 
 export class NotificationDTO {
-    type: NotificationType;
     senderId: string;
     recieverId: string;
     subject: string;
-    channelId: string;
 
 }
 

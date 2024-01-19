@@ -1,0 +1,1 @@
+https://api.intra.42.fr/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fstategies%2F42%2Fcallback&scope=public&client_id=u-s4t2ud-2cdf157673565628f444f72f3301ec1ff8818a1720a31e1d3c2bd08e524260d7

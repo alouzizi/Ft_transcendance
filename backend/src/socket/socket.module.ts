@@ -20,7 +20,7 @@ import { NotificationService } from "src/notification/notification.service";
     GameService,
     FriendshipService,
     PrismaService,
-    NotificationService
+    NotificationService,
   ],
 })
 export class SocketGatewayModule { }

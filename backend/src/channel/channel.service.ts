@@ -89,11 +89,11 @@ export class ChannelService {
       // add members
       const promises = createChannelDto.channelMember.map(
         async (item: string) => {
-          // this.notificationService.createNotification({
-          //   senderId: senderId,
-          //   recieverId: item,
-          //   subject: "you've been invited to group",
-          // });
+          this.notificationService.createNotification({
+            senderId: senderId,
+            recieverId: item,
+            subject: `you've been invited to group ${newChannel.channelName}`,
+          });
 
           await this.prisma.channelMember.create({
             data: {
@@ -125,9 +125,6 @@ export class ChannelService {
     updateChannelDto: CreateChannelDto,
   ) {
     try {
-
-      console.log('000000000000')
-
       const memberAdmin = await this.prisma.channelMember.findFirst({
         where: {
           channelId: channelId,
@@ -245,12 +242,12 @@ export class ChannelService {
           },
         });
         this.createMessageInfoChannel(senderId, channelId, userId, 'added');
-
-        // this.notificationService.createNotification({
-        //   senderId: senderId,
-        //   recieverId: userId,
-        //   subject: "you've been invited to group",
-        // });
+        const channel = await this.prisma.channel.findUnique({ where: { id: channelId } })
+        this.notificationService.createNotification({
+          senderId: senderId,
+          recieverId: userId,
+          subject: `you've been invited to group ${channel.channelName}`,
+        });
       }
     } catch (error) {
     }

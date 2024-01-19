@@ -14,7 +14,7 @@ import { JwtGuard } from 'src/auth/guard';
 @Controller('notification')
 @UseGuards(JwtGuard)
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(private readonly notificationService: NotificationService) { }
 
   @Post('/createNotification')
   createNotification(@Body() createNotificationDto: any) {

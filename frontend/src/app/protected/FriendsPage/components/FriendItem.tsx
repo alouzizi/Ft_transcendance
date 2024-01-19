@@ -79,6 +79,8 @@ export default function FriendItem(prompt: {
         isDirectMessage: true,
         receivedId: prompt.friendInfo.id,
       });
+
+      socket?.emit('sendNotification', prompt.friendInfo.id);
     } catch (error) {
       //console.log("handleAccept: " + error);
     }
