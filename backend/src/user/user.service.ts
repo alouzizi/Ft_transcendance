@@ -198,7 +198,6 @@ export class UserService {
       const isMemberExist = await this.prisma.channelMember.findMany({
         where: { userId: senderId, channelId: id },
       });
-      console.log("isMemmber-->", isMemberExist);
       if (isMemberExist.length !== 0) {
         const channel = await this.prisma.channel.findUnique({ where: { id } });
         const members = await this.prisma.channelMember.findMany({

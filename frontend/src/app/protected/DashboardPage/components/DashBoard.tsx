@@ -47,9 +47,7 @@ export default function DashBoard(prompt: { friend: ownerDto }) {
         setLevel([parseInt(levelTmp[0]), parseInt(levelTmp[1])]);
 
         // for fetch the gameHistory
-        console.log('prompt.friend.id=', prompt.friend.id);
         const gameHistoryTmp = await getGameHistory(prompt.friend.id);
-        console.log('gameHistoryTmp=', gameHistoryTmp);
         if (gameHistoryTmp.length !== 0) {
           setGameHistory(gameHistoryTmp);
         }

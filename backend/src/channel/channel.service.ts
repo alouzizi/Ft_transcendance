@@ -183,7 +183,6 @@ export class ChannelService {
 
       return { ...channelUpdate, channelPassword: pass2 };
     } catch (error) {
-      console.log(error);
       if (error instanceof HttpException) {
         throw error;
       } else if (error instanceof Prisma.PrismaClientKnownRequestError) {

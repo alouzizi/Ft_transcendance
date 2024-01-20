@@ -256,14 +256,11 @@ export const GlobalContextProvider = ({
     }
   }, [socket, data]);
 
-  useEffect(() => {
-    console.log("openConfirm------>", openConfirm);
-  }, [openConfirm]);
+
 
 
   const [inviterdName, setInvitedName] = useState('');
 
-  console.log('---------- useContext Called ----------');
   if (socket === null) return <></>
   return (
     <GlobalContext.Provider

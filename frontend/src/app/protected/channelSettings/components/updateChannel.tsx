@@ -93,7 +93,6 @@ export default function UpdateChannel() {
 
   const updateChannelServer = async () => {
     const res = await updateChannel(channelData, user.id, geust.id);
-    console.log("res=", res);
     if (res && res.status === 409) {
       setErrorName('Name is already used');
     } else if (res && res.status === 201) {

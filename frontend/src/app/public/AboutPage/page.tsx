@@ -3,7 +3,7 @@ import AboutItem from './AboutItem';
 export default function AboutPage() {
   return (
     <div className=" flex flex-col bg-color-main  h-fit h-min-screen items-center justify-around ">
-      <div className="min-w-fit max-w-[48rem] w-[70%] m-8 sm:m-12 h-fit  ">
+      <div className="min-w-fit max-w-[48rem] w-[70%] m-8 sm:m-12s h-fit  ">
         <div className="relative mx-auto h-fit">
 
           <img
@@ -26,7 +26,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="flex flex-col  w-screen justify-center text-center mb-12 ">
+      <div className="flex flex-col  justify-center text-center mb-12 ">
 
         <div className="flex flex-col text-center flex-grow m-4 sm:m-12 p-4">
           <p className="lg:text-4xl sm:text-2xl text-md">

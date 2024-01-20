@@ -41,12 +41,10 @@ export class SocketGateway
 
 
   async handleConnection(client: Socket) {
-    console.log("handleConnection------------");
     this.socketGatewayService.handleConnection(client, this.server);
   }
 
   async handleDisconnect(client: Socket) {
-    console.log("clientDisconnected------------");
     this.socketGatewayService.handleDisconnect(client, this.server);
     if (this.clients.has(client.id)) {
       this.clients.delete(client.id);

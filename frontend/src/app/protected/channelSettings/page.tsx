@@ -20,8 +20,6 @@ const PageChat = () => {
 
       if (idChannel) {
         const temp = await getVueGeust(user.id, idChannel, false);
-
-        console.log("------->------->------->------->------->-------> temp", temp, typeof temp)
         if (temp && typeof temp === 'object') setGeust(temp);
         else router.back();
       } else router.back();
