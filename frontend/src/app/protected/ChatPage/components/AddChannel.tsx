@@ -223,7 +223,6 @@ export default function AlertAddChannel() {
                   channelData.channelType === ChannelType.Private ? styles : ''
                 }
                 onClick={() => {
-                  //console.log("called");
                   setChannelData((prevState) => {
                     return {
                       ...prevState,

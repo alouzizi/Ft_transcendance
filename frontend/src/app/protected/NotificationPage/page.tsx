@@ -108,6 +108,7 @@ export default function NotificationPage() {
     );
     const data = await response.data;
     setDelete((prevDelete) => !prevDelete);
+    socket?.emit('sendNotification', user.id);
   };
 
   const widgetItem = (item: any, index: number) => {
@@ -181,6 +182,7 @@ export default function NotificationPage() {
               },
             );
             setDelete((prevDelete) => !prevDelete);
+            socket?.emit('sendNotification', user.id);
           }}
         >
           {' '}
