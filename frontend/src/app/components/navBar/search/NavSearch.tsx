@@ -64,7 +64,7 @@ export default function SerachNav() {
   // ================ /Search ===============
 
   return (
-    <div className="mx-auto flex flex-row w-fit overflow-hidden ">
+    <div className="mx-auto flex flex-row w-fit overflow-hidden">
       <FaSearch
         onClick={() => {
           onSearch(inputSearch);

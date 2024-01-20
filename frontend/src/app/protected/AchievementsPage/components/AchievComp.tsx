@@ -10,7 +10,7 @@ export default function AchievComp(prompt: { friend: ownerDto }) {
 
   return (
     <div className="flex flex-col bg-color-main  h-fit w-screen min-h-screen">
-      <div className="flex flex-row mt-6 md:mt-12 mb-4 md:mb-8 ml-8  md:ml-12">
+      <div className="flex flex-row mt-6 md:mt-12 mb-4 md:mb-8 ml-8  md:ml-20">
         <IoMdArrowRoundBack
           onClick={() => {
             router.back();
