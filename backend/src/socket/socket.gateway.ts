@@ -262,7 +262,8 @@ export class SocketGateway
               { player: this.rooms.get(roomName)[0], score: ro.player1.score }
             );
           // this.gameState(roomName, ro.player1.score, ro.player2.score);
-        } else if (ro.ball.x + ro.ball.radius >= 600) {
+        } else if (ro.ball.x + ro.ball.radius >= 600) 
+        {
           this.gameService.resetBall(ro.ball);
           // alert("You Win");
           // the user win
